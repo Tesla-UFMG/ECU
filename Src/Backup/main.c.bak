@@ -1,0 +1,48 @@
+/*      Formula Tesla UFMG
+  *     ECU_2018_V_0_2
+*/
+
+#include "main.h"
+#include "ecu.h"
+#include "sys.h"
+
+//    Variaveis globais
+
+extern int acelerador, refVeloc, refTorque;
+extern uint8_t* vetTx;
+extern uint8_t freiar, paramControl;
+extern uint16_t velocEncoder;
+extern bool habilita;
+extern uint8_t* speed_t_flag;
+extern uint32_t* speed_t_total;
+extern uint8_t apps_t_flag;
+
+uint8_t vet[8];
+uint32_t id_msg = 0x666;
+
+int main(void)
+{
+//      Init
+  inicializa_perifericos();
+
+  for (int i = 0;i < 8;i++)
+    {
+      vet[i] = 9;
+    }
+
+//      Loop
+  while (true)
+  {
+	  CAN_Transmit(vet, id_msg);
+	  HAL_Delay(100);
+
+	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_15);
+
+	  /*le_acelerador();
+	  controle();
+	  comando_inversor();
+	  transmite_ecu_datalogger();
+	  delay_ms(50);*/
+//	  print_can(msg_debug, 0x0);
+  }
+}

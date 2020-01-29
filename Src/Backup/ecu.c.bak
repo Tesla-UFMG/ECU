@@ -1,0 +1,225 @@
+#include "ecu.h"
+
+
+/*
+ * To do:
+ * Plausabilidade, utilizar os dois sensores.
+ *
+ */
+
+//		Variaveis globais
+uint8_t			vetTx[8];
+uint16_t		acelerador, volante, freio, status_ecu, veloc_total,
+				refVeloc, refTorque[2], refTorqueNeg[2], APPS1, valor_APPS[2], ADC_DMA[6];
+uint8_t			freiar = false, paramControl;
+uint16_t		vel_motor[2], torque[2], potencia[2], energia_consumida[2],
+				valor_sobrecarga[2], temp1_mosf[2], temp2_mosf[2], temp1_motor[2],
+				temp2_motor[2], msg_perdidas[2], cont_busoff[2], estado_can[2],
+				estado_inv[2], falha_atual[2], alarme_atual[2];
+bool			habilita = false;
+extern uint8_t* speed_t_flag;
+extern uint32_t* speed_t_total;
+
+uint16_t msg_debug[4]= { 0x0, 0x1, 0x2, 0x3};
+
+
+void inicializa_adc_dma(){
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ADC_DMA, 6);
+	HAL_ADC_Start_IT(&hadc1);
+}
+
+
+//	Le acelerador: adc le os dois sensores por n = num_amostras vezes,
+//	faz uma filtragem de media, verifica plausabilidade,
+//	calcula valor do acelerador.
+//	Retorna acelerador
+void le_acelerador()
+{
+	APPS1 = 0;
+	for(uint8_t i=0 ; i < num_amostras_filtro; i++){
+		//Inicializa o conversor
+		HAL_ADC_Start(&hadc1);
+		HAL_ADC_PollForConversion(&hadc1, timeout_poll_adc);
+		APPS1 += (HAL_ADC_GetValue(&hadc1))/ num_amostras_filtro;
+		HAL_Delay(1);
+	}
+
+	acelerador = 100*(APPS1 - minADC_APPS1)/(maxADC_APPS1-minADC_APPS1);    // cte_apps1;
+	if( acelerador < 0 ) acelerador = 0;
+
+
+
+	//--- Trecho ADC um canal ---
+	/*for(uint8_t i=0 ; i < num_amostras_filtro; i++){
+		//Inicializa o conversor
+		HAL_ADC_Start(&hadc1);
+		HAL_ADC_PollForConversion(&hadc1, tempo_poll_adc);
+		APPS1 += (HAL_ADC_GetValue(&hadc1))/ num_amostras_filtro;
+		HAL_Delay(1);
+	}*/
+
+
+	//--- Trecho ADC 5 canais usando DMA ---
+
+	//Funções chamadas na função: "inicializa_perifericos()"
+	/*HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ADC_DMA, 5);
+	HAL_ADC_Start_IT(&hadc1);
+
+	acelerador = 100*(ADC_DMA[0] - minADC_APPS1)/(maxADC_APPS1-minADC_APPS1);   // % do curso do pedal
+	f(APPS1) = 100*( (ADC_DMA[0]-866)/29 );
+	aceler = 100*( (ADC_DMA[0]-484)/15 ); //min(15%)=8,86/max(29%)=47,64
+	}*/
+
+}
+
+
+//Calcula referencia de torque e velocidade baseado na dinamica e sensores do carro
+//Parametros:	acelerador, speed_t_total[4], sens_freio, frenagem_regenerativa
+//Retorna:		habilita, refTorque[2], refTorque_neg[2], refveloc
+void controle()
+{
+	veloc_total = (speed_t_total[0] + speed_t_total[1] + speed_t_total[2] + speed_t_total[3])/4;
+
+  if (acelerador > zona_morta_acelerador )
+  {
+	habilita = true;
+	refTorque[MOTOR_DIR] = 0.1*torqMax + 0.9*(acelerador*torqMax)/10;
+	refTorque[MOTOR_ESQ] = 0.1*torqMax + 0.9*(acelerador*torqMax)/10;
+	refTorqueNeg[MOTOR_DIR] =  0;
+	refTorqueNeg[MOTOR_ESQ] =  0;
+	refVeloc = vel_max_rpm;
+  }
+  else if (frenagem_regenerativa == true && acelerador < zona_morta_acelerador &&
+		  (vel_motor[MOTOR_DIR] > _5_kmph_rpm || vel_motor[MOTOR_ESQ] > _5_kmph_rpm))
+  {
+	habilita = true;
+	freiar = 1;
+	refTorque[MOTOR_DIR] =  0;
+	refTorque[MOTOR_ESQ] =  0;
+	refTorqueNeg[MOTOR_DIR] =  10 * torq_frenagem;
+	refTorqueNeg[MOTOR_ESQ] =  10 * torq_frenagem;
+	refVeloc = 0;
+  }
+  else
+  {
+	habilita = false;
+	refTorque[MOTOR_DIR] = 0;
+	refTorque[MOTOR_ESQ] = 0;
+	refTorqueNeg[MOTOR_DIR] =  0;
+	refTorqueNeg[MOTOR_ESQ] =  0;
+	refVeloc = vel_max_rpm;
+  }
+}
+
+//Envia a mensagem de controle para o barramento can1, para ser armazenado no datalloger
+//Parametros: vetTx, vetor da mensagem de controle
+//Retorna: nada
+void transmite_ecu_datalogger(){
+	bool ok = CANSPI_Transmit(id_msg_controle, 8, vetTx);
+	if( ok == false)	print_can(0xf,msg_debug);
+	vetTx[0] = veloc_total; // data 0 e 3 para ACIONA
+	vetTx[1] = veloc_total>>8;
+	vetTx[2] = acelerador; // data 2 e 3 para velocidade
+	vetTx[3] = acelerador>>8;
+	vetTx[4] = volante;
+	vetTx[5] = volante>>8;
+	vetTx[6] = freio;
+	vetTx[7] = freio >> 8;
+	ok = CANSPI_Transmit(0x301, 8, vetTx);
+	if( ok == false)	print_can(0xf, msg_debug);
+	vetTx[0] = status_ecu; // data 0 e 3 para ACIONA
+	vetTx[1] = status_ecu >> 8;
+	vetTx[2] = 0;
+	vetTx[3] = 0;
+	vetTx[4] = 0;
+	vetTx[5] = 0;
+	vetTx[6] = 0;
+	vetTx[7] = 0;
+	ok = CANSPI_Transmit(0x302, 8, vetTx);
+	if( ok == false)	print_can(0xf,msg_debug);
+
+//  if( ok == false) Error_Handler();
+}
+
+//Envia a mesnagem de controle para o barramento can2, para controlar os inversores
+//Parametros: hailita, refTorque, refTorq_neg, refVeloc
+void comando_inversor()
+{
+	paramControl = (habilita == true )?  ACIONA : DESABILITA;
+	vetTx[0] = paramControl; // data 0 e 3 para ACIONA
+	vetTx[1] = 0;
+	vetTx[2] = refTorque[MOTOR_DIR] & 0xff; // data 2 e 3 para velocidade
+	vetTx[3] = refTorque[MOTOR_DIR]>>8 & 0xff;
+	vetTx[4] = refTorqueNeg[MOTOR_DIR] & 0xff;
+	vetTx[5] = refTorqueNeg[MOTOR_DIR]>>8 & 0xff;
+	vetTx[6] = refVeloc & 0xff;
+	vetTx[7] = refVeloc >>8 & 0xff;
+	CAN_Transmit(vetTx, id_msg_controle);
+}
+
+//Retransmite as mensagens do barramento can2 para o barramento can1
+//Chamada no can recieve handler
+//Parametros: data, vetor de dados da ultima mensagem recebida
+//Retorna: nada
+void transmite_inversores_datalogger(uint16_t id,uint8_t* data){
+	 bool ok = CANSPI_Transmit(id, 8, data);
+//	 if ( ok == false) 	 Error_Handler();
+}
+
+// Armazena dados da ultima mensagem recebida dos inversores nas respectivas variaveis e retransmite para can1
+void mensagem_inversor_recebida(uint16_t id,uint8_t* data){
+	uint16_t* data_word = (uint16_t*) data;
+	switch (id){
+	//INV_ME
+		case 0x100:
+			vel_motor[MOTOR_ESQ] =							 	data_word[0];
+			torque[MOTOR_ESQ] = 								data_word[1];
+			potencia[MOTOR_ESQ] =								data_word[2];
+			break;
+		case 0x101:
+			energia_consumida[MOTOR_ESQ] =						data_word[0];
+			valor_sobrecarga[MOTOR_ESQ] =						data_word[1];
+			temp1_mosf[MOTOR_ESQ] =	 							data_word[2];
+			temp2_mosf[MOTOR_ESQ] =	 							data_word[3];
+			break;
+		case 0x102:
+			msg_perdidas[MOTOR_ESQ] =							data_word[0];
+			cont_busoff[MOTOR_ESQ] =							data_word[1];
+			estado_can[MOTOR_ESQ] =						 		data_word[2];
+			break;
+		case 0x103:
+			estado_inv[MOTOR_ESQ] =						 		data_word[0];
+			falha_atual[MOTOR_ESQ] =	 						data_word[1];
+			alarme_atual[MOTOR_ESQ] =						 	data_word[2];
+			break;
+
+	//INV_MD
+		case 0x200:
+			vel_motor[MOTOR_DIR] =		 						data_word[0];
+			torque[MOTOR_DIR] =							 		data_word[1];
+			potencia[MOTOR_DIR] =								data_word[2];
+			break;
+		case 0x201:
+			energia_consumida[MOTOR_DIR] =						data_word[0];
+			valor_sobrecarga[MOTOR_DIR] =						data_word[1];
+			temp1_mosf[MOTOR_DIR] =	 							data_word[2];
+			temp2_mosf[MOTOR_DIR] =						 		data_word[3];
+			break;
+		case 0x202:
+			msg_perdidas[MOTOR_DIR] =							data_word[0];
+			cont_busoff[MOTOR_DIR] =							data_word[1];
+			estado_can[MOTOR_DIR] =	 							data_word[2];
+			break;
+		case 0x203:
+			estado_inv[MOTOR_DIR] =						 		data_word[0];
+			falha_atual[MOTOR_DIR] =	 						data_word[1];
+			alarme_atual[MOTOR_DIR] =	 						data_word[2];
+			break;
+	}
+	transmite_inversores_datalogger(id, data);
+}
+
+//envia um vetor data[4] para o barramento can1, pra debug
+void print_can(uint8_t id, uint16_t* data){
+	CANSPI_Transmit(id, 8, (uint8_t*)data);
+}

@@ -1,0 +1,36 @@
+/*
+ * ecu.h
+ *
+ *  Created on: 10 de Ago de 2018
+ *      Author: r0tc
+ */
+
+#ifndef ECU_H_
+#define ECU_H_
+
+#include "sys.h"
+#include "ecu_defines.h"
+
+#define		MOTOR_ESQ 				0x0
+#define		MOTOR_DIR 				0x1
+#define		MOTOR_ESQ_DIR 			0x2
+#define		_5_kmph_rpm 			459
+#define		ACIONA 					0x03
+#define		DESABILITA 				0x0
+#define		maxADC_APPS1   			1846
+#define		minADC_APPS1   			375
+#define		FREIA					0x1
+#define		id_msg_controle 		0x300
+#define		pedal_acel_min 			5
+#define		timeout_poll_adc		5
+
+void inicializa_perifericos();
+void le_acelerador();
+void controle();
+void comando_inversor();
+void transmite_inversores_datalogger(uint16_t, uint8_t*);
+void mensagem_inversor_recebida(uint16_t id,uint8_t* data);
+void transmite_ecu_datalogger();
+void print_can(uint8_t id, uint16_t* data);
+
+#endif /* ECU_LIB_H_ */

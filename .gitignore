@@ -1,0 +1,6 @@
+/Debug/
+/Release/
+*.tags1
+*.tags
+*.cfg
+.DS_Store

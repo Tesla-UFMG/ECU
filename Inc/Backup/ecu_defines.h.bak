@@ -1,0 +1,16 @@
+/*
+ * ecu_defines.h
+ * Configura parametros gerais do ECU.
+ *
+ */
+
+
+#define num_amostras_filtro 	            10
+#define torqMax 			                100
+#define torq_frenagem 			            25
+#define vel_max_rpm 		                4000
+#define	vetorizacao_torque	             	0
+#define	frenagem_regenerativa	            0
+#define	modo_aceleracao	              		0
+#define	modo_enduro			                0
+#define zona_morta_acelerador          		10

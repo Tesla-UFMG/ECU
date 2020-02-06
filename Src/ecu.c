@@ -854,16 +854,14 @@ void Vel_Calc() //calcula velocidades em rpm, ou decimos de km/h
 	media_diant = (vel_roda[0] + vel_roda[1]) >> 1;
 }
 
-void Dist_Calc() //calcula distancia percorrida desde o inicio do codigo em metros
+void Dist_Calc() //calcula distancia percorrida desde o inicio do codigo em decimetro
 {
-	if (dist_pr >= 10) {
+	if (dist_pr >= 10) {	// faz a conta a cada 1 segundo
 		dist_pr = 0;
-		dist_calc = (dist_calc + media_diant*tempo_final);
 
-		// (1km/h)/10*(s)/1000*k = m
-		//(1000m/3600)/10 *(s) / 1000 * k = m
-		//(m/36000)*(s) / k = m
-		// k = 36000
+		// transforma a velocidade para dm/s e multiplica pelo tempo de execução da main em ms
+		// o tempo eh dividido por 1000 para a unidade de tempo ficar em segundos
+		dist_calc += (media_diant/3.6) * (tempo_final/1000);
 	}
 }
 

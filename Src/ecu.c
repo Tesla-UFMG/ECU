@@ -370,15 +370,15 @@ uint16_t le_volante() {
 	volante = volante_cru - ZERO_VOLANTE;
 	volante = volante / GANHO_VOLANTE;
 
-		if(volante > 137.5){
-			roda_interna = ESQUERDA;
-		}
-		if(volante < 132.5){
-			roda_interna = DIREITA;
-		}
-		else{
-			roda_interna = CENTRO;
-		}
+	if(volante > 137.5){
+		roda_interna = ESQUERDA;
+	}
+	if(volante < 132.5){
+		roda_interna = DIREITA;
+	}
+	else{
+		roda_interna = CENTRO;
+	}
 	return (volante);
 }
 

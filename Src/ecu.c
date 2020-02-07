@@ -366,17 +366,18 @@ uint16_t le_acelerador(uint8_t *flag_error) {
 
 uint16_t le_volante() {
 
-	//ZERO_VOLANTE = 1827
 	volante_cru = ADC_DMA[2];
-	if (volante_cru > ZERO_VOLANTE) { //ESQUERDA-> 0 A -135° valores obtidos em bancada
-		volante = volante_cru - ZERO_VOLANTE;
-		roda_interna = ESQUERDA;
-		volante = volante / GANHO_VOLANTE_ESQ;
+	volante = volante_cru - ZERO_VOLANTE;
+	volante = volante / GANHO_VOLANTE;
 
-	} else { // DIREITA-> 0 A +135°
-		volante = ZERO_VOLANTE - volante_cru;
+	if(volante > 137.5){
+		roda_interna = ESQUERDA;
+	}
+	if(volante < 132.5){
 		roda_interna = DIREITA;
-		volante = volante / GANHO_VOLANTE_DIR;
+	}
+	else{
+		roda_interna = CENTRO;
 	}
 	return (volante);
 }

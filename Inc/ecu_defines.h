@@ -14,13 +14,13 @@
 #define	modo_enduro			                0
 #define zona_morta_acelerador          		10
 #define TORQUE_GAIN 						1
-#define ZERO_VOLANTE 						2750
-#define GANHO_VOLANTE_ESQ					7.8
-#define GANHO_VOLANTE_DIR					-7.71
+#define ZERO_VOLANTE 						786
+#define GANHO_VOLANTE						7.79
 #define GAIN_ARRANC 						1.1
 #define INC_VELOC 							50
 #define DIREITA 							0
 #define ESQUERDA							1
+#define CENTRO								2
 
 
 // defines rampa de torque

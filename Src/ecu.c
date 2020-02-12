@@ -870,12 +870,17 @@ void Odometer(uint16_t rec_dist) {
 	const static uint8_t OVERALL_DIST = 1;
 
 	Dist_Calc();							// calculates current distance
-	dist_log[TEST_DIST] += dist_calc;		// updates test and overall distance
-	dist_log[OVERALL_DIST] = rec_dist;		// gets pre existing distance log
-	dist_log[OVERALL_DIST] += dist_calc;	// updates distance already travelled
 
-	Record_Distance(dist_log);				// writes values in flash memory
+	// verifica se o calculo da distancia ja deu 1 metro ou mais - valor retornado em dist_calc esta em decimetro
 
+	if ((dist_calc / 10) >= 1) {
+		dist_log[TEST_DIST] += (dist_calc * 10);		// updates test and overall distance
+		dist_log[OVERALL_DIST] = rec_dist;				// gets pre existing distance log
+		dist_log[OVERALL_DIST] += (dist_calc * 10);		// updates distance already travelled
+
+		// rounds to the nearest meter
+		Record_Distance(dist_log);						// writes values in flash memory
+	}
 }
 
 void Diferencial() {

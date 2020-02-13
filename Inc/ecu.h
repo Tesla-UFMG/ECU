@@ -78,7 +78,7 @@ void mensagem_CANSPI_recebida(uint16_t id, uint8_t* data);
 int16_t PID_control(int16_t setpoint, int16_t medida);
 void Vel_Calc();
 void Dist_Calc();
-void Odometer(uint16_t rec_dist);
+void Odometer();
 void Diferencial();
 void Diferencial_2();
 int16_t Funcao_Dif();

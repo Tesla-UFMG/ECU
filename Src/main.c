@@ -30,8 +30,9 @@ extern uint8_t dist_pr;
 extern uint16_t acelerador;
 extern uint16_t funct_flags;
 extern uint32_t tempo_final;
-modos modo_selecionado;
+extern uint16_t dist_log[2];
 
+modos modo_selecionado;
 uint32_t tempo_main_inicial, tempo_final; //variaveis auxiliares para calcular o tempo do loop da main
 uint16_t recorded_dist = 0;
 
@@ -77,6 +78,7 @@ int main(void)
 	Clear_Test_Distance();
 	// gets travelled distance for odometer
 	recorded_dist = Get_Traveled_Distance();
+	dist_log[1] = recorded_dist;
 
 	//      Loop
 	while (true)
@@ -86,8 +88,7 @@ int main(void)
 		le_acelerador(&flag_erro_apps);
 		le_volante();
 		Vel_Calc();
-		// Dist_Calc();								// substituida por Odometro -- eh chamada dentro dela
-		Odometer(recorded_dist);
+		Odometer();
 		//ERS_control();							// em fase de implementacao
 		controle();
 		comando_inversor();

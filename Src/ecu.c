@@ -106,7 +106,7 @@ uint32_t msgs_recebidas_inversor_ant[2] = { 0, 0};
 extern uint8_t dist_pr;
 extern uint16_t time_speed_refresh;
 extern uint32_t speed_t_total[4];
-extern uint16_t dist_log[];
+extern uint16_t dist_log[2];
 extern uint16_t regen_slc;
 extern uint16_t mode_slc;
 
@@ -852,30 +852,33 @@ void Vel_Calc() //calcula velocidades em rpm, ou decimos de km/h
 	media_diant = (vel_roda[0] + vel_roda[1]) >> 1;
 }
 
-void Dist_Calc() //calcula distancia percorrida desde o inicio do codigo em metros
+void Dist_Calc() //calcula o delta de distancia percorrida em 1 segundo e retorna o valor em decimetro
 {
-	if (dist_pr >= 10) {
+	if (dist_pr >= 10) {	// timer de 1 segundo
 		dist_pr = 0;
-		dist_calc = (dist_calc + media_diant*tempo_final);
 
-		// (1km/h)/10*(s)/1000*k = m
-		//(1000m/3600)/10 *(s) / 1000 * k = m
-		//(m/36000)*(s) / k = m
-		// k = 36000
+		// transforma a velocidade para dm/s e multiplica pelo tempo de execução da main em ms
+		// o tempo eh dividido por 1000 para a unidade de tempo ficar em segundos
+		dist_calc = (media_diant/3.6) * (tempo_final/1000);
 	}
 }
 
-void Odometer(uint16_t rec_dist) {
+void Odometer() {
 	const static uint8_t TEST_DIST = 0;
 	const static uint8_t OVERALL_DIST = 1;
 
-	Dist_Calc();							// calculates current distance
-	dist_log[TEST_DIST] += dist_calc;		// updates test and overall distance
-	dist_log[OVERALL_DIST] = rec_dist;		// gets pre existing distance log
-	dist_log[OVERALL_DIST] += dist_calc;	// updates distance already travelled
+	// calculates delta
+	Dist_Calc();
 
-	Record_Distance(dist_log);				// writes values in flash memory
+	// verifica se o calculo da distancia ja deu 1 metro ou mais - valor retornado em dist_calc esta em decimetro
 
+	if ((dist_calc / 10) >= 1) {
+		dist_log[TEST_DIST] += (dist_calc / 10);		// updates test and overall distance
+		dist_log[OVERALL_DIST] += (dist_calc / 10);		// updates distance already travelled
+
+		// rounds to the nearest meter
+		Record_Distance(dist_log);						// writes values in flash memory
+	}
 }
 
 void Diferencial() {

@@ -15,7 +15,7 @@
 #define zona_morta_acelerador          		10
 #define TORQUE_GAIN 						1
 #define ZERO_VOLANTE 						786
-#define GANHO_VOLANTE						7.79
+#define GANHO_VOLANTE						9.07
 #define GAIN_ARRANC 						1.1
 #define INC_VELOC 							50
 #define DIREITA 							0

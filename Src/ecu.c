@@ -367,18 +367,25 @@ uint16_t le_acelerador(uint8_t *flag_error) {
 uint16_t le_volante() {
 
 	volante_cru = ADC_DMA[2];
-	volante = volante_cru - ZERO_VOLANTE;
-	volante = volante / GANHO_VOLANTE;
 
-	if(volante > 137.5){
+	if (volante_cru < ZERO_VOLANTE){
+		volante = 0;
+	}
+	else{
+		volante = volante_cru - ZERO_VOLANTE;
+		volante = volante/GANHO_VOLANTE * 10;
+	}
+
+	if(volante > 1123){
 		roda_interna = ESQUERDA;
 	}
-	if(volante < 132.5){
+	if(volante < 1173){
 		roda_interna = DIREITA;
 	}
 	else{
 		roda_interna = CENTRO;
 	}
+
 	return (volante);
 }
 
@@ -857,7 +864,7 @@ void Dist_Calc() //calcula o delta de distancia percorrida em 1 segundo e retorn
 	if (dist_pr >= 10) {	// timer de 1 segundo
 		dist_pr = 0;
 
-		// transforma a velocidade para dm/s e multiplica pelo tempo de execução da main em ms
+		// transforma a velocidade para dm/s e multiplica pelo tempo de execuï¿½ï¿½o da main em ms
 		// o tempo eh dividido por 1000 para a unidade de tempo ficar em segundos
 		dist_calc = (media_diant/3.6) * (tempo_final/1000);
 	}

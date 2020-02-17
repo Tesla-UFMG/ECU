@@ -14,7 +14,7 @@
 #define	modo_enduro			                0
 #define zona_morta_acelerador          		10
 #define TORQUE_GAIN 						1
-#define ZERO_VOLANTE 						786
+#define ZERO_VOLANTE 						700
 #define GANHO_VOLANTE						9.07
 #define GAIN_ARRANC 						1.1
 #define INC_VELOC 							50

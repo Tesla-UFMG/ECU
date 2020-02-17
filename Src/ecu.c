@@ -368,18 +368,33 @@ uint16_t le_volante() {
 
 	volante_cru = ADC_DMA[2];
 
-	if (volante_cru < ZERO_VOLANTE){
+	uint16_t volante_aux = volante_cru,
+			 zero_aux = ZERO_VOLANTE;
+
+	//Se o mínimo do volante for menor que 0, o sensor voltará no valor máximo do ADC
+	//se isso acontecer, o valor do ADC voltará para 4095
+	//então subtrai 4095 do valor lido, dando um valor negativo que pode ser aplicado na formula
+	//o mesmo vale pro zero do volante
+	if (VOLANTE_MIN > VOLANTE_MAX) {
+		zero_aux -= 4095;
+		if (volante_cru > VOLANTE_MAX)
+			volante_cru -= 4095;
+	}
+
+
+	if (volante_cru < zero_aux) {
 		volante = 0;
 	}
 	else{
-		volante = volante_cru - ZERO_VOLANTE;
-		volante = volante/GANHO_VOLANTE * 10;
+		volante = volante_cru * GANHO_VOLANTE - ZERO_VOLANTE;
 	}
 
-	if(volante > 1123){
+	//SPAN_ALINHAMENTO é apenas um span pra ainda considerar o volante no centro
+	//até uma certa quantidade
+	if(volante > VOLANTE_ALINHADO + SPAN_ALINHAMENTO){
 		roda_interna = ESQUERDA;
 	}
-	if(volante < 1173){
+	if(volante < VOLANTE_ALINHADO - SPAN_ALINHAMENTO){
 		roda_interna = DIREITA;
 	}
 	else{

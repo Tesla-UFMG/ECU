@@ -394,7 +394,7 @@ uint16_t le_volante() {
 	if(volante > VOLANTE_ALINHADO + SPAN_ALINHAMENTO){
 		roda_interna = ESQUERDA;
 	}
-	if(volante < VOLANTE_ALINHADO - SPAN_ALINHAMENTO){
+	else if(volante < VOLANTE_ALINHADO - SPAN_ALINHAMENTO){
 		roda_interna = DIREITA;
 	}
 	else{

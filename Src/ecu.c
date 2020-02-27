@@ -507,7 +507,18 @@ void actual_datalogger() {
 	if (flag_can == 1) //variï¿½vel "flag_dtl" assume o valor "2" no final da main
 	{
 		time_actual = (HAL_GetTick() - time_init) / 100; //Calcula a diferenca de tempo e transforma para decimos de segundo
-		//CANSPI_Transmit(351, 8, vetTx);
+
+		vetTx[0] = time_actual;
+		vetTx[1] = time_actual >> 8;
+		vetTx[2] = volante;
+		vetTx[3] = volante >> 8;
+		vetTx[4] = acelerador;
+		vetTx[5] = acelerador >> 8;
+		vetTx[6] = freio;
+		vetTx[7] = freio >> 8;
+
+		CANSPI_Transmit(101, 8, vetTx);
+
 		flag_can = 2;
 	}
 

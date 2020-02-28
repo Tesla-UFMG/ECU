@@ -522,7 +522,20 @@ void actual_datalogger() {
 	if (flag_can == 1) //variï¿½vel "flag_dtl" assume o valor "2" no final da main
 	{
 		time_actual = (HAL_GetTick() - time_init) / 100; //Calcula a diferenca de tempo e transforma para decimos de segundo
-		//CANSPI_Transmit(351, 8, vetTx);
+
+		vetTx[0] = time_actual;
+		vetTx[1] = time_actual >> 8;
+		vetTx[2] = volante;
+		vetTx[3] = volante >> 8;
+		vetTx[4] = acelerador;
+		vetTx[5] = acelerador >> 8;
+		vetTx[6] = freio;
+		vetTx[7] = freio >> 8;
+
+		CANSPI_Transmit(101, 8, vetTx);
+		CANSPI_Transmit(351, 8, vetTx);
+
+
 		flag_can = 2;
 	}
 
@@ -573,6 +586,7 @@ void actual_datalogger() {
 		vetTx[7] = ((uint16_t) regen_bk_selection) >> 8;
 
 		CANSPI_Transmit(104, 8, vetTx);
+		CANSPI_Transmit(350, 8, vetTx);
 
 		flag_can = 5;
 	}
@@ -639,7 +653,7 @@ void actual_datalogger() {
 		vetTx[6] = flag_corrente;
 		vetTx[7] = 0;
 		check_error = CANSPI_Transmit(1	, 8, vetTx);
-		flag_can = 9;
+		flag_can = 1;
 	}
 	// IDs para debug usando painel
 	else if (flag_can == 9) {

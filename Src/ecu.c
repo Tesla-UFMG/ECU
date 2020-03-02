@@ -218,7 +218,7 @@ bool contator_fechado(){
 }
 
 modos le_chave_modo(){
-	if(mode_slc == 0) {
+	/*if(mode_slc == 0) {
 		return enduro;
 	}
 	else if(mode_slc == 1) {
@@ -234,6 +234,8 @@ modos le_chave_modo(){
 		return reverse;
 	}
 	else return erro;
+	*/
+	return enduro;
 }
 
 //Aciona Sirene por 1s
@@ -586,7 +588,7 @@ void actual_datalogger() {
 		vetTx[7] = ((uint16_t) regen_bk_selection) >> 8;
 
 		CANSPI_Transmit(104, 8, vetTx);
-		CANSPI_Transmit(350, 8, vetTx);
+		CANSPI_Transmit(352, 8, vetTx);
 
 		flag_can = 5;
 	}

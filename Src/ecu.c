@@ -218,7 +218,7 @@ bool contator_fechado(){
 }
 
 modos le_chave_modo(){
-	if(mode_slc == 0) {
+	/*if(mode_slc == 0) {
 		return enduro;
 	}
 	else if(mode_slc == 1) {
@@ -234,6 +234,8 @@ modos le_chave_modo(){
 		return reverse;
 	}
 	else return erro;
+	*/
+	return enduro;
 }
 
 //Aciona Sirene por 1s
@@ -367,18 +369,40 @@ uint16_t le_acelerador(uint8_t *flag_error) {
 uint16_t le_volante() {
 
 	volante_cru = ADC_DMA[2];
-	volante = volante_cru - ZERO_VOLANTE;
-	volante = volante / GANHO_VOLANTE;
 
-	if(volante > 137.5){
+	uint16_t volante_aux = volante_cru,
+			 zero_aux = ZERO_VOLANTE;
+
+	//Se o mínimo do volante for menor que 0, o sensor voltará no valor máximo do ADC
+	//se isso acontecer, o valor do ADC voltará para 4095
+	//então subtrai 4095 do valor lido, dando um valor negativo que pode ser aplicado na formula
+	//o mesmo vale pro zero do volante
+	if (VOLANTE_MIN > VOLANTE_MAX) {
+		zero_aux -= 4095;
+		if (volante_cru > VOLANTE_MAX)
+			volante_cru -= 4095;
+	}
+
+
+	if (volante_cru < zero_aux) {
+		volante = 0;
+	}
+	else{
+		volante = volante_cru * GANHO_VOLANTE - ZERO_VOLANTE;
+	}
+
+	//SPAN_ALINHAMENTO é apenas um span pra ainda considerar o volante no centro
+	//até uma certa quantidade
+	if(volante > VOLANTE_ALINHADO + SPAN_ALINHAMENTO){
 		roda_interna = ESQUERDA;
 	}
-	if(volante < 132.5){
+	else if(volante < VOLANTE_ALINHADO - SPAN_ALINHAMENTO){
 		roda_interna = DIREITA;
 	}
 	else{
 		roda_interna = CENTRO;
 	}
+
 	return (volante);
 }
 
@@ -500,7 +524,20 @@ void actual_datalogger() {
 	if (flag_can == 1) //variï¿½vel "flag_dtl" assume o valor "2" no final da main
 	{
 		time_actual = (HAL_GetTick() - time_init) / 100; //Calcula a diferenca de tempo e transforma para decimos de segundo
-		//CANSPI_Transmit(351, 8, vetTx);
+
+		vetTx[0] = time_actual;
+		vetTx[1] = time_actual >> 8;
+		vetTx[2] = volante;
+		vetTx[3] = volante >> 8;
+		vetTx[4] = acelerador;
+		vetTx[5] = acelerador >> 8;
+		vetTx[6] = freio;
+		vetTx[7] = freio >> 8;
+
+		CANSPI_Transmit(101, 8, vetTx);
+		CANSPI_Transmit(351, 8, vetTx);
+
+
 		flag_can = 2;
 	}
 
@@ -551,6 +588,7 @@ void actual_datalogger() {
 		vetTx[7] = ((uint16_t) regen_bk_selection) >> 8;
 
 		CANSPI_Transmit(104, 8, vetTx);
+		CANSPI_Transmit(352, 8, vetTx);
 
 		flag_can = 5;
 	}
@@ -617,7 +655,7 @@ void actual_datalogger() {
 		vetTx[6] = flag_corrente;
 		vetTx[7] = 0;
 		check_error = CANSPI_Transmit(1	, 8, vetTx);
-		flag_can = 9;
+		flag_can = 1;
 	}
 	// IDs para debug usando painel
 	else if (flag_can == 9) {
@@ -857,7 +895,7 @@ void Dist_Calc() //calcula o delta de distancia percorrida em 1 segundo e retorn
 	if (dist_pr >= 10) {	// timer de 1 segundo
 		dist_pr = 0;
 
-		// transforma a velocidade para dm/s e multiplica pelo tempo de execu��o da main em ms
+		// transforma a velocidade para dm/s e multiplica pelo tempo de execu��o da main em ms
 		// o tempo eh dividido por 1000 para a unidade de tempo ficar em segundos
 		dist_calc = (media_diant/3.6) * (tempo_final/1000);
 	}

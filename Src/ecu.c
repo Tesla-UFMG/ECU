@@ -31,6 +31,7 @@ uint16_t	acelerador = 0,
 			vel_roda[4],
 			vel_calculada[2],
 			vel_calc_motor[2],
+			vel_angular[2],
 			volante = 0,
 			volante_cru = 0,
 			freio = 0,
@@ -1151,20 +1152,26 @@ void rampa_torque(){
 
 }
 
-uint16_t wheel_slip(int selector) {
+void wheel_slip() {
+	// Calculo da velocidade angular
+	vel_angular[0] = 2 * pi * vel_roda[2] / 60;			// vel_roda é a velocidade em RPM
+	vel_angular[1] = 2 * pi * vel_roda[3] / 60;
+
 	if (media_diant == 0) {
-		media_diant = 1; 	// para  nao dividir por 0 no inicio
-	}
-	// formula de wheel slip -> s = (Vw - Vveh)/Vveh
-	// multiplica por 100 pra obter em porcentagem
-	static uint16_t s;
-	s = (uint8_t) (100*( vel_roda[selector] - media_diant)/ media_diant);
-	return s;
+			media_diant = 1; 							// para nao dividir por 0 no inicio
+		}
+
+	// Calculo do slip ratio da roda direita
+	slip[0]= (vel_angular[0] * raio_efetivo / media_diant) - 1;
+
+	// Calculo do slip ratio da roda esquerda
+	slip[1]= (vel_angular[1] * raio_efetivo / media_diant) - 1;
+
 }
 
 void tc_system() {
-	slip[0] = wheel_slip(RODA_TRAS_DIR);					// calcula wheel slip de cada roda trativa
-	slip[1] = wheel_slip(RODA_TRAS_ESQ);
+	//slip[0] = wheel_slip(RODA_TRAS_DIR);					// calcula wheel slip de cada roda trativa
+	//slip[1] = wheel_slip(RODA_TRAS_ESQ);
 	slip_ratio[0] = (slip[0] / desired_slip_ratio) * 10;	// razao do deslizamento
 	slip_ratio[1] = (slip[1] / desired_slip_ratio) * 10;	// multiplicado por 10 para ser inteiro
 

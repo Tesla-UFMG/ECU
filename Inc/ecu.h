@@ -90,6 +90,7 @@ bool botao_habilita_acionado();
 bool contator_fechado();
 modos le_chave_modo();
 void aciona_sirene(uint16_t tempo_ms);
+void wheel_slip();
 void tc_system();
 void torque_vectoring();
 void toggle_regen();	// turns regenerative braking on/off

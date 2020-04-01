@@ -26,7 +26,6 @@
 #define ESQUERDA							1
 #define CENTRO								2
 #define raio_efetivo						0.2566
-#define pi									3.1415
 
 // defines rampa de torque
 #define INC_TORQUE 300						// inclinacao 2a parte da rampa

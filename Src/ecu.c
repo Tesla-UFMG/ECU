@@ -149,6 +149,7 @@ void inicializa_modos() {
 	aceleracao.vel_max = vel_max_rpm;
 	aceleracao.freio_regen = 0;
 	aceleracao.dif_elt = 0;
+	aceleracao.launch_control = 1;
 	aceleracao.traction_control = 1;
 	aceleracao.bat_safe = 0;
 	aceleracao.torq_gain = 30;
@@ -159,6 +160,7 @@ void inicializa_modos() {
 	skidpad.vel_max = vel_max_rpm;
 	skidpad.freio_regen = 0;
 	skidpad.dif_elt = 0;
+	skidpad.launch_control = 0;
 	skidpad.traction_control = 0;
 	skidpad.bat_safe = 0;
 	skidpad.torq_gain = 20;
@@ -169,6 +171,7 @@ void inicializa_modos() {
 	autox.vel_max = vel_max_rpm;
 	autox.freio_regen = 0;
 	autox.dif_elt = 0;
+	autox.launch_control = 0;
 	autox.traction_control = 1;
 	autox.bat_safe = 0;
 	autox.torq_gain = 25;
@@ -179,6 +182,7 @@ void inicializa_modos() {
 	enduro.vel_max = vel_max_rpm;
 	enduro.freio_regen = frenagem_regenerativa;
 	enduro.dif_elt = 0;
+	enduro.launch_control = 0;
 	enduro.traction_control = 0;
 	enduro.bat_safe = 1;
 	enduro.torq_gain = 25; //ERA 15
@@ -189,6 +193,7 @@ void inicializa_modos() {
 	reverse.vel_max = 450;
 	reverse.freio_regen = 0;
 	reverse.dif_elt = 0;
+	reverse.launch_control = 0;
 	reverse.traction_control = 0;
 	reverse.bat_safe = 1;
 	reverse.torq_gain = 10;
@@ -198,6 +203,7 @@ void inicializa_modos() {
 	erro.vel_max = 0;
 	erro.freio_regen = 0;
 	erro.dif_elt = 0;
+	erro.launch_control = 0;
 	erro.traction_control = 0;
 	erro.bat_safe = 0;
 	erro.torq_gain = 0;
@@ -1069,6 +1075,13 @@ int16_t Funcao_Dif() {
 }
 
 void Controle_arrancada() {
+	bool controle_arrancada;
+	//Caso o volante seja esterçado, o controle de arrancada desliga
+	if(volante > VOLANTE_ALINHADO + SPAN_ALINHAMENTO || volante < VOLANTE_ALINHADO - SPAN_ALINHAMENTO){
+		controle_arrancada = false;
+	}else
+		controle_arrancada = true;
+
 
 // velocidade da roda da frente e' 9x a da velocidade do encoder
 	if (vel_roda[1] < 50)
@@ -1091,9 +1104,7 @@ void Controle_arrancada() {
 		refVeloc[MOTOR_ESQ] = vel_calc_motor[MOTOR_ESQ];
 
 
-		/*
-
-	 //Controle de arrancada
+	/*//Controle de arrancada
 	 // Rampa de aceleracao maxima
 	 // Nao permite que a velocidade aumente mais do que o incremento
 	 	if(selecionado.arranc_control == 1)
@@ -1153,9 +1164,9 @@ void rampa_torque(){
 }
 
 void wheel_slip() {
-	// Calculo da velocidade angular						// vel_angular = 2 * pi * freq(Hz)
-	vel_angular[0] = 2 * pi * vel_motor[MOTOR_DIR] / 60;	// vel_angular = 2 * pi * rpm / 60
-	vel_angular[1] = 2 * pi * vel_motor[MOTOR_ESQ] / 60;
+	// Calculo da velocidade angular							// vel_angular = 2 * pi * freq(Hz)
+	vel_angular[0] = 2 * 3.1415 * vel_motor[MOTOR_DIR] / 60;	// vel_angular = 2 * pi * rpm / 60
+	vel_angular[1] = 2 * 3.1415 * vel_motor[MOTOR_ESQ] / 60;
 
 	if (media_diant == 0) {
 			media_diant = 1; 								// para nao dividir por 0 no inicio

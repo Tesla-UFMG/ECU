@@ -1164,12 +1164,12 @@ void rampa_torque(){
 }
 
 void wheel_slip() {
-	// Calculo da velocidade angular							// vel_angular = 2 * pi * freq(Hz)
-	vel_angular[0] = 2 * 3.1415 * vel_motor[MOTOR_DIR] / 60;	// vel_angular = 2 * pi * rpm / 60
-	vel_angular[1] = 2 * 3.1415 * vel_motor[MOTOR_ESQ] / 60;
-
+	// Calculo da velocidade angular									// vel_angular = 2 * pi * freq(Hz)
+	vel_angular[0] = 2 * 314 * vel_motor[MOTOR_DIR] / 6000;				// vel_angular = 2 * pi * rpm / 60
+	vel_angular[1] = 2 * 314 * vel_motor[MOTOR_ESQ] / 6000;				// foi multiplicado por 100 no numerador
+																		// e no denominador
 	if (media_diant == 0) {
-			media_diant = 1; 								// para nao dividir por 0 no inicio
+			media_diant = 1; 											// para nao dividir por 0 no inicio
 		}
 
 	// Calculo do slip ratio da roda direita

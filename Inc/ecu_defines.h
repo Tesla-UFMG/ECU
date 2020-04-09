@@ -25,7 +25,7 @@
 #define DIREITA 							0
 #define ESQUERDA							1
 #define CENTRO								2
-
+#define VETORIZACAO_TORQUE					1			//0: desativada; 1: ativada(corta tudo); 2: ativada(proporcional)
 
 // defines rampa de torque
 #define INC_TORQUE 300						// inclinacao 2a parte da rampa

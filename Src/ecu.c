@@ -710,48 +710,191 @@ void stop_datalogger() {
 void comando_inversor() {
 	paramControl = (habilita) + (runstop << 1) + (freiar << 2) + (acelerar << 3) + (rev << 4);
 
-	if (flag_estado_comando_inversor==0 &&(selected_motors == MOTOR_DIR || selected_motors == MOTORESQ_DIR)) {
-		vetTx[0] = paramControl;
-		vetTx[1] = paramControl >> 8;
-		vetTx[2] = refTorque[MOTOR_DIR] & 0xff; // data 2 e 3 para velocidade
-		vetTx[3] = refTorque[MOTOR_DIR] >> 8 & 0xff;
-		vetTx[4] = refTorqueNeg[MOTOR_DIR] & 0xff;
-		vetTx[5] = refTorqueNeg[MOTOR_DIR] >> 8 & 0xff;
-		vetTx[6] = refVeloc[MOTOR_DIR] & 0xff;
-		vetTx[7] = refVeloc[MOTOR_DIR] >> 8 & 0xff;
-		CAN_Transmit(vetTx, id_msg_controle_dir);
-		delay_ms_ecu(10);
-		flag_estado_comando_inversor=1;
+	if (VETORIZACAO_TORQUE == 1) {
+		if (roda_interna == DIREITA) {
+			if (flag_estado_comando_inversor == 0 && (selected_motors == MOTOR_DIR || selected_motors == MOTORESQ_DIR)) {
+				vetTx[0] = paramControl;
+				vetTx[1] = paramControl >> 8;
+				vetTx[2] = 0; // data 2 e 3 para velocidade
+				vetTx[3] = 0;
+				vetTx[4] = refTorqueNeg[MOTOR_DIR] & 0xff;
+				vetTx[5] = refTorqueNeg[MOTOR_DIR] >> 8 & 0xff;
+				vetTx[6] = refVeloc[MOTOR_DIR] & 0xff;
+				vetTx[7] = refVeloc[MOTOR_DIR] >> 8 & 0xff;
+				CAN_Transmit(vetTx, id_msg_controle_dir);
+				delay_ms_ecu(10);
+				flag_estado_comando_inversor = 1;
+			}
+
+			if (flag_estado_comando_inversor == 1 && (selected_motors == MOTOR_ESQ || selected_motors == MOTORESQ_DIR)) {
+				vetTx[0] = paramControl;
+				vetTx[1] = paramControl >> 8;;
+				vetTx[2] = refTorque[MOTOR_ESQ] & 0xff; // data 2 e 3 para velocidade
+				vetTx[3] = refTorque[MOTOR_ESQ] >> 8 & 0xff;
+				vetTx[4] = refTorqueNeg[MOTOR_ESQ] & 0xff;
+				vetTx[5] = refTorqueNeg[MOTOR_ESQ]>>8 & 0xff;
+				vetTx[6] = refVeloc[MOTOR_ESQ] & 0xff;
+				vetTx[7] = refVeloc[MOTOR_ESQ] >> 8 & 0xff;
+				CAN_Transmit(vetTx, id_msg_controle_esq);
+				delay_ms_ecu(10);
+				flag_estado_comando_inversor = 2;
+			}
+		}
+
+		if (roda_interna == ESQUERDA) {
+			if (flag_estado_comando_inversor == 0 && (selected_motors == MOTOR_DIR || selected_motors == MOTORESQ_DIR)) {
+				vetTx[0] = paramControl;
+				vetTx[1] = paramControl >> 8;
+				vetTx[2] = refTorque[MOTOR_DIR] & 0xff; // data 2 e 3 para velocidade
+				vetTx[3] = refTorque[MOTOR_DIR] >> 8 & 0xff;
+				vetTx[4] = refTorqueNeg[MOTOR_DIR] & 0xff;
+				vetTx[5] = refTorqueNeg[MOTOR_DIR] >> 8 & 0xff;
+				vetTx[6] = refVeloc[MOTOR_DIR] & 0xff;
+				vetTx[7] = refVeloc[MOTOR_DIR] >> 8 & 0xff;
+				CAN_Transmit(vetTx, id_msg_controle_dir);
+				delay_ms_ecu(10);
+				flag_estado_comando_inversor = 1;
+			}
+
+			if (flag_estado_comando_inversor == 1 && (selected_motors == MOTOR_ESQ || selected_motors == MOTORESQ_DIR)) {
+				vetTx[0] = paramControl;
+				vetTx[1] = paramControl >> 8;;
+				vetTx[2] = 0; // data 2 e 3 para velocidade
+				vetTx[3] = 0;
+				vetTx[4] = refTorqueNeg[MOTOR_ESQ] & 0xff;
+				vetTx[5] = refTorqueNeg[MOTOR_ESQ]>>8 & 0xff;
+				vetTx[6] = refVeloc[MOTOR_ESQ] & 0xff;
+				vetTx[7] = refVeloc[MOTOR_ESQ] >> 8 & 0xff;
+				CAN_Transmit(vetTx, id_msg_controle_esq);
+				delay_ms_ecu(10);
+				flag_estado_comando_inversor = 2;
+			}
+		}
 	}
 
-	if (flag_estado_comando_inversor==1 &&(selected_motors == MOTOR_ESQ || selected_motors == MOTORESQ_DIR)) {
-		vetTx[0] = paramControl;
-		vetTx[1] = paramControl >> 8;;
-		vetTx[2] = refTorque[MOTOR_ESQ] & 0xff; // data 2 e 3 para velocidade
-		vetTx[3] = refTorque[MOTOR_ESQ] >> 8 & 0xff;
-		vetTx[4] = refTorqueNeg[MOTOR_ESQ] & 0xff;
-		vetTx[5] = refTorqueNeg[MOTOR_ESQ]>>8 & 0xff;
-		vetTx[6] = refVeloc[MOTOR_ESQ] & 0xff;
-		vetTx[7] = refVeloc[MOTOR_ESQ] >> 8 & 0xff;
-		CAN_Transmit(vetTx, id_msg_controle_esq);
-		delay_ms_ecu(10);
-		flag_estado_comando_inversor =2;
+	if (VETORIZACAO_TORQUE == 2) {
+
+		float proporcionalAux;
+		uint16_t torqueAux_direito;
+		uint16_t torqueAux_esquerdo;
+		uint16_t direcao_volante;
+
+		direcao_volante = volante - VOLANTE_ALINHADO;									//verifica o lado de viragem (positivo:esquerdo, negativo:direito)
+
+		if (volante < 0) {
+			proporcionalAux = volante / (VOLANTE_MIN * GANHO_VOLANTE - ZERO_VOLANTE);	//calcula a porcentagem de estercamento pro lado direito
+		} else {
+			proporcionalAux = volante / (VOLANTE_MAX * GANHO_VOLANTE - ZERO_VOLANTE);	//calcula a porcentagem de estercamento pro lado esquerdo
+		}
+
+		proporcionalAux = 1 - proporcionalAux;
+		torqueAux_direito = proporcionalAux * refTorque[MOTOR_DIR];
+		torqueAux_esquerdo = proporcionalAux * refTorque[MOTOR_ESQ];
+
+		if (roda_interna == DIREITA) {
+			if (flag_estado_comando_inversor == 0 && (selected_motors == MOTOR_DIR || selected_motors == MOTORESQ_DIR)) {
+				vetTx[0] = paramControl;
+				vetTx[1] = paramControl >> 8;
+				vetTx[2] = torqueAux_direito & 0xff; // data 2 e 3 para velocidade
+				vetTx[3] = torqueAux_direito >> 8 & 0xff;
+				vetTx[4] = refTorqueNeg[MOTOR_DIR] & 0xff;
+				vetTx[5] = refTorqueNeg[MOTOR_DIR] >> 8 & 0xff;
+				vetTx[6] = refVeloc[MOTOR_DIR] & 0xff;
+				vetTx[7] = refVeloc[MOTOR_DIR] >> 8 & 0xff;
+				CAN_Transmit(vetTx, id_msg_controle_dir);
+				delay_ms_ecu(10);
+				flag_estado_comando_inversor = 1;
+			}
+
+			if (flag_estado_comando_inversor == 1 && (selected_motors == MOTOR_ESQ || selected_motors == MOTORESQ_DIR)) {
+				vetTx[0] = paramControl;
+				vetTx[1] = paramControl >> 8;;
+				vetTx[2] = refTorque[MOTOR_ESQ] & 0xff; // data 2 e 3 para velocidade
+				vetTx[3] = refTorque[MOTOR_ESQ] >> 8 & 0xff;
+				vetTx[4] = refTorqueNeg[MOTOR_ESQ] & 0xff;
+				vetTx[5] = refTorqueNeg[MOTOR_ESQ]>>8 & 0xff;
+				vetTx[6] = refVeloc[MOTOR_ESQ] & 0xff;
+				vetTx[7] = refVeloc[MOTOR_ESQ] >> 8 & 0xff;
+				CAN_Transmit(vetTx, id_msg_controle_esq);
+				delay_ms_ecu(10);
+				flag_estado_comando_inversor = 2;
+			}
+		}
+		if (roda_interna == ESQUERDA) {
+			if (flag_estado_comando_inversor == 0 && (selected_motors == MOTOR_DIR || selected_motors == MOTORESQ_DIR)) {
+				vetTx[0] = paramControl;
+				vetTx[1] = paramControl >> 8;
+				vetTx[2] = refTorque[MOTOR_DIR] & 0xff; // data 2 e 3 para velocidade
+				vetTx[3] = refTorque[MOTOR_DIR] >> 8 & 0xff;
+				vetTx[4] = refTorqueNeg[MOTOR_DIR] & 0xff;
+				vetTx[5] = refTorqueNeg[MOTOR_DIR] >> 8 & 0xff;
+				vetTx[6] = refVeloc[MOTOR_DIR] & 0xff;
+				vetTx[7] = refVeloc[MOTOR_DIR] >> 8 & 0xff;
+				CAN_Transmit(vetTx, id_msg_controle_dir);
+				delay_ms_ecu(10);
+				flag_estado_comando_inversor = 1;
+			}
+
+			if (flag_estado_comando_inversor == 1 && (selected_motors == MOTOR_ESQ || selected_motors == MOTORESQ_DIR)) {
+				vetTx[0] = paramControl;
+				vetTx[1] = paramControl >> 8;;
+				vetTx[2] = torqueAux_esquerdo & 0xff; // data 2 e 3 para velocidade
+				vetTx[3] = torqueAux_esquerdo >> 8 & 0xff;
+				vetTx[4] = refTorqueNeg[MOTOR_ESQ] & 0xff;
+				vetTx[5] = refTorqueNeg[MOTOR_ESQ]>>8 & 0xff;
+				vetTx[6] = refVeloc[MOTOR_ESQ] & 0xff;
+				vetTx[7] = refVeloc[MOTOR_ESQ] >> 8 & 0xff;
+				CAN_Transmit(vetTx, id_msg_controle_esq);
+				delay_ms_ecu(10);
+				flag_estado_comando_inversor = 2;
+			}
+		}
 	}
 
-	//MSG para verificar a integridade da comunicacao
-	if (flag_estado_comando_inversor==2){
+	if(VETORIZACAO_TORQUE == 0){
+		if (flag_estado_comando_inversor == 0 && (selected_motors == MOTOR_DIR || selected_motors == MOTORESQ_DIR)) {
+			vetTx[0] = paramControl;
+			vetTx[1] = paramControl >> 8;
+			vetTx[2] = refTorque[MOTOR_DIR] & 0xff; // data 2 e 3 para velocidade
+			vetTx[3] = refTorque[MOTOR_DIR] >> 8 & 0xff;
+			vetTx[4] = refTorqueNeg[MOTOR_DIR] & 0xff;
+			vetTx[5] = refTorqueNeg[MOTOR_DIR] >> 8 & 0xff;
+			vetTx[6] = refVeloc[MOTOR_DIR] & 0xff;
+			vetTx[7] = refVeloc[MOTOR_DIR] >> 8 & 0xff;
+			CAN_Transmit(vetTx, id_msg_controle_dir);
+			delay_ms_ecu(10);
+			flag_estado_comando_inversor = 1;
+		}
 
-	vetTx[0] = 1;
-	vetTx[1] = 0;
-	vetTx[2] = 0;
-	vetTx[3] = 0;
-	vetTx[4] = vel_motor[MOTOR_ESQ] & 0xff;
-	vetTx[5] = vel_motor[MOTOR_ESQ] >> 8 & 0xff;
-	vetTx[6] = vel_motor[MOTOR_DIR] & 0xff;
-	vetTx[7] = vel_motor[MOTOR_DIR] >> 8 & 0xff;
-	CAN_Transmit(vetTx, id_flag_comunic);
-	delay_ms_ecu(10);
-	flag_estado_comando_inversor = 0;
+		if (flag_estado_comando_inversor == 1 && (selected_motors == MOTOR_ESQ || selected_motors == MOTORESQ_DIR)) {
+			vetTx[0] = paramControl;
+			vetTx[1] = paramControl >> 8;;
+			vetTx[2] = refTorque[MOTOR_ESQ] & 0xff; // data 2 e 3 para velocidade
+			vetTx[3] = refTorque[MOTOR_ESQ] >> 8 & 0xff;
+			vetTx[4] = refTorqueNeg[MOTOR_ESQ] & 0xff;
+			vetTx[5] = refTorqueNeg[MOTOR_ESQ]>>8 & 0xff;
+			vetTx[6] = refVeloc[MOTOR_ESQ] & 0xff;
+			vetTx[7] = refVeloc[MOTOR_ESQ] >> 8 & 0xff;
+			CAN_Transmit(vetTx, id_msg_controle_esq);
+			delay_ms_ecu(10);
+			flag_estado_comando_inversor = 2;
+		}
+
+		//MSG para verificar a integridade da comunicacao
+		if (flag_estado_comando_inversor == 2){
+
+		vetTx[0] = 1;
+		vetTx[1] = 0;
+		vetTx[2] = 0;
+		vetTx[3] = 0;
+		vetTx[4] = vel_motor[MOTOR_ESQ] & 0xff;
+		vetTx[5] = vel_motor[MOTOR_ESQ] >> 8 & 0xff;
+		vetTx[6] = vel_motor[MOTOR_DIR] & 0xff;
+		vetTx[7] = vel_motor[MOTOR_DIR] >> 8 & 0xff;
+		CAN_Transmit(vetTx, id_flag_comunic);
+		delay_ms_ecu(10);
+		flag_estado_comando_inversor = 0;
+		}
 	}
 }
 

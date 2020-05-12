@@ -10,5 +10,10 @@
 
 #include "main.h"
 #include "stm32h7xx_hal.h"
+#include "global_definitions.h"
+
+
+
+
 
 #endif /* INITIALIZERS_H_ */

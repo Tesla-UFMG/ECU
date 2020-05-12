@@ -64,6 +64,55 @@ const osThreadAttr_t defaultTask_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
+/* Definitions for t_controle */
+osThreadId_t t_controleHandle;
+const osThreadAttr_t t_controle_attributes = {
+  .name = "t_controle",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
+/* Definitions for t_comando_inver */
+osThreadId_t t_comando_inverHandle;
+const osThreadAttr_t t_comando_inver_attributes = {
+  .name = "t_comando_inver",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
+/* Definitions for t_datalogger */
+osThreadId_t t_dataloggerHandle;
+const osThreadAttr_t t_datalogger_attributes = {
+  .name = "t_datalogger",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
+/* Definitions for t_throttle_read */
+osThreadId_t t_throttle_readHandle;
+const osThreadAttr_t t_throttle_read_attributes = {
+  .name = "t_throttle_read",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
+/* Definitions for t_steering_read */
+osThreadId_t t_steering_readHandle;
+const osThreadAttr_t t_steering_read_attributes = {
+  .name = "t_steering_read",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
+/* Definitions for t_speed_calc */
+osThreadId_t t_speed_calcHandle;
+const osThreadAttr_t t_speed_calc_attributes = {
+  .name = "t_speed_calc",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
+/* Definitions for t_odometer_calc */
+osThreadId_t t_odometer_calcHandle;
+const osThreadAttr_t t_odometer_calc_attributes = {
+  .name = "t_odometer_calc",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -81,6 +130,13 @@ static void MX_TIM1_Init(void);
 static void MX_I2C3_Init(void);
 static void MX_TIM2_Init(void);
 void StartDefaultTask(void *argument);
+extern void controle(void *argument);
+extern void comando_inversor(void *argument);
+extern void datalogger(void *argument);
+extern void throttle_read(void *argument);
+extern void steering_read(void *argument);
+extern void speed_calc(void *argument);
+extern void odometer_calc(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -154,6 +210,27 @@ int main(void)
   /* Create the thread(s) */
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+
+  /* creation of t_controle */
+  t_controleHandle = osThreadNew(controle, NULL, &t_controle_attributes);
+
+  /* creation of t_comando_inver */
+  t_comando_inverHandle = osThreadNew(comando_inversor, NULL, &t_comando_inver_attributes);
+
+  /* creation of t_datalogger */
+  t_dataloggerHandle = osThreadNew(datalogger, NULL, &t_datalogger_attributes);
+
+  /* creation of t_throttle_read */
+  t_throttle_readHandle = osThreadNew(throttle_read, NULL, &t_throttle_read_attributes);
+
+  /* creation of t_steering_read */
+  t_steering_readHandle = osThreadNew(steering_read, NULL, &t_steering_read_attributes);
+
+  /* creation of t_speed_calc */
+  t_speed_calcHandle = osThreadNew(speed_calc, NULL, &t_speed_calc_attributes);
+
+  /* creation of t_odometer_calc */
+  t_odometer_calcHandle = osThreadNew(odometer_calc, NULL, &t_odometer_calc_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

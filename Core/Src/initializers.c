@@ -13,6 +13,10 @@ cores_t led_conf;
 uint8_t error_count = 0; // conta erros, quantas vezes o programa caiu no error handler
 uint16_t debug_milis =0, debug_milis_ant = 0;
 
+extern modos modo_selecionado;
+modos aceleracao, skidpad, autox, enduro, reverse, erro;
+
+
 void inicializa_perifericos()
 {
   SystemClock_Config();
@@ -71,3 +75,66 @@ void debug_temp(uint16_t debug_periodo_ms){
 		debug_milis_ant = debug_milis;
 	}
 }
+
+
+void inicializa_modos() {
+	aceleracao.tor_max = 3500;
+	aceleracao.vel_max = vel_max_rpm;
+	aceleracao.freio_regen = 0;
+	aceleracao.dif_elt = 0;
+	aceleracao.traction_control = 1;
+	aceleracao.bat_safe = 0;
+	aceleracao.torq_gain = 30;
+	aceleracao.mode = ACELERACAO;
+	aceleracao.cor = ROXO;
+
+	skidpad.tor_max = 3000;
+	skidpad.vel_max = vel_max_rpm;
+	skidpad.freio_regen = 0;
+	skidpad.dif_elt = 0;
+	skidpad.traction_control = 0;
+	skidpad.bat_safe = 0;
+	skidpad.torq_gain = 20;
+	skidpad.mode = SKIDPAD;
+	skidpad.cor = CIANO;
+
+	autox.tor_max = 3000;
+	autox.vel_max = vel_max_rpm;
+	autox.freio_regen = 0;
+	autox.dif_elt = 0;
+	autox.traction_control = 1;
+	autox.bat_safe = 0;
+	autox.torq_gain = 25;
+	autox.mode = AUTOX;
+	autox.cor = AZUL;
+
+	enduro.tor_max = 2500;
+	enduro.vel_max = vel_max_rpm;
+	enduro.freio_regen = frenagem_regenerativa;
+	enduro.dif_elt = 0;
+	enduro.traction_control = 0;
+	enduro.bat_safe = 1;
+	enduro.torq_gain = 25; //ERA 15
+	enduro.mode = ENDURO;
+	enduro.cor = VERDE;
+
+	reverse.tor_max = 500;
+	reverse.vel_max = 450;
+	reverse.freio_regen = 0;
+	reverse.dif_elt = 0;
+	reverse.traction_control = 0;
+	reverse.bat_safe = 1;
+	reverse.torq_gain = 10;
+	reverse.cor = AMARELO;
+
+	erro.tor_max = 0;
+	erro.vel_max = 0;
+	erro.freio_regen = 0;
+	erro.dif_elt = 0;
+	erro.traction_control = 0;
+	erro.bat_safe = 0;
+	erro.torq_gain = 0;
+	erro.mode = ERRO;
+	erro.cor = VERMELHO;
+}
+

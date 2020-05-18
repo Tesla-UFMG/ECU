@@ -2,6 +2,7 @@
 #include "CANSPI.h"
 #include "MCP2515.h"
 #include "eeprom.h"
+#include "pid.h"
 extern uint32_t tempo_final;
 
 /*
@@ -53,6 +54,7 @@ uint16_t	acelerador = 0,
 			roda_interna,							// variavel de controle da vetorizacao
 			dist_addr_table[] = {0x7777, 0x8888}; 	// enderecos usados em eeprom.c
 uint8_t 	regen_bk_selection = 0;					// selecao da frenagem no volante, indica qual intensidade setar
+double		pid_out[2] = {0,0};
 
 //	Condicionais booleanas
 bool 	habilita = false,
@@ -110,6 +112,7 @@ extern uint32_t speed_t_total[4];
 extern uint16_t dist_log[2];
 extern uint16_t regen_slc;
 extern uint16_t mode_slc;
+extern PID_t* launch_control;
 
 void seta_leds(uint8_t led_config) //bit 0 azul, bit 1 verde, bit 2 vermelho
 {
@@ -486,8 +489,18 @@ void controle() {
 			refTorqueNeg[MOTOR_DIR] =  0;
 			refTorqueNeg[MOTOR_ESQ] =  0;
 
-			rampa_torque();
 			//if (modo_selecionado.traction_control == true) tc_system();
+
+			if (mode_slc==1) {												// if mode->acceleration
+				wheel_slip();												// calculates slip
+				pid_out[0]=PID_compute(launch_control,(double)(slip[0]));	// calculates pid output for each wheel
+				pid_out[1]=PID_compute(launch_control,(double)(slip[1]));
+
+				refTorque[MOTOR_DIR]=pid_out[0];							// updates torque values to be sent
+				refTorque[MOTOR_ESQ]=pid_out[1];
+			} else {
+				rampa_torque();
+			}
 			//else torque_vectoring();
 			regen_active = false;
 		break;

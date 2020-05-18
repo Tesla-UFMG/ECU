@@ -7,6 +7,7 @@
 #include "ecu.h"
 #include "sys.h"
 #include "eeprom.h"
+#include "pid.h"
 
 //    Variaveis globais
 /*
@@ -31,10 +32,12 @@ extern uint16_t acelerador;
 extern uint16_t funct_flags;
 extern uint32_t tempo_final;
 extern uint16_t dist_log[2];
+extern uint16_t mode_slc;
 
 modos modo_selecionado;
 uint32_t tempo_main_inicial, tempo_final; //variaveis auxiliares para calcular o tempo do loop da main
 uint16_t recorded_dist = 0;
+PID_t* launch_control;
 
 int main(void)
 {
@@ -68,6 +71,13 @@ int main(void)
 	modo_selecionado = le_chave_modo();
 	seta_leds(modo_selecionado.cor);
 	seta_flags(modo_selecionado);
+
+	// if selected mode is acceleration, initializes PID
+	if (mode_slc == 1) {
+		double pid_max=1, pid_min=0, pid_sample=0.002, pid_setpoint=12, Kp=10, Ti=1, Td=0;
+		PID_init(launch_control,1,Kp,Ti,Td,pid_max,pid_min,pid_sample);
+		PID_set_setpoint(launch_control,pid_setpoint); // 12% slip - will have a toggle for dry/wet
+	}
 	//init_datalogger();
 
 	// updates test counter

@@ -74,6 +74,6 @@ void throttle_read(void *argument) {
 		//Error_Handler();
 	}
 
-	return (acelerador);
+//	return (acelerador);
 }
 

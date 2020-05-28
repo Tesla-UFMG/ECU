@@ -16,7 +16,9 @@
 #define		id_msg_controle_esq 	0x300
 #define		id_flag_comunic			0x302		// flag de comunicacao ecu-inv ok
 #define		pedal_acel_min 			5
-#define     desired_slip_ratio		15  		// 15% de slip ratio (arbitrario) - esperar definicao
+#define     desired_slip_ratio		13  		// 13% de slip ratio
+#define		DRY						13
+#define		WET						8
 
 //defines do watchdog
 #define SET_WDG 0xCCCC

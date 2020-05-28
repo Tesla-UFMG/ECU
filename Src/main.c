@@ -74,9 +74,27 @@ int main(void)
 
 	// if selected mode is acceleration, initializes PID
 	if (mode_slc == 1) {
-		double pid_max=1, pid_min=0, pid_sample=0.002, pid_setpoint=12, Kp=10, Ti=1, Td=0;
+		double pid_max=1, pid_min=0, pid_sample=0.002, Kp=10, Ti=1, Td=0;
 		PID_init(launch_control,1,Kp,Ti,Td,pid_max,pid_min,pid_sample);
-		PID_set_setpoint(launch_control,pid_setpoint); // 12% slip - will have a toggle for dry/wet
+
+		uint8_t launch_slc=0; // launch selection - switches between dry and wet parameters
+
+		switch(launch_slc) {  // transfer this variable to the interruptions section, write
+							  // the logic to change with button input an then import it as
+							  // extern once everything is defined (pinout etc)
+		case DRY:
+			standard:;
+			double pid_setpoint=12;
+			PID_set_setpoint(launch_control,pid_setpoint); // 12% slip
+			break;
+		case WET:
+			double pid_setpoint=8;
+			PID_set_setpoint(launch_control,pid_setpoint); // 8% slip not yet validated
+			break;
+		default:
+			goto standard;
+		}
+
 	}
 	//init_datalogger();
 

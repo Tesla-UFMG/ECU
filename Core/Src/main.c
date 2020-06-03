@@ -57,10 +57,10 @@ SPI_HandleTypeDef hspi1;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+/* Definitions for t_main_task */
+osThreadId_t t_main_taskHandle;
+const osThreadAttr_t t_main_task_attributes = {
+  .name = "t_main_task",
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
@@ -119,7 +119,8 @@ const osMessageQueueAttr_t q_speed_message_attributes = {
   .name = "q_speed_message"
 };
 /* USER CODE BEGIN PV */
-
+//flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
+osEventFlagsId_t ECU_control_event_id;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -134,7 +135,7 @@ static void MX_SPI1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_I2C3_Init(void);
 static void MX_TIM2_Init(void);
-void StartDefaultTask(void *argument);
+void main_task(void *argument);
 extern void controle(void *argument);
 extern void comando_inversor(void *argument);
 extern void datalogger(void *argument);
@@ -168,7 +169,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  init_NVIC_priorities();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -217,8 +218,8 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of t_main_task */
+  t_main_taskHandle = osThreadNew(main_task, NULL, &t_main_task_attributes);
 
   /* creation of t_controle */
   t_controleHandle = osThreadNew(controle, NULL, &t_controle_attributes);
@@ -243,6 +244,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  ECU_control_event_id = osEventFlagsNew(NULL);
   /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
@@ -876,14 +878,14 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_main_task */
 /**
-  * @brief  Function implementing the defaultTask thread.
+  * @brief  Function implementing the t_main_task thread.
   * @param  argument: Not used 
   * @retval None
   */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+/* USER CODE END Header_main_task */
+__weak void main_task(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */

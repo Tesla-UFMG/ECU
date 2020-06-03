@@ -11,7 +11,7 @@ speed_message_t aux_message;
 
 //implementa a funcao homonima da HAL, que trata interrupcao por pino
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-	__disable_irq(); //desabilita interrupcoes momentaneamente para nao haver nenhuma outra interrupcao antes do calculo da velocidade
+//	__disable_irq(); //desabilita interrupcoes momentaneamente para nao haver nenhuma outra interrupcao antes do calculo da velocidade
 	switch (GPIO_Pin) {
 		case S_VEL1_Pin:
 		case S_VEL2_Pin:
@@ -23,7 +23,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 			break;
 
 		case B_RTD_Pin:
-
+			osThreadFlagsSet(t_main_taskHandle, RTD_BTN_PRESSED_FLAG);
 			break;
 
 		case B_MODO_Pin:
@@ -35,7 +35,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		default:
 			break;
 	}
-	__enable_irq(); //habilita interrupcoes
+//	__enable_irq(); //habilita interrupcoes
 }
 
 

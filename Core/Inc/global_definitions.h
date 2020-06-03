@@ -34,7 +34,7 @@ typedef struct //struct de modo
 
 
 
-const uint32_t RTD_FLAG = 1 << 5;
-
+const uint32_t RTD_FLAG 			 = 1 << 5;
+const uint32_t RTD_BTN_PRESSED_FLAG  = 1 << 6;
 
 #endif /* INC_GLOBAL_DEFINITIONS_H_ */

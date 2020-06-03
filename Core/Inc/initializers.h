@@ -11,9 +11,8 @@
 #include "main.h"
 #include "stm32h7xx_hal.h"
 #include "global_definitions.h"
+#include "cmsis_os.h"
 
-
-
-
+void init_NVIC_priorities();
 
 #endif /* INITIALIZERS_H_ */

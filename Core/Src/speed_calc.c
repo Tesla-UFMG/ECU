@@ -20,7 +20,7 @@ void speed_calc(void *argument) {
 
 
 	const uint32_t tim_freq  = HAL_RCC_GetPCLK1Freq(), //pega frequência do APB1, q está conectado ao tim2
-				   tim_presc = htim2.Init.Prescaler;   //pescaler do tim2
+				   tim_presc = htim2.Init.Prescaler+1;   //pescaler do tim2
 
 	uint32_t d_tim_count, speed;
 
@@ -31,35 +31,12 @@ void speed_calc(void *argument) {
 
 		speed = (10*3.6*2*M_PI / SPEED_SENSOR_TEETH_QUAN) * (tim_freq/(d_tim_count*tim_presc));
 
-		wheel_speed[message.pin] = speed;
+		g_wheel_speed[message.pin] = speed;
 
 		last_messages[message.pin] = message;
-		osDelay(1);
 	}
 
-
-
-	if (speed_t_total[0] == 0)
-		vel_roda[0] = 0;
-	else
-		vel_roda[0] = (uint16_t) (147026 / speed_t_total[0]);
-
-	if (speed_t_total[1] == 0)
-		vel_roda[1] = 0;
-	else
-		vel_roda[1] = (uint16_t) (147026 / speed_t_total[1]);
-
-	if (speed_t_total[2] == 0)
-		vel_roda[2] = 0;
-	else
-		vel_roda[2] = (uint16_t) (147026 / speed_t_total[2]);
-
-	if (speed_t_total[3] == 0)
-		vel_roda[3] = 0;
-	else
-		vel_roda[3] = (uint16_t) (147026 / speed_t_total[3]);
-
-	media_diant = (vel_roda[0] + vel_roda[1]) >> 1;
+	//media_diant = (vel_roda[0] + vel_roda[1]) >> 1;
 }
 
 

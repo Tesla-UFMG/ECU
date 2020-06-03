@@ -8,4 +8,4 @@
 
 #include "global_variables.h"
 
-volatile float wheel_speed[4];
+volatile float g_wheel_speed[4];

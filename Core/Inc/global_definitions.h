@@ -9,11 +9,12 @@
 #define INC_GLOBAL_DEFINITIONS_H_
 
 #include "stdbool.h"
+#include "stdint.h"
 
 // cores do LED da ECU
 typedef enum cores { PRETO = 0,VERDE, AZUL, CIANO, VERMELHO, AMARELO,ROXO, BRANCO } cores_t;
 
-typedef enum modos_desempenho { ERRO = 0, ACELERACAO, SKIDPAD, AUTOX, ENDURO } modos_t;
+typedef enum modos_desempenho { ERRO = 0, ACELERACAO, SKIDPAD, AUTOX, ENDURO } race_mode_t;
 
 typedef struct //struct de modo
 {
@@ -27,8 +28,13 @@ typedef struct //struct de modo
 	bool traction_control; //controle de tracao (1 ativo, 0 desat)
 	bool bat_safe; //reducao de consumo de bateria se em niveis criticos (1 ativo, 0 desat)
 	int torq_gain; //ganho de torque, aconselhavel q seja proporcional ao torque maximo ( de 0 a 40)
-	modos_t mode; // 1 acel, 2 skid, 3 autox, 4 enduro
+	race_mode_t mode; // 1 acel, 2 skid, 3 autox, 4 enduro
 	cores_t cor;
 } modos;
+
+
+
+const uint32_t RTD_FLAG = 1 << 5;
+
 
 #endif /* INC_GLOBAL_DEFINITIONS_H_ */

@@ -11,6 +11,7 @@
 #include "main.h"
 #include "speed_calc.h"
 #include "global_instances.h"
+#include "global_variables.h"
 #include "cmsis_os.h"
 
 #endif /* INC_EXTERNAL_INTERRUPT_HANDLER_H_ */

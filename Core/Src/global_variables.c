@@ -11,3 +11,5 @@
 volatile float g_wheel_speed[4];
 
 volatile race_mode_t g_race_mode = ERRO;
+
+volatile uint16_t ADC_DMA_buffer[ADC_LINES];

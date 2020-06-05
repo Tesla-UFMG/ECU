@@ -33,6 +33,17 @@ typedef struct //struct de modo
 } modos;
 
 
+#define ADC_LINES 6
+
+typedef enum {
+	 APPS1 = 0,
+	 APPS2 = 5,
+	 STEERING_WHEEL = 1,
+	 FREIO = 3,
+	 ADC_E1 = 4,
+	 ADC_E2 = 2
+} ADC_DMA_position_e;
+
 
 const uint32_t RTD_FLAG 			 = 1 << 5;
 const uint32_t RTD_BTN_PRESSED_FLAG  = 1 << 6;

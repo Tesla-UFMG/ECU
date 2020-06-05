@@ -19,6 +19,9 @@ void init_NVIC_priorities() {
 	NVIC_SetPriority(B_MODO_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
 }
 
+void init_ADC_DMA(ADC_HandleTypeDef* hadc) {
+	HAL_ADC_Start_DMA(hadc, (uint32_t *)ADC_DMA_buffer, ADC_LINES);
+}
 
 extern uint8_t error_count;
 cores_t led_conf;

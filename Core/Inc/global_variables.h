@@ -16,4 +16,7 @@ extern volatile float g_wheel_speed[4];
 //modo atual de corrida
 extern volatile race_mode_t g_race_mode;
 
+//buffer atualizado pelo DMA com dados de leitura do ADC
+extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
+
 #endif /* INC_GLOBAL_VARIABLES_H_ */

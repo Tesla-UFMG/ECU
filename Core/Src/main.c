@@ -170,6 +170,7 @@ int main(void)
 
   /* USER CODE BEGIN Init */
   init_NVIC_priorities();
+  init_ADC_DMA();
   /* USER CODE END Init */
 
   /* Configure the system clock */

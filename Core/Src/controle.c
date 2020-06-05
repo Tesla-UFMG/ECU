@@ -72,10 +72,10 @@ void controle(void *argument) {
 			rev = false;
 			refTorque[MOTOR_DIR] = (uint16_t) (modo_selecionado.torq_gain * acelerador) / 10;
 			refTorque[MOTOR_ESQ] = (uint16_t) (modo_selecionado.torq_gain * acelerador) / 10;
-			refVeloc[MOTOR_DIR] = modo_selecionado.vel_max;
-			refVeloc[MOTOR_ESQ] = modo_selecionado.vel_max;
 			refTorqueNeg[MOTOR_DIR] =  0;
 			refTorqueNeg[MOTOR_ESQ] =  0;
+			refVeloc[MOTOR_DIR] = modo_selecionado.vel_max;
+			refVeloc[MOTOR_ESQ] = modo_selecionado.vel_max;
 
 			rampa_torque();
 			//if (modo_selecionado.traction_control == true) tc_system();
@@ -90,10 +90,10 @@ void controle(void *argument) {
 			rev = true;
 			refTorque[MOTOR_DIR] = 0;
 			refTorque[MOTOR_ESQ] = 0;
-			refVeloc[MOTOR_DIR] = 500;
-			refVeloc[MOTOR_ESQ] = 500;
 			refTorqueNeg[MOTOR_DIR] =  300; // 30%
 			refTorqueNeg[MOTOR_ESQ] =  300;
+			refVeloc[MOTOR_DIR] = 500;
+			refVeloc[MOTOR_ESQ] = 500;
 			regen_active = false;
 		break;
 

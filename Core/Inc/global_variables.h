@@ -19,4 +19,10 @@ extern volatile race_mode_t g_race_mode;
 //buffer atualizado pelo DMA com dados de leitura do ADC
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
+//porcentagem do curso do pedal
+extern volatile uint16_t throttle_percent;
+
+//status do freio, 1 = ativado e 0 = desativado
+extern volatile uint8_t brake_status;
+
 #endif /* INC_GLOBAL_VARIABLES_H_ */

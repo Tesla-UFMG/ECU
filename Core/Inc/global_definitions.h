@@ -36,16 +36,19 @@ typedef struct //struct de modo
 #define ADC_LINES 6
 
 typedef enum {
-	 APPS1 = 0,
-	 APPS2 = 5,
-	 STEERING_WHEEL = 1,
-	 FREIO = 3,
-	 ADC_E1 = 4,
-	 ADC_E2 = 2
+	 APPS1_E = 0,
+	 APPS2_E = 5,
+	 STEERING_WHEEL_E = 1,
+	 BRAKE_E = 3,
+	 ADC_E1_E = 4,
+	 ADC_E2_E = 2
 } ADC_DMA_position_e;
 
+#define APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE 10
 
-const uint32_t RTD_FLAG 			 = 1 << 5;
-const uint32_t RTD_BTN_PRESSED_FLAG  = 1 << 6;
+const uint32_t RTD_FLAG 				= 1 << 5;
+const uint32_t RTD_BTN_PRESSED_FLAG  	= 1 << 6;
+
+
 
 #endif /* INC_GLOBAL_DEFINITIONS_H_ */

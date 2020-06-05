@@ -8,6 +8,8 @@
 #ifndef INC_THROTTLE_H_
 #define INC_THROTTLE_H_
 
-
+#include "global_variables.h"
+#include "global_definitions.h"
+#include "cmsis_os.h"
 
 #endif /* INC_THROTTLE_H_ */

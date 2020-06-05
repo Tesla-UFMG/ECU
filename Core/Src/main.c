@@ -121,6 +121,7 @@ const osMessageQueueAttr_t q_speed_message_attributes = {
 /* USER CODE BEGIN PV */
 //flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
 osEventFlagsId_t ECU_control_event_id;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

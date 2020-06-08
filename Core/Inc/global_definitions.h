@@ -51,4 +51,10 @@ const uint32_t RTD_BTN_PRESSED_FLAG  	= 1 << 6;
 
 
 
+const uint32_t APPS_ERROR_FLAG 		 	= 1 << 16;
+const uint32_t INVERTER_COMM_ERROR_FLAG = 1 << 15;
+
+const uint32_t ALL_ERRORS_FLAG = APPS_ERROR_FLAG 			|
+								 INVERTER_COMM_ERROR_FLAG;
+
 #endif /* INC_GLOBAL_DEFINITIONS_H_ */

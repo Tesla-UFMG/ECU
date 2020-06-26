@@ -25,4 +25,7 @@ extern volatile uint16_t throttle_percent;
 //status do freio, 1 = ativado e 0 = desativado
 extern volatile uint8_t brake_status;
 
+//variavel de controle para desabilitar referência de torque
+extern volatile uint8_t g_should_disable_engines;
+
 #endif /* INC_GLOBAL_VARIABLES_H_ */

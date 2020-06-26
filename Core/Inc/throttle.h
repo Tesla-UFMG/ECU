@@ -10,6 +10,7 @@
 
 #include "global_variables.h"
 #include "global_definitions.h"
+#include "global_instances.h"
 #include "cmsis_os.h"
 
 #endif /* INC_THROTTLE_H_ */

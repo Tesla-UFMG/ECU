@@ -66,6 +66,7 @@ void throttle_read(void *argument) {
 		if (((throttle_percent > 300 && BSE > 2200) )) {
 			//TODO: sinalizar evento de erro de APPS
 			throttle_percent = 0;
+			osEventFlagsSet(ECU_control_event_id, APPS_ERROR_FLAG);
 		}
 
 		//TODO: Averiguar duracao do delay

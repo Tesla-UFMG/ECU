@@ -30,9 +30,38 @@ void controle(void *argument) {
 	//veloc_total = (speed_t_total[0] + speed_t_total[1] + speed_t_total[2] + speed_t_total[3]) / 4;
 	vehicle_state_e vehicle_state;
 
+	uint8_t parameters = 0;
+	const uint8_t P_ENABLE   = 1 << 0,
+			      P_RUNSTOP  = 1 << 1,
+				  P_BRAKE    = 1 << 2,
+				  P_THROTTLE = 1 << 3;
+
 	for (;;) {
 
 		update_state(&vehicle_state);
+
+
+
+		switch(vehicle_state) {
+		case S_NEUTER_E:
+			set_bit(&parameters, P_ENABLE, true);
+			set_bit(&parameters, P_BRAKE, false);
+			//TODO: mudar velocidade do motor de acordo com nova logica
+			set_bit(&parameters, P_RUNSTOP, (vel_motor[MOTOR_DIR] > _5_kmph_rpm || vel_motor[MOTOR_ESQ] > _5_kmph_rpm));
+			refTorque[MOTOR_DIR] =  0;
+			refTorque[MOTOR_ESQ] =  0;
+			refTorqueNeg[MOTOR_DIR] =  0;
+			refTorqueNeg[MOTOR_ESQ] =  0;
+			refVeloc[MOTOR_DIR] = modo_selecionado.vel_max;
+			refVeloc[MOTOR_ESQ] = modo_selecionado.vel_max;
+			regen_active = false;
+			break;
+		}
+
+
+
+
+
 
 		switch(vehicle_state){
 			case S_NEUTER_E:

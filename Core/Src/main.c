@@ -113,10 +113,22 @@ const osThreadAttr_t t_odometer_calc_attributes = {
   .priority = (osPriority_t) osPriorityLow,
   .stack_size = 128 * 4
 };
+/* Definitions for t_thr_handler */
+osThreadId_t t_thr_handlerHandle;
+const osThreadAttr_t t_thr_handler_attributes = {
+  .name = "t_thr_handler",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
   .name = "q_speed_message"
+};
+/* Definitions for q_torque_message */
+osMessageQueueId_t q_torque_messageHandle;
+const osMessageQueueAttr_t q_torque_message_attributes = {
+  .name = "q_torque_message"
 };
 /* USER CODE BEGIN PV */
 //flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
@@ -144,6 +156,7 @@ extern void throttle_read(void *argument);
 extern void steering_read(void *argument);
 extern void speed_calc(void *argument);
 extern void odometer_calc(void *argument);
+extern void throttle_handler(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -215,6 +228,9 @@ int main(void)
   /* creation of q_speed_message */
   q_speed_messageHandle = osMessageQueueNew (16, sizeof(speed_message_t), &q_speed_message_attributes);
 
+  /* creation of q_torque_message */
+  q_torque_messageHandle = osMessageQueueNew (16, sizeof(torque_message_t), &q_torque_message_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -243,6 +259,9 @@ int main(void)
 
   /* creation of t_odometer_calc */
   t_odometer_calcHandle = osThreadNew(odometer_calc, NULL, &t_odometer_calc_attributes);
+
+  /* creation of t_thr_handler */
+  t_thr_handlerHandle = osThreadNew(throttle_handler, NULL, &t_thr_handler_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -803,9 +822,6 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
-  /* DMAMUX1_OVR_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMAMUX1_OVR_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(DMAMUX1_OVR_IRQn);
 
 }
 

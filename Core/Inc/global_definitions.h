@@ -57,4 +57,15 @@ const uint32_t INVERTER_COMM_ERROR_FLAG = 1 << 15;
 const uint32_t ALL_ERRORS_FLAG = APPS_ERROR_FLAG 			|
 								 INVERTER_COMM_ERROR_FLAG;
 
+
+
+//FUNCOES
+
+//seta o bit na posicao pos do byte como state
+__attribute__((always_inline)) static inline
+void set_bit(uint32_t* byte, uint8_t pos, uint8_t state) {
+	*byte ^= (-(!!((unsigned long)state)) ^ *byte) & (1UL << pos);
+}
+
+
 #endif /* INC_GLOBAL_DEFINITIONS_H_ */

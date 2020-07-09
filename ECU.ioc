@@ -1,7 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
 PD7.Mode=Full_Duplex_Master
 PCC.Series=STM32H7
-FREERTOS.Queues01=q_speed_message,16,speed_message_t,0,Dynamic,NULL,NULL
+FREERTOS.Queues01=q_speed_message,16,speed_message_t,0,Dynamic,NULL,NULL;q_torque_message,16,torque_message_t,0,Dynamic,NULL,NULL
 PD12.GPIO_Label=C_LED_BLUE
 SPI1.VirtualType=VM_MASTER
 TIM1.IPParameters=Prescaler,Period
@@ -110,7 +110,7 @@ PD6.GPIOParameters=GPIO_Label
 ProjectManager.ProjectFileName=ECU.ioc
 Dma.ADC1.0.Instance=DMA1_Stream0
 RCC.DIVQ1=4
-FREERTOS.Tasks01=t_main_task,24,128,main_task,As weak,NULL,Dynamic,NULL,NULL;t_controle,8,128,controle,As external,NULL,Dynamic,NULL,NULL;t_comando_inver,8,128,comando_inversor,As external,NULL,Dynamic,NULL,NULL;t_datalogger,8,128,datalogger,As external,NULL,Dynamic,NULL,NULL;t_throttle_read,8,128,throttle_read,As external,NULL,Dynamic,NULL,NULL;t_steering_read,8,128,steering_read,As external,NULL,Dynamic,NULL,NULL;t_speed_calc,8,128,speed_calc,As external,NULL,Dynamic,NULL,NULL;t_odometer_calc,8,128,odometer_calc,As external,NULL,Dynamic,NULL,NULL
+FREERTOS.Tasks01=t_main_task,24,128,main_task,As weak,NULL,Dynamic,NULL,NULL;t_controle,8,128,controle,As external,NULL,Dynamic,NULL,NULL;t_comando_inver,8,128,comando_inversor,As external,NULL,Dynamic,NULL,NULL;t_datalogger,8,128,datalogger,As external,NULL,Dynamic,NULL,NULL;t_throttle_read,8,128,throttle_read,As external,NULL,Dynamic,NULL,NULL;t_steering_read,8,128,steering_read,As external,NULL,Dynamic,NULL,NULL;t_speed_calc,8,128,speed_calc,As external,NULL,Dynamic,NULL,NULL;t_odometer_calc,8,128,odometer_calc,As external,NULL,Dynamic,NULL,NULL;t_thr_handler,8,128,throttle_handler,As external,NULL,Dynamic,NULL,NULL
 ADC1.Rank-0\#ChannelRegularConversion=1
 Mcu.PinsNb=41
 Dma.ADC1.0.SyncRequestNumber=1

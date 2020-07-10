@@ -32,6 +32,16 @@ typedef struct //struct de modo
 	cores_t cor;
 } modos;
 
+#define R_MOTOR 0
+#define L_MOTOR 1
+
+typedef struct {
+	uint8_t parameters;
+	uint32_t torque_ref[2];
+	uint32_t neg_torque_ref[2];
+	uint32_t speed_ref[2];
+} torque_message_t;
+
 
 #define ADC_LINES 6
 

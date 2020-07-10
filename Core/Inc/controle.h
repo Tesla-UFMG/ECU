@@ -8,6 +8,11 @@
 #ifndef INC_CONTROLE_H_
 #define INC_CONTROLE_H_
 
+#include "global_variables.h"
+#include "global_definitions.h"
+#include "global_instances.h"
+#include "cmsis_os.h"
+
 typedef enum estado_veiculo {
 	S_DISABLE_E = 0,
 	S_BRAKE_E = 1,

@@ -15,11 +15,11 @@
   *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
-  */ 
+  */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32H7xx_HAL_CONF_H
-#define __STM32H7xx_HAL_CONF_H
+#ifndef STM32H7xx_HAL_CONF_H
+#define STM32H7xx_HAL_CONF_H
 
 #ifdef __cplusplus
  extern "C" {
@@ -30,14 +30,16 @@
 
 /* ########################## Module Selection ############################## */
 /**
-  * @brief This is the list of modules to be used in the HAL driver 
+  * @brief This is the list of modules to be used in the HAL driver
   */
-#define HAL_MODULE_ENABLED  
+#define HAL_MODULE_ENABLED
 
   #define HAL_ADC_MODULE_ENABLED
 #define HAL_FDCAN_MODULE_ENABLED
+/* #define HAL_FMAC_MODULE_ENABLED   */
 /* #define HAL_CEC_MODULE_ENABLED   */
 /* #define HAL_COMP_MODULE_ENABLED   */
+/* #define HAL_CORDIC_MODULE_ENABLED   */
 /* #define HAL_CRC_MODULE_ENABLED   */
 /* #define HAL_CRYP_MODULE_ENABLED   */
 /* #define HAL_DAC_MODULE_ENABLED   */
@@ -100,9 +102,9 @@
 /**
   * @brief Adjust the value of External High Speed oscillator (HSE) used in your application.
   *        This value is used by the RCC HAL module to compute the system frequency
-  *        (when HSE is used as system clock source, directly or through the PLL).  
+  *        (when HSE is used as system clock source, directly or through the PLL).
   */
-#if !defined  (HSE_VALUE) 
+#if !defined  (HSE_VALUE)
 #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz : FPGA case fixed to 60MHZ */
 #endif /* HSE_VALUE */
 
@@ -117,11 +119,11 @@
 #if !defined  (CSI_VALUE)
   #define CSI_VALUE    ((uint32_t)4000000) /*!< Value of the Internal oscillator in Hz*/
 #endif /* CSI_VALUE */
-   
+
 /**
   * @brief Internal High Speed oscillator (HSI) value.
   *        This value is used by the RCC HAL module to compute the system frequency
-  *        (when HSI is used as system clock source, directly or through the PLL). 
+  *        (when HSI is used as system clock source, directly or through the PLL).
   */
 #if !defined  (HSI_VALUE)
   #define HSI_VALUE    ((uint32_t)64000000) /*!< Value of the Internal oscillator in Hz*/
@@ -139,10 +141,16 @@
   #define LSE_STARTUP_TIMEOUT    ((uint32_t)5000U)   /*!< Time out for LSE start up, in ms */
 #endif /* LSE_STARTUP_TIMEOUT */
 
+#if !defined  (LSI_VALUE)
+  #define LSI_VALUE  (32000UL)              /*!< LSI Typical Value in Hz*/
+#endif /* LSI_VALUE */                      /*!< Value of the Internal Low Speed oscillator in Hz
+                                              The real value may vary depending on the variations
+                                              in voltage and temperature.*/
+
 /**
   * @brief External clock source for I2S peripheral
-  *        This value is used by the I2S HAL module to compute the I2S clock source 
-  *        frequency, this source is inserted directly through I2S_CKIN pad. 
+  *        This value is used by the I2S HAL module to compute the I2S clock source
+  *        frequency, this source is inserted directly through I2S_CKIN pad.
   */
 #if !defined  (EXTERNAL_CLOCK_VALUE)
   #define EXTERNAL_CLOCK_VALUE    12288000U /*!< Value of the External clock in Hz*/
@@ -154,15 +162,17 @@
 /* ########################### System Configuration ######################### */
 /**
   * @brief This is the HAL system configuration section
-  */     
+  */
 #define  VDD_VALUE                    ((uint32_t)3300U) /*!< Value of VDD in mv */
 #define  TICK_INT_PRIORITY            ((uint32_t)0U) /*!< tick interrupt priority */
 #define  USE_RTOS                     0U
 #define  USE_SD_TRANSCEIVER           0U               /*!< use uSD Transceiver */
+#define  USE_SPI_CRC	              0U               /*!< use CRC in SPI */
 
 #define  USE_HAL_ADC_REGISTER_CALLBACKS     0U /* ADC register callback disabled     */
 #define  USE_HAL_CEC_REGISTER_CALLBACKS     0U /* CEC register callback disabled     */
 #define  USE_HAL_COMP_REGISTER_CALLBACKS    0U /* COMP register callback disabled    */
+#define  USE_HAL_CORDIC_REGISTER_CALLBACKS  0U /* CORDIC register callback disabled  */
 #define  USE_HAL_CRYP_REGISTER_CALLBACKS    0U /* CRYP register callback disabled    */
 #define  USE_HAL_DAC_REGISTER_CALLBACKS     0U /* DAC register callback disabled     */
 #define  USE_HAL_DCMI_REGISTER_CALLBACKS    0U /* DCMI register callback disabled    */
@@ -172,6 +182,7 @@
 #define  USE_HAL_DTS_REGISTER_CALLBACKS     0U /* DTS register callback disabled     */
 #define  USE_HAL_ETH_REGISTER_CALLBACKS     0U /* ETH register callback disabled     */
 #define  USE_HAL_FDCAN_REGISTER_CALLBACKS   0U /* FDCAN register callback disabled   */
+#define  USE_HAL_FMAC_REGISTER_CALLBACKS    0U /* FMAC register callback disabled  */
 #define  USE_HAL_NAND_REGISTER_CALLBACKS    0U /* NAND register callback disabled    */
 #define  USE_HAL_NOR_REGISTER_CALLBACKS     0U /* NOR register callback disabled     */
 #define  USE_HAL_SDRAM_REGISTER_CALLBACKS   0U /* SDRAM register callback disabled   */
@@ -220,14 +231,14 @@
 
 /* ########################## Assert Selection ############################## */
 /**
-  * @brief Uncomment the line below to expanse the "assert_param" macro in the 
+  * @brief Uncomment the line below to expanse the "assert_param" macro in the
   *        HAL drivers code
   */
-/* #define USE_FULL_ASSERT    1U */ 
+/* #define USE_FULL_ASSERT    1U */
 
 /* Includes ------------------------------------------------------------------*/
 /**
-  * @brief Include module's header file 
+  * @brief Include module's header file
   */
 
 #ifdef HAL_RCC_MODULE_ENABLED
@@ -294,6 +305,10 @@
   #include "stm32h7xx_hal_comp.h"
 #endif /* HAL_COMP_MODULE_ENABLED */
 
+#ifdef HAL_CORDIC_MODULE_ENABLED
+   #include "stm32h7xx_hal_cordic.h"
+#endif /* HAL_CORDIC_MODULE_ENABLED */
+
 #ifdef HAL_CRC_MODULE_ENABLED
   #include "stm32h7xx_hal_crc.h"
 #endif /* HAL_CRC_MODULE_ENABLED */
@@ -309,6 +324,10 @@
 #ifdef HAL_FLASH_MODULE_ENABLED
   #include "stm32h7xx_hal_flash.h"
 #endif /* HAL_FLASH_MODULE_ENABLED */
+
+#ifdef HAL_FMAC_MODULE_ENABLED
+  #include "stm32h7xx_hal_fmac.h"
+#endif /* HAL_FMAC_MODULE_ENABLED */
 
 #ifdef HAL_GFXMMU_MODULE_ENABLED
   #include "stm32h7xx_hal_gfxmmu.h"
@@ -373,7 +392,7 @@
 #ifdef HAL_OSPI_MODULE_ENABLED
   #include "stm32h7xx_hal_ospi.h"
 #endif /* HAL_OSPI_MODULE_ENABLED */
-   
+
 #ifdef HAL_OTFDEC_MODULE_ENABLED
 #include "stm32h7xx_hal_otfdec.h"
 #endif /* HAL_OTFDEC_MODULE_ENABLED */
@@ -472,7 +491,7 @@
   * @brief  The assert_param macro is used for function's parameters check.
   * @param  expr: If expr is false, it calls assert_failed function
   *         which reports the name of the source file and the source
-  *         line number of the call that failed. 
+  *         line number of the call that failed.
   *         If expr is true, it returns no value.
   * @retval None
   */
@@ -488,6 +507,5 @@
 #endif
 
 #endif /* __STM32H7xx_HAL_CONF_H */
- 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -27,7 +27,7 @@ void general_can_transmit(uin32_t id, uint16_t* data) {
 
 
 void CAN2_receive_callback(FDCAN_HandleTypeDef* hfdcan) {
-	//TODO: tratar resposta do inversor
+	//TODO: tratar resposta da can geral
 }
 
 

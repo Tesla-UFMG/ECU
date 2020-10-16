@@ -23,7 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "CAN/inverter_can.h"
+#include "CAN/general_can.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -184,6 +185,8 @@ int main(void)
   /* USER CODE BEGIN Init */
   init_NVIC_priorities();
   init_ADC_DMA();
+  initialize_inverter_CAN(&hfdcan1);
+  initialize_general_CAN(&hfdcan2);
   /* USER CODE END Init */
 
   /* Configure the system clock */

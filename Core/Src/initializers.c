@@ -6,6 +6,13 @@
  */
 
 #include "initializers.h"
+#include "global_definitions.h"
+#include "global_variables.h"
+#include "cmsis_os.h"
+#include "main.h"
+#include "stm32h7xx_hal.h"
+#include "CAN/inverter_can.h"
+#include "CAN/general_can.h"
 
 //inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs mantendo a prioridade máxima de ISRs
 void init_NVIC_priorities() {

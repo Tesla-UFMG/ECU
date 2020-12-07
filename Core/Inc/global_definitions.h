@@ -35,6 +35,19 @@ typedef struct //struct de modo
 #define R_MOTOR 0
 #define L_MOTOR 1
 
+
+//CONTROLE.c
+
+typedef struct {
+	uint8_t parameter_control;
+	uint16_t ref_torque[2];
+	uint16_t ref_torque_neg[2];
+	uint16_t ref_veloc[2];
+	bool regen_active;
+} vehicle_state_parameters_t;
+
+//----------
+
 typedef struct {
 	uint8_t parameters;
 	uint32_t torque_ref[2];

@@ -17,9 +17,14 @@ typedef enum estado_veiculo {
 	S_DISABLE_E = 0,
 	S_BRAKE_E = 1,
 	S_ACCELERATE_E = 2,
-	S_NEUTER_E = 3,
-	S_REVERSE_E = 4
+	S_NEUTER_E = 3
 } vehicle_state_e;
+
+
+const uint8_t P_ENABLE   = 1 << 0,
+			  P_RUNSTOP  = 1 << 1,
+			  P_BRAKE    = 1 << 2,
+			  P_THROTTLE = 1 << 3;
 
 
 

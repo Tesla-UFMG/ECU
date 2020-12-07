@@ -7,6 +7,10 @@
 
 #include "controle.h"
 
+
+vehicle_state_parameters_t vehicle_state_parameters;
+
+
 void update_state(vehicle_state_e* vehicle_state) {
 	if (desabilitar == true) {
 		*vehicle_state = S_DISABLE_E;
@@ -25,120 +29,83 @@ void update_state(vehicle_state_e* vehicle_state) {
 	}
 }
 
+void update_state_parameters(vehicle_state_e* vehicle_state) {
+
+	switch(*vehicle_state) {
+		case S_NEUTER_E:
+			set_bit(&vehicle_state_parameters.parameter_control, P_ENABLE, true);
+			set_bit(&vehicle_state_parameters.parameter_control, P_BRAKE, false);
+			//TODO: mudar velocidade do motor de acordo com nova logica
+			set_bit(&vehicle_state_parameters.parameter_control, P_RUNSTOP, (vel_motor[MOTOR_DIR] > _5_kmph_rpm || vel_motor[MOTOR_ESQ] > _5_kmph_rpm));
+			vehicle_state_parameters.ref_torque[MOTOR_DIR] = 0;
+            vehicle_state_parameters.ref_torque[MOTOR_ESQ] = 0;
+            vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = 0;
+            vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = 0;
+            vehicle_state_parameters.ref_veloc[MOTOR_DIR] = modo_selecionado.vel_max;
+            vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = modo_selecionado.vel_max;
+            vehicle_state_parameters.regen_active = false;
+			break;
+		case S_BRAKE_E:
+			set_bit(&vehicle_state_parameters.parameter_control, P_ENABLE, true);
+			set_bit(&vehicle_state_parameters.parameter_control, P_BRAKE, modo_selecionado.freio_regen);
+			set_bit(&vehicle_state_parameters.parameter_control, P_RUNSTOP, true);
+			vehicle_state_parameters.ref_torque[MOTOR_DIR] = 0;
+			vehicle_state_parameters.ref_torque[MOTOR_ESQ] = 0;
+			vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = torq_frenagem;
+			vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = torq_frenagem;
+			vehicle_state_parameters.ref_veloc[MOTOR_DIR] = 0;
+			vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = 0;
+			vehicle_state_parameters.regen_active = true;
+			break;
+		case S_ACCELERATE_E:
+			set_bit(&vehicle_state_parameters.parameter_control, P_ENABLE, true);
+			set_bit(&vehicle_state_parameters.parameter_control, P_BRAKE, false);
+			set_bit(&vehicle_state_parameters.parameter_control, P_RUNSTOP, true);
+			//TODO: Mudar para nova lógica de envio de mensagem de torque ao inversor
+			vehicle_state_parameters.ref_torque[MOTOR_DIR] = (uint16_t) (modo_selecionado.torq_gain * acelerador) / 10;
+			vehicle_state_parameters.ref_torque[MOTOR_ESQ] = (uint16_t) (modo_selecionado.torq_gain * acelerador) / 10;
+			vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = 0;
+			vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = 0;
+			vehicle_state_parameters.ref_veloc[MOTOR_DIR] = modo_selecionado.vel_max;
+			vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = modo_selecionado.vel_max;
+			vehicle_state_parameters.regen_active = false;
+
+			//TODO: readaptar para lógica de rampa de torque
+			rampa_torque();
+			//if (modo_selecionado.traction_control == true) tc_system();
+			//else torque_vectoring();
+			break;
+
+		case S_DISABLE_E:
+			set_bit(&vehicle_state_parameters.parameter_control, P_ENABLE, false);
+			set_bit(&vehicle_state_parameters.parameter_control, P_BRAKE, false);
+			set_bit(&vehicle_state_parameters.parameter_control, P_RUNSTOP, false);
+			vehicle_state_parameters.ref_torque[MOTOR_DIR] = 0;
+			vehicle_state_parameters.ref_torque[MOTOR_ESQ] = 0;
+			vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = 0;
+			vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = 0;
+			vehicle_state_parameters.ref_veloc[MOTOR_DIR] = 0;
+			vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = 0;
+			vehicle_state_parameters.regen_active = false;
+			regen_active = false;
+			break;
+	}
+}
+
 void controle(void *argument) {
 
 	//veloc_total = (speed_t_total[0] + speed_t_total[1] + speed_t_total[2] + speed_t_total[3]) / 4;
 	vehicle_state_e vehicle_state;
 
 	uint8_t parameters = 0;
-	const uint8_t P_ENABLE   = 1 << 0,
-			      P_RUNSTOP  = 1 << 1,
-				  P_BRAKE    = 1 << 2,
-				  P_THROTTLE = 1 << 3;
+
 
 	for (;;) {
 
 		update_state(&vehicle_state);
 
+		update_state_parameters(&vehicle_state);
 
-
-		switch(vehicle_state) {
-		case S_NEUTER_E:
-			set_bit(&parameters, P_ENABLE, true);
-			set_bit(&parameters, P_BRAKE, false);
-			//TODO: mudar velocidade do motor de acordo com nova logica
-			set_bit(&parameters, P_RUNSTOP, (vel_motor[MOTOR_DIR] > _5_kmph_rpm || vel_motor[MOTOR_ESQ] > _5_kmph_rpm));
-			refTorque[MOTOR_DIR] =  0;
-			refTorque[MOTOR_ESQ] =  0;
-			refTorqueNeg[MOTOR_DIR] =  0;
-			refTorqueNeg[MOTOR_ESQ] =  0;
-			refVeloc[MOTOR_DIR] = modo_selecionado.vel_max;
-			refVeloc[MOTOR_ESQ] = modo_selecionado.vel_max;
-			regen_active = false;
-			break;
-		}
-
-
-
-
-
-
-		switch(vehicle_state){
-			case S_NEUTER_E:
-				habilita = true;
-				freiar = false;
-				//Comando de magnetizacao dependente da velocidade:
-				runstop = (vel_motor[MOTOR_DIR] > _5_kmph_rpm || vel_motor[MOTOR_ESQ] > _5_kmph_rpm);
-				refTorque[MOTOR_DIR] =  0;
-				refTorque[MOTOR_ESQ] =  0;
-				refTorqueNeg[MOTOR_DIR] =  0;
-				refTorqueNeg[MOTOR_ESQ] =  0;
-				refVeloc[MOTOR_DIR] = modo_selecionado.vel_max;
-				refVeloc[MOTOR_ESQ] = modo_selecionado.vel_max;
-				regen_active = false;
-			break;
-
-			case S_BRAKE_E:
-				habilita = true;
-				freiar = modo_selecionado.freio_regen;
-				runstop = true;
-				rev = false;
-				refTorque[MOTOR_DIR] =  0;
-				refTorque[MOTOR_ESQ] =  0;
-				refTorqueNeg[MOTOR_DIR] =  torq_frenagem;
-				refTorqueNeg[MOTOR_ESQ] =  torq_frenagem;
-				refVeloc[MOTOR_DIR] = 0;
-				refVeloc[MOTOR_ESQ] = 0;
-				regen_active = true;
-				funct_flags |= REGEN;
-			break;
-
-			case S_ACCELERATE_E:
-				habilita = true;
-				freiar = false;
-				runstop = true;
-				rev = false;
-				refTorque[MOTOR_DIR] = (uint16_t) (modo_selecionado.torq_gain * acelerador) / 10;
-				refTorque[MOTOR_ESQ] = (uint16_t) (modo_selecionado.torq_gain * acelerador) / 10;
-				refTorqueNeg[MOTOR_DIR] =  0;
-				refTorqueNeg[MOTOR_ESQ] =  0;
-				refVeloc[MOTOR_DIR] = modo_selecionado.vel_max;
-				refVeloc[MOTOR_ESQ] = modo_selecionado.vel_max;
-
-				rampa_torque();
-				//if (modo_selecionado.traction_control == true) tc_system();
-				//else torque_vectoring();
-				regen_active = false;
-			break;
-
-			case S_REVERSE_E:
-				habilita = true;
-				freiar = false;
-				runstop = true;
-				rev = true;
-				refTorque[MOTOR_DIR] = 0;
-				refTorque[MOTOR_ESQ] = 0;
-				refTorqueNeg[MOTOR_DIR] =  300; // 30%
-				refTorqueNeg[MOTOR_ESQ] =  300;
-				refVeloc[MOTOR_DIR] = 500;
-				refVeloc[MOTOR_ESQ] = 500;
-				regen_active = false;
-			break;
-
-			case S_DISABLE_E:
-				habilita = false;
-				freiar = false;
-				runstop = false;
-				rev = false;
-				refTorque[MOTOR_DIR] =  0;
-				refTorque[MOTOR_ESQ] =  0;
-				refTorqueNeg[MOTOR_DIR] =  0;
-				refTorqueNeg[MOTOR_ESQ] =  0;
-				refVeloc[MOTOR_DIR] = 0;
-				refVeloc[MOTOR_ESQ] = 0;
-				regen_active = false;
-			break;
-		}
 
 	}
 

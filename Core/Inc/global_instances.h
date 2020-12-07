@@ -21,4 +21,7 @@ extern osThreadId_t t_main_taskHandle;
 //EVENT FLAGS
 extern osEventFlagsId_t ECU_control_event_id;
 
+//MUTEXES
+extern osMutexId_t m_state_parameter_mutexHandle;
+
 #endif /* INC_GLOBAL_INSTANCES_H_ */

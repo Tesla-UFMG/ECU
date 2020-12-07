@@ -7,8 +7,9 @@
 
 #include "controle.h"
 
+extern osMutexId_t m_state_parameter_mutexHandle;
 
-vehicle_state_parameters_t vehicle_state_parameters;
+volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
 
 void update_state(vehicle_state_e* vehicle_state) {
@@ -33,42 +34,42 @@ void update_state_parameters(vehicle_state_e* vehicle_state) {
 
 	switch(*vehicle_state) {
 		case S_NEUTER_E:
-			set_bit(&vehicle_state_parameters.parameter_control, P_ENABLE, true);
-			set_bit(&vehicle_state_parameters.parameter_control, P_BRAKE, false);
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_ENABLE, true);
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_BRAKE, false);
 			//TODO: mudar velocidade do motor de acordo com nova logica
-			set_bit(&vehicle_state_parameters.parameter_control, P_RUNSTOP, (vel_motor[MOTOR_DIR] > _5_kmph_rpm || vel_motor[MOTOR_ESQ] > _5_kmph_rpm));
-			vehicle_state_parameters.ref_torque[MOTOR_DIR] = 0;
-            vehicle_state_parameters.ref_torque[MOTOR_ESQ] = 0;
-            vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = 0;
-            vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = 0;
-            vehicle_state_parameters.ref_veloc[MOTOR_DIR] = modo_selecionado.vel_max;
-            vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = modo_selecionado.vel_max;
-            vehicle_state_parameters.regen_active = false;
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_RUNSTOP, (vel_motor[MOTOR_DIR] > _5_kmph_rpm || vel_motor[MOTOR_ESQ] > _5_kmph_rpm));
+			g_vehicle_state_parameters.ref_torque[MOTOR_DIR] = 0;
+            g_vehicle_state_parameters.ref_torque[MOTOR_ESQ] = 0;
+            g_vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = 0;
+            g_vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = 0;
+            g_vehicle_state_parameters.ref_veloc[MOTOR_DIR] = modo_selecionado.vel_max;
+            g_vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = modo_selecionado.vel_max;
+            g_vehicle_state_parameters.regen_active = false;
 			break;
 		case S_BRAKE_E:
-			set_bit(&vehicle_state_parameters.parameter_control, P_ENABLE, true);
-			set_bit(&vehicle_state_parameters.parameter_control, P_BRAKE, modo_selecionado.freio_regen);
-			set_bit(&vehicle_state_parameters.parameter_control, P_RUNSTOP, true);
-			vehicle_state_parameters.ref_torque[MOTOR_DIR] = 0;
-			vehicle_state_parameters.ref_torque[MOTOR_ESQ] = 0;
-			vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = torq_frenagem;
-			vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = torq_frenagem;
-			vehicle_state_parameters.ref_veloc[MOTOR_DIR] = 0;
-			vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = 0;
-			vehicle_state_parameters.regen_active = true;
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_ENABLE, true);
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_BRAKE, modo_selecionado.freio_regen);
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_RUNSTOP, true);
+			g_vehicle_state_parameters.ref_torque[MOTOR_DIR] = 0;
+			g_vehicle_state_parameters.ref_torque[MOTOR_ESQ] = 0;
+			g_vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = torq_frenagem;
+			g_vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = torq_frenagem;
+			g_vehicle_state_parameters.ref_veloc[MOTOR_DIR] = 0;
+			g_vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = 0;
+			g_vehicle_state_parameters.regen_active = true;
 			break;
 		case S_ACCELERATE_E:
-			set_bit(&vehicle_state_parameters.parameter_control, P_ENABLE, true);
-			set_bit(&vehicle_state_parameters.parameter_control, P_BRAKE, false);
-			set_bit(&vehicle_state_parameters.parameter_control, P_RUNSTOP, true);
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_ENABLE, true);
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_BRAKE, false);
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_RUNSTOP, true);
 			//TODO: Mudar para nova lógica de envio de mensagem de torque ao inversor
-			vehicle_state_parameters.ref_torque[MOTOR_DIR] = (uint16_t) (modo_selecionado.torq_gain * acelerador) / 10;
-			vehicle_state_parameters.ref_torque[MOTOR_ESQ] = (uint16_t) (modo_selecionado.torq_gain * acelerador) / 10;
-			vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = 0;
-			vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = 0;
-			vehicle_state_parameters.ref_veloc[MOTOR_DIR] = modo_selecionado.vel_max;
-			vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = modo_selecionado.vel_max;
-			vehicle_state_parameters.regen_active = false;
+			g_vehicle_state_parameters.ref_torque[MOTOR_DIR] = (uint16_t) (modo_selecionado.torq_gain * acelerador) / 10;
+			g_vehicle_state_parameters.ref_torque[MOTOR_ESQ] = (uint16_t) (modo_selecionado.torq_gain * acelerador) / 10;
+			g_vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = 0;
+			g_vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = 0;
+			g_vehicle_state_parameters.ref_veloc[MOTOR_DIR] = modo_selecionado.vel_max;
+			g_vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = modo_selecionado.vel_max;
+			g_vehicle_state_parameters.regen_active = false;
 
 			//TODO: readaptar para lógica de rampa de torque
 			rampa_torque();
@@ -77,16 +78,16 @@ void update_state_parameters(vehicle_state_e* vehicle_state) {
 			break;
 
 		case S_DISABLE_E:
-			set_bit(&vehicle_state_parameters.parameter_control, P_ENABLE, false);
-			set_bit(&vehicle_state_parameters.parameter_control, P_BRAKE, false);
-			set_bit(&vehicle_state_parameters.parameter_control, P_RUNSTOP, false);
-			vehicle_state_parameters.ref_torque[MOTOR_DIR] = 0;
-			vehicle_state_parameters.ref_torque[MOTOR_ESQ] = 0;
-			vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = 0;
-			vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = 0;
-			vehicle_state_parameters.ref_veloc[MOTOR_DIR] = 0;
-			vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = 0;
-			vehicle_state_parameters.regen_active = false;
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_ENABLE, false);
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_BRAKE, false);
+			set_bit(&g_vehicle_state_parameters.parameter_control, P_RUNSTOP, false);
+			g_vehicle_state_parameters.ref_torque[MOTOR_DIR] = 0;
+			g_vehicle_state_parameters.ref_torque[MOTOR_ESQ] = 0;
+			g_vehicle_state_parameters.ref_torque_neg[MOTOR_DIR] = 0;
+			g_vehicle_state_parameters.ref_torque_neg[MOTOR_ESQ] = 0;
+			g_vehicle_state_parameters.ref_veloc[MOTOR_DIR] = 0;
+			g_vehicle_state_parameters.ref_veloc[MOTOR_ESQ] = 0;
+			g_vehicle_state_parameters.regen_active = false;
 			regen_active = false;
 			break;
 	}
@@ -102,9 +103,16 @@ void controle(void *argument) {
 
 	for (;;) {
 
+		osMutexAcquire(m_state_parameter_mutexHandle, osWaitForever);
+
 		update_state(&vehicle_state);
 
 		update_state_parameters(&vehicle_state);
+
+		osMutexRelease(m_state_parameter_mutexHandle);
+
+		//TODO: reavaliar quantidade certa de delay
+		osDelay(100);
 
 
 	}

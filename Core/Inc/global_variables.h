@@ -28,4 +28,7 @@ extern volatile uint8_t brake_status;
 //variavel de controle para desabilitar referência de torque
 extern volatile uint8_t g_should_disable_engines;
 
+//variavel que guarda parametros do estado atual do veiculo
+extern volatile vehicle_state_parameters_t g_vehicle_state_parameters;
+
 #endif /* INC_GLOBAL_VARIABLES_H_ */

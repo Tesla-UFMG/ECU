@@ -120,6 +120,13 @@ const osThreadAttr_t t_thr_handler_attributes = {
   .priority = (osPriority_t) osPriorityLow,
   .stack_size = 128 * 4
 };
+/* Definitions for t_torque_manager */
+osThreadId_t t_torque_managerHandle;
+const osThreadAttr_t t_torque_manager_attributes = {
+  .name = "t_torque_manager",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 128 * 4
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -129,6 +136,11 @@ const osMessageQueueAttr_t q_speed_message_attributes = {
 osMessageQueueId_t q_torque_messageHandle;
 const osMessageQueueAttr_t q_torque_message_attributes = {
   .name = "q_torque_message"
+};
+/* Definitions for m_state_parameter_mutex */
+osMutexId_t m_state_parameter_mutexHandle;
+const osMutexAttr_t m_state_parameter_mutex_attributes = {
+  .name = "m_state_parameter_mutex"
 };
 /* USER CODE BEGIN PV */
 //flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
@@ -157,6 +169,7 @@ extern void steering_read(void *argument);
 extern void speed_calc(void *argument);
 extern void odometer_calc(void *argument);
 extern void throttle_handler(void *argument);
+extern void torque_manager(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -213,6 +226,9 @@ int main(void)
 
   /* Init scheduler */
   osKernelInitialize();
+  /* Create the mutex(es) */
+  /* creation of m_state_parameter_mutex */
+  m_state_parameter_mutexHandle = osMutexNew(&m_state_parameter_mutex_attributes);
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -264,6 +280,9 @@ int main(void)
 
   /* creation of t_thr_handler */
   t_thr_handlerHandle = osThreadNew(throttle_handler, NULL, &t_thr_handler_attributes);
+
+  /* creation of t_torque_manager */
+  t_torque_managerHandle = osThreadNew(torque_manager, NULL, &t_torque_manager_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

@@ -38,6 +38,8 @@ void torque_manager(void *argument) {
 			torque_message.speed_ref[R_MOTOR] = g_vehicle_state_parameters.ref_veloc[R_MOTOR];
 			torque_message.speed_ref[L_MOTOR] = g_vehicle_state_parameters.ref_veloc[L_MOTOR];
 			torque_message.parameters = g_vehicle_state_parameters.parameter_control;
+
+			osMutexRelease(m_state_parameter_mutexHandle);
 		} else {
 			//TODO: tratar falha em adquirir o mutex
 		}

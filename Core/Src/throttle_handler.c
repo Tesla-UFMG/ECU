@@ -29,34 +29,23 @@ void throttle_handler(void *argument) {
 
 
 void comando_inversor(torque_message_t* message) {
-	uint8_t vet_tx[8];
+	uint16_t vet_tx[4];
 
-	vet_tx[0] = *message->parameters & 0xff;
-	vet_tx[1] = *message->parameters >> 8;
-	vet_tx[2] = *message->torque_ref[R_MOTOR] & 0xff;
-	vet_tx[3] = *message->torque_ref[R_MOTOR] >> 8 & 0xff;
-	vet_tx[4] = *message->neg_torque_ref[R_MOTOR] & 0xff;
-	vet_tx[5] = *message->neg_torque_ref[R_MOTOR] >> 8 & 0xff;
-	vet_tx[6] = *message->speed_ref[R_MOTOR] & 0xff;
-	vet_tx[7] = *message->speed_ref[R_MOTOR] >> 8 & 0xff;
+	vet_tx[0] = message->parameters;
+	vet_tx[1] = message->torque_ref[R_MOTOR];
+	vet_tx[2] = message->neg_torque_ref[R_MOTOR];
+	vet_tx[3] = message->speed_ref[R_MOTOR];
 	inverter_can_transmit(ID_RIGHT_INVERTER, vet_tx);
 
-	vet_tx[2] = *message->torque_ref[L_MOTOR] & 0xff;
-	vet_tx[3] = *message->torque_ref[L_MOTOR] >> 8 & 0xff;
-	vet_tx[4] = *message->neg_torque_ref[L_MOTOR] & 0xff;
-	vet_tx[5] = *message->neg_torque_ref[L_MOTOR] >> 8 & 0xff;
-	vet_tx[6] = *message->speed_ref[L_MOTOR] & 0xff;
-	vet_tx[7] = *message->speed_ref[L_MOTOR] >> 8 & 0xff;
+	vet_tx[1] = message->torque_ref[L_MOTOR];
+	vet_tx[2] = message->neg_torque_ref[L_MOTOR];
+	vet_tx[3] = message->speed_ref[L_MOTOR];
 	inverter_can_transmit(ID_LEFT_INVERTER, vet_tx);
 
-	vetTx[0] = 1;
-	vetTx[1] = 0;
-	vetTx[2] = 0;
-	vetTx[3] = 0;
-	vetTx[4] = vel_motor[L_MOTOR] & 0xff;
-	vetTx[5] = vel_motor[L_MOTOR] >> 8 & 0xff;
-	vetTx[6] = vel_motor[R_MOTOR] & 0xff;
-	vetTx[7] = vel_motor[R_MOTOR] >> 8 & 0xff;
+	vet_tx[0] = 1<<8;
+	vet_tx[1] = 0;
+	vet_tx[2] = message->torque_ref[L_MOTOR];
+	vet_tx[3] = message->torque_ref[R_MOTOR];
 	inverter_can_transmit(ID_COMM_FLAG, vet_tx);
 
 }

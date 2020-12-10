@@ -5,7 +5,9 @@
  *      Author: renanmoreira
  */
 
+
 void odometer_calc(void *argument) {
+	/*
 	const static uint8_t TEST_DIST = 0;
 	const static uint8_t OVERALL_DIST = 1;
 
@@ -20,6 +22,6 @@ void odometer_calc(void *argument) {
 
 		// rounds to the nearest meter
 		Record_Distance(dist_log);						// writes values in flash memory
-	}
+	}*/
 }
 

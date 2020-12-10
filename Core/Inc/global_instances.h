@@ -8,6 +8,9 @@
 #ifndef INC_GLOBAL_INSTANCES_H_
 #define INC_GLOBAL_INSTANCES_H_
 
+#include "stm32h7xx.h"
+#include "cmsis_os.h"
+
 //PERIFERICOS
 extern TIM_HandleTypeDef htim2;
 

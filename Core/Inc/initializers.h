@@ -9,8 +9,7 @@
 #define INITIALIZERS_H_
 
 
-#include "stm32h7xx_hal_adc.h"
-#include "stm32h7xx_hal_fdcan.h"
+#include "stm32h7xx.h"
 
 void init_NVIC_priorities();
 void init_ADC_DMA(ADC_HandleTypeDef* hadc);

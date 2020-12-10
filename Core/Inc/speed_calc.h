@@ -9,9 +9,6 @@
 #define INC_SPEED_CALC_H_
 
 #include "stdint.h"
-#include "cmsis_os.h"
-#include "stm32h7xx_hal_rcc.h"
-#include "math.h"
 
 #define SPEED_SENSOR_TEETH_QUAN 16
 

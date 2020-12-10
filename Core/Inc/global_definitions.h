@@ -40,11 +40,22 @@ typedef struct //struct de modo
 
 typedef struct {
 	uint8_t parameter_control;
-	uint16_t ref_torque[2];
 	uint16_t ref_torque_neg[2];
 	uint16_t ref_veloc[2];
 	bool regen_active;
 } vehicle_state_parameters_t;
+
+typedef struct {
+	uint16_t ref_torque[2];
+	bool disable;
+} ref_torque_t;
+
+typedef enum estado_veiculo {
+	S_DISABLE_E = 0,
+	S_BRAKE_E = 1,
+	S_ACCELERATE_E = 2,
+	S_NEUTER_E = 3
+} vehicle_state_e;
 
 //----------
 
@@ -69,16 +80,15 @@ typedef enum {
 
 #define APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE 10
 
-const uint32_t RTD_FLAG 				= 1 << 5;
-const uint32_t RTD_BTN_PRESSED_FLAG  	= 1 << 6;
+#define RTD_FLAG 				 1 << 5
+#define RTD_BTN_PRESSED_FLAG  	 1 << 6
 
 
 
-const uint32_t APPS_ERROR_FLAG 		 	= 1 << 16;
-const uint32_t INVERTER_COMM_ERROR_FLAG = 1 << 15;
+#define APPS_ERROR_FLAG 		 	 1 << 16
+#define INVERTER_COMM_ERROR_FLAG 	 1 << 15
 
-const uint32_t ALL_ERRORS_FLAG = APPS_ERROR_FLAG 			|
-								 INVERTER_COMM_ERROR_FLAG;
+#define ALL_ERRORS_FLAG  APPS_ERROR_FLAG | INVERTER_COMM_ERROR_FLAG
 
 
 
@@ -87,6 +97,11 @@ const uint32_t ALL_ERRORS_FLAG = APPS_ERROR_FLAG 			|
 //seta o bit na posicao pos do byte como state
 __attribute__((always_inline)) static inline
 void set_bit(uint32_t* byte, uint8_t pos, uint8_t state) {
+	*byte ^= (-(!!((unsigned long)state)) ^ *byte) & (1UL << pos);
+}
+
+__attribute__((always_inline)) static inline
+void set_bit8(uint8_t* byte, uint8_t pos, uint8_t state) {
 	*byte ^= (-(!!((unsigned long)state)) ^ *byte) & (1UL << pos);
 }
 

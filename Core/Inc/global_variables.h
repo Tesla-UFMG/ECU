@@ -13,6 +13,9 @@
 //velocidade de cada roda individualmente
 extern volatile float g_wheel_speed[4];
 
+//velocidade do motor
+extern volatile uint16_t g_motor_speed[2];
+
 //modo atual de corrida
 extern volatile race_mode_t g_race_mode;
 
@@ -30,5 +33,16 @@ extern volatile uint8_t g_should_disable_engines;
 
 //variavel que guarda parametros do estado atual do veiculo
 extern volatile vehicle_state_parameters_t g_vehicle_state_parameters;
+
+extern modos modo_selecionado;
+
+//guarda o estado atual do veículo (acelera, neutro, freia)
+extern volatile vehicle_state_e vehicle_state;
+
+//roda interna atual
+extern volatile uint8_t internal_wheel;
+
+//estercamento do volante
+extern volatile uint16_t steering_wheel;
 
 #endif /* INC_GLOBAL_VARIABLES_H_ */

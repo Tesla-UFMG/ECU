@@ -10,9 +10,10 @@
 #include "global_variables.h"
 #include "cmsis_os.h"
 #include "main.h"
-#include "stm32h7xx_hal.h"
+#include "stm32h7xx.h"
 #include "CAN/inverter_can.h"
 #include "CAN/general_can.h"
+#include "constants.h"
 
 //inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs mantendo a prioridade máxima de ISRs
 void init_NVIC_priorities() {
@@ -66,19 +67,6 @@ void inicializa_perifericos()
 */
 }
 
-void inicializa_watchdog(){
-	MX_WWDG_Init();
-
-	IWDG->KR = 0x5555;
-	IWDG->PR = PR_WDG;
-	IWDG->RLR = RELOAD_WDG;
-	IWDG->KR = SET_WDG;
-
-}
-
-void atualiza_watchdog(){
-	IWDG->KR = REFRESH_WDG;
-}
 
 
 

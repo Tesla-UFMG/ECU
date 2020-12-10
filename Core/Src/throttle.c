@@ -5,6 +5,7 @@
  *      Author: renanmoreira
  */
 
+#include "throttle.h"
 
 void throttle_read(void *argument) {
 	uint16_t APPS1;
@@ -37,13 +38,13 @@ void throttle_read(void *argument) {
 		if (aux_throttle_percent >= 0 && aux_throttle_percent < 200)
 			apps1_calc = 2212;
 		else if (aux_throttle_percent >= 200 && aux_throttle_percent < 400)
-			apps1_calc = (uint16_t) (1.679 * acelerador + 1876);
+			apps1_calc = (uint16_t) (1.679 * aux_throttle_percent + 1876);
 		else if (aux_throttle_percent >= 400 && aux_throttle_percent < 600)
-			apps1_calc = (uint16_t) (2.621 * acelerador + 1499);
+			apps1_calc = (uint16_t) (2.621 * aux_throttle_percent + 1499);
 		else if (aux_throttle_percent >= 600 && aux_throttle_percent < 800)
-			apps1_calc = (uint16_t) (2.212 * acelerador + 1745);
+			apps1_calc = (uint16_t) (2.212 * aux_throttle_percent + 1745);
 		else if (aux_throttle_percent >= 800 && aux_throttle_percent < 1135)
-			apps1_calc = (uint16_t) (1.515 * acelerador + 2302);
+			apps1_calc = (uint16_t) (1.515 * aux_throttle_percent + 2302);
 
 
 		if (APPS1 > 3900 || APPS1 < 1802.24)

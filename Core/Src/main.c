@@ -137,6 +137,11 @@ osMessageQueueId_t q_torque_messageHandle;
 const osMessageQueueAttr_t q_torque_message_attributes = {
   .name = "q_torque_message"
 };
+/* Definitions for q_ref_torque_message */
+osMessageQueueId_t q_ref_torque_messageHandle;
+const osMessageQueueAttr_t q_ref_torque_message_attributes = {
+  .name = "q_ref_torque_message"
+};
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
@@ -197,7 +202,7 @@ int main(void)
 
   /* USER CODE BEGIN Init */
   init_NVIC_priorities();
-  init_ADC_DMA();
+  init_ADC_DMA(&hadc1);
   initialize_inverter_CAN(&hfdcan1);
   initialize_general_CAN(&hfdcan2);
   /* USER CODE END Init */
@@ -248,6 +253,9 @@ int main(void)
 
   /* creation of q_torque_message */
   q_torque_messageHandle = osMessageQueueNew (16, sizeof(torque_message_t), &q_torque_message_attributes);
+
+  /* creation of q_ref_torque_message */
+  q_ref_torque_messageHandle = osMessageQueueNew (16, sizeof(ref_torque_t), &q_ref_torque_message_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */

@@ -7,7 +7,7 @@
 
 
 void datalogger(void *argument) {
-	if (flag_can == 1) //variï¿½vel "flag_dtl" assume o valor "2" no final da main
+	/*if (flag_can == 1) //variï¿½vel "flag_dtl" assume o valor "2" no final da main
 	{
 		time_actual = (HAL_GetTick() - time_init) / 100; //Calcula a diferenca de tempo e transforma para decimos de segundo
 
@@ -155,5 +155,5 @@ void datalogger(void *argument) {
 		vetTx[7] = 0;
 		check_error = CANSPI_Transmit(351, 8, vetTx);
 		flag_can = 1;
-	}
+	}*/
 }

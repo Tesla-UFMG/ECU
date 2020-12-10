@@ -8,50 +8,44 @@
 #include "torque_manager.h"
 #include "cmsis_os.h"
 #include "global_definitions.h"
+#include "stdint.h"
 
 extern volatile uint16_t throttle_percent;
-extern osMessageQueueId_t q_torque_messageHandle;
+extern modos modo_selecionado;
+extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
 
 void torque_manager(void *argument) {
-	torque_message_t torque_message;
 
-	switch (g_control_type) {
-	case LONGITUDINAL:
-		//TODO: implementar controle longitudinal
+	ref_torque_t ref_torque_message;
 
-		break;
-	case LATERAL:
-		//TODO: implementar controle lateral
+	for (;;) {
+		switch (g_control_type) {
+		case LONGITUDINAL:
+			//TODO: implementar controle longitudinal
 
-		break;
+			break;
+		case LATERAL:
+			//TODO: implementar controle lateral
 
-	default: // rampa de torque
-		uint32_t rampa_torque();
-		uint32_t ref_torque = rampa_torque();
+			break;
 
-		//TODO: pente fino nessa secao junto com a de controle para não haver inversao
-		//de prioridade
-		if (osMutexAcquire(m_state_parameter_mutexHandle, 0U) == osOK) {
-			torque_message.neg_torque_ref[R_MOTOR] = g_vehicle_state_parameters.ref_torque_neg[R_MOTOR];
-			torque_message.neg_torque_ref[L_MOTOR] = g_vehicle_state_parameters.ref_torque_neg[L_MOTOR];
-			torque_message.speed_ref[R_MOTOR] = g_vehicle_state_parameters.ref_veloc[R_MOTOR];
-			torque_message.speed_ref[L_MOTOR] = g_vehicle_state_parameters.ref_veloc[L_MOTOR];
-			torque_message.parameters = g_vehicle_state_parameters.parameter_control;
+		default: ;// rampa de torque
+			uint32_t rampa_torque();
+			uint32_t ref_torque = rampa_torque();
 
-			osMutexRelease(m_state_parameter_mutexHandle);
-		} else {
-			//TODO: tratar falha em adquirir o mutex
+			ref_torque_message.ref_torque[R_MOTOR] = ref_torque;
+			ref_torque_message.ref_torque[L_MOTOR] = ref_torque;
+
+			osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
+
+			osDelay(RAMPA_DELAY);
+
+			break;
 		}
-		torque_message.torque_ref[R_MOTOR] = ref_torque;
-		torque_message.torque_ref[L_MOTOR] = ref_torque;
 
-		osMessageQueuePut(q_torque_messageHandle, msg_ptr, 0, 0U);
-
-		osDelay(30);
-
-		break;
 	}
+
 }
 
 
@@ -59,7 +53,7 @@ uint32_t rampa_torque() {
 	static uint32_t ref_torque_ant = 0;
 	uint32_t ref_torque = (modo_selecionado.torq_gain * throttle_percent) / 10;
 
-	if (refTorque_ant > TORQUE_INIT_LIMITE) {					    // verifica se a referencia
+	if (ref_torque_ant > TORQUE_INIT_LIMITE) {					    // verifica se a referencia
 		if (ref_torque > ref_torque_ant + INC_TORQUE) {				// ja passou do ponto de inflexao
 			ref_torque = ref_torque_ant + INC_TORQUE;				// e aplica o incremento mais agressivo
 		}

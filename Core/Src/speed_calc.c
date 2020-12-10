@@ -5,6 +5,10 @@
  *      Author: renanmoreira
  */
 
+#include "speed_calc.h"
+#include "cmsis_os.h"
+#include "stm32h7xx.h"
+#include "math.h"
 
 //velocidade m/s = omega*circunferencia = delta_theta/delta_tempo * 2*pi*raio
 //              = (raio*2*pi/16)/delta_t (m/s)
@@ -13,6 +17,12 @@
 //              = 3.6*40khz*(raio*2*pi/16)/n (km/h)
 //              = 10*3.6*40khz*(raio*2*pi/16)/n (0.1km/h)
 //              = 10*3.6*40khz*(0.26*2*pi/16)/n (0.1km/h) = 147026/n
+
+volatile float g_wheel_speed[4];
+
+extern TIM_HandleTypeDef htim2;
+extern osMessageQueueId_t q_speed_messageHandle;
+
 void speed_calc(void *argument) {
 	speed_message_t message;
 	speed_message_t last_messages[4];

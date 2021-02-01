@@ -9,6 +9,8 @@
 #include "cmsis_os.h"
 #include "stm32h7xx.h"
 #include "math.h"
+#include "string.h"
+#include "datalog_handler.h"
 
 //velocidade m/s = omega*circunferencia = delta_theta/delta_tempo * 2*pi*raio
 //              = (raio*2*pi/16)/delta_t (m/s)
@@ -41,6 +43,12 @@ void speed_calc(void *argument) {
 		speed = (10*3.6*2*M_PI / SPEED_SENSOR_TEETH_QUAN) * (tim_freq/(d_tim_count*tim_presc));
 		g_wheel_speed[message.pin] = speed; //seta velocidade especifica da roda recebida
 		last_messages[message.pin] = message; //guarda mensagem até a próxima interacão
+
+		uint16_t datalog_id = message.pin == FRONT_RIGHT ? ID_SPEED_FR :
+							  message.pin == FRONT_LEFT  ? ID_SPEED_FL :
+							  message.pin == BACK_RIGHT  ? ID_SPEED_RR :
+									  	  	  	  	  	   ID_SPEED_RL;
+		log_data(datalog_id, (uint16_t) speed);
 	}
 
 	//TODO: lógica para zerar velocidade de uma roda se n receber por certo período de tempo

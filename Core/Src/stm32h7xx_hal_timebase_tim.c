@@ -42,25 +42,43 @@ TIM_HandleTypeDef        htim3;
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
   RCC_ClkInitTypeDef    clkconfig;
-  uint32_t              uwTimclock = 0;
-  uint32_t              uwPrescalerValue = 0;
+  uint32_t              uwTimclock, uwAPB1Prescaler;
+
+  uint32_t              uwPrescalerValue;
   uint32_t              pFLatency;
-  /*Configure the TIM3 IRQ priority */
-  HAL_NVIC_SetPriority(TIM3_IRQn, TickPriority ,0);
+/*Configure the TIM3 IRQ priority */
+  if (TickPriority < (1UL << __NVIC_PRIO_BITS))
+  {
+  HAL_NVIC_SetPriority(TIM3_IRQn, TickPriority ,0U);
 
   /* Enable the TIM3 global Interrupt */
   HAL_NVIC_EnableIRQ(TIM3_IRQn);
+    uwTickPrio = TickPriority;
+    }
+  else
+  {
+    return HAL_ERROR;
+  }
   /* Enable TIM3 clock */
   __HAL_RCC_TIM3_CLK_ENABLE();
 
   /* Get clock configuration */
   HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
 
+  /* Get APB1 prescaler */
+  uwAPB1Prescaler = clkconfig.APB1CLKDivider;
   /* Compute TIM3 clock */
-  uwTimclock = HAL_RCC_GetPCLK1Freq();
+  if (uwAPB1Prescaler == RCC_HCLK_DIV1)
+  {
+    uwTimclock = HAL_RCC_GetPCLK1Freq();
+  }
+  else
+  {
+    uwTimclock = 2UL * HAL_RCC_GetPCLK1Freq();
+  }
 
   /* Compute the prescaler value to have TIM3 counter clock equal to 1MHz */
-  uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000) - 1);
+  uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000U) - 1U);
 
   /* Initialize TIM3 */
   htim3.Instance = TIM3;
@@ -71,7 +89,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   + ClockDivision = 0
   + Counter direction = Up
   */
-  htim3.Init.Period = (1000000 / 1000) - 1;
+  htim3.Init.Period = (1000000U / 1000U) - 1U;
   htim3.Init.Prescaler = uwPrescalerValue;
   htim3.Init.ClockDivision = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;

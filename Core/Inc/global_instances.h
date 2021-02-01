@@ -17,6 +17,7 @@ extern TIM_HandleTypeDef htim2;
 //QUEUES
 extern osMessageQueueId_t q_speed_messageHandle;
 extern osMessageQueueId_t q_torque_messageHandle;
+extern osMessageQueueId_t q_datalog_messageHandle;
 
 //TASKS
 extern osThreadId_t t_main_taskHandle;

@@ -8,6 +8,7 @@
 #include "steering.h"
 #include "constants.h"
 #include "global_definitions.h"
+#include "datalog_handler.h"
 
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
@@ -41,6 +42,8 @@ void steering_read(void *argument) {
 			steering_wheel = volante_cru * GANHO_VOLANTE - ZERO_VOLANTE;
 		}
 
+		log_data(ID_STEERING_WHEEL, steering_wheel);
+
 		//SPAN_ALINHAMENTO é apenas um span pra ainda considerar o volante no centro
 		//até uma certa quantidade
 		if(steering_wheel > VOLANTE_ALINHADO + SPAN_ALINHAMENTO){
@@ -52,6 +55,8 @@ void steering_read(void *argument) {
 		else{
 			internal_wheel = CENTRO;
 		}
+
+		osDelay(100);
 
 	//	return (volante);
 

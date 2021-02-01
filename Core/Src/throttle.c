@@ -6,6 +6,7 @@
  */
 
 #include "throttle.h"
+#include "datalog_handler.h"
 
 void throttle_read(void *argument) {
 	uint16_t APPS1;
@@ -65,6 +66,8 @@ void throttle_read(void *argument) {
 
 		brake_status = BSE > 2200;
 
+		log_data(ID_BRAKE, brake_status);
+
 		if (((aux_throttle_percent > 300 && BSE > 2200) )) {
 			//TODO: sinalizar evento de erro de APPS
 			aux_throttle_percent = 0;
@@ -72,6 +75,9 @@ void throttle_read(void *argument) {
 //			osEventFlagsSet(ECU_control_event_id, APPS_ERROR_FLAG);
 		}
 		throttle_percent = aux_throttle_percent;
+
+		log_data(ID_THROTTLE, throttle_percent);
+
 		//TODO: Averiguar duracao do delay
 		osDelay(100);
 

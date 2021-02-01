@@ -12,12 +12,13 @@
 void throttle_handler(void *argument) {
 	torque_message_t message;
 	for (;;) {
-		osMessageQueueGet(q_torque_messageHandle, &message, NULL, osWaitForever); //espera até alguma mensagem chegar
+		//espera indefinidamente até alguma mensagem de torque$ chegar
+		osMessageQueueGet(q_torque_messageHandle, &message, NULL, osWaitForever);
 
 
 		for (int i = 0; i < TORQUE_MESSAGE_RESEND_TIMES; i++) {
-
-			comando_inversor(&message);
+			void inverter_transmit(torque_message_t* message);
+			inverter_transmit(&message);
 
 			#if (TORQUE_MESSAGE_DELAY > 0)
 			osDelay(TORQUE_MESSAGE_DELAY);
@@ -26,9 +27,7 @@ void throttle_handler(void *argument) {
 	}
 }
 
-
-
-void comando_inversor(torque_message_t* message) {
+void inverter_transmit(torque_message_t* message) {
 	uint16_t vet_tx[4];
 
 	vet_tx[0] = message->parameters;

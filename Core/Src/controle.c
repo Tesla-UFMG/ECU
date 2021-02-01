@@ -9,6 +9,7 @@
 #include "cmsis_os.h"
 #include "global_definitions.h"
 #include "constants.h"
+#include "datalog_handler.h"
 
 extern osMutexId_t m_state_parameter_mutexHandle;
 extern osMessageQueueId_t q_ref_torque_messageHandle;
@@ -114,6 +115,10 @@ void controle(void *argument) {
 
 
 			osMessageQueuePut(q_torque_messageHandle, &torque_message, 0, 0U);
+
+			log_data(ID_REF_TORQUE_R_MOTOR, torque_message.torque_ref[R_MOTOR]);
+			log_data(ID_REF_TORQUE_L_MOTOR, torque_message.torque_ref[L_MOTOR]);
+
 			break;
 		case osErrorTimeout:
 			update_state(ref_torque_message.disable);

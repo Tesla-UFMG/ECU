@@ -15,6 +15,8 @@ extern modos modo_selecionado;
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
 
+extern volatile uint16_t steering_wheel;
+
 void torque_manager(void *argument) {
 
 	ref_torque_t ref_torque_message;

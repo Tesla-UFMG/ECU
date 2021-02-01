@@ -67,6 +67,18 @@ typedef struct {
 } torque_message_t;
 
 
+
+//DATALOG
+
+typedef struct {
+	uint16_t id;
+	uint16_t data;
+} datalog_message_t;
+
+
+//-----------
+
+
 #define ADC_LINES 6
 
 typedef enum {

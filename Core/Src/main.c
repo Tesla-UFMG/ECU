@@ -25,6 +25,7 @@
 /* USER CODE BEGIN Includes */
 #include "CAN/inverter_can.h"
 #include "CAN/general_can.h"
+#include "initializers.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,70 +63,63 @@ osThreadId_t t_main_taskHandle;
 const osThreadAttr_t t_main_task_attributes = {
   .name = "t_main_task",
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for t_controle */
 osThreadId_t t_controleHandle;
 const osThreadAttr_t t_controle_attributes = {
   .name = "t_controle",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
-};
-/* Definitions for t_comando_inver */
-osThreadId_t t_comando_inverHandle;
-const osThreadAttr_t t_comando_inver_attributes = {
-  .name = "t_comando_inver",
-  .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for t_datalogger */
 osThreadId_t t_dataloggerHandle;
 const osThreadAttr_t t_datalogger_attributes = {
   .name = "t_datalogger",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for t_throttle_read */
 osThreadId_t t_throttle_readHandle;
 const osThreadAttr_t t_throttle_read_attributes = {
   .name = "t_throttle_read",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for t_steering_read */
 osThreadId_t t_steering_readHandle;
 const osThreadAttr_t t_steering_read_attributes = {
   .name = "t_steering_read",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for t_speed_calc */
 osThreadId_t t_speed_calcHandle;
 const osThreadAttr_t t_speed_calc_attributes = {
   .name = "t_speed_calc",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for t_odometer_calc */
 osThreadId_t t_odometer_calcHandle;
 const osThreadAttr_t t_odometer_calc_attributes = {
   .name = "t_odometer_calc",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for t_thr_handler */
 osThreadId_t t_thr_handlerHandle;
 const osThreadAttr_t t_thr_handler_attributes = {
   .name = "t_thr_handler",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for t_torque_manager */
 osThreadId_t t_torque_managerHandle;
 const osThreadAttr_t t_torque_manager_attributes = {
   .name = "t_torque_manager",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
@@ -141,6 +135,11 @@ const osMessageQueueAttr_t q_torque_message_attributes = {
 osMessageQueueId_t q_ref_torque_messageHandle;
 const osMessageQueueAttr_t q_ref_torque_message_attributes = {
   .name = "q_ref_torque_message"
+};
+/* Definitions for q_datalog_message */
+osMessageQueueId_t q_datalog_messageHandle;
+const osMessageQueueAttr_t q_datalog_message_attributes = {
+  .name = "q_datalog_message"
 };
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
@@ -167,7 +166,6 @@ static void MX_I2C3_Init(void);
 static void MX_TIM2_Init(void);
 void main_task(void *argument);
 extern void controle(void *argument);
-extern void comando_inversor(void *argument);
 extern void datalogger(void *argument);
 extern void throttle_read(void *argument);
 extern void steering_read(void *argument);
@@ -201,10 +199,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  init_NVIC_priorities();
-  init_ADC_DMA(&hadc1);
-  initialize_inverter_CAN(&hfdcan1);
-  initialize_general_CAN(&hfdcan2);
+//  init_NVIC_priorities();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -226,7 +221,8 @@ int main(void)
   MX_I2C3_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-
+  init_ADC_DMA(&hadc1);
+  init_CAN();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -257,6 +253,9 @@ int main(void)
   /* creation of q_ref_torque_message */
   q_ref_torque_messageHandle = osMessageQueueNew (16, sizeof(ref_torque_t), &q_ref_torque_message_attributes);
 
+  /* creation of q_datalog_message */
+  q_datalog_messageHandle = osMessageQueueNew (128, sizeof(datalog_message_t), &q_datalog_message_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -267,9 +266,6 @@ int main(void)
 
   /* creation of t_controle */
   t_controleHandle = osThreadNew(controle, NULL, &t_controle_attributes);
-
-  /* creation of t_comando_inver */
-  t_comando_inverHandle = osThreadNew(comando_inversor, NULL, &t_comando_inver_attributes);
 
   /* creation of t_datalogger */
   t_dataloggerHandle = osThreadNew(datalogger, NULL, &t_datalogger_attributes);
@@ -296,6 +292,10 @@ int main(void)
   /* add threads, ... */
   ECU_control_event_id = osEventFlagsNew(NULL);
   /* USER CODE END RTOS_THREADS */
+
+  /* USER CODE BEGIN RTOS_EVENTS */
+  /* add events, ... */
+  /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */
   osKernelStart();
@@ -412,7 +412,7 @@ static void MX_ADC1_Init(void)
   /** Common config
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
@@ -422,7 +422,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
+  hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR;
   hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
   hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
   hadc1.Init.OversamplingMode = DISABLE;
@@ -951,7 +951,7 @@ __weak void main_task(void *argument)
   /* USER CODE END 5 */
 }
 
-/**
+ /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM3 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment

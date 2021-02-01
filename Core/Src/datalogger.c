@@ -4,156 +4,45 @@
  *  Created on: May 11, 2020
  *      Author: renanmoreira
  */
+#include "datalogger.h"
+#include "CAN/CAN_IDs.h"
+#include "CAN/general_can.h"
+#include "global_definitions.h"
+#include "cmsis_os.h"
 
+volatile uint16_t datalog_data_holder[CAN_ID_QUAN];
+
+extern osMessageQueueId_t q_datalog_messageHandle;
 
 void datalogger(void *argument) {
-	/*if (flag_can == 1) //variï¿½vel "flag_dtl" assume o valor "2" no final da main
-	{
-		time_actual = (HAL_GetTick() - time_init) / 100; //Calcula a diferenca de tempo e transforma para decimos de segundo
 
-		vetTx[0] = time_actual;
-		vetTx[1] = time_actual >> 8;
-		vetTx[2] = volante;
-		vetTx[3] = volante >> 8;
-		vetTx[4] = acelerador;
-		vetTx[5] = acelerador >> 8;
-		vetTx[6] = freio;
-		vetTx[7] = freio >> 8;
+	datalog_message_t message;
 
-		CANSPI_Transmit(101, 8, vetTx);
-		CANSPI_Transmit(351, 8, vetTx);
+	uint16_t vet_tx[4];
 
 
-		flag_can = 2;
-	}
-
-	else if(flag_can == 2)
-	{
-		//ALARMES A SEREM IMPLEMENTADOS
-		vetTx[0] = modo_selecionado.mode;
-		vetTx[1] = modo_selecionado.mode >> 8;
-		vetTx[2] = 0;
-		vetTx[3] = 0;
-		vetTx[4] = dist_calc;
-		vetTx[5] = dist_calc >>8;
-		vetTx[6] = 0;
-		vetTx[7] = 0;
-
-		CANSPI_Transmit(102, 8, vetTx);
-
-		flag_can = 3;
-
-	}
-
-	else if (flag_can == 3)
-	{
-
-		vetTx[0] = torque[MOTOR_DIR];
-		vetTx[1] = torque[MOTOR_DIR] >> 8;
-		vetTx[2] = torque[MOTOR_ESQ];
-		vetTx[3] = torque[MOTOR_ESQ] >> 8;
-		vetTx[4] = refTorque[MOTOR_DIR];
-		vetTx[5] = refTorque[MOTOR_DIR] >> 8;
-		vetTx[6] = refTorque[MOTOR_ESQ];
-		vetTx[7] = refTorque[MOTOR_ESQ] >> 8;
-		CANSPI_Transmit(103, 8, vetTx);
-
-
-		flag_can = 4;
-	}
-
-	else if (flag_can == 4)
-	{
-		vetTx[0] = vel_motor[MOTOR_DIR];
-		vetTx[1] = vel_motor[MOTOR_DIR] >> 8;
-		vetTx[2] = vel_motor[MOTOR_ESQ];
-		vetTx[3] = vel_motor[MOTOR_ESQ] >> 8;
-		vetTx[4] = torq_frenagem; //frenagem
-		vetTx[5] = torq_frenagem >> 8; //frenagem
-		vetTx[6] = (uint16_t) regen_bk_selection;
-		vetTx[7] = ((uint16_t) regen_bk_selection) >> 8;
-
-		CANSPI_Transmit(104, 8, vetTx);
-		CANSPI_Transmit(350, 8, vetTx);
-
-		flag_can = 5;
-	}
-
-	else if (flag_can == 5)
-	{
-		vetTx[0] = vel_roda[RODA_DIANT_ESQ];
-		vetTx[1] = vel_roda[RODA_DIANT_ESQ] >> 8;
-		vetTx[2] = vel_roda[RODA_DIANT_DIR];
-		vetTx[3] = vel_roda[RODA_DIANT_DIR] >> 8;
-		vetTx[4] = vel_roda[RODA_TRAS_DIR];
-		vetTx[5] = vel_roda[RODA_TRAS_DIR] >> 8;
-		vetTx[6] = vel_roda[RODA_TRAS_ESQ];
-		vetTx[7] = vel_roda[RODA_TRAS_ESQ] >> 8;
-	//	CANSPI_Transmit(352, 8, vetTx);
-
-		CANSPI_Transmit(105, 8, vetTx);
-		flag_can = 6;
-	}
-
-	else if (flag_can == 6)
-	{
-
-		vetTx[0] = (uint16_t) modo_selecionado.torq_gain;
-		vetTx[1] = ((uint16_t) modo_selecionado.torq_gain) >> 8;
-		vetTx[2] = 0;
-		vetTx[3] = 0;
-		vetTx[4] = corr_torque[MOTOR_DIR];
-		vetTx[5] = corr_torque[MOTOR_DIR] >> 8;
-		vetTx[6] = corr_torque[MOTOR_ESQ];
-		vetTx[7] = corr_torque[MOTOR_ESQ] >> 8;
-
-		CANSPI_Transmit(106, 8, vetTx);
-
-		flag_can = 7;
-	}
-	else if (flag_can == 7){
-
-		vetTx[0] = temp1_mosf[MOTOR_DIR];
-		vetTx[1] = temp1_mosf[MOTOR_DIR] >> 8;
-		vetTx[2] = temp2_mosf[MOTOR_DIR];
-		vetTx[3] = temp2_mosf[MOTOR_DIR] >> 8;
-		vetTx[4] = temp1_mosf[MOTOR_ESQ];
-		vetTx[5] = temp1_mosf[MOTOR_ESQ] >> 8;
-		vetTx[6] = temp2_mosf[MOTOR_ESQ];
-		vetTx[7] = temp2_mosf[MOTOR_ESQ] >> 8;
-
-		CANSPI_Transmit(107, 8, vetTx);
-
-		flag_can = 8;
-	}
-	else if (flag_can == 8){
-		uint8_t flag_corrente=0;
-		if(estado == ACELERA || estado == FREIA)
-		{
-			flag_corrente=1;
+	for(;;) {
+		//enquanto conseguir extrair item da fila de mensagens
+		while(osMessageQueueGet(q_datalog_messageHandle, &message, 0, 0) == osOK) {
+			datalog_data_holder[message.id] = message.data;
 		}
-		vetTx[0] = modo_selecionado.mode;
-		vetTx[1] = 0;
-		vetTx[2] = status_datalog;
-		vetTx[3] = 0;
-		vetTx[4] = 0;
-		vetTx[5] = 0;
-		vetTx[6] = flag_corrente;
-		vetTx[7] = 0;
-		check_error = CANSPI_Transmit(1	, 8, vetTx);
-		flag_can = 1;
+
+		const uint16_t WRITE_ITERATION_LIMIT = ECU_CAN_LAST_POPULATED_ID + ECU_CAN_LAST_DEBUG_ID-ECU_CAN_FIRST_DEBUG_ID+1;
+		for(uint16_t id = ECU_CAN_INITIAL_ID; id < WRITE_ITERATION_LIMIT; id++) {
+			for(uint16_t pos = 0; pos<4; pos++) {
+				uint16_t internal_index = get_internal_from_id_pos(id, pos);
+				//caso passe por uma combinacao de id e posicao inexistente, internal
+				//sera 0. a posicao 0 e sempre vazia para preencher lacunas
+				vet_tx[pos] = datalog_data_holder[internal_index];
+			}
+			CAN_ID_t can_id = get_CAN_ID_from_internal(get_internal_from_id_pos(id, 0));
+			//transmite a mensagem
+			general_can_transmit(can_id.id, vet_tx);
+		}
+
+		//quando extrair todos os itens enfileirados e enviar, espera uma certa
+		//quantidade de tempo para extrair novamente
+		osDelay(DATALOGGER_DELAY);
 	}
-	// IDs para debug usando painel
-	else if (flag_can == 9) {
-		vetTx[0] = acelerador;
-		vetTx[1] = acelerador >> 8;
-		vetTx[2] = erro_com;
-		vetTx[3] = 0;
-		vetTx[4] = volante_cru;
-		vetTx[5] = volante_cru >> 8;
-		vetTx[6] = 0;
-		vetTx[7] = 0;
-		check_error = CANSPI_Transmit(351, 8, vetTx);
-		flag_can = 1;
-	}*/
+
 }

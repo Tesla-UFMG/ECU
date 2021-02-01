@@ -13,6 +13,7 @@
 #include "stm32h7xx.h"
 #include "CAN/inverter_can.h"
 #include "CAN/general_can.h"
+#include "CAN/CAN_IDs.h"
 #include "constants.h"
 
 //inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs mantendo a prioridade máxima de ISRs
@@ -28,7 +29,7 @@ void init_NVIC_priorities() {
 }
 
 void init_ADC_DMA(ADC_HandleTypeDef* hadc) {
-	HAL_ADC_Start_DMA(hadc, (uint32_t *)ADC_DMA_buffer, ADC_LINES);
+	HAL_ADC_Start_DMA(hadc, (uint32_t*) ADC_DMA_buffer, ADC_LINES);
 }
 
 extern uint8_t error_count;
@@ -67,7 +68,14 @@ void inicializa_perifericos()
 */
 }
 
+extern FDCAN_HandleTypeDef hfdcan1;
+extern FDCAN_HandleTypeDef hfdcan2;
 
+void init_CAN() {
+	  initialize_inverter_CAN(&hfdcan1);
+	  initialize_general_CAN(&hfdcan2);
+	  initialize_CAN_IDs();
+}
 
 
 //funcao de debug temporizada

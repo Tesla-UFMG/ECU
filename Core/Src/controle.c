@@ -104,6 +104,9 @@ void controle(void *argument) {
 
 	for (;;) {
 
+		extern void brkpt();
+		brkpt();
+
 		switch(osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0, CONTROLE_DELAY)) {
 		case osOK:
 

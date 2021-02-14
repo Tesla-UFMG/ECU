@@ -9,6 +9,10 @@
 
 void main_task(void *argument) {
 	for(;;) {
+
+		extern void brkpt();
+		brkpt();
+
 		//espera receber flag q o botão de RTD foi pressionado
 		osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 

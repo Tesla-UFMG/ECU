@@ -12,6 +12,8 @@
 void throttle_handler(void *argument) {
 	torque_message_t message;
 	for (;;) {
+		extern void brkpt();
+		brkpt();
 		//espera indefinidamente até alguma mensagem de torque$ chegar
 		osMessageQueueGet(q_torque_messageHandle, &message, NULL, osWaitForever);
 

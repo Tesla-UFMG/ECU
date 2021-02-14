@@ -19,6 +19,9 @@ volatile uint16_t steering_wheel;
 void steering_read(void *argument) {
 	uint16_t volante_cru;
 	for(;;) {
+		extern void brkpt();
+		brkpt();
+
 		volante_cru = ADC_DMA_buffer[ADC_E2_E];
 
 		uint16_t volante_aux = volante_cru,

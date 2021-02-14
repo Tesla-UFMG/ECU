@@ -63,63 +63,63 @@ osThreadId_t t_main_taskHandle;
 const osThreadAttr_t t_main_task_attributes = {
   .name = "t_main_task",
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 512 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for t_controle */
 osThreadId_t t_controleHandle;
 const osThreadAttr_t t_controle_attributes = {
   .name = "t_controle",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 512 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for t_datalogger */
 osThreadId_t t_dataloggerHandle;
 const osThreadAttr_t t_datalogger_attributes = {
   .name = "t_datalogger",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 512 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for t_throttle_read */
 osThreadId_t t_throttle_readHandle;
 const osThreadAttr_t t_throttle_read_attributes = {
   .name = "t_throttle_read",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 512 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for t_steering_read */
 osThreadId_t t_steering_readHandle;
 const osThreadAttr_t t_steering_read_attributes = {
   .name = "t_steering_read",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 512 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for t_speed_calc */
 osThreadId_t t_speed_calcHandle;
 const osThreadAttr_t t_speed_calc_attributes = {
   .name = "t_speed_calc",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 512 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for t_odometer_calc */
 osThreadId_t t_odometer_calcHandle;
 const osThreadAttr_t t_odometer_calc_attributes = {
   .name = "t_odometer_calc",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 512 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for t_thr_handler */
 osThreadId_t t_thr_handlerHandle;
 const osThreadAttr_t t_thr_handler_attributes = {
   .name = "t_thr_handler",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 512 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for t_torque_manager */
 osThreadId_t t_torque_managerHandle;
 const osThreadAttr_t t_torque_manager_attributes = {
   .name = "t_torque_manager",
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 512 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
@@ -221,6 +221,11 @@ int main(void)
   MX_I2C3_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  /* ### - 2 - Start calibration ############################################ */
+	if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
+	{
+		;
+	}
   init_ADC_DMA(&hadc1);
   init_CAN();
   /* USER CODE END 2 */
@@ -413,9 +418,9 @@ static void MX_ADC1_Init(void)
   */
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
-  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc1.Init.Resolution = ADC_RESOLUTION_12B_OPT;
   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
-  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
   hadc1.Init.LowPowerAutoWait = DISABLE;
   hadc1.Init.ContinuousConvMode = ENABLE;
   hadc1.Init.NbrOfConversion = 6;
@@ -423,7 +428,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR;
-  hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc1.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
   hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
   hadc1.Init.OversamplingMode = DISABLE;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
@@ -441,7 +446,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_3;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_32CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_387CYCLES_5;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
@@ -453,7 +458,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_4;
   sConfig.Rank = ADC_REGULAR_RANK_2;
-  sConfig.SamplingTime = ADC_SAMPLETIME_387CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -462,6 +467,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_5;
   sConfig.Rank = ADC_REGULAR_RANK_3;
+  sConfig.SamplingTime = ADC_SAMPLETIME_8CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -470,7 +476,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_7;
   sConfig.Rank = ADC_REGULAR_RANK_4;
-  sConfig.SamplingTime = ADC_SAMPLETIME_32CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_16CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -479,7 +485,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_8;
   sConfig.Rank = ADC_REGULAR_RANK_5;
-  sConfig.SamplingTime = ADC_SAMPLETIME_387CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_32CYCLES_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();

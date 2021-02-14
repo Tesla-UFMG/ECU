@@ -22,6 +22,10 @@ void datalogger(void *argument) {
 
 
 	for(;;) {
+
+		extern void brkpt();
+		brkpt();
+
 		//enquanto conseguir extrair item da fila de mensagens
 		while(osMessageQueueGet(q_datalog_messageHandle, &message, 0, 0) == osOK) {
 			datalog_data_holder[message.id] = message.data;

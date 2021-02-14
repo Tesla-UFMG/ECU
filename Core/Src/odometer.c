@@ -4,9 +4,13 @@
  *  Created on: May 11, 2020
  *      Author: renanmoreira
  */
-
+#include "odometer.h"
+#include "cmsis_os.h"
 
 void odometer_calc(void *argument) {
+	for(;;) {
+		osDelay(100);
+	}
 	/*
 	const static uint8_t TEST_DIST = 0;
 	const static uint8_t OVERALL_DIST = 1;

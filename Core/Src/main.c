@@ -121,6 +121,13 @@ const osThreadAttr_t t_torque_manager_attributes = {
   .priority = (osPriority_t) osPriorityLow,
   .stack_size = 1024 * 4
 };
+/* Definitions for t_leds */
+osThreadId_t t_ledsHandle;
+const osThreadAttr_t t_leds_attributes = {
+  .name = "t_leds",
+  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 1024 * 4
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -140,6 +147,11 @@ const osMessageQueueAttr_t q_ref_torque_message_attributes = {
 osMessageQueueId_t q_datalog_messageHandle;
 const osMessageQueueAttr_t q_datalog_message_attributes = {
   .name = "q_datalog_message"
+};
+/* Definitions for q_leds_message */
+osMessageQueueId_t q_leds_messageHandle;
+const osMessageQueueAttr_t q_leds_message_attributes = {
+  .name = "q_leds_message"
 };
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
@@ -173,6 +185,7 @@ extern void speed_calc(void *argument);
 extern void odometer_calc(void *argument);
 extern void throttle_handler(void *argument);
 extern void torque_manager(void *argument);
+extern void leds(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -261,6 +274,9 @@ int main(void)
   /* creation of q_datalog_message */
   q_datalog_messageHandle = osMessageQueueNew (128, sizeof(datalog_message_t), &q_datalog_message_attributes);
 
+  /* creation of q_leds_message */
+  q_leds_messageHandle = osMessageQueueNew (16, sizeof(uint16_t), &q_leds_message_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -292,6 +308,9 @@ int main(void)
 
   /* creation of t_torque_manager */
   t_torque_managerHandle = osThreadNew(torque_manager, NULL, &t_torque_manager_attributes);
+
+  /* creation of t_leds */
+  t_ledsHandle = osThreadNew(leds, NULL, &t_leds_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

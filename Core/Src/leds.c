@@ -14,6 +14,7 @@
 
 
 void leds(void *argument) {
+
 	cores_t message;
 
 	for(;;) {

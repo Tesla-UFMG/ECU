@@ -8,7 +8,6 @@
 #include "throttle.h"
 #include "datalog_handler.h"
 
-cores_t leds_message;
 
 void throttle_read(void *argument) {
 	uint16_t APPS1;
@@ -24,10 +23,6 @@ void throttle_read(void *argument) {
 		APPS2 = ADC_DMA_buffer[APPS2_E];
 		BSE   = ADC_DMA_buffer[BRAKE_E];
 		apps1_calc = 0;
-		if(BSE > 260){
-			leds_message = DEBUG101;
-			osMessageQueuePut(q_leds_messageHandle, &leds_message, 0U, 0);
-		}
 
 
 

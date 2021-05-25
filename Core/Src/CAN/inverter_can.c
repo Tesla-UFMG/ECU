@@ -24,7 +24,7 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
 
 
 void inverter_can_transmit(uint32_t id, uint16_t* data) {
-	can_transmit(&hfdcan, &TxHeader, id, data);
+	can_transmit(hfdcan, &TxHeader, id, data);
 }
 
 

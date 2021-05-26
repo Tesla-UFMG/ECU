@@ -8,7 +8,6 @@
 #include "throttle.h"
 #include "datalog_handler.h"
 
-
 void throttle_read(void *argument) {
 	uint16_t APPS1;
 	uint16_t APPS2;

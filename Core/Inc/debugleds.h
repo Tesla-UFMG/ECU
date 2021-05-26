@@ -8,11 +8,13 @@
 #ifndef INC_DEBUGLEDS_H_
 #define INC_DEBUGLEDS_H_
 
-#include "global_variables.h"
-#include "global_definitions.h"
-#include "global_instances.h"
 #include "stdint.h"
+#include "cmsis_os.h"
 #include "main.h"
+
+#define DEBUGLED1 C_LED_DEBUG1_Pin
+#define DEBUGLED2 C_LED_DEBUG2_Pin
+#define DEBUGLED3 C_LED_DEBUG3_Pin
 
 typedef enum {
 	ON,
@@ -28,5 +30,6 @@ typedef struct {
 	uint8_t amount;
 } debugled_message_t;
 
+osStatus_t set_debugleds(uint16_t lednumber, ControlDebugLED_e control, uint8_t amount);
 
 #endif /* INC_DEBUGLEDS_H_ */

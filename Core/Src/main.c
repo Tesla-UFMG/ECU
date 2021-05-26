@@ -26,6 +26,11 @@
 #include "CAN/inverter_can.h"
 #include "CAN/general_can.h"
 #include "initializers.h"
+#include "throttle.h"
+#include "speed_calc.h"
+#include "global_instances.h"
+#include "main_task.h"
+#include "debugleds.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

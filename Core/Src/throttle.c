@@ -16,15 +16,12 @@ void throttle_read(void *argument) {
 	uint16_t apps1_calc;
 	uint16_t aux_throttle_percent;
 	for (;;) {
-
 		extern void brkpt();
 		brkpt();
 		APPS1 = ADC_DMA_buffer[APPS1_E];
 		APPS2 = ADC_DMA_buffer[APPS2_E];
 		BSE   = ADC_DMA_buffer[BRAKE_E];
 		apps1_calc = 0;
-
-
 
 		if (APPS2 < 260) {
 			aux_throttle_percent = 0;

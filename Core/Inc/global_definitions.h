@@ -12,10 +12,9 @@
 #include "stdint.h"
 
 // cores do LED da ECU
-//LEDS
-
 typedef enum cores { PRETO = 0,VERDE, AZUL, CIANO, VERMELHO, AMARELO, ROXO, BRANCO} cores_t;
 
+// DebugLEDS
 #define DEBUGLED1 C_LED_DEBUG1_Pin
 #define DEBUGLED2 C_LED_DEBUG2_Pin
 #define DEBUGLED3 C_LED_DEBUG3_Pin
@@ -122,8 +121,6 @@ __attribute__((always_inline)) static inline
 void set_bit8(uint8_t* byte, uint8_t pos, uint8_t state) {
 	*byte ^= (-(!!((unsigned long)state)) ^ *byte) & (1UL << pos);
 }
-
-
 
 
 #endif /* INC_GLOBAL_DEFINITIONS_H_ */

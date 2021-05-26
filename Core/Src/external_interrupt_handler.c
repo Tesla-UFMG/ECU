@@ -8,6 +8,7 @@
 #include "external_interrupt_handler.h"
 
 speed_message_t aux_message;
+
 //implementa a funcao homonima da HAL, que trata interrupcao por pino
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 //	__disable_irq(); //desabilita interrupcoes momentaneamente para nao haver nenhuma outra interrupcao antes do calculo da velocidade

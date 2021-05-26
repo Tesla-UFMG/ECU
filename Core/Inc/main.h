@@ -37,6 +37,7 @@ extern "C" {
 #include "speed_calc.h"
 #include "global_instances.h"
 #include "main_task.h"
+#include "debugleds.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

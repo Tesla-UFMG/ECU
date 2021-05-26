@@ -14,7 +14,11 @@
 // cores do LED da ECU
 //LEDS
 
-typedef enum cores { PRETO = 0,VERDE, AZUL, CIANO, VERMELHO, AMARELO,ROXO, BRANCO, DEBUG000, DEBUG001, DEBUG010, DEBUG011, DEBUG100, DEBUG101, DEBUG110, DEBUG111 } cores_t;
+typedef enum cores { PRETO = 0,VERDE, AZUL, CIANO, VERMELHO, AMARELO, ROXO, BRANCO} cores_t;
+
+#define DEBUGLED1 C_LED_DEBUG1_Pin
+#define DEBUGLED2 C_LED_DEBUG2_Pin
+#define DEBUGLED3 C_LED_DEBUG3_Pin
 
 typedef enum modos_desempenho { ERRO = 0, ACELERACAO, SKIDPAD, AUTOX, ENDURO } race_mode_t;
 

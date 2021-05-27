@@ -12,7 +12,7 @@
 #include "global_definitions.h"
 
 
-osMessageQueueId_t q_debugleds_messageHandle;
+extern osMessageQueueId_t q_debugleds_messageHandle;
 
 osStatus_t set_debugleds(uint16_t lednumber, ControlDebugLED_e control, uint8_t amount) {
 	debugled_message_t message = {lednumber, control, amount};

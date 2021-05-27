@@ -22,7 +22,9 @@ void torque_manager(void *argument) {
 	ref_torque_t ref_torque_message;
 
 	for (;;) {
+		#ifdef DEBUG_ECU
 		extern void brkpt();
+		#endif
 		brkpt();
 		switch (g_control_type) {
 		case LONGITUDINAL:

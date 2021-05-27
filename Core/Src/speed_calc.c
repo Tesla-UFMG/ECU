@@ -37,7 +37,9 @@ void speed_calc(void *argument) {
 	uint32_t d_tim_count, speed;
 
 	for(;;) {
+		#ifdef DEBUG_ECU
 		extern void brkpt();
+		#endif
 		brkpt();
 		osMessageQueueGet(q_speed_messageHandle, &message, NULL, osWaitForever); //espera até alguma mensagem chegar
 

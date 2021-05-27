@@ -23,7 +23,9 @@ void datalogger(void *argument) {
 
 	for(;;) {
 
+		#ifdef DEBUG_ECU
 		extern void brkpt();
+		#endif
 		brkpt();
 
 		//enquanto conseguir extrair item da fila de mensagens

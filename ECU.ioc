@@ -458,4 +458,3 @@ ProjectManager.LibraryCopy=1
 PB1.GPIOParameters=GPIO_Label
 PA7.Signal=ADCx_INP7
 PB4\ (NJTRST).Signal=SPI1_MISO
-isbadioc=false

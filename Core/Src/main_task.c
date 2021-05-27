@@ -10,7 +10,9 @@
 void main_task(void *argument) {
 	for(;;) {
 
+		#ifdef DEBUG_ECU
 		extern void brkpt();
+		#endif
 		brkpt();
 
 		//espera receber flag q o botão de RTD foi pressionado

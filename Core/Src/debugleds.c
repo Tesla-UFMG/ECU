@@ -25,7 +25,7 @@ void debugleds(void *argument) {
 
 	for(;;) {
 	#ifdef DEBUG_ECU
-		extern void brkpt();
+	extern void brkpt();
 	#endif
 		osMessageQueueGet(q_debugleds_messageHandle, &message, NULL, osWaitForever); 	//espera até alguma mensagem chegar
 		switch (message.control){

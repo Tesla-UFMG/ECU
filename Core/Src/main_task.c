@@ -12,8 +12,8 @@ void main_task(void *argument) {
 
 		#ifdef DEBUG_ECU
 		extern void brkpt();
-		#endif
 		brkpt();
+		#endif
 
 		//espera receber flag q o botão de RTD foi pressionado
 		osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);

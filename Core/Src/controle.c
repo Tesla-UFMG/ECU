@@ -106,8 +106,8 @@ void controle(void *argument) {
 
 		#ifdef DEBUG_ECU
 		extern void brkpt();
-		#endif
 		brkpt();
+		#endif
 
 		switch(osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0, CONTROLE_DELAY)) {
 		case osOK:

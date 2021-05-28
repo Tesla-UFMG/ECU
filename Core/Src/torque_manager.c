@@ -24,8 +24,9 @@ void torque_manager(void *argument) {
 	for (;;) {
 		#ifdef DEBUG_ECU
 		extern void brkpt();
-		#endif
 		brkpt();
+		#endif
+
 		switch (g_control_type) {
 		case LONGITUDINAL:
 			//TODO: implementar controle longitudinal

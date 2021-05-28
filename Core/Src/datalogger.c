@@ -25,8 +25,8 @@ void datalogger(void *argument) {
 
 		#ifdef DEBUG_ECU
 		extern void brkpt();
-		#endif
 		brkpt();
+		#endif
 
 		//enquanto conseguir extrair item da fila de mensagens
 		while(osMessageQueueGet(q_datalog_messageHandle, &message, 0, 0) == osOK) {

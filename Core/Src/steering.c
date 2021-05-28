@@ -21,8 +21,8 @@ void steering_read(void *argument) {
 	for(;;) {
 		#ifdef DEBUG_ECU
 		extern void brkpt();
-		#endif
 		brkpt();
+		#endif
 
 		volante_cru = ADC_DMA_buffer[ADC_E2_E];
 

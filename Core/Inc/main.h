@@ -32,11 +32,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "initializers.h"
-#include "throttle.h"
-#include "speed_calc.h"
-#include "global_instances.h"
-#include "main_task.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

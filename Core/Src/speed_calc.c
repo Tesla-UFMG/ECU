@@ -37,8 +37,11 @@ void speed_calc(void *argument) {
 	uint32_t d_tim_count, speed;
 
 	for(;;) {
+		#ifdef DEBUG_ECU
 		extern void brkpt();
 		brkpt();
+		#endif
+
 		osMessageQueueGet(q_speed_messageHandle, &message, NULL, osWaitForever); //espera até alguma mensagem chegar
 
 		d_tim_count = message.tim_count - last_messages[message.pin].tim_count; //diferenca entre timestamp da mensagem atual e da anterior

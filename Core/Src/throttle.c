@@ -15,8 +15,11 @@ void throttle_read(void *argument) {
 	uint16_t apps1_calc;
 	uint16_t aux_throttle_percent;
 	for (;;) {
+		#ifdef DEBUG_ECU
 		extern void brkpt();
 		brkpt();
+		#endif
+
 		APPS1 = ADC_DMA_buffer[APPS1_E];
 		APPS2 = ADC_DMA_buffer[APPS2_E];
 		BSE   = ADC_DMA_buffer[BRAKE_E];

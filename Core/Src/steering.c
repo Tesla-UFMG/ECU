@@ -47,7 +47,7 @@ void steering_read(void *argument) {
 			steering_wheel = volante_cru * GANHO_VOLANTE - ZERO_VOLANTE;
 		}
 
-		log_data(ID_STEERING_WHEEL, steering_wheel);
+		//log_data(ID_STEERING_WHEEL, steering_wheel);
 
 		//SPAN_ALINHAMENTO é apenas um span pra ainda considerar o volante no centro
 		//até uma certa quantidade

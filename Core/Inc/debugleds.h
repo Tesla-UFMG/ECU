@@ -21,6 +21,7 @@ typedef enum {
 	OFF,
 	TOGGLE,
 	BLINK,
+	FASTBLINK
 } ControlDebugLED_e;
 
 

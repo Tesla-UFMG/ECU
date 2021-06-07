@@ -6,6 +6,7 @@
  */
 
 #include "CAN/CAN_handler.h"
+#include "debugleds.h"
 
 void initialize_CAN(FDCAN_HandleTypeDef* hfdcan, void (* CAN_receive_callback)(FDCAN_HandleTypeDef* hfdcan), FDCAN_TxHeaderTypeDef* TxHeader) {
 
@@ -35,9 +36,11 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan, void (* CAN_receive_callback)(F
 }
 
 
-
 void can_transmit(FDCAN_HandleTypeDef* hfdcan, FDCAN_TxHeaderTypeDef* TxHeader, uint32_t id, uint16_t* data) {
+
+	TxHeader->Identifier = id;
 	if (HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, TxHeader, (uint8_t*)data) != HAL_OK) {
+		set_debugleds(DEBUGLED1, ON,1);
 		//deu ruim
 		//TODO: tratar quando falhar envio de mensagem de can ao inversor
 	}

@@ -71,7 +71,7 @@ void throttle_read(void *argument) {
 
 		brake_status = BSE > 2200;
 
-		log_data(ID_BRAKE, brake_status);
+		//log_data(ID_BRAKE, brake_status);
 
 		if (((aux_throttle_percent > 300 && BSE > 2200) )) {
 			//TODO: sinalizar evento de erro de APPS
@@ -81,7 +81,7 @@ void throttle_read(void *argument) {
 		}
 		throttle_percent = aux_throttle_percent;
 
-		log_data(ID_THROTTLE, throttle_percent);
+		//log_data(ID_THROTTLE, throttle_percent);
 
 		//TODO: Averiguar duracao do delay
 		osDelay(100);

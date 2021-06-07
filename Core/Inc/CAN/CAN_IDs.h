@@ -12,9 +12,9 @@
 
 //INVERTER
 
-#define	ID_RIGHT_INVERTER 	0x301
-#define	ID_LEFT_INVERTER 	0x300
-#define	ID_COMM_FLAG		0x302		// flag de comunicacao ecu-inv ok
+#define	ID_RIGHT_INVERTER 	0x31
+#define	ID_LEFT_INVERTER 	0x30
+#define	ID_COMM_FLAG		0x32		// flag de comunicacao ecu-inv ok
 
 //----------
 //DATALOGGER

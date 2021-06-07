@@ -9,7 +9,7 @@
 #define INC_DATALOGGER_H_
 
 
-#define DATALOGGER_DELAY 50
+#define DATALOGGER_DELAY 30
 
 
 #endif /* INC_DATALOGGER_H_ */

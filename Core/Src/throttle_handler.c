@@ -32,25 +32,40 @@ void throttle_handler(void *argument) {
 	}
 }
 
+
+
+
+uint32_t id = 0;
+uint16_t vet_tx[4]={1000,0,0,0};
+
+
 void inverter_transmit(torque_message_t* message) {
-	uint16_t vet_tx[4];
+	//uint16_t vet_tx[4];
 
-	vet_tx[0] = message->parameters;
-	vet_tx[1] = message->torque_ref[R_MOTOR];
-	vet_tx[2] = message->neg_torque_ref[R_MOTOR];
-	vet_tx[3] = message->speed_ref[R_MOTOR];
-	inverter_can_transmit(ID_RIGHT_INVERTER, vet_tx);
+//	vet_tx[0] = message->parameters;
+//	vet_tx[1] = message->torque_ref[R_MOTOR];
+//	vet_tx[2] = message->neg_torque_ref[R_MOTOR];
+//	vet_tx[3] = message->speed_ref[R_MOTOR];
+//	inverter_can_transmit(ID_RIGHT_INVERTER, vet_tx);
+//
+//	vet_tx[1] = message->torque_ref[L_MOTOR];
+//	vet_tx[2] = message->neg_torque_ref[L_MOTOR];
+//	vet_tx[3] = message->speed_ref[L_MOTOR];
+//	inverter_can_transmit(ID_LEFT_INVERTER, vet_tx);
+//
+//	vet_tx[0] = 1<<8;
+//	vet_tx[1] = 0;
+//	vet_tx[2] = message->torque_ref[L_MOTOR];
+//	vet_tx[3] = message->torque_ref[R_MOTOR];
+//	inverter_can_transmit(ID_COMM_FLAG, vet_tx);
 
-	vet_tx[1] = message->torque_ref[L_MOTOR];
-	vet_tx[2] = message->neg_torque_ref[L_MOTOR];
-	vet_tx[3] = message->speed_ref[L_MOTOR];
-	inverter_can_transmit(ID_LEFT_INVERTER, vet_tx);
-
-	vet_tx[0] = 1<<8;
-	vet_tx[1] = 0;
-	vet_tx[2] = message->torque_ref[L_MOTOR];
-	vet_tx[3] = message->torque_ref[R_MOTOR];
-	inverter_can_transmit(ID_COMM_FLAG, vet_tx);
+	inverter_can_transmit(id, vet_tx);
+	id++;
+	if(id==100)
+		id=0;
+	vet_tx[0]++;
+	if (vet_tx[0] == 2000)
+		vet_tx[0] = 1000;
 
 }
 

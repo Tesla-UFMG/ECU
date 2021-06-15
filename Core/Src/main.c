@@ -524,26 +524,26 @@ static void MX_FDCAN1_Init(void)
   hfdcan1.Init.AutoRetransmission = DISABLE;
   hfdcan1.Init.TransmitPause = DISABLE;
   hfdcan1.Init.ProtocolException = DISABLE;
-  hfdcan1.Init.NominalPrescaler = 5;
-  hfdcan1.Init.NominalSyncJumpWidth = 4;
-  hfdcan1.Init.NominalTimeSeg1 = 27;
-  hfdcan1.Init.NominalTimeSeg2 = 4;
-  hfdcan1.Init.DataPrescaler = 5;
-  hfdcan1.Init.DataSyncJumpWidth = 4;
-  hfdcan1.Init.DataTimeSeg1 = 27;
-  hfdcan1.Init.DataTimeSeg2 = 4;
-  hfdcan1.Init.MessageRAMOffset = 1280;
+  hfdcan1.Init.NominalPrescaler = 1;
+  hfdcan1.Init.NominalSyncJumpWidth = 2;
+  hfdcan1.Init.NominalTimeSeg1 = 13;
+  hfdcan1.Init.NominalTimeSeg2 = 2;
+  hfdcan1.Init.DataPrescaler = 1;
+  hfdcan1.Init.DataSyncJumpWidth = 2;
+  hfdcan1.Init.DataTimeSeg1 = 13;
+  hfdcan1.Init.DataTimeSeg2 = 2;
+  hfdcan1.Init.MessageRAMOffset = 0;
   hfdcan1.Init.StdFiltersNbr = 0;
   hfdcan1.Init.ExtFiltersNbr = 0;
-  hfdcan1.Init.RxFifo0ElmtsNbr = 0;
+  hfdcan1.Init.RxFifo0ElmtsNbr = 32;
   hfdcan1.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
-  hfdcan1.Init.RxFifo1ElmtsNbr = 0;
+  hfdcan1.Init.RxFifo1ElmtsNbr = 32;
   hfdcan1.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
-  hfdcan1.Init.RxBuffersNbr = 0;
+  hfdcan1.Init.RxBuffersNbr = 32;
   hfdcan1.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
-  hfdcan1.Init.TxEventsNbr = 0;
-  hfdcan1.Init.TxBuffersNbr = 0;
-  hfdcan1.Init.TxFifoQueueElmtsNbr = 4;
+  hfdcan1.Init.TxEventsNbr = 32;
+  hfdcan1.Init.TxBuffersNbr = 32;
+  hfdcan1.Init.TxFifoQueueElmtsNbr = 32;
   hfdcan1.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
   hfdcan1.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
   if (HAL_FDCAN_Init(&hfdcan1) != HAL_OK)
@@ -579,24 +579,24 @@ static void MX_FDCAN2_Init(void)
   hfdcan2.Init.ProtocolException = DISABLE;
   hfdcan2.Init.NominalPrescaler = 1;
   hfdcan2.Init.NominalSyncJumpWidth = 2;
-  hfdcan2.Init.NominalTimeSeg1 = 5;
+  hfdcan2.Init.NominalTimeSeg1 = 13;
   hfdcan2.Init.NominalTimeSeg2 = 2;
   hfdcan2.Init.DataPrescaler = 1;
   hfdcan2.Init.DataSyncJumpWidth = 2;
-  hfdcan2.Init.DataTimeSeg1 = 5;
+  hfdcan2.Init.DataTimeSeg1 = 13;
   hfdcan2.Init.DataTimeSeg2 = 2;
-  hfdcan2.Init.MessageRAMOffset = 0;
+  hfdcan2.Init.MessageRAMOffset = 1280;
   hfdcan2.Init.StdFiltersNbr = 0;
   hfdcan2.Init.ExtFiltersNbr = 0;
-  hfdcan2.Init.RxFifo0ElmtsNbr = 0;
+  hfdcan2.Init.RxFifo0ElmtsNbr = 32;
   hfdcan2.Init.RxFifo0ElmtSize = FDCAN_DATA_BYTES_8;
-  hfdcan2.Init.RxFifo1ElmtsNbr = 0;
+  hfdcan2.Init.RxFifo1ElmtsNbr = 32;
   hfdcan2.Init.RxFifo1ElmtSize = FDCAN_DATA_BYTES_8;
-  hfdcan2.Init.RxBuffersNbr = 0;
+  hfdcan2.Init.RxBuffersNbr = 32;
   hfdcan2.Init.RxBufferSize = FDCAN_DATA_BYTES_8;
-  hfdcan2.Init.TxEventsNbr = 0;
-  hfdcan2.Init.TxBuffersNbr = 0;
-  hfdcan2.Init.TxFifoQueueElmtsNbr = 4;
+  hfdcan2.Init.TxEventsNbr = 32;
+  hfdcan2.Init.TxBuffersNbr = 32;
+  hfdcan2.Init.TxFifoQueueElmtsNbr = 32;
   hfdcan2.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
   hfdcan2.Init.TxElmtSize = FDCAN_DATA_BYTES_8;
   if (HAL_FDCAN_Init(&hfdcan2) != HAL_OK)
@@ -984,7 +984,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-
+	set_debugleds(DEBUGLED1, ON,1);
   /* USER CODE END Error_Handler_Debug */
 }
 

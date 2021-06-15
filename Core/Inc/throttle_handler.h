@@ -14,6 +14,6 @@
 #include "cmsis_os.h"
 
 #define TORQUE_MESSAGE_RESEND_TIMES 1
-#define TORQUE_MESSAGE_DELAY 5
+#define TORQUE_MESSAGE_DELAY 50
 
 #endif /* INC_THROTTLE_HANDLER_H_ */

@@ -12,5 +12,6 @@
 
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref);
 void inverter_can_transmit(uint32_t id, uint16_t* data);
+void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan);
 
 #endif /* INC_INVERTER_CAN_H_ */

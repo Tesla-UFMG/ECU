@@ -50,10 +50,10 @@ void debugleds(void *argument) {
 				osDelay(500);
 				break;
 			case FASTBLINK:
-					HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);		//delays garante que é possível contar quantas vezes piscou
-					osDelay(10);
+					HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);
+					osDelay(message.amount);
 					HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_SET);
-					osDelay(10);
+					osDelay(message.amount/2);
 				break;
 		}
 	}

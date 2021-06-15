@@ -19,7 +19,7 @@ void datalogger(void *argument) {
 	datalog_message_t message;
 
 	uint32_t id = 0;
-	uint16_t vet_tx[4]={0,0,0,0};
+	uint16_t vet_tx[4]={1,0,0,0};
 
 
 	for(;;) {
@@ -53,7 +53,7 @@ void datalogger(void *argument) {
 			id=0;
 		vet_tx[0]++;
 		if (vet_tx[0] == 1000)
-			vet_tx[0] = 0;
+			vet_tx[0] = 1;
 		//quando extrair todos os itens enfileirados e enviar, espera uma certa
 		//quantidade de tempo para extrair novamente
 		osDelay(DATALOGGER_DELAY);

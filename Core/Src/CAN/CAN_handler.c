@@ -47,3 +47,35 @@ void can_transmit(FDCAN_HandleTypeDef* hfdcan, FDCAN_TxHeaderTypeDef* TxHeader, 
 }
 
 
+extern FDCAN_HandleTypeDef* hfdcan1;
+extern FDCAN_HandleTypeDef* hfdcan2;
+
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
+	if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
+    /* Retreive Rx messages from RX FIFO0 */
+//    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
+//    /* Reception Error */
+//    Error_Handler();
+//    }
+		if (hfdcan->Instance == hfdcan1) {
+			CAN_inverter_receive_callback(hfdcan);
+		}
+		if (hfdcan->Instance == hfdcan2) {
+			CAN_general_receive_callback(hfdcan);
+		}
+
+
+    /* Display LEDx */
+//    if ((RxHeader.Identifier == 10) && (RxHeader.IdType == FDCAN_STANDARD_ID) && (RxHeader.DataLength == FDCAN_DLC_BYTES_8))
+//    {
+//
+//       // HAL_Delay(50);
+//    }
+//    if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
+//      /* Notification Error */
+//      Error_Handler();
+//    }
+  }
+}
+
+

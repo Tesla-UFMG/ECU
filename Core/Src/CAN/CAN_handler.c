@@ -6,6 +6,8 @@
  */
 
 #include "CAN/CAN_handler.h"
+#include "CAN/inverter_can.h"
+#include "CAN/general_can.h"
 
 extern FDCAN_HandleTypeDef* hfdcan1;
 extern FDCAN_HandleTypeDef* hfdcan2;

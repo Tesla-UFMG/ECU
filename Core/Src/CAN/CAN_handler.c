@@ -19,6 +19,10 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan, void (* CAN_receive_callback)(F
 		Error_Handler();
 	}
 
+	if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_BUFFER_NEW_MESSAGE, 0) != HAL_OK) {
+		/* Notification Error */
+		Error_Handler();
+	}
 	if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 		/* Notification Error */
 		Error_Handler();

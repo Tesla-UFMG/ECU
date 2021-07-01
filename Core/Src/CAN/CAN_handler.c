@@ -12,24 +12,19 @@
 extern FDCAN_HandleTypeDef* hfdcan1;
 extern FDCAN_HandleTypeDef* hfdcan2;
 
-void initialize_CAN(FDCAN_HandleTypeDef* hfdcan, void (* CAN_receive_callback)(FDCAN_HandleTypeDef* hfdcan), FDCAN_TxHeaderTypeDef* TxHeader) {
+void initialize_CAN(FDCAN_HandleTypeDef* hfdcan, void (* CAN_receive_callback)(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs), FDCAN_TxHeaderTypeDef* TxHeader) {
+
+	HAL_FDCAN_RegisterRxFifo0Callback(hfdcan, CAN_receive_callback);
 
 	if (HAL_FDCAN_Start(hfdcan) != HAL_OK) {
 		/* Start Error */
 		Error_Handler();
 	}
 
-	if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_BUFFER_NEW_MESSAGE, 0) != HAL_OK) {
-		/* Notification Error */
-		Error_Handler();
-	}
 	if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 		/* Notification Error */
 		Error_Handler();
 	}
-
-	hfdcan->RxFifo0Callback = CAN_receive_callback;
-
 
 //	TxHeader.Identifier = 0x321;
 	TxHeader->IdType = FDCAN_STANDARD_ID;
@@ -40,7 +35,6 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan, void (* CAN_receive_callback)(F
 	TxHeader->FDFormat = FDCAN_CLASSIC_CAN;
 	TxHeader->TxEventFifoControl = FDCAN_NO_TX_EVENTS;
 	TxHeader->MessageMarker = 0;
-
 }
 
 

@@ -67,71 +67,71 @@ TIM_HandleTypeDef htim2;
 osThreadId_t t_main_taskHandle;
 const osThreadAttr_t t_main_task_attributes = {
   .name = "t_main_task",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 1024 * 4
 };
 /* Definitions for t_controle */
 osThreadId_t t_controleHandle;
 const osThreadAttr_t t_controle_attributes = {
   .name = "t_controle",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 1024 * 4
 };
 /* Definitions for t_datalogger */
 osThreadId_t t_dataloggerHandle;
 const osThreadAttr_t t_datalogger_attributes = {
   .name = "t_datalogger",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 1024 * 4
 };
 /* Definitions for t_throttle_read */
 osThreadId_t t_throttle_readHandle;
 const osThreadAttr_t t_throttle_read_attributes = {
   .name = "t_throttle_read",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 1024 * 4
 };
 /* Definitions for t_steering_read */
 osThreadId_t t_steering_readHandle;
 const osThreadAttr_t t_steering_read_attributes = {
   .name = "t_steering_read",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 1024 * 4
 };
 /* Definitions for t_speed_calc */
 osThreadId_t t_speed_calcHandle;
 const osThreadAttr_t t_speed_calc_attributes = {
   .name = "t_speed_calc",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 1024 * 4
 };
 /* Definitions for t_odometer_calc */
 osThreadId_t t_odometer_calcHandle;
 const osThreadAttr_t t_odometer_calc_attributes = {
   .name = "t_odometer_calc",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 1024 * 4
 };
 /* Definitions for t_thr_handler */
 osThreadId_t t_thr_handlerHandle;
 const osThreadAttr_t t_thr_handler_attributes = {
   .name = "t_thr_handler",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 1024 * 4
 };
 /* Definitions for t_torque_manager */
 osThreadId_t t_torque_managerHandle;
 const osThreadAttr_t t_torque_manager_attributes = {
   .name = "t_torque_manager",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 1024 * 4
 };
 /* Definitions for t_debugleds */
 osThreadId_t t_debugledsHandle;
 const osThreadAttr_t t_debugleds_attributes = {
   .name = "t_debugleds",
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
-  .stack_size = 1024 * 4
 };
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
@@ -349,7 +349,6 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
   /** Supply configuration update enable
   */
@@ -370,13 +369,13 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 36;
+  RCC_OscInitStruct.PLL.PLLN = 18;
   RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 4;
+  RCC_OscInitStruct.PLL.PLLQ = 3;
   RCC_OscInitStruct.PLL.PLLR = 2;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_3;
-  RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
-  RCC_OscInitStruct.PLL.PLLFRACN = 0;
+  RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOMEDIUM;
+  RCC_OscInitStruct.PLL.PLLFRACN = 6144;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -388,33 +387,13 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV1;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV1;
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LPUART1|RCC_PERIPHCLK_FDCAN
-                              |RCC_PERIPHCLK_SPI1|RCC_PERIPHCLK_I2C3
-                              |RCC_PERIPHCLK_ADC;
-  PeriphClkInitStruct.PLL2.PLL2M = 1;
-  PeriphClkInitStruct.PLL2.PLL2N = 18;
-  PeriphClkInitStruct.PLL2.PLL2P = 1;
-  PeriphClkInitStruct.PLL2.PLL2Q = 2;
-  PeriphClkInitStruct.PLL2.PLL2R = 2;
-  PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
-  PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOMEDIUM;
-  PeriphClkInitStruct.PLL2.PLL2FRACN = 6144;
-  PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
-  PeriphClkInitStruct.FdcanClockSelection = RCC_FDCANCLKSOURCE_PLL;
-  PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1;
-  PeriphClkInitStruct.Lpuart1ClockSelection = RCC_LPUART1CLKSOURCE_D3PCLK1;
-  PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_PLL2;
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();
   }
@@ -646,7 +625,7 @@ static void MX_I2C3_Init(void)
 
   /* USER CODE END I2C3_Init 1 */
   hi2c3.Instance = I2C3;
-  hi2c3.Init.Timing = 0x10808DD3;
+  hi2c3.Init.Timing = 0x00909FCE;
   hi2c3.Init.OwnAddress1 = 0;
   hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c3.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;

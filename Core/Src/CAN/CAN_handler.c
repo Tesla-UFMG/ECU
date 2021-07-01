@@ -28,7 +28,7 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan, void (* CAN_receive_callback)(F
 		Error_Handler();
 	}
 
-	hfdcan->RxBufferNewMessageCallback = CAN_receive_callback;
+	hfdcan->RxFifo0Callback = CAN_receive_callback;
 
 
 //	TxHeader.Identifier = 0x321;
@@ -54,16 +54,5 @@ void can_transmit(FDCAN_HandleTypeDef* hfdcan, FDCAN_TxHeaderTypeDef* TxHeader, 
 }
 
 
-
-void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
-	if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
-		if (hfdcan->Instance == hfdcan1) {
-			CAN_inverter_receive_callback(hfdcan);
-		}
-		if (hfdcan->Instance == hfdcan2) {
-			CAN_general_receive_callback(hfdcan);
-		}
-	}
-}
 
 

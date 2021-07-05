@@ -41,7 +41,7 @@ uint16_t debug_milis =0, debug_milis_ant = 0;
 extern modos modo_selecionado;
 modos aceleracao, skidpad, autox, enduro, reverse, erro;
 
-
+//defasada
 void inicializa_perifericos()
 {
   SystemClock_Config();
@@ -71,6 +71,7 @@ void inicializa_perifericos()
 extern FDCAN_HandleTypeDef hfdcan1;
 extern FDCAN_HandleTypeDef hfdcan2;
 
+//inicializar a CAN, chamada na main.c. Existe outra função que inicializa o periférico da CAN na main.c
 void init_CAN() {
 	  initialize_inverter_CAN(&hfdcan1);
 	  initialize_general_CAN(&hfdcan2);

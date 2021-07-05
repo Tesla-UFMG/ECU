@@ -6,7 +6,9 @@ PD12.GPIO_Label=C_LED_BLUE
 SPI1.VirtualType=VM_MASTER
 TIM1.IPParameters=Prescaler,Period
 SH.GPXTI14.0=GPIO_EXTI14
+
 FDCAN2.RxFifo0ElmtsNbr=32
+
 RCC.PLLFRACN=6144
 PD3.GPIOParameters=GPIO_Label
 FDCAN1.RxBuffersNbr=32
@@ -134,10 +136,12 @@ PD13.GPIOParameters=GPIO_Label
 PD7.Signal=SPI1_MOSI
 RCC.DIVP2=4
 PCC.Line=STM32H743/753
+
 FDCAN2.TxBuffersNbr=32
 RCC.QSPIFreq_Value=75000000
 NVIC.FDCAN2_IT0_IRQn=true\:5\:0\:false\:false\:true\:true\:true\:true
 FDCAN2.NominalTimeSeg1=13
+
 RCC.D1CPREFreq_Value=75000000
 SH.GPXTI6.ConfNb=1
 PB8.GPIO_Label=BOOT1
@@ -396,6 +400,7 @@ FDCAN2.MessageRAMOffset=1280
 PCC.Seq0.Step0.TaMax=120.69
 Dma.ADC1.0.PeriphDataAlignment=DMA_PDATAALIGN_HALFWORD
 PA9.Mode=Asynchronous
+RCC.SPI45Freq_Value=75000000
 VP_SYS_VS_tim3.Mode=TIM3
 RCC.SPI45Freq_Value=75000000
 PE15.GPIO_Label=S_VEL4

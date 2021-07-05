@@ -9,9 +9,9 @@
 #include "CAN/CAN_handler.h"
 
 //defined in main.c
-FDCAN_HandleTypeDef* can1;
+static FDCAN_HandleTypeDef* can_ptr;
 
-FDCAN_TxHeaderTypeDef TxHeader;
+static FDCAN_TxHeaderTypeDef TxHeader;
 
 uint8_t RxData[8];
 FDCAN_RxHeaderTypeDef RxHeader;
@@ -22,16 +22,16 @@ uint32_t idinverter;
 
 //função que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
-	can1 = can_ref;
-	void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs);
-	initialize_CAN(can1, CAN_inverter_receive_callback, &TxHeader);
+	can_ptr = can_ref;
+	void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
+	initialize_CAN(can_ptr, CAN_inverter_receive_callback, &TxHeader);
 }
 
 
 
 //função usada para transmitir alguma mensagem
 void inverter_can_transmit(uint32_t id, uint16_t* data) {
-	can_transmit(can1, &TxHeader, id, data);
+	can_transmit(can_ptr, &TxHeader, id, data);
 }
 
 

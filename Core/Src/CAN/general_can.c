@@ -8,7 +8,6 @@
 #include "CAN/general_can.h"
 #include "CAN/CAN_handler.h"
 
-//defined in main.c
 static FDCAN_HandleTypeDef* can_ptr;;
 
 static FDCAN_TxHeaderTypeDef TxHeader;

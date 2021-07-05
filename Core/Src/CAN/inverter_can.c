@@ -20,6 +20,7 @@ uint32_t idinverter;
 
 
 
+//função que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
 	can1 = can_ref;
 	void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs);
@@ -28,12 +29,14 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
 
 
 
+//função usada para transmitir alguma mensagem
 void inverter_can_transmit(uint32_t id, uint16_t* data) {
 	can_transmit(can1, &TxHeader, id, data);
 }
 
 
 
+//função de callback, chamada quando chega qualquer mensagem, de qualquer ID
 void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)  {
 	if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
 		if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
@@ -53,5 +56,3 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 		}
 	}
 }
-
-

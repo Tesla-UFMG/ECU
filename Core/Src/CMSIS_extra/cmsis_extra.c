@@ -43,3 +43,37 @@ osStatus_t osMessageQueuePutOverwrite(osMessageQueueId_t mq_id,
 
     return (stat);
 }
+
+osStatus_t osMessageQueuePeek(osMessageQueueId_t mq_id, void *msg_ptr,
+                              uint8_t *msg_prio, uint32_t timeout) {
+    QueueHandle_t hQueue = (QueueHandle_t)mq_id;
+    osStatus_t stat;
+
+    (void)msg_prio; /* Message priority is ignored */
+
+    stat = osOK;
+
+    if (IS_IRQ()) {
+        if ((hQueue == NULL) || (msg_ptr == NULL) || (timeout != 0U)) {
+            stat = osErrorParameter;
+        } else {
+            if (xQueuePeekFromISR(hQueue, msg_ptr) != pdPASS) {
+                stat = osErrorResource;
+            }
+        }
+    } else {
+        if ((hQueue == NULL) || (msg_ptr == NULL)) {
+            stat = osErrorParameter;
+        } else {
+            if (xQueuePeek(hQueue, msg_ptr, (TickType_t)timeout) != pdPASS) {
+                if (timeout != 0U) {
+                    stat = osErrorTimeout;
+                } else {
+                    stat = osErrorResource;
+                }
+            }
+        }
+    }
+
+    return (stat);
+}

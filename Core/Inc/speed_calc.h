@@ -10,18 +10,21 @@
 
 #include "stdint.h"
 
-#define SPEED_SENSOR_TEETH_QUAN 16
+#define SPEED_SENSOR_TEETH_QUAN 16	// quantidade de dentes da roda fônica
+#define WHEEL_RADIUS 0.26 			// em m
+#define MAX_SPEED 2000 				// em km/h*10
+#define MIN_SPEED 5					// em km/h*10
 
 typedef enum {
 	FRONT_RIGHT,
 	FRONT_LEFT,
-	BACK_RIGHT,
-	BACK_LEFT
+	REAR_RIGHT,
+	REAR_LEFT
 } speed_pin_e;
 
 typedef struct {
 	uint32_t tim_count;
-	speed_pin_e pin;
+	uint16_t pin;
 } speed_message_t;
 
 

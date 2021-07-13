@@ -37,9 +37,12 @@ void speed_calc(void *argument) {
 
 
 	const uint32_t	tim_freq  = HAL_RCC_GetPCLK1Freq(), 	//pega frequência do APB1, q está conectado ao tim2
-			tim_presc = htim2.Init.Prescaler+1,   	//prescaler do tim2
+			tim_presc = htim2.Init.Prescaler+1,   			//prescaler do tim2
+			//valor em tempo do timer2 da velocidade máxima a ser calculada
 			max_count = (10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)tim_freq/((float)tim_presc)) / MAX_SPEED,
+			//valor em tempo do timer2 da velocidade mínima a ser calculada
 			min_count = (10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)tim_freq/((float)tim_presc)) / MIN_SPEED,
+			//valor em tempo do timersys da velocidade mínima a ser calculada
 			min_timeout = (10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * 1000 / MIN_SPEED;
 
 

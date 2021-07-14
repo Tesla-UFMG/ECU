@@ -31,6 +31,7 @@
 #include "global_instances.h"
 #include "main_task.h"
 #include "debugleds.h"
+#include "rgb_led.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -133,6 +134,13 @@ const osThreadAttr_t t_debugleds_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_rgb_led */
+osThreadId_t t_rgb_ledHandle;
+const osThreadAttr_t t_rgb_led_attributes = {
+  .name = "t_rgb_led",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -157,6 +165,11 @@ const osMessageQueueAttr_t q_datalog_message_attributes = {
 osMessageQueueId_t q_debugleds_messageHandle;
 const osMessageQueueAttr_t q_debugleds_message_attributes = {
   .name = "q_debugleds_message"
+};
+/* Definitions for q_rgb_led_message */
+osMessageQueueId_t q_rgb_led_messageHandle;
+const osMessageQueueAttr_t q_rgb_led_message_attributes = {
+  .name = "q_rgb_led_message"
 };
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
@@ -191,6 +204,7 @@ extern void odometer_calc(void *argument);
 extern void throttle_handler(void *argument);
 extern void torque_manager(void *argument);
 extern void debugleds(void *argument);
+extern void rgb_led(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -282,6 +296,9 @@ int main(void)
   /* creation of q_debugleds_message */
   q_debugleds_messageHandle = osMessageQueueNew (16, sizeof(debugled_message_t), &q_debugleds_message_attributes);
 
+  /* creation of q_rgb_led_message */
+  q_rgb_led_messageHandle = osMessageQueueNew (16, sizeof(rgb_led_message_t), &q_rgb_led_message_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -316,6 +333,9 @@ int main(void)
 
   /* creation of t_debugleds */
   t_debugledsHandle = osThreadNew(debugleds, NULL, &t_debugleds_attributes);
+
+  /* creation of t_rgb_led */
+  t_rgb_ledHandle = osThreadNew(rgb_led, NULL, &t_rgb_led_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

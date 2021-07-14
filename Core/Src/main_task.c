@@ -7,6 +7,8 @@
 
 #include "main_task.h"
 
+extern bool RTD;
+
 void main_task(void *argument) {
 	for(;;) {
 
@@ -20,7 +22,7 @@ void main_task(void *argument) {
 
 		//seta a flag de RTD
 		osEventFlagsSet(ECU_control_event_id, RTD_FLAG);
-
+		RTD = 1;
 		//espera por qualquer erro relatado pela ECU
 		osEventFlagsWait(ECU_control_event_id, ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);
 		uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);

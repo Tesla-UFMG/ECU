@@ -11,12 +11,12 @@
 #include "stdbool.h"
 #include "stdint.h"
 
-#define DEBUG_ECU 0
+#define DEBUG_ECU 1
 
 // cores do LED da ECU
 typedef enum  { PRETO = 0, VERMELHO, VERDE, AZUL, AMARELO, ROXO, CIANO, BRANCO} cores_t;
 
-typedef enum modos_desempenho { ERRO = 0, ACELERACAO, SKIDPAD, AUTOX, ENDURO } race_mode_t;
+typedef enum modos_desempenho {ENDURO = 0, ACELERACAO, SKIDPAD, AUTOX,  ERRO} race_mode_t;
 
 typedef struct //struct de modo
 {

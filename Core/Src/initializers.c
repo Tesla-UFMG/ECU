@@ -42,31 +42,31 @@ extern modos modo_selecionado;
 modos aceleracao, skidpad, autox, enduro, reverse, erro;
 
 //defasada
-void inicializa_perifericos()
-{
-  SystemClock_Config();
-  HAL_Init();
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_CAN_Init();
-  MX_ADC1_Init();
-  MX_SPI2_Init();
-  MX_TIM3_Init();
-  MX_TIM2_Init();
-  Timer2_Config();
-  CAN_ConfigFilter();
-  CAN_ConfigFrames();
-  CAN_Receive_Init();
-  CANSPI_Initialize();
-  inicializa_adc_dma();
-  EE_Init();
-  //inicializa_watchdog();
-/*
-  //Inicializa watchdog
-
-
-*/
-}
+//void inicializa_perifericos()
+//{
+//  SystemClock_Config();
+//  HAL_Init();
+//  MX_GPIO_Init();
+//  MX_DMA_Init();
+//  MX_CAN_Init();
+//  MX_ADC1_Init();
+//  MX_SPI2_Init();
+//  MX_TIM3_Init();
+//  MX_TIM2_Init();
+//  Timer2_Config();
+//  CAN_ConfigFilter();
+//  CAN_ConfigFrames();
+//  CAN_Receive_Init();
+//  CANSPI_Initialize();
+//  inicializa_adc_dma();
+//  EE_Init();
+//  //inicializa_watchdog();
+///*
+//  //Inicializa watchdog
+//
+//
+//*/
+//}
 
 extern FDCAN_HandleTypeDef hfdcan1;
 extern FDCAN_HandleTypeDef hfdcan2;
@@ -138,14 +138,14 @@ void inicializa_modos() {
 	enduro.mode = ENDURO;
 	enduro.cor = VERDE;
 
-	reverse.tor_max = 500;
-	reverse.vel_max = 450;
-	reverse.freio_regen = 0;
-	reverse.dif_elt = 0;
-	reverse.traction_control = 0;
-	reverse.bat_safe = 1;
-	reverse.torq_gain = 10;
-	reverse.cor = AMARELO;
+//	reverse.tor_max = 500;
+//	reverse.vel_max = 450;
+//	reverse.freio_regen = 0;
+//	reverse.dif_elt = 0;
+//	reverse.traction_control = 0;
+//	reverse.bat_safe = 1;
+//	reverse.torq_gain = 10;
+//	reverse.cor = AMARELO;
 
 	erro.tor_max = 0;
 	erro.vel_max = 0;

@@ -18,3 +18,5 @@ volatile uint16_t throttle_percent = 0;
 volatile uint8_t brake_status = 0;
 
 modos modo_selecionado;
+
+bool RTD = 0;

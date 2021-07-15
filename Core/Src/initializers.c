@@ -98,6 +98,16 @@ void debug_temp(uint16_t debug_periodo_ms){
 
 
 void inicializa_modos() {
+	enduro.tor_max = 2500;
+	enduro.vel_max = vel_max_rpm;
+	enduro.freio_regen = frenagem_regenerativa;
+	enduro.dif_elt = 0;
+	enduro.traction_control = 0;
+	enduro.bat_safe = 1;
+	enduro.torq_gain = 25; //ERA 15
+	enduro.mode = ENDURO;
+	enduro.cor = VERDE;
+
 	aceleracao.tor_max = 3500;
 	aceleracao.vel_max = vel_max_rpm;
 	aceleracao.freio_regen = 0;
@@ -128,15 +138,7 @@ void inicializa_modos() {
 	autox.mode = AUTOX;
 	autox.cor = AZUL;
 
-	enduro.tor_max = 2500;
-	enduro.vel_max = vel_max_rpm;
-	enduro.freio_regen = frenagem_regenerativa;
-	enduro.dif_elt = 0;
-	enduro.traction_control = 0;
-	enduro.bat_safe = 1;
-	enduro.torq_gain = 25; //ERA 15
-	enduro.mode = ENDURO;
-	enduro.cor = VERDE;
+
 
 //	reverse.tor_max = 500;
 //	reverse.vel_max = 450;

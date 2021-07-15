@@ -109,13 +109,19 @@ void controle(void *argument) {
 		brkpt();
 		#endif
 
+
+		uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
+		bool disable;// = error_flags & RTDERRO;
+
+		//getflag
 		switch(osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0, CONTROLE_DELAY)) {
+
 		case osOK:
 
 			torque_message.torque_ref[R_MOTOR] = ref_torque_message.ref_torque[R_MOTOR];
 			torque_message.torque_ref[L_MOTOR] = ref_torque_message.ref_torque[L_MOTOR];
 
-			update_state(ref_torque_message.disable);
+			update_state(disable);
 			update_state_parameters(&torque_message);
 
 
@@ -126,7 +132,7 @@ void controle(void *argument) {
 
 			break;
 		case osErrorTimeout:
-			update_state(ref_torque_message.disable);
+			update_state(disable);
 			update_state_parameters(&torque_message);
 
 			osMessageQueuePut(q_torque_messageHandle, &torque_message, 0, 0U);

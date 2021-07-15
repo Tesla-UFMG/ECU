@@ -27,6 +27,8 @@ void torque_manager(void *argument) {
 		brkpt();
 		#endif
 
+		//osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
+
 		switch (g_control_type) {
 		case LONGITUDINAL:
 			//TODO: implementar controle longitudinal

@@ -188,6 +188,11 @@ osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
   .name = "m_state_parameter_mutex"
 };
+/* Definitions for s_mode_button */
+osSemaphoreId_t s_mode_buttonHandle;
+const osSemaphoreAttr_t s_mode_button_attributes = {
+  .name = "s_mode_button"
+};
 /* USER CODE BEGIN PV */
 //flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
 osEventFlagsId_t ECU_control_event_id;
@@ -285,6 +290,10 @@ int main(void)
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
+
+  /* Create the semaphores(s) */
+  /* creation of s_mode_button */
+  s_mode_buttonHandle = osSemaphoreNew(1, 1, &s_mode_button_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */

@@ -94,13 +94,14 @@ typedef enum {
 
 #define APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE 10
 
-#define RTD_FLAG 				 1 << 5
-#define RTD_BTN_PRESSED_FLAG  	 1 << 6
+#define RTD_FLAG 				 	1 << 5
+#define RTD_BTN_PRESSED_FLAG  	 	1 << 6
+#define	RTD_ERROR_FLAG				1 << 7
 
 
 
-#define APPS_ERROR_FLAG 		 	 1 << 16
-#define INVERTER_COMM_ERROR_FLAG 	 1 << 15
+#define APPS_ERROR_FLAG 		 	1 << 16
+#define INVERTER_COMM_ERROR_FLAG 	1 << 15
 
 #define ALL_ERRORS_FLAG  APPS_ERROR_FLAG | INVERTER_COMM_ERROR_FLAG
 

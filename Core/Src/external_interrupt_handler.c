@@ -28,11 +28,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 			break;
 
 		case B_MODO_Pin:
-			g_race_mode++;
-			if (g_race_mode > 4)
-				g_race_mode = 0;
-			modo_message = g_race_mode;
-			osMessageQueuePut(q_modo_messageHandle, &g_race_mode, 0U, 0);
+			osSemaphoreRelease(s_mode_buttonHandle);
+
 			break;
 
 		default:

@@ -49,12 +49,12 @@ void update_state_parameters(torque_message_t* torque_message) {
 			torque_message->torque_ref[L_MOTOR] = 0;
 			torque_message->neg_torque_ref[R_MOTOR] = 0;
 			torque_message->neg_torque_ref[L_MOTOR] = 0;
-			torque_message->speed_ref[R_MOTOR] = modo_selecionado.vel_max;
-			torque_message->speed_ref[L_MOTOR] = modo_selecionado.vel_max;
+			torque_message->speed_ref[R_MOTOR] = modo_ativado.vel_max;
+			torque_message->speed_ref[L_MOTOR] = modo_ativado.vel_max;
 			break;
 		case S_BRAKE_E:
 			set_bit8(&torque_message->parameters, P_ENABLE, true);
-			set_bit8(&torque_message->parameters, P_BRAKE, modo_selecionado.freio_regen);
+			set_bit8(&torque_message->parameters, P_BRAKE, modo_ativado.freio_regen);
 			set_bit8(&torque_message->parameters, P_RUNSTOP, true);
 			torque_message->torque_ref[R_MOTOR] = 0;
 			torque_message->torque_ref[L_MOTOR] = 0;
@@ -70,8 +70,8 @@ void update_state_parameters(torque_message_t* torque_message) {
 			//TODO: Mudar para nova lógica de envio de mensagem de torque ao inversor
 			torque_message->neg_torque_ref[R_MOTOR] = 0;
 			torque_message->neg_torque_ref[L_MOTOR] = 0;
-			torque_message->speed_ref[R_MOTOR] = modo_selecionado.vel_max;
-			torque_message->speed_ref[L_MOTOR] = modo_selecionado.vel_max;
+			torque_message->speed_ref[R_MOTOR] = modo_ativado.vel_max;
+			torque_message->speed_ref[L_MOTOR] = modo_ativado.vel_max;
 
 			//if (modo_selecionado.traction_control == true) tc_system();
 			//else torque_vectoring();

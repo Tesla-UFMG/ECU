@@ -6,6 +6,7 @@
  */
 
 #include "main_task.h"
+#include "global_variables.h"
 
 extern bool RTD;
 
@@ -22,6 +23,7 @@ void main_task(void *argument) {
 
 		//seta a flag de RTD
 		osEventFlagsSet(ECU_control_event_id, RTD_FLAG);
+		modo_ativado = modo_selecionado;
 
 		//espera por qualquer erro relatado pela ECU
 		osEventFlagsWait(ECU_control_event_id, ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);

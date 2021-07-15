@@ -1,7 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
 PD7.Mode=Full_Duplex_Master
 PCC.Series=STM32H7
-FREERTOS.Queues01=q_speed_message,16,speed_message_t,0,Dynamic,NULL,NULL;q_torque_message,16,torque_message_t,0,Dynamic,NULL,NULL;q_ref_torque_message,16,ref_torque_t,0,Dynamic,NULL,NULL;q_datalog_message,128,datalog_message_t,0,Dynamic,NULL,NULL;q_debugleds_message,16,debugled_message_t,0,Dynamic,NULL,NULL;q_rgb_led_message,16,rgb_led_message_t,0,Dynamic,NULL,NULL;q_modo_message,16,race_mode_t,0,Dynamic,NULL,NULL
+FREERTOS.Queues01=q_speed_message,16,speed_message_t,0,Dynamic,NULL,NULL;q_torque_message,16,torque_message_t,0,Dynamic,NULL,NULL;q_ref_torque_message,16,ref_torque_t,0,Dynamic,NULL,NULL;q_datalog_message,128,datalog_message_t,0,Dynamic,NULL,NULL;q_debugleds_message,16,debugled_message_t,0,Dynamic,NULL,NULL
 PD12.GPIO_Label=C_LED_BLUE
 SPI1.VirtualType=VM_MASTER
 TIM1.IPParameters=Prescaler,Period

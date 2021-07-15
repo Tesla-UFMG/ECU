@@ -16,7 +16,7 @@
 // cores do LED da ECU
 typedef enum  { PRETO = 0, VERMELHO, VERDE, AZUL, AMARELO, ROXO, CIANO, BRANCO} cores_t;
 
-typedef enum modos_desempenho {ENDURO = 0, ACELERACAO, SKIDPAD, AUTOX,  ERRO} race_mode_t;
+typedef enum modos_desempenho {ERRO = 0, ENDURO, ACELERACAO, SKIDPAD, AUTOX} race_mode_t;
 
 typedef struct //struct de modo
 {
@@ -30,7 +30,7 @@ typedef struct //struct de modo
 	bool traction_control; //controle de tracao (1 ativo, 0 desat)
 	bool bat_safe; //reducao de consumo de bateria se em niveis criticos (1 ativo, 0 desat)
 	int torq_gain; //ganho de torque, aconselhavel q seja proporcional ao torque maximo ( de 0 a 40)
-	race_mode_t mode; // 1 acel, 2 skid, 3 autox, 4 enduro
+	race_mode_t mode; // 1 enduro, 2 aceleração, 3 skidpad, 4 autox
 	cores_t cor;
 } modos;
 

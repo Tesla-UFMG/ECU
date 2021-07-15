@@ -17,6 +17,9 @@ volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 volatile uint16_t throttle_percent = 0;
 volatile uint8_t brake_status = 0;
 
+modos aceleracao, skidpad, autox, enduro, reverse, erro;
+
 modos modo_selecionado;
+modos modo_ativado;
 
 bool RTD = 0;

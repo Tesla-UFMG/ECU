@@ -39,7 +39,7 @@ uint8_t error_count = 0; // conta erros, quantas vezes o programa caiu no error 
 uint16_t debug_milis =0, debug_milis_ant = 0;
 
 extern modos modo_selecionado;
-modos aceleracao, skidpad, autox, enduro, reverse, erro;
+
 
 //defasada
 //void inicializa_perifericos()
@@ -80,21 +80,21 @@ void init_CAN() {
 
 
 //funcao de debug temporizada
-void debug_temp(uint16_t debug_periodo_ms){
-	debug_milis = HAL_GetTick();
-	if (debug_milis - debug_milis_ant >= debug_periodo_ms) {
-		//insira aqui
-//		uint8_t msg_debug[8] = { 0, 0, 0, 0, 0, 0, 0, 0};
-//		print_can(msg_debug, 0x10);
-		// se deu algum erro, piscar led a cada tempo
-		if (error_count > 0) {
-			led_conf = ~led_conf;
-			seta_leds(led_conf);
-			aciona_sirene(5);
-		}
-		debug_milis_ant = debug_milis;
-	}
-}
+//void debug_temp(uint16_t debug_periodo_ms){
+//	debug_milis = HAL_GetTick();
+//	if (debug_milis - debug_milis_ant >= debug_periodo_ms) {
+//		//insira aqui
+////		uint8_t msg_debug[8] = { 0, 0, 0, 0, 0, 0, 0, 0};
+////		print_can(msg_debug, 0x10);
+//		// se deu algum erro, piscar led a cada tempo
+//		if (error_count > 0) {
+//			led_conf = ~led_conf;
+//			seta_leds(led_conf);
+//			aciona_sirene(5);
+//		}
+//		debug_milis_ant = debug_milis;
+//	}
+//}
 
 
 void inicializa_modos() {

@@ -26,14 +26,18 @@ void main_task(void *argument) {
 		modo_ativado = modo_selecionado;
 
 		//espera por qualquer erro relatado pela ECU
-		osEventFlagsWait(ECU_control_event_id, ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);
+		osEventFlagsWait(ECU_control_event_id, ALL_SEVERE_ERROR_FLAG, osFlagsNoClear, osWaitForever);
 		uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
-		error_flags = error_flags & ALL_ERRORS_FLAG; //filtra apenas flags de erros, ignorando as outras
+		error_flags = error_flags & ALL_SEVERE_ERROR_FLAG; //filtra apenas flags de erros, ignorando as outras
 		switch (error_flags) {
 			case APPS_ERROR_FLAG:
 				//TODO: tratar erro de APPS
 				break;
 			case INVERTER_COMM_ERROR_FLAG:
+				g_race_mode = ERRO;
+				modo_selecionado = erro;
+				osEventFlagsClear(ECU_control_event_id, RTD_FLAG);
+				osEventFlagsClear(ECU_control_event_id, INVERTER_COMM_ERROR_FLAG);
 				//TODO: tratar erro de comunicacao com o inversor
 				break;
 		}

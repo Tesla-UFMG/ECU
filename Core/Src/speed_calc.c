@@ -12,6 +12,8 @@
 #include "string.h"
 #include "datalog_handler.h"
 
+#include "global_instances.h"
+
 //velocidade m/s = omega*circunferencia = delta_theta/delta_tempo * 2*pi*raio
 //              = (raio*2*pi/16)/delta_t (m/s)
 //              = (raio*2*pi/16)/(n*25u) (m/s)
@@ -43,7 +45,7 @@ void speed_calc(void *argument) {
 		#endif
 
 		osMessageQueueGet(q_speed_messageHandle, &message, NULL, osWaitForever); //espera até alguma mensagem chegar
-
+		osEventFlagsSet(ECU_control_event_id, INVERTER_COMM_ERROR_FLAG);
 		d_tim_count = message.tim_count - last_messages[message.pin].tim_count; //diferenca entre timestamp da mensagem atual e da anterior
 		/*
 		speed = (10*3.6*2*M_PI / SPEED_SENSOR_TEETH_QUAN) * (tim_freq/(d_tim_count*tim_presc));

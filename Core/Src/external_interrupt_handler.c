@@ -29,7 +29,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 		case B_MODO_Pin:
 			osSemaphoreRelease(s_mode_buttonHandle);
-
 			break;
 
 		default:

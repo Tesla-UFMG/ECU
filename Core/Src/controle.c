@@ -26,13 +26,13 @@ void update_state(bool disable) {
 		vehicle_state = S_DISABLE_E;
 	} else if ((throttle_percent < 100) && (frenagem_regenerativa == true)
 				&& g_motor_speed[L_MOTOR] > _5_kmph_rpm) {
-//		seta_leds(AZUL);	// se frenagem ativa, led da ecu indica BRANCO
+		osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);	// se frenagem ativa, seta flag de aviso
 		vehicle_state = S_BRAKE_E;
 	} else if(throttle_percent > 100) {
-//		seta_leds(modo_selecionado.cor); // quando desligada, volta a cor do modo
+		osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);	// quando desligada, limpa flag de aviso
 		vehicle_state = S_ACCELERATE_E;
 	} else {
-//		seta_leds(modo_selecionado.cor);	// quando desligada, volta a cor do modo
+		osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);	// quando desligada, limpa flag de aviso
 		vehicle_state = S_NEUTER_E;
 	}
 }
@@ -110,8 +110,8 @@ void controle(void *argument) {
 		#endif
 
 
-		uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
-		bool disable;// = error_flags & RTDERRO;
+		uint32_t flags = osEventFlagsGet(ECU_control_event_id);
+		bool disable = flags & !RTD_FLAG; //disable will only be FALSE when RTD_FLAG is setted
 
 		//getflag
 		switch(osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0, CONTROLE_DELAY)) {
@@ -140,9 +140,5 @@ void controle(void *argument) {
 		default:
 			break;
 		}
-
-
-
 	}
-
 }

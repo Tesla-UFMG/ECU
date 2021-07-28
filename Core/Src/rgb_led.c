@@ -1,5 +1,15 @@
 /*
  * leds.c
+ * 	Cores:
+ * 		Preto: -
+ * 		Vermelho: 	Erro
+ * 		Verde: 		Enduro
+ * 		Azul: 		Autox
+ * 		Amarelo: 	Erro leve (APPS ou BSE Plausability)
+ * 		Roxo:		Aceleração
+ * 		Ciano:		Skidpad
+ * 		Branco:		Aviso (REGEN ou Controle dinâmicos)
+ *
  *
  *  Created on: May 12, 2021
  *      Author: Felipe Telles
@@ -32,7 +42,21 @@ void rgb_led(void *argument) {
 
 		default:
 			write_rgb_color(get_rgb_color(modo_ativado.cor));
-			osEventFlagsWait(ECU_control_event_id, RTD_ERROR_FLAG, osFlagsNoClear, osWaitForever);
+			osEventFlagsWait(ECU_control_event_id, ALL_ERRORS_FLAG | ALL_WARN_FLAG, osFlagsNoClear, osWaitForever);
+			uint32_t flags = osEventFlagsGet(ECU_control_event_id);
+			flags = flags & (ALL_ERRORS_FLAG | ALL_WARN_FLAG);
+				switch (flags) {
+					case REGEN_WARN_FLAG:
+					case DYNAMIC_CONTROL_WARN_FLAG:
+						write_rgb_color(get_rgb_color(BRANCO));
+						osDelay(10);
+					break;
+					case APPS_ERROR_FLAG:
+					case BSE_ERROR_FLAG:
+						write_rgb_color(get_rgb_color(AMARELO));
+						osDelay(10);
+					break;
+				}
 			break;
 		}
 	}

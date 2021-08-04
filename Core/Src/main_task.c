@@ -7,6 +7,7 @@
 
 #include "main_task.h"
 #include "global_variables.h"
+#include "main.h"
 
 extern bool RTD;
 
@@ -19,14 +20,27 @@ void main_task(void *argument) {
 		#endif
 
 		//espera receber flag q o botão de RTD foi pressionado
-		osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
+		for(;;) {
+			osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
+			uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
+			error_flags = error_flags & ALL_SEVERE_ERROR_FLAG; //filtra apenas flags de erros, ignorando as outras
+			if(/*brake_status && */!error_flags)
+				break;
+			else
+				if(HAL_GPIO_ReadPin(B_MODO_GPIO_Port, B_MODO_Pin)){
+					osEventFlagsClear(ECU_control_event_id, ALL_SEVERE_ERROR_FLAG);
+					osDelay(1000);
+					g_race_mode = ENDURO;
+				}
+
+		}
 
 		//seta a flag de RTD
 		osEventFlagsSet(ECU_control_event_id, RTD_FLAG);
 		modo_ativado = modo_selecionado;
 
 		//espera por qualquer erro relatado pela ECU
-		osEventFlagsWait(ECU_control_event_id, ALL_SEVERE_ERROR_FLAG, osFlagsNoClear, osWaitForever);
+		osEventFlagsWait(ECU_control_event_id, ALL_SEVERE_ERROR_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);
 		uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
 		error_flags = error_flags & ALL_SEVERE_ERROR_FLAG; //filtra apenas flags de erros, ignorando as outras
 		switch (error_flags) {
@@ -35,9 +49,9 @@ void main_task(void *argument) {
 				break;
 			case INVERTER_COMM_ERROR_FLAG:
 				g_race_mode = ERRO;
-				modo_selecionado = erro;
+				modo_ativado = erro;
+				osSemaphoreRelease(s_mode_buttonHandle); //seta modo_selecionado como erro
 				osEventFlagsClear(ECU_control_event_id, RTD_FLAG);
-				osEventFlagsClear(ECU_control_event_id, INVERTER_COMM_ERROR_FLAG);
 				//TODO: tratar erro de comunicacao com o inversor
 				break;
 		}

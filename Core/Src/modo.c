@@ -14,7 +14,7 @@
 
 
 void seleciona_modo(void *argument) {
-	race_mode_t g_race_mode = 0;
+
 
 	for(;;) {
 		#ifdef DEBUG_ECU
@@ -24,12 +24,6 @@ void seleciona_modo(void *argument) {
 
 		osSemaphoreAcquire(s_mode_buttonHandle, osWaitForever);
 
-
-		uint32_t flags = osEventFlagsGet(ECU_control_event_id);
-		bool RTD_STATUS = flags & RTD_FLAG;
-
-		if(!RTD_STATUS){
-			g_race_mode++;
 			if (g_race_mode > AUTOX)
 				g_race_mode = ENDURO;
 
@@ -47,6 +41,5 @@ void seleciona_modo(void *argument) {
 			}
 			else
 				modo_selecionado = erro;
-		}
 	}
 }

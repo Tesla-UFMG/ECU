@@ -10,7 +10,7 @@
 
 volatile uint16_t g_motor_speed[2];
 
-volatile race_mode_t g_race_mode = ERRO;
+volatile race_mode_t g_race_mode = ENDURO;
 
 volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 

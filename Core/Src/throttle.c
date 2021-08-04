@@ -8,6 +8,12 @@
 #include "throttle.h"
 #include "datalog_handler.h"
 
+#include "global_variables.h"
+#include "global_definitions.h"
+#include "main.h"
+#include "debugleds.h"
+uint32_t error_flag;
+
 void throttle_read(void *argument) {
 	uint16_t APPS1;
 	uint16_t APPS2;
@@ -70,6 +76,16 @@ void throttle_read(void *argument) {
 		}
 
 		brake_status = BSE > 2200;
+
+		if(brake_status)
+			osEventFlagsSet(ECU_control_event_id, INVERTER_COMM_ERROR_FLAG);
+		error_flag = osEventFlagsGet(ECU_control_event_id);
+
+//	      if(HAL_GPIO_ReadPin(B_RTD_GPIO_Port, B_RTD_Pin))
+//	      {
+//	          // Set The LED ON!
+//	          set_debugleds(DEBUGLED3,TOGGLE,0);
+//	      }
 
 		log_data(ID_BRAKE, brake_status);
 

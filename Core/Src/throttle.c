@@ -8,11 +8,7 @@
 #include "throttle.h"
 #include "datalog_handler.h"
 
-#include "global_variables.h"
-#include "global_definitions.h"
-#include "main.h"
-#include "debugleds.h"
-uint32_t error_flag;
+
 
 void throttle_read(void *argument) {
 	uint16_t APPS1;
@@ -20,6 +16,7 @@ void throttle_read(void *argument) {
 	uint16_t BSE;
 	uint16_t apps1_calc;
 	uint16_t aux_throttle_percent;
+
 	for (;;) {
 		#ifdef DEBUG_ECU
 		extern void brkpt();
@@ -69,32 +66,27 @@ void throttle_read(void *argument) {
 			aux_throttle_percent = 1000;
 
 
-		if (aux_throttle_percent < 250 && BSE < 2200) {
-			//TODO: limpar flag de erro de APPS?
-//			*flag_error = 0;
-//			apps_t_flag = 1;
-		}
-
 		brake_status = BSE > 2200;
-
-		if(brake_status)
-			osEventFlagsSet(ECU_control_event_id, INVERTER_COMM_ERROR_FLAG);
-		error_flag = osEventFlagsGet(ECU_control_event_id);
-
-//	      if(HAL_GPIO_ReadPin(B_RTD_GPIO_Port, B_RTD_Pin))
-//	      {
-//	          // Set The LED ON!
-//	          set_debugleds(DEBUGLED3,TOGGLE,0);
-//	      }
 
 		log_data(ID_BRAKE, brake_status);
 
-		if (((aux_throttle_percent > 300 && BSE > 2200) )) {
-			//TODO: sinalizar evento de erro de APPS
+		if (	APPS2 < 260
+			||	APPS2 >= 3720
+			|| 	APPS1 < 1802.24
+			|| 	APPS1 > 3900
+			|| 	APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)
+			|| 	APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0))
+			osEventFlagsSet(ECU_control_event_id, APPS_ERROR_FLAG);
+		else
+			osEventFlagsClear(ECU_control_event_id, APPS_ERROR_FLAG);
+
+		if (aux_throttle_percent > 300 && BSE > 2200) {
 			aux_throttle_percent = 0;
-			//provavelmente não precisa sinalizar erro
-//			osEventFlagsSet(ECU_control_event_id, APPS_ERROR_FLAG);
+			osEventFlagsSet(ECU_control_event_id, BSE_ERROR_FLAG);
 		}
+		else
+			osEventFlagsClear(ECU_control_event_id, BSE_ERROR_FLAG);
+
 		throttle_percent = aux_throttle_percent;
 
 		log_data(ID_THROTTLE, throttle_percent);

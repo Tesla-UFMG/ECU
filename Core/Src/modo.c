@@ -15,14 +15,15 @@
 
 void seleciona_modo(void *argument) {
 
-
 	for(;;) {
+
 		#ifdef DEBUG_ECU
 		extern void brkpt();
 		brkpt();
 		#endif
 
 		osSemaphoreAcquire(s_mode_buttonHandle, osWaitForever);
+		osSemaphoreAcquire(s_Allowed_change_modeHandle, osWaitForever);
 
 			if (g_race_mode > AUTOX)
 				g_race_mode = ENDURO;
@@ -41,5 +42,7 @@ void seleciona_modo(void *argument) {
 			}
 			else
 				modo_selecionado = erro;
+
+		osSemaphoreRelease(s_Allowed_change_modeHandle);
 	}
 }

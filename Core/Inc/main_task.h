@@ -12,4 +12,6 @@
 #include "global_definitions.h"
 #include "cmsis_os.h"
 
+void exit_RTD();
+
 #endif /* INC_MAIN_TASK_H_ */

@@ -21,7 +21,6 @@ volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 volatile vehicle_state_e vehicle_state;
 
 void update_state(bool disable) {
-	//TODO: implementar funcao de setar leds
 	if (disable == true) {
 		vehicle_state = S_DISABLE_E;
 	} else if ((throttle_percent < 100) && (frenagem_regenerativa == true)

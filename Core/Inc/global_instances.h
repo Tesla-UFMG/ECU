@@ -28,6 +28,7 @@ extern osEventFlagsId_t ECU_control_event_id;
 
 //SEMAPHORES
 extern osSemaphoreId_t s_mode_buttonHandle;
+extern osSemaphoreId_t s_Allowed_change_modeHandle;
 
 //MUTEXES
 extern osMutexId_t m_state_parameter_mutexHandle;

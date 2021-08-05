@@ -183,6 +183,11 @@ osSemaphoreId_t s_mode_buttonHandle;
 const osSemaphoreAttr_t s_mode_button_attributes = {
   .name = "s_mode_button"
 };
+/* Definitions for s_Allowed_change_mode */
+osSemaphoreId_t s_Allowed_change_modeHandle;
+const osSemaphoreAttr_t s_Allowed_change_mode_attributes = {
+  .name = "s_Allowed_change_mode"
+};
 /* USER CODE BEGIN PV */
 //flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
 osEventFlagsId_t ECU_control_event_id;
@@ -284,6 +289,9 @@ int main(void)
   /* Create the semaphores(s) */
   /* creation of s_mode_button */
   s_mode_buttonHandle = osSemaphoreNew(1, 1, &s_mode_button_attributes);
+
+  /* creation of s_Allowed_change_mode */
+  s_Allowed_change_modeHandle = osSemaphoreNew(1, 1, &s_Allowed_change_mode_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
@@ -910,7 +918,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, C_LED_DEBUG1_Pin|C_LED_DEBUG2_Pin|C_LED_DEBUG3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, C_LED_DEBUG1_Pin|C_LED_DEBUG3_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(C_LED_DEBUG2_GPIO_Port, C_LED_DEBUG2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, C_LED_BLUE_Pin|C_LED_GREEN_Pin|C_LED_RED_Pin, GPIO_PIN_RESET);
@@ -988,7 +999,7 @@ __weak void main_task(void *argument)
   /* USER CODE END 5 */
 }
 
- /**
+/**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM3 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment

@@ -21,5 +21,3 @@ modos aceleracao, skidpad, autox, enduro, reverse, erro;
 
 modos modo_selecionado;
 modos modo_ativado;
-
-bool RTD = 0;

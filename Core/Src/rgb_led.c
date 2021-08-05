@@ -66,7 +66,7 @@ void write_rgb_color(rgb rgb_gpio){
 	HAL_GPIO_WritePin(C_LED_RED_GPIO_Port, C_LED_RED_Pin, rgb_gpio.red);
 	HAL_GPIO_WritePin(C_LED_GREEN_GPIO_Port, C_LED_GREEN_Pin, rgb_gpio.green);
 	HAL_GPIO_WritePin(C_LED_BLUE_GPIO_Port, C_LED_BLUE_Pin, rgb_gpio.blue);
-	write_debug_color(rgb_gpio); //apenas para debug
+	//write_debug_color(rgb_gpio); //apenas para debug
 }
 
 void write_debug_color(rgb rgb_gpio){

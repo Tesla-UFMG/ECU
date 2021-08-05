@@ -8,7 +8,6 @@
 #include "external_interrupt_handler.h"
 
 speed_message_t speed_message;
-race_mode_t modo_message;
 
 //implementa a funcao homonima da HAL, que trata interrupcao por pino
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){

@@ -76,16 +76,16 @@ void throttle_read(void *argument) {
 			|| 	APPS1 > 3900
 			|| 	APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)
 			|| 	APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0))
-			osEventFlagsSet(ECU_control_event_id, APPS_ERROR_FLAG);
+			osEventFlagsSet(ECU_control_event_id, APPS_ERROR_FLAG); 	//caso tenha algum erro de plausabilidade do apps a flag será setada
 		else
-			osEventFlagsClear(ECU_control_event_id, APPS_ERROR_FLAG);
+			osEventFlagsClear(ECU_control_event_id, APPS_ERROR_FLAG); 	//limpa a flag se n houver erro
 
 		if (aux_throttle_percent > 300 && BSE > 2200) {
 			aux_throttle_percent = 0;
-			osEventFlagsSet(ECU_control_event_id, BSE_ERROR_FLAG);
+			osEventFlagsSet(ECU_control_event_id, BSE_ERROR_FLAG);	//caso tenha algum erro de plausabilidade do BSE a flag será setada
 		}
 		else
-			osEventFlagsClear(ECU_control_event_id, BSE_ERROR_FLAG);
+			osEventFlagsClear(ECU_control_event_id, BSE_ERROR_FLAG);//limpa a flag se n houver erro
 
 		throttle_percent = aux_throttle_percent;
 

@@ -22,6 +22,7 @@ void seleciona_modo(void *argument) {
 		brkpt();
 		#endif
 
+		//espera um semáforo liberado por interrupção e espera está autorizado a mudar de modo
 		osSemaphoreAcquire(s_mode_buttonHandle, osWaitForever);
 		osSemaphoreAcquire(s_Allowed_change_modeHandle, osWaitForever);
 

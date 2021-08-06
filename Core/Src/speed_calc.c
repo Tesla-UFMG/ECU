@@ -12,7 +12,6 @@
 #include "string.h"
 #include "datalog_handler.h"
 
-
 //velocidade m/s = omega*circunferencia = delta_theta/delta_tempo * 2*pi*raio
 //              = (raio*2*pi/16)/delta_t (m/s)
 //              = (raio*2*pi/16)/(n*25u) (m/s)

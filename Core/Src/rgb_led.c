@@ -32,20 +32,20 @@ void rgb_led(void *argument) {
 		brkpt();
 		#endif
 
-		switch(osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, 200)){ //espera até alguma mensagem chegar ou timeout estourar
+		switch(osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, 200)){ //espera RTD ser setado ou timeout estourar
 
-		case osFlagsErrorTimeout:
+		case osFlagsErrorTimeout:				//caso timeout estore vai piscar o led, indicando que tá fora do RTD
 			write_rgb_color(get_rgb_color(modo_selecionado.cor));
 			osDelay(200);
 			write_rgb_color(get_rgb_color(PRETO));
 			break;
 
 		default:
-			write_rgb_color(get_rgb_color(modo_selecionado.cor));
-			osEventFlagsWait(ECU_control_event_id, ALL_ERRORS_FLAG | ALL_WARN_FLAG, osFlagsNoClear, osWaitForever);
+			write_rgb_color(get_rgb_color(modo_selecionado.cor));			//caso RTD seja ativo o RGB ficará fixo
+			osEventFlagsWait(ECU_control_event_id, ALL_ERRORS_FLAG | ALL_WARN_FLAG, osFlagsNoClear, osWaitForever);	//espera por uma flag de erro
 			uint32_t flags = osEventFlagsGet(ECU_control_event_id);
-			flags = flags & (ALL_ERRORS_FLAG | ALL_WARN_FLAG);
-				switch (flags) {
+			flags = flags & (ALL_ERRORS_FLAG | ALL_WARN_FLAG); 				//filtra apenas erros e avisos
+				switch (flags) {											//caso seja um aviso a cor do led será branca, caso seja um erro leve será amarelo,
 					case REGEN_WARN_FLAG:
 					case DYNAMIC_CONTROL_WARN_FLAG:
 						write_rgb_color(get_rgb_color(BRANCO));

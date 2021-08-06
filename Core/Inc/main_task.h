@@ -13,5 +13,6 @@
 #include "cmsis_os.h"
 
 void exit_RTD();
+void aciona_sirene();
 
 #endif /* INC_MAIN_TASK_H_ */

@@ -41,7 +41,7 @@ void rgb_led(void *argument) {
 			break;
 
 		default:
-			write_rgb_color(get_rgb_color(modo_ativado.cor));
+			write_rgb_color(get_rgb_color(modo_selecionado.cor));
 			osEventFlagsWait(ECU_control_event_id, ALL_ERRORS_FLAG | ALL_WARN_FLAG, osFlagsNoClear, osWaitForever);
 			uint32_t flags = osEventFlagsGet(ECU_control_event_id);
 			flags = flags & (ALL_ERRORS_FLAG | ALL_WARN_FLAG);

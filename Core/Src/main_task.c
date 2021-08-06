@@ -8,7 +8,7 @@
 #include "main_task.h"
 #include "global_variables.h"
 #include "debugleds.h"
-
+#include "main.h"
 
 
 void main_task(void *argument) {
@@ -26,7 +26,7 @@ void main_task(void *argument) {
 			osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 			uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
 			error_flags = error_flags & ALL_SEVERE_ERROR_FLAG; //filtra apenas flags de erros, ignorando as outras
-			if(brake_status && !error_flags && !(g_race_mode == ERRO))
+			if(brake_status && !error_flags && (g_race_mode != ERRO))
 				break;
 			else
 				set_debugleds(DEBUGLED1, BLINK, 2);
@@ -35,7 +35,7 @@ void main_task(void *argument) {
 		//seta a flag de RTD
 		osEventFlagsSet(ECU_control_event_id, RTD_FLAG);
 		osSemaphoreAcquire(s_Allowed_change_modeHandle, osWaitForever);
-		modo_ativado = modo_selecionado;
+		aciona_sirene();
 
 
 		//espera por qualquer erro relatado pela ECU
@@ -51,8 +51,13 @@ void main_task(void *argument) {
 }
 
 	void exit_RTD(){
-		modo_ativado = erro;
 		modo_selecionado = erro; //seta modo_selecionado como erro
 		g_race_mode = ERRO;
 		osEventFlagsClear(ECU_control_event_id, RTD_FLAG);
+	}
+
+	void aciona_sirene(){
+		HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
+		osDelay(200);
+		HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
 	}

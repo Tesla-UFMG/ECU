@@ -20,4 +20,3 @@ volatile uint8_t brake_status = 0;
 modos aceleracao, skidpad, autox, enduro, reverse, erro;
 
 modos modo_selecionado;
-modos modo_ativado;

@@ -12,7 +12,7 @@
 #include "global_definitions.h"
 #include "cmsis_os.h"
 
-#define tempo_sirene 200
+#define tempo_sirene 1000
 
 void exit_RTD();
 void aciona_sirene();

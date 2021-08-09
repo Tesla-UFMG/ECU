@@ -67,6 +67,7 @@ void throttle_read(void *argument) {
 
 
 		brake_status = BSE > 2200;
+		apps_status = aux_throttle_percent > 0;
 
 		log_data(ID_BRAKE, brake_status);
 
@@ -92,7 +93,7 @@ void throttle_read(void *argument) {
 		log_data(ID_THROTTLE, throttle_percent);
 
 		//TODO: Averiguar duracao do delay
-		osDelay(100);
+		osDelay(50);
 
 	}
 

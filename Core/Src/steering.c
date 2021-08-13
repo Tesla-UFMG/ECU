@@ -24,7 +24,7 @@ void steering_read(void *argument) {
 		brkpt();
 		#endif
 
-		volante_cru = ADC_DMA_buffer[ADC_E2_E];
+		volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
 
 		uint16_t volante_aux = volante_cru,
 				 zero_aux = ZERO_VOLANTE;

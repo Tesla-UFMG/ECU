@@ -93,7 +93,7 @@ void throttle_read(void *argument) {
 		log_data(ID_THROTTLE, throttle_percent);
 
 		//TODO: Averiguar duracao do delay
-		osDelay(50);
+		osDelay(25);
 
 	}
 

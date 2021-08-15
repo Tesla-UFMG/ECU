@@ -15,6 +15,9 @@
 #define MAX_SPEED 2000 				// em km/h*10
 #define MIN_SPEED 5					// em km/h*10
 
+#define FIRST_WHEEL FRONT_RIGHT
+#define LAST_WHEEL FRONT_LEFT 	//ultima roda que possui sensor de roda fônica
+
 typedef enum {
 	FRONT_RIGHT,
 	FRONT_LEFT,
@@ -24,7 +27,7 @@ typedef enum {
 
 typedef struct {
 	uint32_t tim_count;
-	uint16_t pin;
+	speed_pin_e pin;
 } speed_message_t;
 
 

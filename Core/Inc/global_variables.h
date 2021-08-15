@@ -26,10 +26,10 @@ extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 extern volatile uint16_t throttle_percent;
 
 //status do freio, 1 = ativado e 0 = desativado
-extern volatile uint8_t brake_status;
+extern volatile uint8_t is_brake_active;
 
 //status do apps, 1 = acionado e 0 = desativado
-extern volatile uint8_t apps_status;
+extern volatile uint8_t is_throttle_active;
 
 //variavel de controle para desabilitar referência de torque
 extern volatile uint8_t g_should_disable_engines;

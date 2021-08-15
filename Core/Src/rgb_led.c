@@ -91,7 +91,6 @@ rgb get_rgb_color(cores_t color){
         case CIANO:
             return RGB_CYAN;
         case BRANCO:
-            return RGB_WHITE;
         default:
             return RGB_WHITE;
     }

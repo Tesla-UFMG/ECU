@@ -45,14 +45,14 @@ void throttle_read(void *argument) {
             aux_throttle_percent = 1000;
 
 
-        brake_status = BSE > 2200;
-        apps_status = aux_throttle_percent > 0;
+        is_brake_active = BSE > 2200;
+        is_throttle_active = aux_throttle_percent > 0;
 
-        log_data(ID_BRAKE, brake_status);
+        log_data(ID_BRAKE, is_brake_active);
 
 
         //verifica a plausabilidade dos APPSs
-        if (check_APPS_error(APPS1, APPS2, aux_throttle_percent)){
+        if (are_there_APPS_errors(APPS1, APPS2, aux_throttle_percent)){
             aux_throttle_percent = 0;                                   //zera a a porcentagem do pedal
             osEventFlagsSet(ECU_control_event_id, APPS_ERROR_FLAG);     //caso tenha algum erro de plausabilidade do apps a flag será setada
         }
@@ -76,7 +76,7 @@ void throttle_read(void *argument) {
     }
 }
 
-bool check_APPS_error (uint16_t APPS1, uint16_t APPS2, uint16_t aux_throttle_percent){
+bool are_there_APPS_errors (uint16_t APPS1, uint16_t APPS2, uint16_t aux_throttle_percent){
     uint16_t apps1_calc = 0;
 
     //calcula o valor teórico de APPS1 a partir do valor de APPS2
@@ -91,16 +91,11 @@ bool check_APPS_error (uint16_t APPS1, uint16_t APPS2, uint16_t aux_throttle_per
     else if (aux_throttle_percent >= 800 && aux_throttle_percent < 1135)
         apps1_calc = (uint16_t) (1.515 * aux_throttle_percent + 2302);
 
-
-    if (APPS2 >= 3720)          //Se o valor de APPS2 for acima do seu máximo
-        return true;
-    else if (APPS1 < 1802.24)   //Se o valor de APPS1 for abaixo do seu mínimo
-        return true;
-    else if (APPS1 > 3900)      //Se o valor de APPS1 for acima do seu máximo
-        return true;
-    else if (APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)) //verifica se APPS1 está abaixo do valor teórico de APPS1, considerando a tolerância
-        return true;
-    else if (APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)) //verifica se APPS1 está acima do valor teórico de APPS1, considerando a tolerância
+    if (    APPS2 >= 3720           //Se o valor de APPS2 for acima do seu máximo
+         || APPS1 < 1802.24         //Se o valor de APPS1 for abaixo do seu mínimo
+         || APPS1 > 3900            //Se o valor de APPS1 for acima do seu máximo
+         || APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)   //verifica se APPS1 está abaixo do valor teórico de APPS1, considerando a tolerância
+         || APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0))  //verifica se APPS1 está acima do valor teórico de APPS1, considerando a tolerância
         return true;
     else
         return false;

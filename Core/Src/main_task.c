@@ -25,8 +25,8 @@ void main_task(void *argument) {
 		for(;;) {
 		    osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);     //espera receber flag q o botão de RTD foi pressionado
 		    uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);               //obtem todas as flags
-		    error_flags = error_flags & ALL_SEVERE_ERROR_FLAG;                          //filtra apenas flags de erros severos, ignorando as outras
-		    if(brake_status && !apps_status && !error_flags && (g_race_mode != ERRO))
+		    error_flags &= ALL_SEVERE_ERROR_FLAG;                          //filtra apenas flags de erros severos, ignorando as outras
+		    if(is_brake_active && !is_throttle_active && !error_flags && (g_race_mode != ERRO))
 		        break;                                                                  //sai do for infinito caso tudo esteja certo para acionar RTD
 		    else
 		        set_debugleds(DEBUGLED1,BLINK,2);                                       //envia uma mensagem de alerta caso n seja possível acionar RTD

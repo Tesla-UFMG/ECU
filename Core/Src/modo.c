@@ -31,17 +31,13 @@ void seleciona_modo(void *argument) {
 
 			if(g_race_mode == ENDURO) {
 				modo_selecionado = enduro;
-			}
-			else if(g_race_mode == ACELERACAO) {
+			} else if(g_race_mode == ACELERACAO) {
 				modo_selecionado = aceleracao;
-			}
-			else if(g_race_mode == SKIDPAD) {
+			} else if(g_race_mode == SKIDPAD) {
 				modo_selecionado = skidpad;
-			}
-			else if(g_race_mode == AUTOX) {
+			} else if(g_race_mode == AUTOX) {
 				modo_selecionado = autox;
-			}
-			else
+			} else
 				modo_selecionado = erro;
 
 		osSemaphoreRelease(s_allowed_change_modeHandle);

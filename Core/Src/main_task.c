@@ -20,7 +20,7 @@ void main_task(void *argument) {
 		brkpt();
 		#endif
 
-		osSemaphoreRelease(s_Allowed_change_modeHandle); 							//libera semáforo que permite a mudança de modos
+		osSemaphoreRelease(s_allowed_change_modeHandle); 							//libera semáforo que permite a mudança de modos
 
 		for(;;) {
 			osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever); //espera receber flag q o botão de RTD foi pressionado
@@ -34,7 +34,7 @@ void main_task(void *argument) {
 
 		//seta a flag de RTD
 		osEventFlagsSet(ECU_control_event_id, RTD_FLAG);					//Seta flag de RTD
-		osSemaphoreAcquire(s_Allowed_change_modeHandle, osWaitForever);		//Bloqueia mudança de modo
+		osSemaphoreAcquire(s_allowed_change_modeHandle, osWaitForever);		//Bloqueia mudança de modo
 		aciona_sirene();
 
 

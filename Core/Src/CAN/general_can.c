@@ -31,6 +31,7 @@ void initialize_general_CAN(FDCAN_HandleTypeDef* can_ref) {
 //função usada para transmitir alguma mensagem
 void general_can_transmit(uint32_t id, uint16_t* data) {
 	can_transmit(can_ptr, &TxHeader, id, data);
+	osDelay(CAN_DELAY);
 }
 
 

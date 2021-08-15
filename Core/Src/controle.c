@@ -110,10 +110,8 @@ void controle(void *argument) {
 
 		bool disable;
 		uint32_t flags = osEventFlagsGet(ECU_control_event_id);
-		if(flags & RTD_FLAG) //disable will only be FALSE when RTD_FLAG is setted
-			disable = false;
-		else
-			disable = true;
+		disable = !(flags & RTD_FLAG); //disable will only be FALSE when RTD_FLAG is setted
+
 
 		//getflag
 		switch(osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0, CONTROLE_DELAY)) {

@@ -44,7 +44,6 @@ void datalogger(void *argument) {
 			CAN_ID_t can_id = get_CAN_ID_from_internal(get_internal_from_id_pos(id, 0));
 			//transmite a mensagem
 			general_can_transmit(can_id.id, vet_tx);
-			osDelay(4);
 		}
 
 		//quando extrair todos os itens enfileirados e enviar, espera uma certa

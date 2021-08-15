@@ -24,7 +24,7 @@ void seleciona_modo(void *argument) {
 
 		//espera um semáforo liberado por interrupção e espera está autorizado a mudar de modo
 		osSemaphoreAcquire(s_mode_buttonHandle, osWaitForever);
-		osSemaphoreAcquire(s_Allowed_change_modeHandle, osWaitForever);
+		osSemaphoreAcquire(s_allowed_change_modeHandle, osWaitForever);
 
 			if (g_race_mode > AUTOX)
 				g_race_mode = ENDURO;
@@ -44,6 +44,6 @@ void seleciona_modo(void *argument) {
 			else
 				modo_selecionado = erro;
 
-		osSemaphoreRelease(s_Allowed_change_modeHandle);
+		osSemaphoreRelease(s_allowed_change_modeHandle);
 	}
 }

@@ -12,6 +12,9 @@
 #include "main.h"
 #include "global_definitions.h"
 
+#define RGB_BLINK_DELAY 200
+#define RGB_WARN_DELAY 200
+
 #define RGB_BLACK 	(rgb){0,0,0}
 #define RGB_RED 	(rgb){1,0,0}
 #define RGB_GREEN 	(rgb){0,1,0}

@@ -183,10 +183,10 @@ osSemaphoreId_t s_mode_buttonHandle;
 const osSemaphoreAttr_t s_mode_button_attributes = {
   .name = "s_mode_button"
 };
-/* Definitions for s_Allowed_change_mode */
-osSemaphoreId_t s_Allowed_change_modeHandle;
-const osSemaphoreAttr_t s_Allowed_change_mode_attributes = {
-  .name = "s_Allowed_change_mode"
+/* Definitions for s_allowed_change_mode */
+osSemaphoreId_t s_allowed_change_modeHandle;
+const osSemaphoreAttr_t s_allowed_change_mode_attributes = {
+  .name = "s_allowed_change_mode"
 };
 /* USER CODE BEGIN PV */
 //flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
@@ -290,8 +290,8 @@ int main(void)
   /* creation of s_mode_button */
   s_mode_buttonHandle = osSemaphoreNew(1, 1, &s_mode_button_attributes);
 
-  /* creation of s_Allowed_change_mode */
-  s_Allowed_change_modeHandle = osSemaphoreNew(1, 1, &s_Allowed_change_mode_attributes);
+  /* creation of s_allowed_change_mode */
+  s_allowed_change_modeHandle = osSemaphoreNew(1, 1, &s_allowed_change_mode_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */

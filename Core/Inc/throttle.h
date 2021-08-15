@@ -13,4 +13,8 @@
 #include "global_instances.h"
 #include "cmsis_os.h"
 
+#define THROTTLE_DELAY 25
+
+bool check_APPS_error (uint16_t APPS1, uint16_t APPS2, uint16_t apps1_calc);
+
 #endif /* INC_THROTTLE_H_ */

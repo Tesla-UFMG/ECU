@@ -99,14 +99,3 @@ void reset_speed_single(speed_message_t message, speed_message_t last_messages[4
 		if((message.tim_count - last_messages[i].tim_count) > min_count)
 			g_wheel_speed[i] = 0;
 }
-
-
-
-
-
-
-
-
-
-
-

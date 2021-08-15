@@ -38,7 +38,7 @@ void speed_calc(void *argument) {
 
 
 	const uint32_t	tim_freq  = HAL_RCC_GetPCLK1Freq(),     //pega frequência do APB1, q está conectado ao tim2
-			tim_presc = htim2.Init.Prescaler+1,             //prescaler do tim2
+	        tim_presc = htim2.Init.Prescaler+1,             //prescaler do tim2
 			//valor em tempo do timer2 da velocidade máxima a ser calculada
 			max_count = (10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)tim_freq/((float)tim_presc)) / MAX_SPEED,
 			//valor em tempo do timer2 da velocidade mínima a ser calculada
@@ -55,7 +55,7 @@ void speed_calc(void *argument) {
 		brkpt();
 		#endif
 
-		switch(osMessageQueueGet(q_speed_messageHandle, &message, NULL,  min_timeout)){ //espera até alguma mensagem chegar ou timeout estourar
+		switch(osMessageQueueGet(q_speed_messageHandle, &message, NULL,  min_timeout)){     //espera até alguma mensagem chegar ou timeout estourar
 
 		//caso a tarefa tenha sido chamada por timeout
 		case osErrorTimeout:
@@ -81,8 +81,8 @@ void speed_calc(void *argument) {
 
 			uint16_t datalog_id =   message.pin == FRONT_RIGHT ?    ID_SPEED_FR :
 			                        message.pin == FRONT_LEFT  ?    ID_SPEED_FL :
-									message.pin == REAR_RIGHT  ?    ID_SPEED_RR :
-									                                ID_SPEED_RL;
+			                        message.pin == REAR_RIGHT  ?    ID_SPEED_RR :
+			                                                        ID_SPEED_RL;
 			log_data(datalog_id, (uint16_t) speed);
 		break;
 		}

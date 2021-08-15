@@ -22,7 +22,7 @@
 //              = (10*3.6*2*pi*raio/quant.dentes)*freq/(presc*timer) (10*km/s)
 
 void reset_speed_all();
-void reset_speed_single(speed_message_t message, speed_message_t last_messages[4], uint32_t min_count);
+void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count);
 
 volatile float g_wheel_speed[4];
 
@@ -65,7 +65,7 @@ void speed_calc(void *argument) {
 		//caso a tarefa tenha sido chamada pela queue
 		case osOK:
 			//verifica se alguma roda está a muito tempo sem receber interrupção, caso sim a velocidade dessa roda é zerada
-			reset_speed_single(message, last_messages, min_count);
+			reset_speed_single(&message, &last_messages, min_count);
 
 			//diferenca entre timestamp da mensagem atual e da anterior
 			d_tim_count = message.tim_count - last_messages[message.pin].tim_count;
@@ -94,8 +94,8 @@ void reset_speed_all(){
 		g_wheel_speed[i] = 0;
 }
 
-void reset_speed_single(speed_message_t message, speed_message_t last_messages[4], uint32_t min_count){
+void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count){
 	for(speed_pin_e i = FIRST_WHEEL; i <= LAST_WHEEL; i++)
-		if((message.tim_count - last_messages[i].tim_count) > min_count)
+		if((message->tim_count - last_messages[i].tim_count) > min_count)
 			g_wheel_speed[i] = 0;
 }

@@ -14,5 +14,6 @@
 #include "global_variables.h"
 #include "global_definitions.h"
 #include "cmsis_os.h"
+#include "util.h"
 
 #endif /* INC_EXTERNAL_INTERRUPT_HANDLER_H_ */

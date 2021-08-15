@@ -7,7 +7,6 @@
 
 #include "external_interrupt_handler.h"
 
-speed_pin_e get_speed_pin(uint16_t pin);
 
 speed_message_t aux_message;
 
@@ -40,15 +39,4 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 //	__enable_irq(); //habilita interrupcoes
 }
 
-speed_pin_e get_speed_pin(uint16_t pin){
-	switch(pin){
-	case S_VEL1_Pin:
-		return FRONT_RIGHT;
-	case S_VEL2_Pin:
-		return FRONT_LEFT;
-	case S_VEL3_Pin:
-		return REAR_RIGHT;
-	default:
-		return REAR_LEFT;
-	}
-}
+

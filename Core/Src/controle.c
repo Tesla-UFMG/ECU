@@ -23,15 +23,14 @@ volatile vehicle_state_e vehicle_state;
 void update_state(bool disable) {
 	if (disable == true) {
 		vehicle_state = S_DISABLE_E;
-	} else if ((throttle_percent < 100) && (frenagem_regenerativa == true)
-				&& g_motor_speed[L_MOTOR] > _5_kmph_rpm) {
-		osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);	// se frenagem ativa, seta flag de aviso
+	} else if ((throttle_percent < 100) && (frenagem_regenerativa == true) && g_motor_speed[L_MOTOR] > _5_kmph_rpm) {
+		osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);     // se frenagem ativa, seta flag de aviso
 		vehicle_state = S_BRAKE_E;
 	} else if(throttle_percent > 100) {
-		osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);	// quando desligada, limpa flag de aviso
+		osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);   // quando desligada, limpa flag de aviso
 		vehicle_state = S_ACCELERATE_E;
 	} else {
-		osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);	// quando desligada, limpa flag de aviso
+		osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);   // quando desligada, limpa flag de aviso
 		vehicle_state = S_NEUTER_E;
 	}
 }

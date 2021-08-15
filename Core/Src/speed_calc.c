@@ -65,7 +65,7 @@ void speed_calc(void *argument) {
 		//caso a tarefa tenha sido chamada pela queue
 		case osOK:
 			//verifica se alguma roda está a muito tempo sem receber interrupção, caso sim a velocidade dessa roda é zerada
-			reset_speed_single(&message, &last_messages, min_count);
+			reset_speed_single(&message, last_messages, min_count);
 
 			//diferenca entre timestamp da mensagem atual e da anterior
 			d_tim_count = message.tim_count - last_messages[message.pin].tim_count;

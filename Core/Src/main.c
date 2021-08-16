@@ -148,6 +148,13 @@ const osThreadAttr_t t_seleciona_modo_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_RTD_handler */
+osThreadId_t t_RTD_handlerHandle;
+const osThreadAttr_t t_RTD_handler_attributes = {
+  .name = "t_RTD_handler",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -218,6 +225,7 @@ extern void torque_manager(void *argument);
 extern void debugleds(void *argument);
 extern void rgb_led(void *argument);
 extern void seleciona_modo(void *argument);
+extern void RTD_handler(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -357,6 +365,9 @@ int main(void)
 
   /* creation of t_seleciona_modo */
   t_seleciona_modoHandle = osThreadNew(seleciona_modo, NULL, &t_seleciona_modo_attributes);
+
+  /* creation of t_RTD_handler */
+  t_RTD_handlerHandle = osThreadNew(RTD_handler, NULL, &t_RTD_handler_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

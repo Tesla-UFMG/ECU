@@ -21,7 +21,7 @@ extern osMessageQueueId_t q_datalog_messageHandle;
 extern osMessageQueueId_t q_debugleds_messageHandle;
 
 //TASKS
-extern osThreadId_t t_main_taskHandle;
+extern osThreadId_t t_RTD_handlerHandle;
 
 //EVENT FLAGS
 extern osEventFlagsId_t ECU_control_event_id;

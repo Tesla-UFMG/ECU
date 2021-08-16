@@ -12,8 +12,8 @@ static FDCAN_HandleTypeDef* can_ptr;
 
 static FDCAN_TxHeaderTypeDef TxHeader;
 
-uint8_t RxData[8];
-FDCAN_RxHeaderTypeDef RxHeader;
+static uint8_t RxData[8];
+static FDCAN_RxHeaderTypeDef RxHeader;
 int16_t datainverter[4];
 uint32_t idinverter;
 

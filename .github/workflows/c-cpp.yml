@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: STM Project Compilation
 
 on:
   push:
@@ -9,9 +9,6 @@ on:
     branches: 
       - master
       - '**/*develop*'
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
 
 jobs:
   build:
@@ -23,7 +20,7 @@ jobs:
     - name: Install ARM toolchain
       run: sudo apt-get install gcc-arm-none-eabi binutils-arm-none-eabi 
 
-    - name: Configure tests/fetch
+    - name: Build Project
       shell: bash
       working-directory: ${{runner.workspace}}/Build
       run: make -j4

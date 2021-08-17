@@ -281,6 +281,7 @@ int main(void)
 	}
   init_ADC_DMA(&hadc1);
   init_CAN();
+
   inicializa_modos();
   /* USER CODE END 2 */
 

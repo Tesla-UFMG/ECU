@@ -14,7 +14,7 @@ void throttle_read(void *argument) {
     uint16_t APPS1;
     uint16_t APPS2;
     uint16_t BSE;
-    uint16_t aux_throttle_percent;
+    uint16_t aux_throttle_percent = 0;
 
     for (;;) {
         #ifdef DEBUG_ECU
@@ -99,5 +99,5 @@ bool are_there_APPS_errors (uint16_t APPS1, uint16_t APPS2, uint16_t aux_throttl
         return true;
     else
         return false;
-}
+
 

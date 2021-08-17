@@ -281,8 +281,8 @@ int main(void)
 	}
   init_ADC_DMA(&hadc1);
   init_CAN();
-
   inicializa_modos();
+  HAL_TIM_Base_Start(&htim2);
   /* USER CODE END 2 */
 
   /* Init scheduler */

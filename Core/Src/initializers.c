@@ -41,33 +41,6 @@ uint16_t debug_milis =0, debug_milis_ant = 0;
 extern modos modo_selecionado;
 modos aceleracao, skidpad, autox, enduro, reverse, erro;
 
-//defasada
-void inicializa_perifericos()
-{
-  SystemClock_Config();
-  HAL_Init();
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_CAN_Init();
-  MX_ADC1_Init();
-  MX_SPI2_Init();
-  MX_TIM3_Init();
-  MX_TIM2_Init();
-  Timer2_Config();
-  CAN_ConfigFilter();
-  CAN_ConfigFrames();
-  CAN_Receive_Init();
-  CANSPI_Initialize();
-  inicializa_adc_dma();
-  EE_Init();
-  //inicializa_watchdog();
-/*
-  //Inicializa watchdog
-
-
-*/
-}
-
 extern FDCAN_HandleTypeDef hfdcan1;
 extern FDCAN_HandleTypeDef hfdcan2;
 

@@ -99,5 +99,5 @@ bool are_there_APPS_errors (uint16_t APPS1, uint16_t APPS2, uint16_t aux_throttl
         return true;
     else
         return false;
-
+}
 

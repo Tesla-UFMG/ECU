@@ -77,9 +77,20 @@ void throttle_read(void *argument) {
 }
 
 bool are_there_APPS_errors (uint16_t APPS1, uint16_t APPS2, uint16_t aux_throttle_percent){
-    uint16_t apps1_calc = 0;
+    uint16_t apps1_calc = calculate_apps1(aux_throttle_percent);
+    if (    APPS2 >= 3720           //Se o valor de APPS2 for acima do seu máximo
+         || APPS1 < 1802.24         //Se o valor de APPS1 for abaixo do seu mínimo
+         || APPS1 > 3900            //Se o valor de APPS1 for acima do seu máximo
+         || APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)   //verifica se APPS1 está abaixo do valor teórico de APPS1, considerando a tolerância
+         || APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0))  //verifica se APPS1 está acima do valor teórico de APPS1, considerando a tolerância
+        return true;
+    else
+        return false;
+}
 
-    //calcula o valor teórico de APPS1 a partir do valor de APPS2
+//calcula o valor teórico de APPS1 a partir do valor de APPS2
+uint16_t calculate_apps1(uint16_t aux_throttle_percent){
+    uint16_t apps1_calc = 0;
     if (aux_throttle_percent >= 0 && aux_throttle_percent < 200)
         apps1_calc = 2212;
     else if (aux_throttle_percent >= 200 && aux_throttle_percent < 400)
@@ -90,14 +101,8 @@ bool are_there_APPS_errors (uint16_t APPS1, uint16_t APPS2, uint16_t aux_throttl
         apps1_calc = (uint16_t) (2.212 * aux_throttle_percent + 1745);
     else if (aux_throttle_percent >= 800 && aux_throttle_percent < 1135)
         apps1_calc = (uint16_t) (1.515 * aux_throttle_percent + 2302);
-
-    if (    APPS2 >= 3720           //Se o valor de APPS2 for acima do seu máximo
-         || APPS1 < 1802.24         //Se o valor de APPS1 for abaixo do seu mínimo
-         || APPS1 > 3900            //Se o valor de APPS1 for acima do seu máximo
-         || APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)   //verifica se APPS1 está abaixo do valor teórico de APPS1, considerando a tolerância
-         || APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0))  //verifica se APPS1 está acima do valor teórico de APPS1, considerando a tolerância
-        return true;
-    else
-        return false;
+    return apps1_calc;
 }
+
+
 

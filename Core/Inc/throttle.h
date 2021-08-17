@@ -16,5 +16,6 @@
 #define THROTTLE_DELAY 25
 
 bool are_there_APPS_errors (uint16_t APPS1, uint16_t APPS2, uint16_t apps1_calc);
+uint16_t calculate_apps1(uint16_t aux_throttle_percent);
 
 #endif /* INC_THROTTLE_H_ */

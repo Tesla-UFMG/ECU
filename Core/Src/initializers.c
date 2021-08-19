@@ -114,5 +114,8 @@ void inicializa_modos() {
 	erro.torq_gain = 0;
 	erro.mode = ERRO;
 	erro.cor = VERMELHO;
+
+
+	modo_selecionado = enduro; //inicializa no modo enduro
 }
 

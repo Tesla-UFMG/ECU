@@ -21,13 +21,13 @@ extern osMessageQueueId_t q_datalog_messageHandle;
 extern osMessageQueueId_t q_debugleds_messageHandle;
 
 //TASKS
-extern osThreadId_t t_RTD_handlerHandle;
+extern osThreadId_t t_main_taskHandle;
+extern osThreadId_t t_seleciona_modoHandle;
 
 //EVENT FLAGS
 extern osEventFlagsId_t ECU_control_event_id;
 
 //SEMAPHORES
-extern osSemaphoreId_t s_mode_buttonHandle;
 extern osSemaphoreId_t s_allowed_change_modeHandle;
 
 //MUTEXES

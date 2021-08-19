@@ -148,13 +148,6 @@ const osThreadAttr_t t_seleciona_modo_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_RTD_handler */
-osThreadId_t t_RTD_handlerHandle;
-const osThreadAttr_t t_RTD_handler_attributes = {
-  .name = "t_RTD_handler",
-  .stack_size = 1024 * 4,
-  .priority = (osPriority_t) osPriorityLow,
-};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -184,11 +177,6 @@ const osMessageQueueAttr_t q_debugleds_message_attributes = {
 osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
   .name = "m_state_parameter_mutex"
-};
-/* Definitions for s_mode_button */
-osSemaphoreId_t s_mode_buttonHandle;
-const osSemaphoreAttr_t s_mode_button_attributes = {
-  .name = "s_mode_button"
 };
 /* Definitions for s_allowed_change_mode */
 osSemaphoreId_t s_allowed_change_modeHandle;
@@ -225,7 +213,6 @@ extern void torque_manager(void *argument);
 extern void debugleds(void *argument);
 extern void rgb_led(void *argument);
 extern void seleciona_modo(void *argument);
-extern void RTD_handler(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -296,9 +283,6 @@ int main(void)
   /* USER CODE END RTOS_MUTEX */
 
   /* Create the semaphores(s) */
-  /* creation of s_mode_button */
-  s_mode_buttonHandle = osSemaphoreNew(1, 1, &s_mode_button_attributes);
-
   /* creation of s_allowed_change_mode */
   s_allowed_change_modeHandle = osSemaphoreNew(1, 1, &s_allowed_change_mode_attributes);
 
@@ -366,9 +350,6 @@ int main(void)
 
   /* creation of t_seleciona_modo */
   t_seleciona_modoHandle = osThreadNew(seleciona_modo, NULL, &t_seleciona_modo_attributes);
-
-  /* creation of t_RTD_handler */
-  t_RTD_handlerHandle = osThreadNew(RTD_handler, NULL, &t_RTD_handler_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

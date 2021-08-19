@@ -23,22 +23,31 @@ void seleciona_modo(void *argument) {
 		#endif
 
 		//espera um semáforo liberado por interrupção e espera está autorizado a mudar de modo
-		osSemaphoreAcquire(s_mode_buttonHandle, osWaitForever);
+        osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 		osSemaphoreAcquire(s_allowed_change_modeHandle, osWaitForever);
 
-			if (g_race_mode > AUTOX)
-				g_race_mode = ENDURO;
+        if (g_race_mode > AUTOX)
+            g_race_mode = ENDURO;
 
-			if(g_race_mode == ENDURO) {
-				modo_selecionado = enduro;
-			} else if(g_race_mode == ACELERACAO) {
-				modo_selecionado = aceleracao;
-			} else if(g_race_mode == SKIDPAD) {
-				modo_selecionado = skidpad;
-			} else if(g_race_mode == AUTOX) {
-				modo_selecionado = autox;
-			} else
-				modo_selecionado = erro;
+		switch(g_race_mode){
+		case ENDURO:
+            modo_selecionado = enduro;
+            break;
+		case ACELERACAO:
+		    modo_selecionado = aceleracao;
+		    break;
+        case SKIDPAD:
+            modo_selecionado = skidpad;
+            break;
+        case AUTOX:
+            modo_selecionado = autox;
+            break;
+        default:
+            modo_selecionado = erro;
+            break;
+		}
+
+
 
 		osSemaphoreRelease(s_allowed_change_modeHandle);
 	}

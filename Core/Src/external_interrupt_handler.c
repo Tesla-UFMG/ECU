@@ -30,12 +30,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 			break;
 
 		case B_RTD_Pin:
-			osThreadFlagsSet(t_RTD_handlerHandle, RTD_BTN_PRESSED_FLAG);
+			osThreadFlagsSet(t_main_taskHandle, RTD_BTN_PRESSED_FLAG);
 			break;
 
 		case B_MODO_Pin:
 			g_race_mode++;
-			osSemaphoreRelease(s_mode_buttonHandle);
+	        osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_FLAG);
 			break;
 
 		default:

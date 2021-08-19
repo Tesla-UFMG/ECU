@@ -98,7 +98,9 @@ typedef enum {
 //General Flags
 #define RTD_FLAG                    1 << 5
 #define RTD_BTN_PRESSED_FLAG        1 << 6
-#define RTD_ERROR_FLAG              1 << 7
+#define MODE_BTN_PRESSED_FLAG       1 << 7
+#define ALLOWED_TO_CHANGE_MODE_FLAG 1 << 8
+
 
 //Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG             1 << 10

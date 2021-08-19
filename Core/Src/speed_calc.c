@@ -11,7 +11,6 @@
 #include "math.h"
 #include "string.h"
 #include "datalog_handler.h"
-#include "main.h"
 
 //distancia     = circuferencia dividido pela quantidade de dentes
 //              = 2*pi*raio/quant.dentes (m)

@@ -36,6 +36,27 @@ void torque_manager(void *argument) {
 			break;
 		case LATERAL:
 			//TODO: implementar controle lateral
+			uint32_t rampa_torque();
+			uint32_t ref_torque_init = rampa_torque(); // utilizar rampa_torque enquanto controle longitudinal nao estiver definido
+			uint32_t lateral_control();
+			uint32_t ref_torque_decrease = lateral_control();
+
+			// se o sinal for positivo, a reducao sera na roda direita
+			// caso contrario, sera na roda esquerda
+			if (ref_torque_decrease >= 0) {
+				ref_torque_message.ref_torque[R_MOTOR] = ref_torque - ref_torque_decrease;
+				ref_torque_message.ref_torque[L_MOTOR] = ref_torque;
+			} else {
+				ref_torque_message.ref_torque[R_MOTOR] = ref_torque;
+				ref_torque_message.ref_torque[L_MOTOR] = ref_torque + ref_torque_decrease;
+			}
+
+			osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
+
+			uint32_t tick;
+			tick = osKernelGetTickCount();
+			tick += LATERAL_DELAY;
+			osDelayUntil(tick);
 
 			break;
 

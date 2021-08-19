@@ -44,11 +44,11 @@ void torque_manager(void *argument) {
 			// se o sinal for positivo, a reducao sera na roda direita
 			// caso contrario, sera na roda esquerda
 			if (ref_torque_decrease >= 0) {
-				ref_torque_message.ref_torque[R_MOTOR] = ref_torque - ref_torque_decrease;
-				ref_torque_message.ref_torque[L_MOTOR] = ref_torque;
+				ref_torque_message.ref_torque[R_MOTOR] = ref_torque_init - ref_torque_decrease;
+				ref_torque_message.ref_torque[L_MOTOR] = ref_torque_init;
 			} else {
-				ref_torque_message.ref_torque[R_MOTOR] = ref_torque;
-				ref_torque_message.ref_torque[L_MOTOR] = ref_torque + ref_torque_decrease;
+				ref_torque_message.ref_torque[R_MOTOR] = ref_torque_init;
+				ref_torque_message.ref_torque[L_MOTOR] = ref_torque_init + ref_torque_decrease;
 			}
 
 			osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);

@@ -9,13 +9,13 @@
 #include "cmsis_os.h"
 #include "global_definitions.h"
 #include "stdint.h"
+#include "DynamicControls/lateral_control.h"
 
 extern volatile uint16_t throttle_percent;
+extern volatile uint16_t steering_wheel;
 extern modos modo_selecionado;
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
-
-extern volatile uint16_t steering_wheel;
 
 void torque_manager(void *argument) {
 
@@ -34,22 +34,15 @@ void torque_manager(void *argument) {
 			//TODO: implementar controle longitudinal
 
 			break;
-		case LATERAL:
+		case LATERAL: ;
 			//TODO: implementar controle lateral
-			uint32_t rampa_torque();
-			uint32_t ref_torque_init = rampa_torque(); // utilizar rampa_torque enquanto controle longitudinal nao estiver definido
-			uint32_t lateral_control();
-			uint32_t ref_torque_decrease = lateral_control();
+			lateral_t lateral_control();
+			lateral_t ref_torque_decrease = lateral_control();
+			uint32_t ref_torque_lateral[2] = {0};
+			rampa_torque_lateral(&ref_torque_decrease, ref_torque_lateral); // utilizar rampa_torque enquanto controle longitudinal nao estiver definido
 
-			// se o sinal for positivo, a reducao sera na roda direita
-			// caso contrario, sera na roda esquerda
-			if (ref_torque_decrease >= 0) {
-				ref_torque_message.ref_torque[R_MOTOR] = ref_torque_init - ref_torque_decrease;
-				ref_torque_message.ref_torque[L_MOTOR] = ref_torque_init;
-			} else {
-				ref_torque_message.ref_torque[R_MOTOR] = ref_torque_init;
-				ref_torque_message.ref_torque[L_MOTOR] = ref_torque_init + ref_torque_decrease;
-			}
+			ref_torque_message.ref_torque[R_MOTOR] = ref_torque_lateral[REAR_RIGHT];
+			ref_torque_message.ref_torque[L_MOTOR] = ref_torque_lateral[REAR_LEFT];
 
 			osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
 
@@ -78,7 +71,31 @@ void torque_manager(void *argument) {
 
 }
 
+// Rampa vetorização
+void rampa_torque_lateral( lateral_t* ref_torque_decrease, uint32_t* ref_torque) {
+	static uint32_t ref_torque_ant[2] = {0};
+	ref_torque[REAR_RIGHT], ref_torque[REAR_LEFT] = (modo_selecionado.torq_gain * throttle_percent) / 10;
 
+	if (ref_torque_decrease->wheel == REAR_RIGHT)
+		ref_torque[REAR_RIGHT] -= ref_torque_decrease->ref_decrease;
+	else
+		ref_torque[REAR_LEFT] -= ref_torque_decrease->ref_decrease;
+
+	for (int i=0;i<2;i++) {
+		if (ref_torque_ant[i] > TORQUE_INIT_LIMITE) {			           // verifica se a referencia
+			if (ref_torque[i] > ref_torque[i] + INC_TORQUE) {			   // ja passou do ponto de inflexao
+				ref_torque[i] = ref_torque_ant[i] + INC_TORQUE;			   // e aplica o incremento mais agressivo
+			}
+		} else {
+			if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE_INIT) {	   // caso contrario usa o
+				ref_torque[i] = ref_torque_ant[i] + INC_TORQUE_INIT;	   // incremento da primeira rampa
+			}
+		}
+		ref_torque_ant[i] = ref_torque[i];								   // aplica a referencia calculada
+	}
+}
+
+// Rampa normal
 uint32_t rampa_torque() {
 	static uint32_t ref_torque_ant = 0;
 	uint32_t ref_torque = (modo_selecionado.torq_gain * throttle_percent) / 10;

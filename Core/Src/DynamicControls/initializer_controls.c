@@ -5,8 +5,10 @@
  *      Author: Luiza
  */
 
-#include "initializer_controls.h"
-#include "lateral_control.h"
+#include "DynamicControls/initializer_controls.h"
+#include "DynamicControls/lateral_control.h"
+#include "DynamicControls/PID.h"
+#include "stdint.h"
 
 void init_controls() {
 	const uint32_t wheelbase = FRONT_DISTANCE + REAR_DISTANCE;

@@ -13,7 +13,6 @@
 #include "global_definitions.h"
 
 #define RGB_BLINK_DELAY 200
-#define RGB_WARN_DELAY 200
 
 #define RGB_BLACK 	(rgb){0,0,0}
 #define RGB_RED 	(rgb){1,0,0}
@@ -24,10 +23,15 @@
 #define RGB_CYAN	(rgb){0,1,1}
 #define RGB_WHITE 	(rgb){1,1,1}
 
-
+typedef enum {
+    FIXED,
+    BLINK200,
+    NO_CHANGE
+} control_rgb_led_e;
 
 typedef struct {
-	cores_t color;
+    cores_t color;
+    control_rgb_led_e control;
 } rgb_led_message_t;
 
 typedef struct {

@@ -10,6 +10,8 @@
 #include "cmsis_os.h"
 #include "global_variables.h"
 #include "global_instances.h"
+#include "rgb_led.h"
+
 
 
 
@@ -47,7 +49,7 @@ void seleciona_modo(void *argument) {
             break;
 		}
 
-
+		set_rgb_led(modo_selecionado.cor, BLINK200);
 
 		osSemaphoreRelease(s_allowed_change_modeHandle);
 	}

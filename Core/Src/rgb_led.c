@@ -25,40 +25,53 @@ void write_rgb_color(rgb rgb_gpio);
 void write_debug_color(rgb rgb_gpio);
 rgb get_rgb_color(cores_t color);
 
+extern osMessageQueueId_t q_rgb_led_messageHandle;
+
+osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control) {
+    rgb_led_message_t message = {color, control};
+    return osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
+}
+
 void rgb_led(void *argument) {
+
+    rgb_led_message_t message;
+
     for(;;) {
         #ifdef DEBUG_ECU
         extern void brkpt();
         brkpt();
         #endif
 
-        switch(osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, RGB_BLINK_DELAY)){  //espera RTD ser setado ou timeout estourar
+        switch(osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, RGB_BLINK_DELAY)){  //espera RTD ser setado ou timeout estourar
 
-        case osFlagsErrorTimeout:                                                                   //caso timeout estore vai piscar o led, indicando que tá fora do RTD
-            write_rgb_color(get_rgb_color(modo_selecionado.cor));
-            osDelay(RGB_BLINK_DELAY);
-            write_rgb_color(get_rgb_color(PRETO));
+        case osErrorTimeout:                                                                   //caso timeout estore vai piscar o led, indicando que tá fora do RTD
+            write_rgb_color(get_rgb_color(message.color));
+            blink_rgb(RGB_BLINK_DELAY);
             break;
 
         default:
-            write_rgb_color(get_rgb_color(modo_selecionado.cor));                                   //caso RTD seja ativo o RGB ficará fixo
-            osEventFlagsWait(ECU_control_event_id, ALL_ERRORS_FLAG | ALL_WARN_FLAG, osFlagsNoClear, osWaitForever); //espera por uma flag de erro
-            uint32_t flags = osEventFlagsGet(ECU_control_event_id);
-            flags &= (ALL_ERRORS_FLAG | ALL_WARN_FLAG);                                             //filtra apenas erros e avisos
-            switch (flags) {                                                                        //RGB branco caso aviso, amarelo caso erro leve
-                case REGEN_WARN_FLAG:
-                case DYNAMIC_CONTROL_WARN_FLAG:
-                    write_rgb_color(get_rgb_color(BRANCO));
+            switch (message.control){
+                case FIXED:
+                    for(;;){
+                    write_rgb_color(get_rgb_color(message.color));
+                    osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, osWaitForever);
+                    if (message.control == BLINK200)
+                        break;
+                    }
                     break;
-                case APPS_ERROR_FLAG:
-                case BSE_ERROR_FLAG:
-                    write_rgb_color(get_rgb_color(AMARELO));
+                default:
+                    write_rgb_color(get_rgb_color(message.color));
+                    blink_rgb(RGB_BLINK_DELAY);
                     break;
             }
-            osDelay(RGB_WARN_DELAY);
             break;
         }
     }
+}
+
+void blink_rgb(uint32_t delay){
+    osDelay(delay);
+    write_rgb_color(get_rgb_color(PRETO));
 }
 
 void write_rgb_color(rgb rgb_gpio){

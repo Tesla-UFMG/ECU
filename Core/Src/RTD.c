@@ -9,11 +9,13 @@
 #include "global_variables.h"
 #include "main.h"
 #include "global_instances.h"
+#include "rgb_led.h"
 
 
 void exit_RTD(){
     modo_selecionado = erro;                            //seta modo_selecionado como erro
     g_race_mode = ERRO;
+    set_rgb_led(modo_selecionado.cor, BLINK200);
     osEventFlagsClear(ECU_control_event_id, RTD_FLAG);  //limpa flag de RTD
 }
 
@@ -35,6 +37,7 @@ bool is_RTD_available(){
 void set_RTD(){
     osEventFlagsSet(ECU_control_event_id, RTD_FLAG);                                         //Seta flag de RTD
     osSemaphoreAcquire(s_allowed_change_modeHandle, osWaitForever);                          //Bloqueia mudança de modo
+    set_rgb_led(modo_selecionado.cor, FIXED);
     aciona_sirene();
 }
 

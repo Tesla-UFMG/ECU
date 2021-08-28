@@ -173,6 +173,11 @@ osMessageQueueId_t q_debugleds_messageHandle;
 const osMessageQueueAttr_t q_debugleds_message_attributes = {
   .name = "q_debugleds_message"
 };
+/* Definitions for q_rgb_led_message */
+osMessageQueueId_t q_rgb_led_messageHandle;
+const osMessageQueueAttr_t q_rgb_led_message_attributes = {
+  .name = "q_rgb_led_message"
+};
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
@@ -309,6 +314,9 @@ int main(void)
 
   /* creation of q_debugleds_message */
   q_debugleds_messageHandle = osMessageQueueNew (16, sizeof(debugled_message_t), &q_debugleds_message_attributes);
+
+  /* creation of q_rgb_led_message */
+  q_rgb_led_messageHandle = osMessageQueueNew (16, sizeof(rgb_led_message_t), &q_rgb_led_message_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */

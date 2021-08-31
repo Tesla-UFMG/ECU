@@ -11,6 +11,8 @@
 #include "stdint.h"
 #include "main.h"
 #include "global_definitions.h"
+#include "cmsis_os.h"
+
 
 #define RGB_BLINK_DELAY 200
 
@@ -40,5 +42,6 @@ typedef struct {
 	GPIO_PinState blue;
 } rgb;
 
+osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control);
 
 #endif /* INC_RGB_LED_H_ */

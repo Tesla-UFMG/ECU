@@ -17,7 +17,6 @@
 
 
 #include "rgb_led.h"
-#include "cmsis_os.h"
 #include "global_variables.h"
 #include "global_instances.h"
 

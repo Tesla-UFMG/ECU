@@ -8,9 +8,12 @@
 #include "throttle.h"
 #include "datalog_handler.h"
 
+#include "error_treatment.h"
+
+static uint16_t APPS1value;
+static uint16_t APPS2value;
+
 void throttle_read(void *argument) {
-	uint16_t APPS1;
-	uint16_t APPS2;
 	uint16_t BSE;
 	uint16_t apps1_calc;
 	uint16_t aux_throttle_percent = 0;
@@ -20,8 +23,8 @@ void throttle_read(void *argument) {
 		brkpt();
 		#endif
 
-		APPS1 = ADC_DMA_buffer[APPS1_E];
-		APPS2 = ADC_DMA_buffer[APPS2_E];
+		APPS1value = ADC_DMA_buffer[APPS1_E];
+		APPS2value = ADC_DMA_buffer[APPS2_E];
 		BSE   = ADC_DMA_buffer[BRAKE_E];
 		apps1_calc = 0;
 
@@ -73,12 +76,9 @@ void throttle_read(void *argument) {
 
 		log_data(ID_BRAKE, brake_status);
 
-		if (((aux_throttle_percent > 300 && BSE > 2200) )) {
-			//TODO: sinalizar evento de erro de APPS
-			aux_throttle_percent = 0;
-			//provavelmente não precisa sinalizar erro
-//			osEventFlagsSet(ECU_control_event_id, APPS_ERROR_FLAG);
-		}
+
+		check_for_errors(checkForAppsErrors, APPS_ERROR_FLAG);
+
 		throttle_percent = aux_throttle_percent;
 
 		log_data(ID_THROTTLE, throttle_percent);
@@ -89,5 +89,23 @@ void throttle_read(void *argument) {
 	}
 
 //	return (acelerador);
+}
+
+
+bool checkForAppsErrors()
+{
+	APPS1value
+	/*if (apps > 30)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+	*/
+
+	return true;
 }
 

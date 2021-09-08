@@ -22,12 +22,22 @@ void main_task(void *argument) {
 		osEventFlagsSet(ECU_control_event_id, RTD_FLAG);
 
 		//espera por qualquer erro relatado pela ECU
-		osEventFlagsWait(ECU_control_event_id, ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);
-		uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
+		osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);
+		uint32_t error_flags = osThreadFlagsGet();
+		uint32_t event_flag = osEventFlagsGet(ECU_control_event_id);
 		error_flags = error_flags & ALL_ERRORS_FLAG; //filtra apenas flags de erros, ignorando as outras
 		switch (error_flags) {
 			case APPS_ERROR_FLAG:
 				//TODO: tratar erro de APPS
+				bool isErrorPresent = event_flag & APPS_ERROR_FLAG;
+				if (isErrorPresent)
+				{
+					osDelay(20);
+				}
+				else
+				{
+					osThreadFlagsClear(APPS_ERROR_FLAG);
+				}
 				break;
 			case INVERTER_COMM_ERROR_FLAG:
 				//TODO: tratar erro de comunicacao com o inversor

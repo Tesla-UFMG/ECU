@@ -10,6 +10,8 @@
 #include "global_definitions.h"
 #include "datalog_handler.h"
 
+#include "error_treatment.h"
+
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 volatile uint8_t internal_wheel;
@@ -66,4 +68,10 @@ void steering_read(void *argument) {
 	//	return (volante);
 
 	}
+}
+
+
+bool areThereSteeringErrors()
+{
+	
 }

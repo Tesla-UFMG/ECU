@@ -9,6 +9,9 @@
 #define INC_DYNAMICCONTROLS_LATERAL_CONTROL_H_
 
 #include "speed_calc.h"
+#include "global_definitions.h"
+#include "global_variables.h"
+#include "constants.h"
 
 //defines PID
 #define KP 6.51864262048678
@@ -16,8 +19,8 @@
 #define LATERAL_DELAY 30
 
 typedef struct {
-	uint32_t ref_decrease;
-	speed_pin_e wheel;
+	double ref_decrease;
+	uint8_t ref_wheel;
 } lateral_t;
 
 #endif /* INC_DYNAMICCONTROLS_LATERAL_CONTROL_H_ */

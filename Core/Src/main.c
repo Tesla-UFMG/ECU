@@ -26,6 +26,7 @@
 #include "CAN/inverter_can.h"
 #include "CAN/general_can.h"
 #include "initializers.h"
+#include "DynamicControls/initializer_controls.h"
 #include "throttle.h"
 #include "speed_calc.h"
 #include "global_instances.h"
@@ -246,6 +247,7 @@ int main(void)
 	}
   init_ADC_DMA(&hadc1);
   init_CAN();
+  init_controls();
   HAL_TIM_Base_Start(&htim2);
   /* USER CODE END 2 */
 

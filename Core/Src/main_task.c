@@ -13,6 +13,8 @@
 #include "debugleds.h"
 #include "rgb_led.h"
 #include "throttle.h"
+#include "util.h"
+
 
 
 void main_task(void *argument) {
@@ -24,63 +26,63 @@ void main_task(void *argument) {
 		brkpt();
 		#endif
 
-        bool is_RTD_active = (osEventFlagsGet(ECU_control_event_id) & RTD_FLAG);
-
-        if (!is_RTD_active){
-            set_rgb_led(modo_selecionado.cor, NO_CHANGE);
-            osSemaphoreRelease(s_allowed_change_modeHandle);                                         //libera semáforo que permite a mudança de modos
-	        for(;;) {
-	            osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);              //espera receber flag q o botão de RTD foi pressionado
-	            if(is_RTD_available())
-	                break;                                                                           //sai do for infinito caso tudo esteja certo para acionar RTD
-	            else
-	                set_debugleds(DEBUGLED1,BLINK,2);                                                //envia uma mensagem de alerta caso n seja possível acionar RTD
-	           }
-	           set_RTD();//seta RTD
-		}
+		//todo: remover o wait por RTD, para poder checar se erro severo foi resolvido. Do jeito atual ao sair do RTD é necessário reiniciar EC
+		osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
 
 
-		//espera por qualquer erro relatado pela ECU
-		osEventFlagsWait(ECU_control_event_id, ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);
-		uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
-		error_flags &= ALL_ERRORS_FLAG;                              //filtra apenas flags de erros severos, que precisam sair de RTD, ignorando as outras
-		switch (error_flags) {
+		osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);         //espera por qualquer erro
+		uint32_t error_flags = osThreadFlagsGet();                                                  //obtem os valores de flag de thread
+		uint32_t event_flags = osEventFlagsGet(ECU_control_event_id);                               //obtem os valores de flag de evento
+		uint32_t most_significant_error_flags = get_flag_MSB(error_flags &= ALL_ERRORS_FLAG);       //obtem a flag de threa mais significativa
+		bool isErrorPresent;
+		switch (most_significant_error_flags) {
+
 		    case INVERTER_COMM_ERROR_FLAG:
-		        exit_RTD();
-		        //check_comm();
-		        break;
+		        //todo: implementar erro de comunicação com inversor
+                isErrorPresent = event_flags & INVERTER_COMM_ERROR_FLAG;    //verifica se o erro ainda está presente na flag de evento
+                if (isErrorPresent) {
+                    exit_RTD();                                             //sai de RTD caso o erro esteja presente
+
+                } else {
+                    osThreadFlagsClear(INVERTER_COMM_ERROR_FLAG);           //consertar
+                }
+                break;
 
             case SU_F_ERROR_FLAG:
-                exit_RTD();
-                if (check_SU_F())
-                    osDelay(20);
-                else {
-                    osEventFlagsClear(ECU_control_event_id, SU_F_ERROR_FLAG);
+                isErrorPresent = event_flags & SU_F_ERROR_FLAG;
+                if (isErrorPresent) {
+                    exit_RTD();                                             //sai de RTD caso o erro esteja presente
+
+                } else {
+                    osThreadFlagsClear(SU_F_ERROR_FLAG);                    //consertar
                 }
                 break;
 
-		    case APPS_ERROR_FLAG:
-                osEventFlagsClear(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);
-                set_rgb_led(AMARELO, NO_CHANGE);
-                if (check_apps())
+		    case APPS_ERROR_FLAG: ;
+		        isErrorPresent = event_flags & APPS_ERROR_FLAG;                         //verifica se o erro ainda está presente na flag de evento
+                if (isErrorPresent) {                                                   //caso o erro esteja presente:
+                    set_rgb_led(AMARELO, NO_CHANGE);                                    //seta o led rgb como amarelo
+                    osEventFlagsClear(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);   //limpa a flag que permite o funcionamento do pedal
                     osDelay(20);
-                else {
-                    osEventFlagsClear(ECU_control_event_id, APPS_ERROR_FLAG);
-                    set_rgb_led(modo_selecionado.cor, NO_CHANGE);
-                    osEventFlagsSet(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);
+                } else {                                                                //caso o erro tenha sido resolvido:
+                    osThreadFlagsClear(APPS_ERROR_FLAG);                                //limpa flag de thread do erro
+                    set_rgb_led(modo_selecionado.cor, NO_CHANGE);                       //retorna o RGB ao funcionamento normal
+                    osEventFlagsSet(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);     //seta a flag que permite o funcionamento do pedal
                 }
                 break;
 
-		    case BSE_ERROR_FLAG:
-		        osEventFlagsClear(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);
-                set_rgb_led(AMARELO, NO_CHANGE);
-                if (check_bse())
+		    case BSE_ERROR_FLAG: ;
+                isErrorPresent = event_flags & BSE_ERROR_FLAG;                          //verifica se o erro ainda está presente na flag de evento
+                if (isErrorPresent) {                                                   //caso o erro esteja presente:
+                    set_rgb_led(AMARELO, NO_CHANGE);                                    //seta o led rgb como amarelo
+                    osEventFlagsClear(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);   //limpa a flag que permite o funcionamento do pedal
                     osDelay(20);
-                else {
-                    osEventFlagsClear(ECU_control_event_id, BSE_ERROR_FLAG);
-                    set_rgb_led(modo_selecionado.cor, NO_CHANGE);
-                    osEventFlagsSet(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);
-	                }
+                } else {                                                                //caso o erro tenha sido resolvido:
+                    osThreadFlagsClear(BSE_ERROR_FLAG);                                 //limpa flag de thread do erro
+                    set_rgb_led(modo_selecionado.cor, NO_CHANGE);                       //retorna o RGB ao funcionamento normal
+                    osEventFlagsSet(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);     //seta a flag que permite o funcionamento do pedal
+                }
+                break;
 
             default:
                 osDelay(100);

@@ -23,6 +23,7 @@
 void write_rgb_color(rgb rgb_gpio);
 void write_debug_color(rgb rgb_gpio);
 rgb get_rgb_color(cores_t color);
+void blink_rgb(uint32_t delay);
 
 extern osMessageQueueId_t q_rgb_led_messageHandle;
 

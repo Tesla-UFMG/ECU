@@ -9,8 +9,8 @@
 #include "global_definitions.h"
 #include "global_instances.h"
 
-speed_pin_e get_speed_pin(uint16_t pin){
-    switch(pin){
+speed_pin_e get_speed_pin(uint16_t pin) {
+    switch(pin) {
     case S_VEL1_Pin:
         return FRONT_RIGHT;
     case S_VEL2_Pin:
@@ -22,9 +22,15 @@ speed_pin_e get_speed_pin(uint16_t pin){
     }
 }
 
-void update_regen_state(bool is_status_regen){
-    if (is_status_regen)
-        osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);     // se frenagem ativa, seta flag de aviso
-    else
-        osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);   // se frenagem ativa, limpa flag de aviso
+//retorna uma variável do tamanho de value, porém apenas com o bit mais significativo setado em value
+uint32_t get_flag_MSB(uint32_t value) {
+    int i = 0;
+    while (value != 0) {
+        ++i;
+        value >>= 1;
+    }
+    return (1 << (i-1));
 }
+
+
+

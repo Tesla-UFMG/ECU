@@ -20,10 +20,12 @@ extern osMessageQueueId_t q_torque_messageHandle;
 extern osMessageQueueId_t q_datalog_messageHandle;
 extern osMessageQueueId_t q_debugleds_messageHandle;
 extern osMessageQueueId_t q_rgb_led_messageHandle;
+extern osMessageQueueId_t q_throttle_controlHandle;
 
 //TASKS
 extern osThreadId_t t_main_taskHandle;
 extern osThreadId_t t_seleciona_modoHandle;
+extern osThreadId_t t_RTDHandle;
 
 //EVENT FLAGS
 extern osEventFlagsId_t ECU_control_event_id;

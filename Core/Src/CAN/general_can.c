@@ -7,6 +7,7 @@
 
 #include "CAN/general_can.h"
 #include "CAN/CAN_handler.h"
+#include "debugleds.h"
 
 static FDCAN_HandleTypeDef* can_ptr;;
 
@@ -43,6 +44,8 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
 			/* Reception Error */
 			Error_Handler();
 		}
+
+        set_debugleds(DEBUGLED3,TOGGLE,0);
 
 		idgeneral = RxHeader.Identifier;
 		for(int i = 0; i < 8; i += 2){

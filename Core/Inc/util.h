@@ -13,6 +13,6 @@
 #include "stdbool.h"
 
 speed_pin_e get_speed_pin(uint16_t pin);
-void update_regen_state(bool is_status_regen);
+uint32_t get_flag_MSB(uint32_t value);
 
 #endif /* INC_UTIL_H_ */

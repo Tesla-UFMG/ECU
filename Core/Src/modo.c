@@ -16,7 +16,6 @@
 
 
 void seleciona_modo(void *argument) {
-
 	for(;;) {
 
 		#ifdef DEBUG_ECU
@@ -28,29 +27,30 @@ void seleciona_modo(void *argument) {
         osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 		osSemaphoreAcquire(s_allowed_change_modeHandle, osWaitForever);
 
-        if (g_race_mode > AUTOX)
-            g_race_mode = ENDURO;
+		if (g_race_mode > AUTOX)
+		    g_race_mode = ENDURO;
 
 		switch(g_race_mode){
-		case ENDURO:
-            modo_selecionado = enduro;
-            break;
-		case ACELERACAO:
-		    modo_selecionado = aceleracao;
-		    break;
-        case SKIDPAD:
-            modo_selecionado = skidpad;
-            break;
-        case AUTOX:
-            modo_selecionado = autox;
-            break;
-        default:
-            modo_selecionado = erro;
-            break;
+		    case ENDURO:
+		        modo_selecionado = enduro;
+		        break;
+		    case ACELERACAO:
+		        modo_selecionado = aceleracao;
+		        break;
+            case SKIDPAD:
+                modo_selecionado = skidpad;
+                break;
+            case AUTOX:
+                modo_selecionado = autox;
+                break;
+            default:
+                modo_selecionado = erro;
+                break;
 		}
 
 		set_rgb_led(modo_selecionado.cor, BLINK200);
 
 		osSemaphoreRelease(s_allowed_change_modeHandle);
+		//todo: dataloggar modos
 	}
 }

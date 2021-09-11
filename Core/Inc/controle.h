@@ -14,7 +14,7 @@
 #include "cmsis_os.h"
 
 
-
+void update_regen_state(vehicle_state_e vehicle_state);
 
 const uint8_t P_ENABLE   = 1 << 0,
 			  P_RUNSTOP  = 1 << 1,

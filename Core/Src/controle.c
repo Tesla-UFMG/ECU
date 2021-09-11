@@ -10,7 +10,6 @@
 #include "global_definitions.h"
 #include "constants.h"
 #include "datalog_handler.h"
-#include "util.h"
 
 extern osMutexId_t m_state_parameter_mutexHandle;
 extern osMessageQueueId_t q_ref_torque_messageHandle;
@@ -21,19 +20,18 @@ volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
 volatile vehicle_state_e vehicle_state;
 
+
 void update_state(bool disable) {
-	if (disable == true) {
+	if (disable == true)
 		vehicle_state = S_DISABLE_E;
-	} else if ((throttle_percent < 100) && (frenagem_regenerativa == true) && g_motor_speed[L_MOTOR] > _5_kmph_rpm) {
-	    update_regen_state(true);
-		vehicle_state = S_BRAKE_E;
-	} else if(throttle_percent > 100) {
-	    update_regen_state(false);
+	else if ((throttle_percent < 100) && (frenagem_regenerativa == true) && g_motor_speed[L_MOTOR] > _5_kmph_rpm)
+	    vehicle_state = S_BRAKE_E;
+	else if(throttle_percent > 100)
 		vehicle_state = S_ACCELERATE_E;
-	} else {
-	    update_regen_state(false);
+	else
 		vehicle_state = S_NEUTER_E;
-	}
+
+	update_regen_state(vehicle_state);
 }
 
 void update_state_parameters(torque_message_t* torque_message) {
@@ -141,4 +139,11 @@ void controle(void *argument) {
 			break;
 		}
 	}
+}
+
+void update_regen_state(vehicle_state_e vehicle_state){
+    if (S_BRAKE_E)
+        osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);     // se frenagem ativa, seta flag de aviso
+    else
+        osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);   // se frenagem ativa, limpa flag de aviso
 }

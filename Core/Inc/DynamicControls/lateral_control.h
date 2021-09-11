@@ -23,4 +23,6 @@ typedef struct {
 	uint8_t ref_wheel;
 } lateral_t;
 
+#define sign(x) (x >= 0) - (x < 0)
+
 #endif /* INC_DYNAMICCONTROLS_LATERAL_CONTROL_H_ */

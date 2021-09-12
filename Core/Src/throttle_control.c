@@ -22,7 +22,10 @@ void throttle_control(void *argument) {
         osMessageQueueGet(q_throttle_controlHandle, &message, NULL, osWaitForever);                     //espera por uma mensagem com o valor de APPS
 
         //se o pedal está disponível atualiza o valor de throttle_percent para o da mensagem, caso não atualiza para 0
-        if (get_individual_flag(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG) && get_individual_flag(ECU_control_event_id, RTD_FLAG))
+        bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
+        bool is_throttle_active = get_individual_flag(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);
+
+        if (is_RTD_active && is_throttle_active)
             throttle_percent = message;
         else
             throttle_percent = 0;

@@ -27,7 +27,9 @@ void RTD(void *argument) {
 
         osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);     //espera receber flag q o botão de RTD foi pressionado
 
-        if (!get_individual_flag(ECU_control_event_id, RTD_FLAG)){
+        bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
+
+        if (!is_RTD_active) {
             if(can_RTD_be_enabled())
                 set_RTD();                                                  //seta RTD
             else

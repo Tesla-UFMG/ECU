@@ -11,46 +11,48 @@
 #include "global_variables.h"
 #include "global_instances.h"
 #include "rgb_led.h"
+#include "util.h"
 
 
 
 void seleciona_modo(void *argument) {
-	for(;;) {
+    for(;;) {
 
-		#ifdef DEBUG_ECU
-		extern void brkpt();
-		brkpt();
-		#endif
+        #ifdef DEBUG_ECU
+        extern void brkpt();
+        brkpt();
+        #endif
 
-		//espera um semáforo liberado por interrupção e espera está autorizado a mudar de modo
-		osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
+        //espera um semáforo liberado por interrupção e espera está autorizado a mudar de modo
+        osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 
-		if (!get_individual_flag(ECU_control_event_id, RTD_FLAG)) {
+        bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
+        if (!is_RTD_active) {
 
-		    if (g_race_mode > AUTOX)
+            if (g_race_mode > AUTOX)
                 g_race_mode = ENDURO;
 
-                switch(g_race_mode) {
-                    case ENDURO:
-                        modo_selecionado = enduro;
-                        break;
-                    case ACELERACAO:
-                        modo_selecionado = aceleracao;
-                        break;
-                    case SKIDPAD:
-                        modo_selecionado = skidpad;
-                        break;
-                    case AUTOX:
-                        modo_selecionado = autox;
-                        break;
-                    default:
-                        modo_selecionado = erro;
-                        break;
-		            }
+            switch(g_race_mode) {
+                case ENDURO:
+                    modo_selecionado = enduro;
+                    break;
+                case ACELERACAO:
+                    modo_selecionado = aceleracao;
+                    break;
+                case SKIDPAD:
+                    modo_selecionado = skidpad;
+                    break;
+                case AUTOX:
+                    modo_selecionado = autox;
+                    break;
+                default:
+                    modo_selecionado = erro;
+                    break;
+                }
 
-		            set_rgb_led(modo_selecionado.cor, BLINK200);
+            set_rgb_led(modo_selecionado.cor, BLINK200);
 
-		}
-		//todo: dataloggar modos
-	}
+        }
+        //todo: dataloggar modos
+    }
 }

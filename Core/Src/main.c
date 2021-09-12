@@ -31,6 +31,7 @@
 #include "global_instances.h"
 #include "main_task.h"
 #include "debugleds.h"
+#include "rgb_led.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -133,6 +134,34 @@ const osThreadAttr_t t_debugleds_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_rgb_led */
+osThreadId_t t_rgb_ledHandle;
+const osThreadAttr_t t_rgb_led_attributes = {
+  .name = "t_rgb_led",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for t_seleciona_modo */
+osThreadId_t t_seleciona_modoHandle;
+const osThreadAttr_t t_seleciona_modo_attributes = {
+  .name = "t_seleciona_modo",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for t_RTD */
+osThreadId_t t_RTDHandle;
+const osThreadAttr_t t_RTD_attributes = {
+  .name = "t_RTD",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for t_throttle_control */
+osThreadId_t t_throttle_controlHandle;
+const osThreadAttr_t t_throttle_control_attributes = {
+  .name = "t_throttle_control",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -157,6 +186,16 @@ const osMessageQueueAttr_t q_datalog_message_attributes = {
 osMessageQueueId_t q_debugleds_messageHandle;
 const osMessageQueueAttr_t q_debugleds_message_attributes = {
   .name = "q_debugleds_message"
+};
+/* Definitions for q_rgb_led_message */
+osMessageQueueId_t q_rgb_led_messageHandle;
+const osMessageQueueAttr_t q_rgb_led_message_attributes = {
+  .name = "q_rgb_led_message"
+};
+/* Definitions for q_throttle_control */
+osMessageQueueId_t q_throttle_controlHandle;
+const osMessageQueueAttr_t q_throttle_control_attributes = {
+  .name = "q_throttle_control"
 };
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
@@ -191,6 +230,10 @@ extern void odometer_calc(void *argument);
 extern void throttle_handler(void *argument);
 extern void torque_manager(void *argument);
 extern void debugleds(void *argument);
+extern void rgb_led(void *argument);
+extern void seleciona_modo(void *argument);
+extern void RTD(void *argument);
+extern void throttle_control(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -246,6 +289,7 @@ int main(void)
 	}
   init_ADC_DMA(&hadc1);
   init_CAN();
+  inicializa_modos();
   HAL_TIM_Base_Start(&htim2);
   /* USER CODE END 2 */
 
@@ -283,6 +327,12 @@ int main(void)
   /* creation of q_debugleds_message */
   q_debugleds_messageHandle = osMessageQueueNew (16, sizeof(debugled_message_t), &q_debugleds_message_attributes);
 
+  /* creation of q_rgb_led_message */
+  q_rgb_led_messageHandle = osMessageQueueNew (16, sizeof(rgb_led_message_t), &q_rgb_led_message_attributes);
+
+  /* creation of q_throttle_control */
+  q_throttle_controlHandle = osMessageQueueNew (16, sizeof(uint16_t), &q_throttle_control_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -317,6 +367,18 @@ int main(void)
 
   /* creation of t_debugleds */
   t_debugledsHandle = osThreadNew(debugleds, NULL, &t_debugleds_attributes);
+
+  /* creation of t_rgb_led */
+  t_rgb_ledHandle = osThreadNew(rgb_led, NULL, &t_rgb_led_attributes);
+
+  /* creation of t_seleciona_modo */
+  t_seleciona_modoHandle = osThreadNew(seleciona_modo, NULL, &t_seleciona_modo_attributes);
+
+  /* creation of t_RTD */
+  t_RTDHandle = osThreadNew(RTD, NULL, &t_RTD_attributes);
+
+  /* creation of t_throttle_control */
+  t_throttle_controlHandle = osThreadNew(throttle_control, NULL, &t_throttle_control_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -370,13 +432,13 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 1;
-  RCC_OscInitStruct.PLL.PLLN = 18;
+  RCC_OscInitStruct.PLL.PLLN = 50;
   RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 3;
+  RCC_OscInitStruct.PLL.PLLQ = 4;
   RCC_OscInitStruct.PLL.PLLR = 2;
   RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_3;
-  RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOMEDIUM;
-  RCC_OscInitStruct.PLL.PLLFRACN = 6144;
+  RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
+  RCC_OscInitStruct.PLL.PLLFRACN = 0;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -388,13 +450,13 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV1;
   RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -626,7 +688,7 @@ static void MX_I2C3_Init(void)
 
   /* USER CODE END I2C3_Init 1 */
   hi2c3.Instance = I2C3;
-  hi2c3.Init.Timing = 0x00909FCE;
+  hi2c3.Init.Timing = 0x00C0EAFF;
   hi2c3.Init.OwnAddress1 = 0;
   hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c3.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -878,7 +940,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, C_LED_DEBUG1_Pin|C_LED_DEBUG2_Pin|C_LED_DEBUG3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, C_LED_DEBUG1_Pin|C_LED_DEBUG3_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(C_LED_DEBUG2_GPIO_Port, C_LED_DEBUG2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, C_LED_BLUE_Pin|C_LED_GREEN_Pin|C_LED_RED_Pin, GPIO_PIN_RESET);

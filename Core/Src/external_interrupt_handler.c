@@ -14,7 +14,7 @@
 #include "cmsis_os.h"
 #include "util.h"
 
-speed_message_t aux_message;
+speed_message_t speed_message;
 
 //implementa a funcao homonima da HAL, que trata interrupcao por pino
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
@@ -24,19 +24,18 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		case S_VEL2_Pin:
 		case S_VEL3_Pin:
 		case S_VEL4_Pin:
-			aux_message.pin = get_speed_pin(GPIO_Pin);
-			aux_message.tim_count = htim2.Instance->CNT;
-			osMessageQueuePut(q_speed_messageHandle, &aux_message, 0U, 0);
+			speed_message.pin = GPIO_Pin;
+			speed_message.tim_count = htim2.Instance->CNT;
+			osMessageQueuePut(q_speed_messageHandle, &speed_message, 0U, 0);
 			break;
 
 		case B_RTD_Pin:
-			osThreadFlagsSet(t_main_taskHandle, RTD_BTN_PRESSED_FLAG);
+			osThreadFlagsSet(t_RTDHandle, RTD_BTN_PRESSED_FLAG);
 			break;
 
 		case B_MODO_Pin:
 			g_race_mode++;
-			if (g_race_mode > 4)
-				g_race_mode = 0;
+			osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_FLAG);
 			break;
 
 		default:

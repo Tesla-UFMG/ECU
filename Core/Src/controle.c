@@ -10,6 +10,12 @@
 #include "global_definitions.h"
 #include "constants.h"
 #include "datalog_handler.h"
+#include "global_instances.h"
+#include "util.h"
+
+
+
+void update_regen_state(vehicle_state_e vehicle_state);
 
 extern osMutexId_t m_state_parameter_mutexHandle;
 extern osMessageQueueId_t q_ref_torque_messageHandle;
@@ -20,21 +26,18 @@ volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
 volatile vehicle_state_e vehicle_state;
 
+
 void update_state(bool disable) {
-	//TODO: implementar funcao de setar leds
-	if (disable == true) {
+	if (disable == true)
 		vehicle_state = S_DISABLE_E;
-	} else if ((throttle_percent < 100) && (frenagem_regenerativa == true)
-				&& g_motor_speed[L_MOTOR] > _5_kmph_rpm) {
-//		seta_leds(AZUL);	// se frenagem ativa, led da ecu indica BRANCO
-		vehicle_state = S_BRAKE_E;
-	} else if(throttle_percent > 100) {
-//		seta_leds(modo_selecionado.cor); // quando desligada, volta a cor do modo
+	else if ((throttle_percent < 100) && (frenagem_regenerativa == true) && g_motor_speed[L_MOTOR] > _5_kmph_rpm)
+	    vehicle_state = S_BRAKE_E;
+	else if(throttle_percent > 100)
 		vehicle_state = S_ACCELERATE_E;
-	} else {
-//		seta_leds(modo_selecionado.cor);	// quando desligada, volta a cor do modo
+	else
 		vehicle_state = S_NEUTER_E;
-	}
+
+	update_regen_state(vehicle_state);
 }
 
 void update_state_parameters(torque_message_t* torque_message) {
@@ -109,13 +112,19 @@ void controle(void *argument) {
 		brkpt();
 		#endif
 
+		bool disable;
+		disable = !get_individual_flag(ECU_control_event_id, RTD_FLAG); //disable will only be FALSE when RTD_FLAG is setted
+
+
+		//getflag
 		switch(osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0, CONTROLE_DELAY)) {
+
 		case osOK:
 
 			torque_message.torque_ref[R_MOTOR] = ref_torque_message.ref_torque[R_MOTOR];
 			torque_message.torque_ref[L_MOTOR] = ref_torque_message.ref_torque[L_MOTOR];
 
-			update_state(ref_torque_message.disable);
+			update_state(disable);
 			update_state_parameters(&torque_message);
 
 
@@ -126,7 +135,7 @@ void controle(void *argument) {
 
 			break;
 		case osErrorTimeout:
-			update_state(ref_torque_message.disable);
+			update_state(disable);
 			update_state_parameters(&torque_message);
 
 			osMessageQueuePut(q_torque_messageHandle, &torque_message, 0, 0U);
@@ -134,9 +143,12 @@ void controle(void *argument) {
 		default:
 			break;
 		}
-
-
-
 	}
+}
 
+void update_regen_state(vehicle_state_e vehicle_state){
+    if (S_BRAKE_E)
+        osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);     // se frenagem ativa, seta flag de aviso
+    else
+        osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);   // se frenagem ativa, limpa flag de aviso
 }

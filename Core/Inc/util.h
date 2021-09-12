@@ -8,9 +8,12 @@
 #ifndef INC_UTIL_H_
 #define INC_UTIL_H_
 
-#include "main.h"
-#include "speed_calc.h"
+#include "global_definitions.h"
+#include "cmsis_os.h"
+#include "stdbool.h"
 
 speed_pin_e get_speed_pin(uint16_t pin);
+uint32_t get_flag_MSB(uint32_t value);
+bool get_individual_flag(osEventFlagsId_t ef_id, uint32_t flag);
 
 #endif /* INC_UTIL_H_ */

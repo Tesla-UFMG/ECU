@@ -11,7 +11,6 @@
 #include "math.h"
 #include "string.h"
 #include "datalog_handler.h"
-#include "main.h"
 
 //distancia     = circuferencia dividido pela quantidade de dentes
 //              = 2*pi*raio/quant.dentes (m)
@@ -63,7 +62,7 @@ void speed_calc(void *argument) {
 			break;
 
 		//caso a tarefa tenha sido chamada pela queue
-		case osOK:
+		default:
 			//verifica se alguma roda está a muito tempo sem receber interrupção, caso sim a velocidade dessa roda é zerada
 			reset_speed_single(&message, last_messages, min_count);
 

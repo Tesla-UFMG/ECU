@@ -39,34 +39,7 @@ uint8_t error_count = 0; // conta erros, quantas vezes o programa caiu no error 
 uint16_t debug_milis =0, debug_milis_ant = 0;
 
 extern modos modo_selecionado;
-modos aceleracao, skidpad, autox, enduro, reverse, erro;
 
-//defasada
-void inicializa_perifericos()
-{
-  SystemClock_Config();
-  HAL_Init();
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_CAN_Init();
-  MX_ADC1_Init();
-  MX_SPI2_Init();
-  MX_TIM3_Init();
-  MX_TIM2_Init();
-  Timer2_Config();
-  CAN_ConfigFilter();
-  CAN_ConfigFrames();
-  CAN_Receive_Init();
-  CANSPI_Initialize();
-  inicializa_adc_dma();
-  EE_Init();
-  //inicializa_watchdog();
-/*
-  //Inicializa watchdog
-
-
-*/
-}
 
 extern FDCAN_HandleTypeDef hfdcan1;
 extern FDCAN_HandleTypeDef hfdcan2;
@@ -79,25 +52,18 @@ void init_CAN() {
 }
 
 
-//funcao de debug temporizada
-void debug_temp(uint16_t debug_periodo_ms){
-	debug_milis = HAL_GetTick();
-	if (debug_milis - debug_milis_ant >= debug_periodo_ms) {
-		//insira aqui
-//		uint8_t msg_debug[8] = { 0, 0, 0, 0, 0, 0, 0, 0};
-//		print_can(msg_debug, 0x10);
-		// se deu algum erro, piscar led a cada tempo
-		if (error_count > 0) {
-			led_conf = ~led_conf;
-			seta_leds(led_conf);
-			aciona_sirene(5);
-		}
-		debug_milis_ant = debug_milis;
-	}
-}
-
 
 void inicializa_modos() {
+	enduro.tor_max = 2500;
+	enduro.vel_max = vel_max_rpm;
+	enduro.freio_regen = frenagem_regenerativa;
+	enduro.dif_elt = 0;
+	enduro.traction_control = 0;
+	enduro.bat_safe = 1;
+	enduro.torq_gain = 25; //ERA 15
+	enduro.mode = ENDURO;
+	enduro.cor = VERDE;
+
 	aceleracao.tor_max = 3500;
 	aceleracao.vel_max = vel_max_rpm;
 	aceleracao.freio_regen = 0;
@@ -128,24 +94,16 @@ void inicializa_modos() {
 	autox.mode = AUTOX;
 	autox.cor = AZUL;
 
-	enduro.tor_max = 2500;
-	enduro.vel_max = vel_max_rpm;
-	enduro.freio_regen = frenagem_regenerativa;
-	enduro.dif_elt = 0;
-	enduro.traction_control = 0;
-	enduro.bat_safe = 1;
-	enduro.torq_gain = 25; //ERA 15
-	enduro.mode = ENDURO;
-	enduro.cor = VERDE;
 
-	reverse.tor_max = 500;
-	reverse.vel_max = 450;
-	reverse.freio_regen = 0;
-	reverse.dif_elt = 0;
-	reverse.traction_control = 0;
-	reverse.bat_safe = 1;
-	reverse.torq_gain = 10;
-	reverse.cor = AMARELO;
+
+//	reverse.tor_max = 500;
+//	reverse.vel_max = 450;
+//	reverse.freio_regen = 0;
+//	reverse.dif_elt = 0;
+//	reverse.traction_control = 0;
+//	reverse.bat_safe = 1;
+//	reverse.torq_gain = 10;
+//	reverse.cor = AMARELO;
 
 	erro.tor_max = 0;
 	erro.vel_max = 0;
@@ -156,5 +114,8 @@ void inicializa_modos() {
 	erro.torq_gain = 0;
 	erro.mode = ERRO;
 	erro.cor = VERMELHO;
+
+
+	modo_selecionado = enduro; //inicializa no modo enduro
 }
 

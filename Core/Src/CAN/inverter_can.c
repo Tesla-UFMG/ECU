@@ -7,6 +7,7 @@
 
 #include "CAN/inverter_can.h"
 #include "CAN/CAN_handler.h"
+#include "debugleds.h"
 
 static FDCAN_HandleTypeDef* can_ptr;
 
@@ -31,6 +32,7 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
 //função usada para transmitir alguma mensagem
 void inverter_can_transmit(uint32_t id, uint16_t* data) {
 	can_transmit(can_ptr, &TxHeader, id, data);
+	osDelay(CAN_DELAY);
 }
 
 
@@ -42,6 +44,8 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 			/* Reception Error */
 			Error_Handler();
 		}
+
+		set_debugleds(DEBUGLED3,TOGGLE,0);
 
 		idinverter = RxHeader.Identifier;
 		for(int i = 0; i < 8; i += 2){

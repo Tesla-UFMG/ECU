@@ -26,7 +26,10 @@ extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 extern volatile uint16_t throttle_percent;
 
 //status do freio, 1 = ativado e 0 = desativado
-extern volatile uint8_t brake_status;
+extern volatile bool is_brake_active;
+
+//status do apps, 1 = acionado e 0 = desativado
+extern volatile bool is_throttle_active;
 
 //variavel de controle para desabilitar referência de torque
 extern volatile uint8_t g_should_disable_engines;
@@ -34,6 +37,7 @@ extern volatile uint8_t g_should_disable_engines;
 //variavel que guarda parametros do estado atual do veiculo
 extern volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
+extern modos aceleracao, skidpad, autox, enduro, reverse, erro;
 extern modos modo_selecionado;
 
 //guarda o estado atual do veículo (acelera, neutro, freia)

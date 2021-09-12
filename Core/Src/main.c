@@ -202,11 +202,6 @@ osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
   .name = "m_state_parameter_mutex"
 };
-/* Definitions for s_allowed_change_mode */
-osSemaphoreId_t s_allowed_change_modeHandle;
-const osSemaphoreAttr_t s_allowed_change_mode_attributes = {
-  .name = "s_allowed_change_mode"
-};
 /* USER CODE BEGIN PV */
 //flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
 osEventFlagsId_t ECU_control_event_id;
@@ -307,10 +302,6 @@ int main(void)
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
-
-  /* Create the semaphores(s) */
-  /* creation of s_allowed_change_mode */
-  s_allowed_change_modeHandle = osSemaphoreNew(1, 1, &s_allowed_change_mode_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */

@@ -31,7 +31,6 @@ extern osThreadId_t t_RTDHandle;
 extern osEventFlagsId_t ECU_control_event_id;
 
 //SEMAPHORES
-extern osSemaphoreId_t s_allowed_change_modeHandle;
 
 //MUTEXES
 extern osMutexId_t m_state_parameter_mutexHandle;

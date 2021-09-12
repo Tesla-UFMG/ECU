@@ -11,6 +11,7 @@
 #include "global_instances.h"
 #include "rgb_led.h"
 #include "debugleds.h"
+#include "stdbool.h"
 
 void aciona_sirene();
 bool can_RTD_be_enabled();
@@ -18,7 +19,8 @@ void set_RTD();
 
 void RTD(void *argument) {
 
-    set_rgb_led(modo_selecionado.cor, NO_CHANGE);
+    //seta o led rgb no primeira execução do código
+    set_rgb_led(modo_selecionado.cor, BLINK200);
 
     for(;;) {
 
@@ -40,7 +42,6 @@ void exit_RTD() {
     g_race_mode = ERRO;
     set_rgb_led(modo_selecionado.cor, BLINK200);
     osEventFlagsClear(ECU_control_event_id, RTD_FLAG);  //limpa flag de RTD
-    osSemaphoreRelease(s_allowed_change_modeHandle);                            //libera semáforo que permite a mudança de modos
 }
 
 bool can_RTD_be_enabled() {
@@ -54,7 +55,6 @@ bool can_RTD_be_enabled() {
 
 void set_RTD() {
     osEventFlagsSet(ECU_control_event_id, RTD_FLAG);                                         //Seta flag de RTD
-    osSemaphoreAcquire(s_allowed_change_modeHandle, osWaitForever);                          //Bloqueia mudança de modo
     set_rgb_led(modo_selecionado.cor, FIXED);
     aciona_sirene();
 }

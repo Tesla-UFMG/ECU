@@ -8,8 +8,6 @@
 #ifndef INC_RTD_H_
 #define INC_RTD_H_
 
-#include "stdbool.h"
-
 #define tempo_sirene 1000
 
 void exit_RTD();

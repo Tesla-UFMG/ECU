@@ -12,6 +12,7 @@
 #include "rgb_led.h"
 #include "debugleds.h"
 #include "stdbool.h"
+#include "util.h"
 
 void aciona_sirene();
 bool can_RTD_be_enabled();
@@ -26,8 +27,7 @@ void RTD(void *argument) {
 
         osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);     //espera receber flag q o botão de RTD foi pressionado
 
-        bool is_RTD_active = (osEventFlagsGet(ECU_control_event_id) & RTD_FLAG);
-        if (!is_RTD_active){
+        if (!get_individual_flag(ECU_control_event_id, RTD_FLAG)){
             if(can_RTD_be_enabled())
                 set_RTD();                                                  //seta RTD
             else

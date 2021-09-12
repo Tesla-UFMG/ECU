@@ -11,6 +11,8 @@
 #include "constants.h"
 #include "datalog_handler.h"
 #include "global_instances.h"
+#include "util.h"
+
 
 
 void update_regen_state(vehicle_state_e vehicle_state);
@@ -111,8 +113,7 @@ void controle(void *argument) {
 		#endif
 
 		bool disable;
-		uint32_t flags = osEventFlagsGet(ECU_control_event_id);
-		disable = !(flags & RTD_FLAG); //disable will only be FALSE when RTD_FLAG is setted
+		disable = !get_individual_flag(ECU_control_event_id, RTD_FLAG); //disable will only be FALSE when RTD_FLAG is setted
 
 
 		//getflag

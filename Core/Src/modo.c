@@ -25,9 +25,7 @@ void seleciona_modo(void *argument) {
 		//espera um semáforo liberado por interrupção e espera está autorizado a mudar de modo
 		osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 
-		bool is_RTD_active = (osEventFlagsGet(ECU_control_event_id) & RTD_FLAG);
-
-		if (!is_RTD_active) {
+		if (!get_individual_flag(ECU_control_event_id, RTD_FLAG)) {
 
 		    if (g_race_mode > AUTOX)
                 g_race_mode = ENDURO;

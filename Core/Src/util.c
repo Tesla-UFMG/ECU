@@ -7,6 +7,7 @@
 
 #include "util.h"
 #include "global_instances.h"
+#include "main.h"
 
 speed_pin_e get_speed_pin(uint16_t pin) {
     switch(pin) {
@@ -30,6 +31,10 @@ uint32_t get_flag_MSB(uint32_t value) {
         flag >>= 1;
     }
     return 0;
+}
+
+bool get_individual_flag(osEventFlagsId_t ef_id, uint32_t flag){
+    return (osEventFlagsGet(ef_id) & flag);
 }
 
 

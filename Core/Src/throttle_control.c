@@ -11,6 +11,7 @@
 #include "datalog_handler.h"
 #include "global_instances.h"
 #include "datalog_handler.h"
+#include "util.h"
 
 extern volatile uint16_t throttle_percent;
 
@@ -20,11 +21,8 @@ void throttle_control(void *argument) {
 
         osMessageQueueGet(q_throttle_controlHandle, &message, NULL, osWaitForever);                     //espera por uma mensagem com o valor de APPS
 
-        bool is_throttle_available = (osEventFlagsGet(ECU_control_event_id) & THROTTLE_AVAILABLE_FLAG); //determina se o pedal está disponivel a partir da flag de evento
-        bool is_RTD_active = (osEventFlagsGet(ECU_control_event_id) & RTD_FLAG);                        //determina se o RTD está ativado a partir da flag de evento
-
         //se o pedal está disponível atualiza o valor de throttle_percent para o da mensagem, caso não atualiza para 0
-        if (is_throttle_available && is_RTD_active)
+        if (get_individual_flag(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG) && get_individual_flag(ECU_control_event_id, RTD_FLAG))
             throttle_percent = message;
         else
             throttle_percent = 0;

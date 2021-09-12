@@ -9,8 +9,7 @@
 #define INC_UTIL_H_
 
 #include "main.h"
-#include "speed_calc.h"
-
+#include "global_definitions.h"
 
 speed_pin_e get_speed_pin(uint16_t pin);
 uint32_t get_flag_MSB(uint32_t value);

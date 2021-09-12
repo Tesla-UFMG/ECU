@@ -12,6 +12,10 @@
 #include "rgb_led.h"
 #include "debugleds.h"
 
+void aciona_sirene();
+bool can_RTD_be_enabled();
+void set_RTD();
+
 void RTD(void *argument) {
 
     set_rgb_led(modo_selecionado.cor, NO_CHANGE);

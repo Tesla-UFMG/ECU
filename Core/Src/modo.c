@@ -24,7 +24,7 @@ void seleciona_modo(void *argument) {
 		#endif
 
 		//espera um semáforo liberado por interrupção e espera está autorizado a mudar de modo
-        osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
+		osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 		osSemaphoreAcquire(s_allowed_change_modeHandle, osWaitForever);
 
 		if (g_race_mode > AUTOX)

@@ -13,6 +13,14 @@
 
 #define DEBUG_ECU 1
 
+//pinos do sensores de velocidade
+typedef enum {
+    FRONT_RIGHT,
+    FRONT_LEFT,
+    REAR_RIGHT,
+    REAR_LEFT
+} speed_pin_e;
+
 // cores do LED da ECU
 typedef enum  { PRETO = 0, VERMELHO, VERDE, AZUL, AMARELO, ROXO, CIANO, BRANCO} cores_t;
 

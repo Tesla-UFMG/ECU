@@ -9,7 +9,7 @@
 #include "datalog_handler.h"
 #include "error_treatment.h"
 
-uint16_t calculate_apps1_calc(uint16_t apps2_throttle_percent);
+uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_throttle_percent);
 uint16_t calculate_apps2(uint16_t APPS2);
 bool check_for_APPS_errors();
 bool check_for_BSE_errors();
@@ -22,6 +22,7 @@ static uint16_t apps2_throttle_percent = 0;
 
 void throttle_read(void *argument) {
 
+    //seta o pedal como disponível no primeira execução do código
     osEventFlagsSet(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);
 
     for (;;) {
@@ -76,7 +77,7 @@ uint16_t calculate_apps2(uint16_t APPS2){
 }
 
 //calcula o valor teórico de APPS1 a partir do valor de APPS2
-uint16_t calculate_apps1_calc(uint16_t apps2_throttle_percent){
+uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_throttle_percent){
     uint16_t apps1_calc = 0;
     if (apps2_throttle_percent >= 0 && apps2_throttle_percent < 200)
         apps1_calc = 2212;
@@ -93,7 +94,7 @@ uint16_t calculate_apps1_calc(uint16_t apps2_throttle_percent){
 }
 
 bool check_for_APPS_errors() {
-    uint16_t apps1_calc = calculate_apps1_calc(apps2_throttle_percent);
+    uint16_t apps1_calc = calculate_expected_apps1_from_apps2(apps2_throttle_percent);
     if (    APPS2 >= 3720           //Se o valor de APPS2 for acima do seu máximo
          || APPS1 < 1802.24         //Se o valor de APPS1 for abaixo do seu mínimo
          || APPS1 > 3900            //Se o valor de APPS1 for acima do seu máximo

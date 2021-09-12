@@ -9,6 +9,8 @@
 #define INC_SPEED_CALC_H_
 
 #include "stdint.h"
+#include "global_definitions.h"
+
 
 #define SPEED_SENSOR_TEETH_QUAN 16  // quantidade de dentes da roda fônica
 #define WHEEL_RADIUS 0.26           // em m
@@ -18,12 +20,7 @@
 #define FIRST_WHEEL FRONT_RIGHT
 #define LAST_WHEEL FRONT_LEFT       //ultima roda que possui sensor de roda fônica
 
-typedef enum {
-	FRONT_RIGHT,
-	FRONT_LEFT,
-	REAR_RIGHT,
-	REAR_LEFT
-} speed_pin_e;
+
 
 typedef struct {
 	uint32_t tim_count;

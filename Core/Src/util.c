@@ -6,7 +6,6 @@
  */
 
 #include "util.h"
-#include "global_definitions.h"
 #include "global_instances.h"
 
 speed_pin_e get_speed_pin(uint16_t pin) {

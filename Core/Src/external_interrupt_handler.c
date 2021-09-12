@@ -35,7 +35,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 		case B_MODO_Pin:
 			g_race_mode++;
-	        osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_FLAG);
+			osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_FLAG);
 			break;
 
 		default:

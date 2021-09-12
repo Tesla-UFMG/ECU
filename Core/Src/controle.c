@@ -10,6 +10,10 @@
 #include "global_definitions.h"
 #include "constants.h"
 #include "datalog_handler.h"
+#include "global_instances.h"
+
+
+void update_regen_state(vehicle_state_e vehicle_state);
 
 extern osMutexId_t m_state_parameter_mutexHandle;
 extern osMessageQueueId_t q_ref_torque_messageHandle;

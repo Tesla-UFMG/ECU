@@ -14,7 +14,7 @@
 
 void exit_RTD();
 void aciona_sirene();
-bool is_RTD_available();
+bool can_RTD_be_enabled();
 void set_RTD();
 
 #endif /* INC_RTD_H_ */

@@ -45,7 +45,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 			Error_Handler();
 		}
 
-        set_debugleds(DEBUGLED3,TOGGLE,0);
+		set_debugleds(DEBUGLED3,TOGGLE,0);
 
 		idinverter = RxHeader.Identifier;
 		for(int i = 0; i < 8; i += 2){

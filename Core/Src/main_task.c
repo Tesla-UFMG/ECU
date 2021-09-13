@@ -62,12 +62,10 @@ void main_task(void *argument) {
 		        isErrorPresent = event_flags & APPS_ERROR_FLAG;                         //verifica se o erro ainda está presente na flag de evento
                 if (isErrorPresent) {                                                   //caso o erro esteja presente:
                     set_rgb_led(AMARELO, NO_CHANGE);                                    //seta o led rgb como amarelo
-                    osEventFlagsClear(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);   //limpa a flag que permite o funcionamento do pedal
                     osDelay(20);
                 } else {                                                                //caso o erro tenha sido resolvido:
                     osThreadFlagsClear(APPS_ERROR_FLAG);                                //limpa flag de thread do erro
                     set_rgb_led(modo_selecionado.cor, NO_CHANGE);                       //retorna o RGB ao funcionamento normal
-                    osEventFlagsSet(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);     //seta a flag que permite o funcionamento do pedal
                 }
                 break;
 
@@ -75,12 +73,10 @@ void main_task(void *argument) {
                 isErrorPresent = event_flags & BSE_ERROR_FLAG;                          //verifica se o erro ainda está presente na flag de evento
                 if (isErrorPresent) {                                                   //caso o erro esteja presente:
                     set_rgb_led(AMARELO, NO_CHANGE);                                    //seta o led rgb como amarelo
-                    osEventFlagsClear(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);   //limpa a flag que permite o funcionamento do pedal
                     osDelay(20);
                 } else {                                                                //caso o erro tenha sido resolvido:
                     osThreadFlagsClear(BSE_ERROR_FLAG);                                 //limpa flag de thread do erro
                     set_rgb_led(modo_selecionado.cor, NO_CHANGE);                       //retorna o RGB ao funcionamento normal
-                    osEventFlagsSet(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);     //seta a flag que permite o funcionamento do pedal
                 }
                 break;
 

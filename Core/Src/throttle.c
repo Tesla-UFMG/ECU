@@ -22,9 +22,6 @@ static uint16_t apps2_throttle_percent = 0;
 
 void throttle_read(void *argument) {
 
-    //seta o pedal como disponível no primeira execução do código
-    osEventFlagsSet(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);
-
     for (;;) {
 
         #ifdef DEBUG_ECU

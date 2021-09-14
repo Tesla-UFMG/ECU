@@ -35,6 +35,14 @@ void throttle_handler(void *argument) {
 void inverter_transmit(torque_message_t* message) {
 	uint16_t vet_tx[4];
 
+	uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
+
+	vet_tx[0] = error_flags>>16;
+	vet_tx[1] = error_flags;
+	vet_tx[2] = message->torque_ref[L_MOTOR];
+	vet_tx[3] = message->torque_ref[R_MOTOR];
+	inverter_can_transmit(ID_COMM_FLAG, vet_tx);
+
 	vet_tx[0] = message->parameters;
 	vet_tx[1] = message->torque_ref[R_MOTOR];
 	vet_tx[2] = message->neg_torque_ref[R_MOTOR];
@@ -45,11 +53,5 @@ void inverter_transmit(torque_message_t* message) {
 	vet_tx[2] = message->neg_torque_ref[L_MOTOR];
 	vet_tx[3] = message->speed_ref[L_MOTOR];
 	inverter_can_transmit(ID_LEFT_INVERTER, vet_tx);
-
-	vet_tx[0] = 1<<8;
-	vet_tx[1] = 0;
-	vet_tx[2] = message->torque_ref[L_MOTOR];
-	vet_tx[3] = message->torque_ref[R_MOTOR];
-	inverter_can_transmit(ID_COMM_FLAG, vet_tx);
 }
 

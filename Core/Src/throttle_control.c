@@ -23,10 +23,10 @@ void throttle_control(void *argument) {
 
         //se o pedal está disponível atualiza o valor de throttle_percent para o da mensagem, caso não atualiza para 0
         bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
-        volatile bool is_there_apps_error = get_individual_flag(ECU_control_event_id, APPS_ERROR_FLAG);
-        volatile bool is_there_bse_error = get_individual_flag(ECU_control_event_id, BSE_ERROR_FLAG);
+        bool is_apps_error_present = get_individual_flag(ECU_control_event_id, APPS_ERROR_FLAG);
+        bool is_bse_error_present = get_individual_flag(ECU_control_event_id, BSE_ERROR_FLAG);
 
-        if (is_RTD_active && !is_there_apps_error && !is_there_bse_error)
+        if (is_RTD_active && !is_apps_error_present && !is_bse_error_present)
             throttle_percent = message;
         else
             throttle_percent = 0;

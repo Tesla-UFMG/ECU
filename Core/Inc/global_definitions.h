@@ -114,8 +114,8 @@ typedef enum {
 #define DYNAMIC_CONTROL_WARN_FLAG   1 << 11
 
 //Soft error flags (RTD keeps on, torque ref to inverter is set to 0)
-#define APPS_ERROR_FLAG             1 << 16
-#define BSE_ERROR_FLAG              1 << 17
+#define BSE_ERROR_FLAG              1 << 16
+#define APPS_ERROR_FLAG             1 << 17
 
 //Hard error flags (RTD disable)
 #define INVERTER_COMM_ERROR_FLAG    1 << 20

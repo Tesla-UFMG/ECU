@@ -58,10 +58,10 @@ void main_task(void *argument) {
                 }
                 break;
 
-		    case APPS_ERROR_FLAG: ;
+		    case APPS_ERROR_FLAG:
 		        isErrorPresent = event_flags & APPS_ERROR_FLAG;                         //verifica se o erro ainda está presente na flag de evento
                 if (isErrorPresent) {                                                   //caso o erro esteja presente:
-                    set_rgb_led(AMARELO, NO_CHANGE);                                    //seta o led rgb como amarelo
+                    set_rgb_led(BRANCO, NO_CHANGE);                                    //seta o led rgb como amarelo
                     osDelay(20);
                 } else {                                                                //caso o erro tenha sido resolvido:
                     osThreadFlagsClear(APPS_ERROR_FLAG);                                //limpa flag de thread do erro
@@ -69,7 +69,7 @@ void main_task(void *argument) {
                 }
                 break;
 
-		    case BSE_ERROR_FLAG: ;
+            case BSE_ERROR_FLAG:
                 isErrorPresent = event_flags & BSE_ERROR_FLAG;                          //verifica se o erro ainda está presente na flag de evento
                 if (isErrorPresent) {                                                   //caso o erro esteja presente:
                     set_rgb_led(AMARELO, NO_CHANGE);                                    //seta o led rgb como amarelo

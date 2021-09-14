@@ -8,6 +8,8 @@
 #include "throttle.h"
 #include "datalog_handler.h"
 #include "error_treatment.h"
+#include "util.h"
+
 
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_throttle_percent);
 uint16_t calculate_apps2(uint16_t APPS2);
@@ -19,6 +21,7 @@ static uint16_t APPS1;
 static uint16_t APPS2;
 static uint16_t BSE;
 static uint16_t apps2_throttle_percent = 0;
+static uint16_t apps1_calc = 0;
 
 void throttle_read(void *argument) {
 
@@ -34,6 +37,7 @@ void throttle_read(void *argument) {
         BSE   = ADC_DMA_buffer[BRAKE_E];
 
         apps2_throttle_percent = calculate_apps2(APPS2);                      //calcula a porcentagem do pedal a partir do APPS2
+        apps1_calc = calculate_expected_apps1_from_apps2(apps2_throttle_percent);
 
         is_brake_active = (BSE > BRAKE_ACTIVE);
         is_throttle_active = (apps2_throttle_percent > 0);
@@ -91,7 +95,6 @@ uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_throttle_percent){
 }
 
 bool check_for_APPS_errors() {
-    uint16_t apps1_calc = calculate_expected_apps1_from_apps2(apps2_throttle_percent);
     if (    APPS2 >= 3720           //Se o valor de APPS2 for acima do seu máximo
          || APPS1 < 1802.24         //Se o valor de APPS1 for abaixo do seu mínimo
          || APPS1 > 3900            //Se o valor de APPS1 for acima do seu máximo
@@ -103,9 +106,13 @@ bool check_for_APPS_errors() {
 }
 
 bool check_for_BSE_errors() {
-        return (apps2_throttle_percent > 300 && BSE > BRAKE_ACTIVE);
+    bool is_BSE_error_active = get_individual_flag(ECU_control_event_id, BSE_ERROR_FLAG);
+    if (is_BSE_error_active)
+        return (apps2_throttle_percent >= 50);
+    else
+        return (apps2_throttle_percent > 250 && BSE > BRAKE_ACTIVE);
 }
 
 bool check_for_SU_F_errors() {
-        return (BSE > SU_F_ERROR);
+    return (BSE > SU_F_ERROR);
 }

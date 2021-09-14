@@ -9,8 +9,6 @@
 #include "DynamicControls/lateral_control.h"
 #include "DynamicControls/PID.h"
 
-const float wheelbase = FRONT_DISTANCE + REAR_DISTANCE;
-const float ku = (REAR_DISTANCE * MASS / (FRONT_CORNER_STIFF * wheelbase)) - (FRONT_DISTANCE * MASS / (REAR_CORNER_STIFF * wheelbase));
 PID_t pid_lateral;
 
 void init_controls() {

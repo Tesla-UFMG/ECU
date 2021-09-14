@@ -26,9 +26,7 @@ void main_task(void *argument) {
 		brkpt();
 		#endif
 
-		//todo: remover o wait por RTD, para poder checar se erro severo foi resolvido. Do jeito atual ao sair do RTD é necessário reiniciar EC
 		osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
-
 
 		osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);         //espera por qualquer erro
 		uint32_t error_flags = osThreadFlagsGet();                                                  //obtem os valores de flag de thread
@@ -42,26 +40,24 @@ void main_task(void *argument) {
                 isErrorPresent = event_flags & INVERTER_COMM_ERROR_FLAG;    //verifica se o erro ainda está presente na flag de evento
                 if (isErrorPresent) {
                     exit_RTD();                                             //sai de RTD caso o erro esteja presente
-
-                } else {
-                    osThreadFlagsClear(INVERTER_COMM_ERROR_FLAG);           //consertar
+                } else {                                                    //caso o erro tenha sido resolvido:
+                    osThreadFlagsClear(INVERTER_COMM_ERROR_FLAG);           //limpa flag de thread do erro
                 }
                 break;
 
             case SU_F_ERROR_FLAG:
-                isErrorPresent = event_flags & SU_F_ERROR_FLAG;
+                isErrorPresent = event_flags & SU_F_ERROR_FLAG;             //verifica se o erro ainda está presente na flag de evento
                 if (isErrorPresent) {
                     exit_RTD();                                             //sai de RTD caso o erro esteja presente
-
-                } else {
-                    osThreadFlagsClear(SU_F_ERROR_FLAG);                    //consertar
+            } else {                                                        //caso o erro tenha sido resolvido:
+                    osThreadFlagsClear(SU_F_ERROR_FLAG);                    //limpa flag de thread do erro
                 }
                 break;
 
-		    case APPS_ERROR_FLAG:
+		    case APPS_ERROR_FLAG:                                                       //Regulamento: T.4.2
 		        isErrorPresent = event_flags & APPS_ERROR_FLAG;                         //verifica se o erro ainda está presente na flag de evento
                 if (isErrorPresent) {                                                   //caso o erro esteja presente:
-                    set_rgb_led(BRANCO, NO_CHANGE);                                    //seta o led rgb como amarelo
+                    set_rgb_led(AMARELO, NO_CHANGE);                                    //seta o led rgb como amarelo
                     osDelay(20);
                 } else {                                                                //caso o erro tenha sido resolvido:
                     osThreadFlagsClear(APPS_ERROR_FLAG);                                //limpa flag de thread do erro
@@ -69,7 +65,7 @@ void main_task(void *argument) {
                 }
                 break;
 
-            case BSE_ERROR_FLAG:
+            case BSE_ERROR_FLAG:                                                        //Regulamento: EV.5.7
                 isErrorPresent = event_flags & BSE_ERROR_FLAG;                          //verifica se o erro ainda está presente na flag de evento
                 if (isErrorPresent) {                                                   //caso o erro esteja presente:
                     set_rgb_led(AMARELO, NO_CHANGE);                                    //seta o led rgb como amarelo

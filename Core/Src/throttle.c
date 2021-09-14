@@ -11,7 +11,7 @@
 #include "util.h"
 
 
-uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_throttle_percent);
+uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage);
 uint16_t calculate_apps2(uint16_t APPS2);
 bool check_for_APPS_errors();
 bool check_for_BSE_errors();
@@ -56,45 +56,45 @@ void throttle_read(void *argument) {
 }
 
 //calcula o valor do APPS2
-uint16_t calculate_apps2(uint16_t APPS2){
-    uint16_t apps2_throttle_percent = 0;
+uint16_t calculate_apps2(uint16_t APPS2) {
+    uint16_t apps2_percentage = 0;
     if (APPS2 < 260)
-        apps2_throttle_percent = 0;
+        apps2_percentage = 0;
     else if (APPS2 >= 260 && APPS2 < 467)
-        apps2_throttle_percent = 1.162 * APPS2 - 342.9;
+        apps2_percentage = 1.162 * APPS2 - 342.9;
     else if (APPS2 >= 467 && APPS2 < 1065)
-        apps2_throttle_percent = 0.3344 * APPS2 + 43.8;
+        apps2_percentage = 0.3344 * APPS2 + 43.8;
     else if (APPS2 >= 1065 && APPS2 < 2253)
-        apps2_throttle_percent = 0.1684 * APPS2 + 220.7;
+        apps2_percentage = 0.1684 * APPS2 + 220.7;
     else if (APPS2 >= 2253 && APPS2 < 3211)
-        apps2_throttle_percent = 0.2087 * APPS2 + 129.9;
+        apps2_percentage = 0.2087 * APPS2 + 129.9;
     else if (APPS2 >= 3211 && APPS2 < 3720)
-        apps2_throttle_percent = 0.6598 * APPS2 - 1319;
+        apps2_percentage = 0.6598 * APPS2 - 1319;
 
-    if (apps2_throttle_percent > 1000)
-        apps2_throttle_percent = 1000;
+    if (apps2_percentage > 1000)
+        apps2_percentage = 1000;
 
-    return apps2_throttle_percent;
+    return apps2_percentage;
 }
 
 //calcula o valor teórico de APPS1 a partir do valor de APPS2
-uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_throttle_percent){
+uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
     uint16_t apps1_calc = 0;
-    if (apps2_throttle_percent >= 0 && apps2_throttle_percent < 200)
+    if (apps2_percentage >= 0 && apps2_percentage < 200)
         apps1_calc = 2212;
-    else if (apps2_throttle_percent >= 200 && apps2_throttle_percent < 400)
-        apps1_calc = (uint16_t) (1.679 * apps2_throttle_percent + 1876);
-    else if (apps2_throttle_percent >= 400 && apps2_throttle_percent < 600)
-        apps1_calc = (uint16_t) (2.621 * apps2_throttle_percent + 1499);
-    else if (apps2_throttle_percent >= 600 && apps2_throttle_percent < 800)
-        apps1_calc = (uint16_t) (2.212 * apps2_throttle_percent + 1745);
-    else if (apps2_throttle_percent >= 800 && apps2_throttle_percent < 1135)
-        apps1_calc = (uint16_t) (1.515 * apps2_throttle_percent + 2302);
+    else if (apps2_percentage >= 200 && apps2_percentage < 400)
+        apps1_calc = (uint16_t) (1.679 * apps2_percentage + 1876);
+    else if (apps2_percentage >= 400 && apps2_percentage < 600)
+        apps1_calc = (uint16_t) (2.621 * apps2_percentage + 1499);
+    else if (apps2_percentage >= 600 && apps2_percentage < 800)
+        apps1_calc = (uint16_t) (2.212 * apps2_percentage + 1745);
+    else if (apps2_percentage >= 800 && apps2_percentage < 1135)
+        apps1_calc = (uint16_t) (1.515 * apps2_percentage + 2302);
 
     return apps1_calc;
 }
 
-bool check_for_APPS_errors() {
+bool check_for_APPS_errors() {      //Regulamento: T.4.2
     if (    APPS2 >= 3720           //Se o valor de APPS2 for acima do seu máximo
          || APPS1 < 1802.24         //Se o valor de APPS1 for abaixo do seu mínimo
          || APPS1 > 3900            //Se o valor de APPS1 for acima do seu máximo
@@ -108,9 +108,9 @@ bool check_for_APPS_errors() {
 bool check_for_BSE_errors() {
     bool is_BSE_error_active = get_individual_flag(ECU_control_event_id, BSE_ERROR_FLAG);
     if (is_BSE_error_active)
-        return (apps2_throttle_percent >= 50);
+        return (apps2_throttle_percent >= APPS_05_PERCENT);                         //Regulamento: EV.5.7.2
     else
-        return (apps2_throttle_percent > 250 && BSE > BRAKE_ACTIVE);
+        return (apps2_throttle_percent > APPS_25_PERCENT && BSE > BRAKE_ACTIVE);    //Regulamento: EV.5.7.1
 }
 
 bool check_for_SU_F_errors() {

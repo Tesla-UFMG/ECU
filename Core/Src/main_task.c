@@ -49,7 +49,7 @@ void main_task(void *argument) {
                 isErrorPresent = event_flags & SU_F_ERROR_FLAG;             //verifica se o erro ainda está presente na flag de evento
                 if (isErrorPresent) {
                     exit_RTD();                                             //sai de RTD caso o erro esteja presente
-            } else {                                                        //caso o erro tenha sido resolvido:
+                } else {                                                    //caso o erro tenha sido resolvido:
                     osThreadFlagsClear(SU_F_ERROR_FLAG);                    //limpa flag de thread do erro
                 }
                 break;

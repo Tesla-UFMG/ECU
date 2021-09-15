@@ -14,7 +14,6 @@
 #include "rgb_led.h"
 #include "throttle.h"
 #include "util.h"
-#include "RTOS_wrappers.h"
 
 
 
@@ -27,7 +26,7 @@ void main_task(void *argument) {
         brkpt();
         #endif
 
-        wait_forever_for_RTD();
+        osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
 
         osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);         //espera por qualquer erro
         uint32_t error_flags = osThreadFlagsGet();                                                  //obtem os valores de flag de thread

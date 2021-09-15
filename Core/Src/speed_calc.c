@@ -11,6 +11,7 @@
 #include "math.h"
 #include "string.h"
 #include "datalog_handler.h"
+#include "CMSIS_extra/global_variables_handler.h"
 
 //distancia     = circuferencia dividido pela quantidade de dentes
 //              = 2*pi*raio/quant.dentes (m)
@@ -22,8 +23,6 @@
 
 void reset_speed_all();
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count);
-
-volatile float g_wheel_speed[4];
 
 extern TIM_HandleTypeDef htim2;
 extern osMessageQueueId_t q_speed_messageHandle;
@@ -75,7 +74,9 @@ void speed_calc(void *argument) {
 
 			d_tim_countx=d_tim_count;
 			speed = (10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)tim_freq/((float)d_tim_count*tim_presc)); //calcula a velocidade
-			g_wheel_speed[message.pin] = speed;     //seta velocidade especifica da roda recebida
+			WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
+			wheel_speeds.speed[message.pin] = speed;     //seta velocidade especifica da roda recebida
+			set_global_var(WHEEL_SPEEDS, &wheel_speeds);
 			last_messages[message.pin] = message;   //guarda mensagem até a próxima interacão
 
 			uint16_t datalog_id =   message.pin == FRONT_RIGHT ?    ID_SPEED_FR :
@@ -88,13 +89,17 @@ void speed_calc(void *argument) {
 	}
 }
 
-void reset_speed_all(){
-	for(speed_pin_e i = FIRST_WHEEL; i <= LAST_WHEEL; i++)
-		g_wheel_speed[i] = 0;
+void reset_speed_all() {
+	WHEEL_SPEEDS_t wheel_speeds = {.speed = {0, 0, 0, 0}};
+	set_global_var(WHEEL_SPEEDS, &wheel_speeds);
 }
 
-void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count){
+void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count) {
+	WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
 	for(speed_pin_e i = FIRST_WHEEL; i <= LAST_WHEEL; i++)
 		if((message->tim_count - last_messages[i].tim_count) > min_count)
-			g_wheel_speed[i] = 0;
+		{
+			wheel_speeds.speed[i] = 0;
+			set_global_var(WHEEL_SPEEDS, &wheel_speeds);
+		}
 }

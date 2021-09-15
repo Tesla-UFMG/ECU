@@ -32,6 +32,7 @@
 #include "main_task.h"
 #include "debugleds.h"
 #include "rgb_led.h"
+#include "CMSIS_extra/global_variables_handler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -289,7 +290,6 @@ int main(void)
 	}
   init_ADC_DMA(&hadc1);
   init_CAN();
-  inicializa_modos();
   HAL_TIM_Base_Start(&htim2);
   /* USER CODE END 2 */
 
@@ -335,6 +335,8 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
+  global_variables_init();
+  inicializa_modos(); // must be initialized after global variables
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */

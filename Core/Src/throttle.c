@@ -8,6 +8,7 @@
 #include "throttle.h"
 #include "datalog_handler.h"
 #include "error_treatment.h"
+#include "CMSIS_extra/global_variables_handler.h"
 
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_throttle_percent);
 uint16_t calculate_apps2(uint16_t APPS2);
@@ -38,10 +39,10 @@ void throttle_read(void *argument) {
 
         apps2_throttle_percent = calculate_apps2(APPS2);                      //calcula a porcentagem do pedal a partir do APPS2
 
-        is_brake_active = (BSE > BRAKE_ACTIVE);
-        is_throttle_active = (apps2_throttle_percent > 0);
+        set_global_var_value(BRAKE_STATUS, (BSE > BRAKE_ACTIVE));
+        set_global_var_value(THROTTLE_STATUS, (apps2_throttle_percent > 0));
 
-        log_data(ID_BRAKE, is_brake_active);
+        log_data(ID_BRAKE, get_global_var_value(BRAKE_STATUS));
 
         check_for_errors(check_for_APPS_errors, APPS_ERROR_FLAG);           //verifica a plausabilidade dos APPSs
         check_for_errors(check_for_BSE_errors, BSE_ERROR_FLAG);             //verifica a plausabilidade do BSE

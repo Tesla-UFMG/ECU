@@ -12,8 +12,7 @@
 #include "global_instances.h"
 #include "datalog_handler.h"
 #include "util.h"
-
-extern volatile uint16_t throttle_percent;
+#include "CMSIS_extra/global_variables_handler.h"
 
 void throttle_control(void *argument) {
     for(;;) {
@@ -26,10 +25,14 @@ void throttle_control(void *argument) {
         bool is_throttle_active = get_individual_flag(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);
 
         if (is_RTD_active && is_throttle_active)
-            throttle_percent = message;
+        {
+            set_global_var_value(THROTTLE_PERCENT, message);
+        }
         else
-            throttle_percent = 0;
+        {
+            set_global_var_value(THROTTLE_PERCENT, 0);
+        }
 
-        log_data(ID_THROTTLE, throttle_percent);
+        log_data(ID_THROTTLE, get_global_var_value(THROTTLE_PERCENT));
     }
 }

@@ -9,13 +9,10 @@
 #include "cmsis_os.h"
 #include "global_definitions.h"
 #include "stdint.h"
+#include "CMSIS_extra/global_variables_handler.h"
 
-extern volatile uint16_t throttle_percent;
-extern modos modo_selecionado;
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
-
-extern volatile uint16_t steering_wheel;
 
 void torque_manager(void *argument) {
 
@@ -60,7 +57,7 @@ void torque_manager(void *argument) {
 
 uint32_t rampa_torque() {
 	static uint32_t ref_torque_ant = 0;
-	uint32_t ref_torque = (modo_selecionado.torq_gain * throttle_percent) / 10;
+	uint32_t ref_torque = (get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10;
 
 	if (ref_torque_ant > TORQUE_INIT_LIMITE) {					    // verifica se a referencia
 		if (ref_torque > ref_torque_ant + INC_TORQUE) {				// ja passou do ponto de inflexao

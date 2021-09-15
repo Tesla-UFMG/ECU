@@ -15,6 +15,7 @@
 #include "CAN/general_can.h"
 #include "CAN/CAN_IDs.h"
 #include "constants.h"
+#include "CMSIS_extra/global_variables_handler.h"
 
 //inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs mantendo a prioridade máxima de ISRs
 void init_NVIC_priorities() {
@@ -37,8 +38,6 @@ cores_t led_conf;
 
 uint8_t error_count = 0; // conta erros, quantas vezes o programa caiu no error handler
 uint16_t debug_milis =0, debug_milis_ant = 0;
-
-extern modos modo_selecionado;
 
 
 extern FDCAN_HandleTypeDef hfdcan1;
@@ -115,7 +114,6 @@ void inicializa_modos() {
 	erro.mode = ERRO;
 	erro.cor = VERMELHO;
 
-
-	modo_selecionado = enduro; //inicializa no modo enduro
+	set_global_var_value(SELECTED_MODE, enduro); //inicializa no modo enduro
 }
 

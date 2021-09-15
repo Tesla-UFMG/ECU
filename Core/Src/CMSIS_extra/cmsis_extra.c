@@ -9,6 +9,11 @@
 
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "cmsis_gcc.h"
+
+#define IS_IRQ_MODE()             (__get_IPSR() != 0U)
+
+#define IS_IRQ()                  IS_IRQ_MODE()
 
 osStatus_t osMessageQueuePutOverwrite(osMessageQueueId_t mq_id,
                                       const void *msg_ptr, uint8_t msg_prio) {

@@ -9,12 +9,9 @@
 #include "constants.h"
 #include "global_definitions.h"
 #include "datalog_handler.h"
+#include "CMSIS_extra/global_variables_handler.h"
 
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
-
-volatile uint8_t internal_wheel;
-volatile uint16_t steering_wheel;
-
 
 void steering_read(void *argument) {
 	uint16_t volante_cru;
@@ -41,24 +38,24 @@ void steering_read(void *argument) {
 
 
 		if (volante_cru < zero_aux) {
-			steering_wheel = 0;
+			set_global_var_value(STEERING_WHEEL, 0);
 		}
 		else{
-			steering_wheel = volante_cru * GANHO_VOLANTE - ZERO_VOLANTE;
+			set_global_var_value(STEERING_WHEEL, volante_cru * GANHO_VOLANTE - ZERO_VOLANTE);
 		}
+
+		STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
 
 		log_data(ID_STEERING_WHEEL, steering_wheel);
 
 		//SPAN_ALINHAMENTO é apenas um span pra ainda considerar o volante no centro
 		//até uma certa quantidade
-		if(steering_wheel > VOLANTE_ALINHADO + SPAN_ALINHAMENTO){
-			internal_wheel = ESQUERDA;
-		}
-		else if(steering_wheel < VOLANTE_ALINHADO - SPAN_ALINHAMENTO){
-			internal_wheel = DIREITA;
-		}
-		else{
-			internal_wheel = CENTRO;
+		if(steering_wheel > VOLANTE_ALINHADO + SPAN_ALINHAMENTO) {
+			set_global_var_value(INTERNAL_WHEEL, ESQUERDA);
+		} else if(steering_wheel < VOLANTE_ALINHADO - SPAN_ALINHAMENTO) {
+			set_global_var_value(INTERNAL_WHEEL, DIREITA);
+		} else {
+			set_global_var_value(INTERNAL_WHEEL, CENTRO);
 		}
 
 		osDelay(100);

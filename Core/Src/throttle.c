@@ -9,13 +9,16 @@
 #include "datalog_handler.h"
 #include "error_treatment.h"
 #include "util.h"
+#include "global_variables.h"
+#include "global_instances.h"
+#include "cmsis_os.h"
 
 
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage);
 uint16_t calculate_apps2(uint16_t APPS2);
-bool check_for_APPS_errors();
-bool check_for_BSE_errors();
-bool check_for_SU_F_errors();
+bool is_there_APPS_error();
+bool is_there_BSE_error();
+bool is_there_SU_F_error();
 
 static uint16_t APPS1;
 static uint16_t APPS2;
@@ -44,9 +47,9 @@ void throttle_read(void *argument) {
 
         log_data(ID_BRAKE, is_brake_active);
 
-        check_for_errors(check_for_APPS_errors, APPS_ERROR_FLAG);           //verifica a plausabilidade dos APPSs
-        check_for_errors(check_for_BSE_errors, BSE_ERROR_FLAG);             //verifica a plausabilidade do BSE
-        check_for_errors(check_for_SU_F_errors, SU_F_ERROR_FLAG);           //verifica se a placa de freio está em curto
+        check_for_errors(is_there_APPS_error, APPS_ERROR_FLAG);           //verifica a plausabilidade dos APPSs
+        check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);             //verifica a plausabilidade do BSE
+        check_for_errors(is_there_SU_F_error, SU_F_ERROR_FLAG);           //verifica se a placa de freio está em curto
 
         uint16_t message = apps2_throttle_percent;
         osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);
@@ -79,22 +82,21 @@ uint16_t calculate_apps2(uint16_t APPS2) {
 
 //calcula o valor teórico de APPS1 a partir do valor de APPS2
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
-    uint16_t apps1_calc = 0;
     if (apps2_percentage >= 0 && apps2_percentage < 200)
-        apps1_calc = 2212;
+        return (2212);
     else if (apps2_percentage >= 200 && apps2_percentage < 400)
-        apps1_calc = (uint16_t) (1.679 * apps2_percentage + 1876);
+        return ((uint16_t) (1.679 * apps2_percentage + 1876));
     else if (apps2_percentage >= 400 && apps2_percentage < 600)
-        apps1_calc = (uint16_t) (2.621 * apps2_percentage + 1499);
+        return ((uint16_t) (2.621 * apps2_percentage + 1499));
     else if (apps2_percentage >= 600 && apps2_percentage < 800)
-        apps1_calc = (uint16_t) (2.212 * apps2_percentage + 1745);
+        return ((uint16_t) (2.212 * apps2_percentage + 1745));
     else if (apps2_percentage >= 800 && apps2_percentage < 1135)
-        apps1_calc = (uint16_t) (1.515 * apps2_percentage + 2302);
-
-    return apps1_calc;
+        return ((uint16_t) (1.515 * apps2_percentage + 2302));
+    else
+        return 0;
 }
 
-bool check_for_APPS_errors() {      //Regulamento: T.4.2
+bool is_there_APPS_error() {      //Regulamento: T.4.2 (2021)
     if (    APPS2 >= 3720           //Se o valor de APPS2 for acima do seu máximo
          || APPS1 < 1802.24         //Se o valor de APPS1 for abaixo do seu mínimo
          || APPS1 > 3900            //Se o valor de APPS1 for acima do seu máximo
@@ -105,14 +107,14 @@ bool check_for_APPS_errors() {      //Regulamento: T.4.2
         return false;
 }
 
-bool check_for_BSE_errors() {
+bool is_there_BSE_error() {
     bool is_BSE_error_active = get_individual_flag(ECU_control_event_id, BSE_ERROR_FLAG);
     if (is_BSE_error_active)
-        return (apps2_throttle_percent >= APPS_05_PERCENT);                         //Regulamento: EV.5.7.2
+        return (apps2_throttle_percent >= APPS_05_PERCENT);                         //Regulamento: EV.5.7.2 (2021)
     else
-        return (apps2_throttle_percent > APPS_25_PERCENT && BSE > BRAKE_ACTIVE);    //Regulamento: EV.5.7.1
+        return (apps2_throttle_percent > APPS_25_PERCENT && BSE > BRAKE_ACTIVE);    //Regulamento: EV.5.7.1 (2021)
 }
 
-bool check_for_SU_F_errors() {
+bool is_there_SU_F_error() {
     return (BSE > SU_F_ERROR);
 }

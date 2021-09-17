@@ -28,7 +28,7 @@ void init_controls() {
 	ti_lateral = ti_calculator(KP_LATERAL, KI_LATERAL);
 	PID_init(&pid_lateral, 1, KP_LATERAL, ti_lateral, 0, 4000, -4000, LATERAL_DELAY);
 	//Longitudinal Control
-	ti_longitudinal = ti_calculator(KP_LONGITUDINAL, KI_LONGITUDINAL); // TODO: CHECK ERRORS
+	ti_longitudinal = ti_calculator(KP_LONGITUDINAL, KI_LONGITUDINAL); // TODO: CHECK COMPILATION ERRORS
 	PID_init(&pid_longitudinal_L, 1, KP_LONGITUDINAL, ti_longitudinal, 0, 4000, 0, LONGITUDINAL_DELAY);
 	PID_init(&pid_longitudinal_R, 1, KP_LONGITUDINAL, ti_longitudinal, 0, 4000, 0, LONGITUDINAL_DELAY);
 

@@ -26,12 +26,12 @@ void main_task(void *argument) {
         brkpt();
         #endif
 
-        osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
+        osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);        //espera RTD ser acionado. Por meio da RTD_FLAG
 
-        osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);         //espera por qualquer erro
-        uint32_t error_flags = osThreadFlagsGet();                                                  //obtem os valores de flag de thread
-        uint32_t event_flags = osEventFlagsGet(ECU_control_event_id);                               //obtem os valores de flag de evento
-        uint32_t most_significant_error_flags = get_flag_MSB(error_flags &= ALL_ERRORS_FLAG);       //obtem a flag de threa mais significativa
+        osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);     //espera por qualquer erro
+        uint32_t error_flags = osThreadFlagsGet();                                              //obtem os valores de flag de thread
+        uint32_t event_flags = osEventFlagsGet(ECU_control_event_id);                           //obtem os valores de flag de evento
+        uint32_t most_significant_error_flags = get_flag_MSB(error_flags &= ALL_ERRORS_FLAG);   //obtem a flag de threa mais significativa
         bool isErrorPresent;
         switch (most_significant_error_flags) {
 

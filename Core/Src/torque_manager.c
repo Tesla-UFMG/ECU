@@ -9,6 +9,7 @@
 #include "cmsis_os.h"
 #include "global_variables.h"
 #include "DynamicControls/lateral_control.h"
+#include "DynamicControls/longitudinal_control.h"
 
 extern volatile float g_wheel_speed[4];
 extern volatile uint16_t steering_wheel;
@@ -34,7 +35,18 @@ void torque_manager(void *argument) {
 
         switch (g_control_type) {
         case LONGITUDINAL:
-            //TODO: implementar controle longitudinal
+        	tick += LONGITUDINAL_DELAY;
+        	longitudinal_t ref_torque_decrease = longitudinal_control(g_wheel_speed);
+        	uint32_t ref_torque_longitudinal[2] = {0,0};
+        	void rampa_torque_longitudinal(longitudinal_t *ref_torque_decrease, uint32_t *ref_torque);
+        	rampa_torque_longitudinal(&ref_torque_decrease, ref_torque_longitudinal);
+
+        	ref_torque_message.ref_torque[R_MOTOR] = ref_torque_lateral[R_MOTOR];
+        	ref_torque_message.ref_torque[L_MOTOR] = ref_torque_lateral[L_MOTOR];
+
+        	osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
+
+        	osDelayUntil(tick);
 
             break;
         case LATERAL: ;
@@ -101,6 +113,28 @@ void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) 
         ref_torque[R_MOTOR] = (uint32_t)((float)ref_torque[R_MOTOR] - ref_torque_decrease->ref_decrease);
     else
         ref_torque[L_MOTOR] = (uint32_t)((float)ref_torque[L_MOTOR] - ref_torque_decrease->ref_decrease);
+
+    for (int i=0;i<2;i++) {
+        if (ref_torque_ant[i] > TORQUE_INIT_LIMITE) {                       // verifica se a referencia
+            if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE) {           // ja passou do ponto de inflexao
+                ref_torque[i] = ref_torque_ant[i] + INC_TORQUE;             // e aplica o incremento mais agressivo
+            }
+        } else {
+            if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE_INIT) {      // caso contrario usa o
+                ref_torque[i] = ref_torque_ant[i] + INC_TORQUE_INIT;        // incremento da primeira rampa
+            }
+        }
+        ref_torque_ant[i] = ref_torque[i];                                  // aplica a referencia calculada
+    }
+}
+// Rampa CA
+void rampa_torque_longitudinal(longitudinal_t *ref_torque_decrease, uint32_t *ref_torque) {
+    static uint32_t ref_torque_ant[2] = {0, 0};
+    ref_torque[R_MOTOR] = (uint32_t)((float)(modo_selecionado.torq_gain * throttle_percent) / 10);
+    ref_torque[L_MOTOR] = (uint32_t)((float)(modo_selecionado.torq_gain * throttle_percent) / 10);
+
+    ref_torque[R_MOTOR] = (uint32_t)((float)ref_torque[R_MOTOR] - ref_torque_decrease->ref_decrease_R);
+    ref_torque[L_MOTOR] = (uint32_t)((float)ref_torque[L_MOTOR] - ref_torque_decrease->ref_decrease_L);
 
     for (int i=0;i<2;i++) {
         if (ref_torque_ant[i] > TORQUE_INIT_LIMITE) {                       // verifica se a referencia

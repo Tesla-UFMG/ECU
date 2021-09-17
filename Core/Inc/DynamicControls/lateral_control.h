@@ -11,8 +11,8 @@
 #include "stdint.h"
 
 //defines PID
-#define KP 6.51864262048678
-#define TI 0.14843404179579
+#define KP_LATERAL 6.51864262048678
+#define KI_LATERAL 0.14843404179579// TODO: check values
 #define LATERAL_DELAY 30
 //defines calculos
 #define HALF_GYRO 2000

@@ -20,5 +20,6 @@
 #define KU (REAR_DISTANCE * MASS / (FRONT_CORNER_STIFF * WHEELBASE)) - (FRONT_DISTANCE * MASS / (REAR_CORNER_STIFF * WHEELBASE))
 
 void init_controls();
+double ti_calculator(double kp, double ki);
 
 #endif /* INC_DYNAMICCONTROLS_INITIALIZER_CONTROLS_H_ */

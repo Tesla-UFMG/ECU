@@ -62,9 +62,7 @@ bool can_RTD_be_enabled() {
 
 void set_RTD() {
     osEventFlagsSet(ECU_control_event_id, RTD_FLAG);                                         //Seta flag de RTD
-    SELECTED_MODE_t selected_mode;
-    get_global_var(SELECTED_MODE, &selected_mode);
-    set_rgb_led(selected_mode.cor, FIXED);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
     aciona_sirene();
 }
 

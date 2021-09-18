@@ -36,7 +36,6 @@ void seleciona_modo(void *argument) {
                 set_global_var(RACE_MODE, &race_mode);
             }
 
-            SELECTED_MODE_t selected_mode;
             switch(race_mode) {
                 case ENDURO:
                     set_global_var_value(SELECTED_MODE, enduro);
@@ -55,7 +54,7 @@ void seleciona_modo(void *argument) {
                     break;
                 }
 
-            set_rgb_led(selected_mode.cor, BLINK200);
+            set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
 
         }
         //todo: dataloggar modos

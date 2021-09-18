@@ -33,7 +33,7 @@ void seleciona_modo(void *argument) {
                 set_global_var_value(RACE_MODE, ENDURO);
             }
 
-            switch(race_mode) {
+            switch(get_global_var_value(RACE_MODE)) {
                 case ENDURO:
                     set_global_var_value(SELECTED_MODE, enduro);
                     break;

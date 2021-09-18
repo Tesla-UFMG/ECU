@@ -18,13 +18,15 @@ void throttle_control(void *argument) {
     for(;;) {
         uint16_t message;
 
-        osMessageQueueGet(q_throttle_controlHandle, &message, NULL, osWaitForever);                     //espera por uma mensagem com o valor de APPS
+        osMessageQueueGet(q_throttle_controlHandle, &message, NULL, osWaitForever);     //espera por uma mensagem com o valor de APPS
 
-        //se o pedal está disponível atualiza o valor de throttle_percent para o da mensagem, caso não atualiza para 0
+        //verifica a se a flag de RTD está ativada e se as flags de erro de BSE e APPS estão desativadas,
+        //caso sim, atualiza o valor de throttle_percent para o da mensagem, caso não atualiza para 0
         bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
-        bool is_throttle_active = get_individual_flag(ECU_control_event_id, THROTTLE_AVAILABLE_FLAG);
+        bool is_apps_error_present = get_individual_flag(ECU_control_event_id, APPS_ERROR_FLAG);
+        bool is_bse_error_present = get_individual_flag(ECU_control_event_id, BSE_ERROR_FLAG);
 
-        if (is_RTD_active && is_throttle_active)
+        if (is_RTD_active && !is_apps_error_present && !is_bse_error_present)
         {
             set_global_var_value(THROTTLE_PERCENT, message);
         }

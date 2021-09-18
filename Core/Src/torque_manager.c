@@ -36,13 +36,13 @@ void torque_manager(void *argument) {
         switch (g_control_type) {
         case LONGITUDINAL:
         	tick += LONGITUDINAL_DELAY;
-        	longitudinal_t ref_torque_decrease = longitudinal_control(g_wheel_speed);
+        	longitudinal_t torque_decrease_longitudinal = longitudinal_control(g_wheel_speed);
         	uint32_t ref_torque_longitudinal[2] = {0,0};
-        	void rampa_torque_longitudinal(longitudinal_t *ref_torque_decrease, uint32_t *ref_torque);
-        	rampa_torque_longitudinal(&ref_torque_decrease, ref_torque_longitudinal);
+        	void rampa_torque_longitudinal(longitudinal_t *torque_decrease_longitudinal, uint32_t *ref_torque); // inicialmente usar rampa para evitar erros
+        	rampa_torque_longitudinal(&torque_decrease_longitudinal, ref_torque_longitudinal);                  // catastroficos em testes de bancada
 
-        	ref_torque_message.ref_torque[R_MOTOR] = ref_torque_lateral[R_MOTOR];
-        	ref_torque_message.ref_torque[L_MOTOR] = ref_torque_lateral[L_MOTOR];
+        	ref_torque_message.ref_torque[R_MOTOR] = ref_torque_longitudinal[R_MOTOR];
+        	ref_torque_message.ref_torque[L_MOTOR] = ref_torque_longitudinal[L_MOTOR];
 
         	osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
 
@@ -52,10 +52,10 @@ void torque_manager(void *argument) {
         case LATERAL: ;
             tick += LATERAL_DELAY;
 
-            lateral_t ref_torque_decrease = lateral_control(g_wheel_speed, &steering_wheel, &internal_wheel, &gyro_yaw);
+            lateral_t torque_decrease_lateral = lateral_control(g_wheel_speed, &steering_wheel, &internal_wheel, &gyro_yaw);
             uint32_t ref_torque_lateral[2] = {0, 0};
-            void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque); // TODO: utilizar rampa_torque enquanto controle longitudinal nao estiver definido
-            rampa_torque_lateral(&ref_torque_decrease, ref_torque_lateral);
+            void rampa_torque_lateral(lateral_t *torque_decrease_lateral, uint32_t *ref_torque); // TODO: utilizar rampa_torque enquanto controle longitudinal nao estiver definido
+            rampa_torque_lateral(&torque_decrease_lateral, ref_torque_lateral);
 
             ref_torque_message.ref_torque[R_MOTOR] = ref_torque_lateral[R_MOTOR];
             ref_torque_message.ref_torque[L_MOTOR] = ref_torque_lateral[L_MOTOR];

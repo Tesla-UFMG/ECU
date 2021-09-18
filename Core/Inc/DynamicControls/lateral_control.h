@@ -13,6 +13,7 @@
 //defines PID
 #define KP_LATERAL 6.51864262048678
 #define KI_LATERAL 0.14843404179579// TODO: check values
+#define TI_LATERAL KP_LATERAL / KI_LATERAL
 #define LATERAL_DELAY 30
 //defines calculos
 #define HALF_GYRO 2000

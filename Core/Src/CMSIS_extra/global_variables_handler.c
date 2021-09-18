@@ -30,7 +30,7 @@ static global_variable_message_queue_data_t queues_info[_global_vars_quan];
  * THROTTLE_PERCENT_info->attr = (osMessageQueueAttr_t){.name = "q_THROTTLE_PERCENT"};
  * THROTTLE_PERCENT_info->id = osMessageQueueNew(1, sizeof(THROTTLE_PERCENT_t), &THROTTLE_PERCENT_info->attr); THROTTLE_PERCENT_t
  * THROTTLE_PERCENT_msg = (THROTTLE_PERCENT_t)THROTTLE_PERCENT_DEFAULT_VALUE;
- * osMessageQueuePut(var_name##_info->id, &var_name##_msg, 0, 0);
+ * osMessageQueuePut(THROTTLE_PERCENT_info->id, &THROTTLE_PERCENT_msg, 0, 0);
  */
 #define INSTANTIATE_GLOBAL_VAR_QUEUE(var_name)                                 \
     /* get a pointer to the queue_data struct intance at position var_name*/   \

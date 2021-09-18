@@ -28,12 +28,9 @@ void seleciona_modo(void *argument) {
 
         bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
         if (!is_RTD_active) {
-            RACE_MODE_t race_mode;
-            get_global_var(RACE_MODE, &race_mode);
-            if (race_mode > AUTOX)
+            if (get_global_var_value(RACE_MODE) > AUTOX)
             {
-                race_mode = ENDURO;
-                set_global_var(RACE_MODE, &race_mode);
+                set_global_var_value(RACE_MODE, ENDURO);
             }
 
             switch(race_mode) {

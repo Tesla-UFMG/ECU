@@ -9,12 +9,12 @@
 #include "main.h"
 #include "speed_calc.h"
 #include "global_instances.h"
-#include "global_variables.h"
 #include "global_definitions.h"
 #include "cmsis_os.h"
 #include "util.h"
+#include "CMSIS_extra/global_variables_handler.h"
 
-speed_message_t speed_message;
+static speed_message_t speed_message;
 
 //implementa a funcao homonima da HAL, que trata interrupcao por pino
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
@@ -33,8 +33,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 			osThreadFlagsSet(t_RTDHandle, RTD_BTN_PRESSED_FLAG);
 			break;
 
-		case B_MODO_Pin:
-			g_race_mode++;
+		case B_MODO_Pin: ;
+			RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
+			set_global_var_value(RACE_MODE, race_mode+1);
 			osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_FLAG);
 			break;
 

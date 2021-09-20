@@ -14,6 +14,7 @@
 #include "rgb_led.h"
 #include "throttle.h"
 #include "util.h"
+#include "CMSIS_extra/global_variables_handler.h"
 
 
 
@@ -61,7 +62,7 @@ void main_task(void *argument) {
                     osDelay(20);
                 } else {                                                                //caso o erro tenha sido resolvido:
                     osThreadFlagsClear(APPS_ERROR_FLAG);                                //limpa flag de thread do erro
-                    set_rgb_led(modo_selecionado.cor, NO_CHANGE);                       //retorna o RGB ao funcionamento normal
+                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);    //retorna o RGB ao funcionamento normal
                 }
                 break;
 
@@ -72,7 +73,7 @@ void main_task(void *argument) {
                     osDelay(20);
                 } else {                                                                //caso o erro tenha sido resolvido:
                     osThreadFlagsClear(BSE_ERROR_FLAG);                                 //limpa flag de thread do erro
-                    set_rgb_led(modo_selecionado.cor, NO_CHANGE);                       //retorna o RGB ao funcionamento normal
+                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);    //retorna o RGB ao funcionamento normal
                 }
                 break;
 

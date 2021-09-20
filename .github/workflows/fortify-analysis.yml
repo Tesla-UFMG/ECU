@@ -17,10 +17,7 @@ name: Fortify on Demand Scan
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
   pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ master ]
   schedule:
     - cron: '19 15 * * 2'
 

@@ -36,12 +36,11 @@ void torque_manager(void *argument) {
         switch (g_control_type) {
         case LONGITUDINAL:
         	tick += LONGITUDINAL_DELAY;
-        	longitudinal_t torque_decrease_longitudinal = longitudinal_control(g_wheel_speed);
+        	longitudinal_t torque_decrease_longitudinal = longitudinal_control(g_wheel_speed);//TODO: implementar leitura da velocidade das rodas traseiras
         	uint32_t ref_torque_longitudinal[2] = {0,0};
-        	void rampa_torque_longitudinal(longitudinal_t *torque_decrease_longitudinal, uint32_t *ref_torque); // inicialmente usar rampa para evitar erros
-        	rampa_torque_longitudinal(&torque_decrease_longitudinal, ref_torque_longitudinal);                  // catastroficos em testes de bancada
-
-        	ref_torque_message.ref_torque[R_MOTOR] = ref_torque_longitudinal[R_MOTOR];
+        	void rampa_torque_longitudinal(longitudinal_t *torque_decrease_longitudinal, uint32_t *ref_torque); //TODO: testar sem o controle sem rampa
+        	rampa_torque_longitudinal(&torque_decrease_longitudinal, ref_torque_longitudinal);
+        	ref_torque_message.ref_torque[R_MOTOR] = ref_torque_longitudinal[R_MOTOR];//TODO: utilizar o encapsulamento dessa parte a ser feito pela luiza
         	ref_torque_message.ref_torque[L_MOTOR] = ref_torque_longitudinal[L_MOTOR];
 
         	osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);

@@ -9,7 +9,7 @@
 #include "DynamicControls/initializer_controls.h"
 #include "DynamicControls/PID.h"
 #include "cmsis_os.h"
-#include "math.h"
+#include <math.h>
 #include "speed_calc.h"
 #include "global_variables.h"
 #include "constants.h"
@@ -17,7 +17,7 @@
 extern PID_t pid_longitudinal_L;
 extern PID_t pid_longitudinal_R;
 
-longitudinal_t longitudinal_control(volatile float g_wheel_speed[4]) {
+longitudinal_t longitudinal_control(float g_wheel_speed[4]) {
     float cm_speed;
     double left_slip, right_slip, setpoint;
     longitudinal_t ref_torque;

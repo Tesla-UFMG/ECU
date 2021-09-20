@@ -21,10 +21,9 @@
 typedef struct {
 	double ref_decrease_L;
 	double ref_decrease_R;
-
 } longitudinal_t;
 
-longitudinal_t longitudinal_control(volatile float g_wheel_speed[4]);
+longitudinal_t longitudinal_control(float g_wheel_speed[4]);
 
 
 #endif /* INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_ */

@@ -12,7 +12,7 @@
 #include "global_instances.h"
 #include "rgb_led.h"
 #include "util.h"
-
+#include "CMSIS_extra/global_variables_handler.h"
 
 
 void seleciona_modo(void *argument) {
@@ -28,29 +28,30 @@ void seleciona_modo(void *argument) {
 
         bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
         if (!is_RTD_active) {
+            if (get_global_var_value(RACE_MODE) > AUTOX)
+            {
+                set_global_var_value(RACE_MODE, ENDURO);
+            }
 
-            if (g_race_mode > AUTOX)
-                g_race_mode = ENDURO;
-
-            switch(g_race_mode) {
+            switch(get_global_var_value(RACE_MODE)) {
                 case ENDURO:
-                    modo_selecionado = enduro;
+                    set_global_var_value(SELECTED_MODE, enduro);
                     break;
                 case ACELERACAO:
-                    modo_selecionado = aceleracao;
+                    set_global_var_value(SELECTED_MODE, aceleracao);
                     break;
                 case SKIDPAD:
-                    modo_selecionado = skidpad;
+                    set_global_var_value(SELECTED_MODE, skidpad);
                     break;
                 case AUTOX:
-                    modo_selecionado = autox;
+                    set_global_var_value(SELECTED_MODE, autox);
                     break;
                 default:
-                    modo_selecionado = erro;
+                    set_global_var_value(SELECTED_MODE, erro);
                     break;
                 }
 
-            set_rgb_led(modo_selecionado.cor, BLINK200);
+            set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
 
         }
         //todo: dataloggar modos

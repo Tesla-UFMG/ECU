@@ -30,6 +30,4 @@ typedef struct {
 
 lateral_t lateral_control(float g_wheel_speed[4], uint16_t *steering_wheel, uint8_t *internal_wheel, uint16_t *gyro_yaw);
 
-#define sign(x) (x >= 0) - (x < 0)
-
 #endif /* INC_DYNAMICCONTROLS_LATERAL_CONTROL_H_ */

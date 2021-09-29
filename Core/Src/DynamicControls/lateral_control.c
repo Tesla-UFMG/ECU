@@ -13,6 +13,7 @@
 #include "speed_calc.h"
 #include "global_variables.h"
 #include "constants.h"
+#include "util.h"
 
 extern PID_t pid_lateral;
 

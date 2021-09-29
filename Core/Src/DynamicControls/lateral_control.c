@@ -6,8 +6,8 @@
  */
 
 #include "DynamicControls/lateral_control.h"
-#include "DynamicControls/initializer_controls.h"
 #include "DynamicControls/PID.h"
+#include "DynamicControls/constants_control.h"
 #include "cmsis_os.h"
 #include "math.h"
 #include "speed_calc.h"
@@ -16,15 +16,15 @@
 
 extern PID_t pid_lateral;
 
-lateral_t lateral_control(volatile float g_wheel_speed[4], volatile uint16_t *steering_wheel, volatile uint8_t *internal_wheel, volatile uint16_t *gyro_yaw) {
+lateral_t lateral_control(float g_wheel_speed[4], uint16_t *steering_wheel, uint8_t *internal_wheel, uint16_t *gyro_yaw) {
     float cg_speed;
-    volatile double gyro_adjusted;    // entre -1.5 e 1.5
-    volatile float steering_adjusted; // entre -0.5 e 0.5
+    double gyro_adjusted;    // entre -1.5 e 1.5
+    float steering_adjusted; // entre -0.5 e 0.5
     double desired_yaw, max_yaw, setpoint;
     lateral_t ref_torque;
 
-    volatile double calc_gyro(volatile uint16_t *gyro_yaw);
-    volatile float calc_steering(volatile uint16_t *steering_wheel, volatile uint8_t *internal_wheel);
+    double calc_gyro(uint16_t *gyro_yaw);
+    float calc_steering(uint16_t *steering_wheel, uint8_t *internal_wheel);
 
     // speed
     cg_speed = ((g_wheel_speed[FRONT_RIGHT] + g_wheel_speed[FRONT_LEFT])/2) / (10 * 3.6); // velocidade em m/s
@@ -52,9 +52,9 @@ lateral_t lateral_control(volatile float g_wheel_speed[4], volatile uint16_t *st
 
 // TODO: verificar os calculos quando tivermos os valores reais de gyro e steering
 
-volatile double calc_gyro(volatile uint16_t *gyro_yaw) {
+double calc_gyro(uint16_t *gyro_yaw) {
     // ajusta o valor do yaw para aquele usado no pid
-    volatile double gyro_adjusted;
+    double gyro_adjusted;
     if (*gyro_yaw < HALF_GYRO)                              // na primeira metade, está virando
         gyro_adjusted = (double)*gyro_yaw/ADJUST_GYRO_R;    // à direita (valor positivo)
     else                                                    // e na segunda, à esquerda (negativo)
@@ -63,12 +63,12 @@ volatile double calc_gyro(volatile uint16_t *gyro_yaw) {
     return gyro_adjusted;
 }
 
-volatile float calc_steering(volatile uint16_t *steering_wheel, volatile uint8_t *internal_wheel) {
-    volatile float steering_adjusted;
+float calc_steering(uint16_t *steering_wheel, uint8_t *internal_wheel) {
+    float steering_adjusted;
     if (*internal_wheel == DIREITA)
-        steering_adjusted = (float)*steering_wheel/ADJUST_STEERING;
+        steering_adjusted = Y0 + ((Y1-Y0)/(X1-X0)) * ((float)*steering_wheel - X0);
     else
-        steering_adjusted = - ((float)*steering_wheel - VOLANTE_ALINHADO)/ADJUST_STEERING;
+        steering_adjusted = Y0 + ((Y1-Y0)/(X1-X0)) * (- (float)*steering_wheel - X0);
 
     return steering_adjusted;
 }

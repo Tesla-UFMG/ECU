@@ -26,4 +26,6 @@ const E_CONTROL_TYPE g_control_type = NO_CONTROL;
 
 #define RAMPA_DELAY 30
 
+#define max(x,y) (x > y) ? x : y
+
 #endif /* INC_TORQUE_MANAGER_H_ */

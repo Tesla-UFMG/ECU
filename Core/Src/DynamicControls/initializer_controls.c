@@ -14,5 +14,5 @@ PID_t pid_lateral;
 void init_controls() {
 
 	//Lateral Control
-	PID_init(&pid_lateral, 1, KP, TI, 0, 4000, -4000, LATERAL_DELAY);
+	PID_init(&pid_lateral, 1, KP_LATERAL, TI_LATERAL, 0, 4000, -4000, LATERAL_DELAY);
 }

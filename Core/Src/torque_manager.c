@@ -21,11 +21,8 @@ extern osMutexId_t m_state_parameter_mutexHandle;
 
 void torque_manager(void *argument) {
 
-    ref_torque_t ref_torque_message;
-
     for (;;) {
-        uint32_t tick;
-        tick = osKernelGetTickCount();
+        uint32_t tick = osKernelGetTickCount();
 
         #ifdef DEBUG_ECU
         extern void brkpt();
@@ -41,16 +38,15 @@ void torque_manager(void *argument) {
             break;
         case LATERAL: ;
             tick += LATERAL_DELAY;
-
+            // controle lateral
             lateral_t ref_torque_decrease = lateral_control(g_wheel_speed, &steering_wheel, &internal_wheel, &gyro_yaw);
+            // controle longitudinal
             uint32_t ref_torque_lateral[2] = {0, 0};
             void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque); // TODO: utilizar rampa_torque enquanto controle longitudinal nao estiver definido
             rampa_torque_lateral(&ref_torque_decrease, ref_torque_lateral);
-
-            ref_torque_message.ref_torque[R_MOTOR] = ref_torque_lateral[R_MOTOR];
-            ref_torque_message.ref_torque[L_MOTOR] = ref_torque_lateral[L_MOTOR];
-
-            osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
+            // enviar referencia de torque
+            void send_ref_torque_message (uint32_t *ref_torque);
+            send_ref_torque_message (ref_torque_lateral);
 
             osDelayUntil(tick);
 
@@ -59,11 +55,11 @@ void torque_manager(void *argument) {
         default: ;// rampa de torque
             uint32_t rampa_torque();
             uint32_t ref_torque = rampa_torque();
+            uint32_t ref_torque_long[2] = {ref_torque, ref_torque};
 
-            ref_torque_message.ref_torque[R_MOTOR] = ref_torque;
-            ref_torque_message.ref_torque[L_MOTOR] = ref_torque;
-
-            osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
+            // enviar referencia de torque
+            void send_ref_torque_message (uint32_t *ref_torque);
+            send_ref_torque_message (ref_torque_long);
 
             osDelay(RAMPA_DELAY);
 
@@ -99,10 +95,7 @@ void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) 
     ref_torque[R_MOTOR] = (uint32_t)((float)(modo_selecionado.torq_gain * throttle_percent) / 10);
     ref_torque[L_MOTOR] = (uint32_t)((float)(modo_selecionado.torq_gain * throttle_percent) / 10);
 
-    if (ref_torque_decrease->ref_wheel == R_MOTOR)
-        ref_torque[R_MOTOR] = (uint32_t)((float)ref_torque[R_MOTOR] - ref_torque_decrease->ref_decrease);
-    else
-        ref_torque[L_MOTOR] = (uint32_t)((float)ref_torque[L_MOTOR] - ref_torque_decrease->ref_decrease);
+    ref_torque[ref_torque_decrease->ref_wheel] = (uint32_t) max((int32_t)ref_torque[ref_torque_decrease->ref_wheel] - ref_torque_decrease->ref_decrease, 0);
 
     for (int i=0;i<2;i++) {
         if (ref_torque_ant[i] > TORQUE_INIT_LIMITE) {                       // verifica se a referencia
@@ -116,4 +109,13 @@ void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) 
         }
         ref_torque_ant[i] = ref_torque[i];                                  // aplica a referencia calculada
     }
+}
+
+// Enviar mensagem de torque
+void send_ref_torque_message (uint32_t *ref_torque) {
+    ref_torque_t ref_torque_message;
+    ref_torque_message.ref_torque[R_MOTOR] = ref_torque[R_MOTOR];
+    ref_torque_message.ref_torque[L_MOTOR] = ref_torque[L_MOTOR];
+
+    osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
 }

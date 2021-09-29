@@ -41,7 +41,7 @@ void update_state(bool disable) {
 
 void update_state_parameters(torque_message_t* torque_message) {
 
-    SELECTED_MODE_t selected_mode = get_global_var_value(SELECTED_MODE);
+	SELECTED_MODE_t selected_mode = get_global_var_value(SELECTED_MODE);
 	switch(vehicle_state) {
 		case S_NEUTER_E:
 			set_bit8(&torque_message->parameters, P_ENABLE, true);

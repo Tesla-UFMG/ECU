@@ -40,7 +40,7 @@ void RTD(void *argument) {
 
 
 void exit_RTD() {
-    set_global_var_value(SELECTED_MODE,erro);
+    set_global_var_value(SELECTED_MODE, erro);          //seta modo_selecionado como erro
     set_global_var_value(RACE_MODE, ERRO);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
     osEventFlagsClear(ECU_control_event_id, RTD_FLAG);  //limpa flag de RTD

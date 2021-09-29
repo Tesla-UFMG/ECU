@@ -7,9 +7,10 @@
 
 #include "torque_manager.h"
 #include "cmsis_os.h"
-#include "global_variables.h"
 #include "DynamicControls/lateral_control.h"
 #include "util.h"
+#include "global_definitions.h"
+#include "stdint.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;

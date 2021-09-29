@@ -9,7 +9,6 @@
 #include "main.h"
 #include "speed_calc.h"
 #include "global_instances.h"
-#include "global_variables.h"
 #include "global_definitions.h"
 #include "cmsis_os.h"
 #include "util.h"
@@ -35,7 +34,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 			break;
 
 		case B_MODO_Pin: ;
-		    RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
+			RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
 			set_global_var_value(RACE_MODE, race_mode+1);
 			osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_FLAG);
 			break;

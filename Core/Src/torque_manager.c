@@ -12,9 +12,6 @@
 #include "util.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
-extern volatile float g_wheel_speed[4];
-extern volatile uint8_t internal_wheel;
-extern volatile uint16_t gyro_yaw; // ainda nao existe
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
 
@@ -38,7 +35,7 @@ void torque_manager(void *argument) {
         case LATERAL: ;
             tick += LATERAL_DELAY;
             // controle lateral
-            lateral_t ref_torque_decrease = lateral_control(g_wheel_speed, &steering_wheel, &internal_wheel, &gyro_yaw);
+            lateral_t ref_torque_decrease = lateral_control();
             // controle longitudinal
             uint32_t ref_torque_lateral[2] = {0, 0};
             void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque); // TODO: utilizar rampa_torque enquanto controle longitudinal nao estiver definido
@@ -91,8 +88,8 @@ uint32_t rampa_torque() {
 // Rampa vetorização
 void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) {
     static uint32_t ref_torque_ant[2] = {0, 0};
-    ref_torque[R_MOTOR] = (uint32_t)((float)(modo_selecionado.torq_gain * throttle_percent) / 10);
-    ref_torque[L_MOTOR] = (uint32_t)((float)(modo_selecionado.torq_gain * throttle_percent) / 10);
+    ref_torque[R_MOTOR] = (uint32_t)((float)(get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
+    ref_torque[L_MOTOR] = (uint32_t)((float)(get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
 
     ref_torque[ref_torque_decrease->ref_wheel] = (uint32_t) max((int32_t)ref_torque[ref_torque_decrease->ref_wheel] - ref_torque_decrease->ref_decrease, 0);
 

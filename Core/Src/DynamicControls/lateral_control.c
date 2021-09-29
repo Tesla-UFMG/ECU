@@ -14,10 +14,16 @@
 #include "global_variables.h"
 #include "constants.h"
 #include "util.h"
+#include "CMSIS_extra/global_variables_handler.h"
 
 extern PID_t pid_lateral;
 
-lateral_t lateral_control(float g_wheel_speed[4], uint16_t *steering_wheel, uint8_t *internal_wheel, uint16_t *gyro_yaw) {
+lateral_t lateral_control() {
+    WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
+    STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
+    INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
+    GYRO_YAW_t gyro_yaw = get_global_var_value(GYRO_YAW); // TODO: receber GYRO_YAW em algum lugar
+
     float cg_speed;
     double gyro_adjusted;    // entre -1.5 e 1.5
     float steering_adjusted; // entre -0.5 e 0.5
@@ -28,11 +34,11 @@ lateral_t lateral_control(float g_wheel_speed[4], uint16_t *steering_wheel, uint
     float calc_steering(uint16_t *steering_wheel, uint8_t *internal_wheel);
 
     // speed
-    cg_speed = ((g_wheel_speed[FRONT_RIGHT] + g_wheel_speed[FRONT_LEFT])/2) / (10 * 3.6); // velocidade em m/s
+    cg_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT])/2) / (10 * 3.6); // velocidade em m/s
     // steering
-    steering_adjusted = calc_steering(steering_wheel, internal_wheel);
+    steering_adjusted = calc_steering(&steering_wheel, &internal_wheel);
     // yaw rate
-    gyro_adjusted = calc_gyro(gyro_yaw);
+    gyro_adjusted = calc_gyro(&gyro_yaw);
     desired_yaw = cg_speed * steering_adjusted / (WHEELBASE + KU * cg_speed * cg_speed);
     max_yaw = sign(steering_adjusted) * FRICTION_COEFFICIENT * GRAVITY / cg_speed;
     // max desired yaw (setpoint)
@@ -64,7 +70,7 @@ double calc_gyro(uint16_t *gyro_yaw) {
     return gyro_adjusted;
 }
 
-float calc_steering(uint16_t *steering_wheel, uint8_t *internal_wheel) {
+float calc_steering(uint16_t *steering_wheel, uint8_t *internal_wheel) { // TODO: verificar valor do steering
     float steering_adjusted;
     if (*internal_wheel == DIREITA)
         steering_adjusted = Y0 + ((Y1-Y0)/(X1-X0)) * ((float)*steering_wheel - X0);

@@ -28,6 +28,6 @@ typedef struct {
 	uint8_t ref_wheel;
 } lateral_t;
 
-lateral_t lateral_control(float g_wheel_speed[4], uint16_t *steering_wheel, uint8_t *internal_wheel, uint16_t *gyro_yaw);
+lateral_t lateral_control();
 
 #endif /* INC_DYNAMICCONTROLS_LATERAL_CONTROL_H_ */

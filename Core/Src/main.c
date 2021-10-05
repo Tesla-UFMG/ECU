@@ -973,8 +973,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : B_DEBUG2_Pin B_DEBUG1_Pin B_RTD_Pin B_MODO_Pin */
-  GPIO_InitStruct.Pin = B_DEBUG2_Pin|B_DEBUG1_Pin|B_RTD_Pin|B_MODO_Pin;
+  /*Configure GPIO pins : B_DEBUG2_Pin B_RTD_Pin B_MODO_Pin */
+  GPIO_InitStruct.Pin = B_DEBUG2_Pin|B_RTD_Pin|B_MODO_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
@@ -993,6 +993,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(BOOT1_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 

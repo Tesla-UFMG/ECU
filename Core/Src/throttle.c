@@ -62,18 +62,24 @@ void throttle_read(void *argument) {
 //calcula o valor do APPS2
 uint16_t calculate_apps2(uint16_t APPS2) {
     uint16_t apps2_percentage = 0;
-    if (APPS2 < 260)
+    if (APPS2 < 0)
         apps2_percentage = 0;
-    else if (APPS2 >= 260 && APPS2 < 467)
-        apps2_percentage = 1.162 * APPS2 - 342.9;
-    else if (APPS2 >= 467 && APPS2 < 1065)
-        apps2_percentage = 0.3344 * APPS2 + 43.8;
-    else if (APPS2 >= 1065 && APPS2 < 2253)
-        apps2_percentage = 0.1684 * APPS2 + 220.7;
-    else if (APPS2 >= 2253 && APPS2 < 3211)
-        apps2_percentage = 0.2087 * APPS2 + 129.9;
-    else if (APPS2 >= 3211 && APPS2 < 3720)
-        apps2_percentage = 0.6598 * APPS2 - 1319;
+    else if (APPS2 >= 0 && APPS2 < 825)
+        apps2_percentage = 0.3636 * APPS2;
+    else if (APPS2 >= 825 && APPS2 < 1112)
+        apps2_percentage = 0.3484 * APPS2 + 43.1;
+    else if (APPS2 >= 1112 && APPS2 < 1530)
+        apps2_percentage = 0.2392 * APPS2 + 149.1;
+    else if (APPS2 >= 1530 && APPS2 < 1850)
+        apps2_percentage = 0.3125 * APPS2 + 49.4;
+    else if (APPS2 >= 1850 && APPS2 < 2230)
+        apps2_percentage = 0.2631 * APPS2 + 132.2;
+    else if (APPS2 >= 2230 && APPS2 < 2510)
+        apps2_percentage = 0.3571 * APPS2 - 75.3;
+    else if (APPS2 >= 2510 && APPS2 < 2850)
+        apps2_percentage = 0.2941 * APPS2 + 79.6;
+    else if (APPS2 >= 2850 && APPS2 < 3140)
+        apps2_percentage = 0.3448 * APPS2 - 54.8;
 
     if (apps2_percentage > 1000)
         apps2_percentage = 1000;
@@ -84,23 +90,31 @@ uint16_t calculate_apps2(uint16_t APPS2) {
 //calcula o valor teórico de APPS1 a partir do valor de APPS2
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
     if (apps2_percentage >= 0 && apps2_percentage < 200)
-        return (2212);
-    else if (apps2_percentage >= 200 && apps2_percentage < 400)
-        return ((uint16_t) (1.679 * apps2_percentage + 1876));
-    else if (apps2_percentage >= 400 && apps2_percentage < 600)
-        return ((uint16_t) (2.621 * apps2_percentage + 1499));
-    else if (apps2_percentage >= 600 && apps2_percentage < 800)
-        return ((uint16_t) (2.212 * apps2_percentage + 1745));
-    else if (apps2_percentage >= 800 && apps2_percentage < 1135)
-        return ((uint16_t) (1.515 * apps2_percentage + 2302));
+        return (2000);
+    else if (apps2_percentage >= 200 && apps2_percentage < 300)
+        return ((uint16_t) (0.435 * apps2_percentage + 2235));
+    else if (apps2_percentage >= 300 && apps2_percentage < 400)
+        return ((uint16_t) (0.606 * apps2_percentage + 2288));
+    else if (apps2_percentage >= 400 && apps2_percentage < 500)
+        return ((uint16_t) (0.444 * apps2_percentage + 2532));
+    else if (apps2_percentage >= 500 && apps2_percentage < 600)
+        return ((uint16_t) (0.645 * apps2_percentage + 2523));
+    else if (apps2_percentage >= 600 && apps2_percentage < 700)
+        return ((uint16_t) (0.454 * apps2_percentage + 2811));
+    else if (apps2_percentage >= 700 && apps2_percentage < 800)
+        return ((uint16_t) (0.667 * apps2_percentage + 2747));
+    else if (apps2_percentage >= 800 && apps2_percentage < 900)
+        return ((uint16_t) (0.625 * apps2_percentage + 2877));
+    else if (apps2_percentage >= 900 && apps2_percentage < 1050)
+        return ((uint16_t) (0.909 * apps2_percentage + 2640));
     else
         return 0;
 }
 
 bool is_there_APPS_error() {      //Regulamento: T.4.2 (2021)
-    if (    APPS2 >= 3720           //Se o valor de APPS2 for acima do seu máximo
-         || APPS1 < 1802.24         //Se o valor de APPS1 for abaixo do seu mínimo
-         || APPS1 > 3900            //Se o valor de APPS1 for acima do seu máximo
+    if (    APPS2 >= 3140         //Se o valor de APPS2 for acima do seu máximo
+         || APPS1 < 2000          //Se o valor de APPS1 for abaixo do seu mínimo
+         || APPS1 > 3550          //Se o valor de APPS1 for acima do seu máximo
          || APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)   //verifica se APPS1 está abaixo do valor teórico de APPS1, considerando a tolerância
          || APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0))  //verifica se APPS1 está acima do valor teórico de APPS1, considerando a tolerância
         return true;

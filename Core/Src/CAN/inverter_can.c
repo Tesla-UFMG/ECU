@@ -15,10 +15,26 @@ static FDCAN_TxHeaderTypeDef TxHeader;
 
 static uint8_t RxData[8];
 static FDCAN_RxHeaderTypeDef RxHeader;
-int16_t datainverter[4];
-uint32_t idinverter;
+uint32_t idInverter;
 
+void store_value(can_vars_e var_name, int value)
+{
+    dataInverter[var_name] = value;
+}
 
+int get_value(can_vars_e var_name)
+{
+    return dataInverter[var_name];
+}
+
+can_vars_e get_var_name_from_id_and_pos(int id, int pos)
+{
+    #define ENTRY(a,b,c) \
+    if (id == b && pos == c) return a; else
+    VARIABLES;
+    #undef ENTRY
+    return -1;
+}
 
 //função que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
@@ -47,11 +63,13 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 
 		set_debugleds(DEBUGLED3,TOGGLE,0);
 
-		idinverter = RxHeader.Identifier;
+		idInverter = RxHeader.Identifier;
 		for(int i = 0; i < 8; i += 2){
-			datainverter[i/2] = (RxData[i+1] << 8) | RxData[i];
+			can_vars_e var_name = get_var_name_from_id_and_pos(idInverter, i/2);
+			if (var_name != -1) {
+				store_value(var_name, ((RxData[i+1] << 8) | RxData[i]));
+			}
 		}
-		//TODO: implementar lógica de colocar as mensagens nas variáveis certas
 
 		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 			/* Notification Error */

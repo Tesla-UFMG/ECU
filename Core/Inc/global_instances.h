@@ -35,4 +35,7 @@ extern osEventFlagsId_t ECU_control_event_id;
 //MUTEXES
 extern osMutexId_t m_state_parameter_mutexHandle;
 
+//TIMERS
+extern osTimerId_t inverter_can_timerHandle;
+
 #endif /* INC_GLOBAL_INSTANCES_H_ */

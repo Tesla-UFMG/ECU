@@ -7,6 +7,9 @@
 
 #include "CAN/inverter_can.h"
 #include "CAN/CAN_handler.h"
+#include "global_variables.h"
+#include "global_instances.h"
+#include "error_treatment.h"
 #include "debugleds.h"
 
 static FDCAN_HandleTypeDef* can_ptr;
@@ -16,6 +19,8 @@ static FDCAN_TxHeaderTypeDef TxHeader;
 static uint8_t RxData[8];
 static FDCAN_RxHeaderTypeDef RxHeader;
 uint32_t idInverter;
+uint32_t timer = 0;
+bool is_there_inverter_comm_error();
 
 void store_value(can_vars_e var_name, int value)
 {
@@ -41,6 +46,7 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
 	can_ptr = can_ref;
 	void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
 	initialize_CAN(can_ptr, CAN_inverter_receive_callback, &TxHeader);
+	osTimerStart(inverter_can_timerHandle, 2000 / portTICK_PERIOD_MS);
 }
 
 
@@ -61,6 +67,8 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 			Error_Handler();
 		}
 
+		timer = osKernelGetTickCount();
+
 		set_debugleds(DEBUGLED3,TOGGLE,0);
 
 		idInverter = RxHeader.Identifier;
@@ -70,10 +78,23 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 				store_value(var_name, ((RxData[i+1] << 8) | RxData[i]));
 			}
 		}
+		
+		check_inverter_comm_error(NULL);
 
 		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 			/* Notification Error */
 			Error_Handler();
 		}
 	}
+}
+
+bool is_there_inverter_comm_error() {
+	uint32_t timer1 = osKernelGetTickCount();
+
+	return get_value(can_state_m_l) != 2 || get_value(can_state_m_r) != 2 || timer1 - timer > 2000;
+}
+
+void check_inverter_comm_error(void *argument) {
+	check_for_errors(is_there_inverter_comm_error, INVERTER_COMM_ERROR_FLAG);
+	osTimerStart(inverter_can_timerHandle, 2000 / portTICK_PERIOD_MS);
 }

@@ -203,6 +203,11 @@ osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
   .name = "m_state_parameter_mutex"
 };
+/* Definitions for inverter_can_timer */
+osTimerId_t inverter_can_timerHandle;
+const osTimerAttr_t inverter_can_timer_attributes = {
+  .name = "inverter_can_timer"
+};
 /* USER CODE BEGIN PV */
 //flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
 osEventFlagsId_t ECU_control_event_id;
@@ -235,6 +240,7 @@ extern void rgb_led(void *argument);
 extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
+extern void check_inverter_comm_error(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -310,6 +316,10 @@ int main(void)
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
+
+  /* Create the timer(s) */
+  /* creation of inverter_can_timer */
+  inverter_can_timerHandle = osTimerNew(check_inverter_comm_error, osTimerOnce, NULL, &inverter_can_timer_attributes);
 
   /* Create the queue(s) */
   /* creation of q_speed_message */

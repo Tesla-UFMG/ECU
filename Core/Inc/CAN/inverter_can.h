@@ -54,5 +54,6 @@ int16_t dataInverter[NUM_STATES];
 
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref);
 void inverter_can_transmit(uint32_t id, uint16_t* data);
+void check_inverter_comm_error(void *argument);
 
 #endif /* INC_INVERTER_CAN_H_ */

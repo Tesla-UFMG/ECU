@@ -19,7 +19,7 @@ static FDCAN_TxHeaderTypeDef TxHeader;
 static uint8_t RxData[8];
 static FDCAN_RxHeaderTypeDef RxHeader;
 uint32_t idInverter;
-uint32_t timer = 0;
+uint32_t last_message_arrival_time = 0;
 bool is_there_inverter_comm_error();
 
 void store_value(can_vars_e var_name, int value)
@@ -67,7 +67,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 			Error_Handler();
 		}
 
-		timer = osKernelGetTickCount();
+		last_message_arrival_time = osKernelGetTickCount();
 
 		set_debugleds(DEBUGLED3,TOGGLE,0);
 
@@ -89,9 +89,9 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 }
 
 bool is_there_inverter_comm_error() {
-	uint32_t timer1 = osKernelGetTickCount();
+	uint32_t current_time = osKernelGetTickCount();
 
-	return get_value(can_state_m_l) != 2 || get_value(can_state_m_r) != 2 || timer1 - timer > 2000;
+	return get_value(can_state_m_l) != 2 || get_value(can_state_m_r) != 2 || current_time - last_message_arrival_time > 2000;
 }
 
 void check_inverter_comm_error(void *argument) {

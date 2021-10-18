@@ -163,6 +163,13 @@ const osThreadAttr_t t_throttle_control_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_datalog_acquisition */
+osThreadId_t t_datalog_acquisitionHandle;
+const osThreadAttr_t t_datalog_acquisition_attributes = {
+  .name = "t_datalog_acquisition",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -235,6 +242,7 @@ extern void rgb_led(void *argument);
 extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
+extern void datalog_acquisition(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -381,6 +389,9 @@ int main(void)
 
   /* creation of t_throttle_control */
   t_throttle_controlHandle = osThreadNew(throttle_control, NULL, &t_throttle_control_attributes);
+
+  /* creation of t_datalog_acquisition */
+  t_datalog_acquisitionHandle = osThreadNew(datalog_acquisition, NULL, &t_datalog_acquisition_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

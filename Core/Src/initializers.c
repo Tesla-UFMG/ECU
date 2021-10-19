@@ -61,7 +61,7 @@ void inicializa_modos() {
 	enduro.bat_safe = 1;
 	enduro.torq_gain = 25; //ERA 15
 	enduro.mode = ENDURO;
-	enduro.cor = AZUL;
+	enduro.cor = VERDE;
 
 	aceleracao.tor_max = 3500;
 	aceleracao.vel_max = vel_max_rpm;

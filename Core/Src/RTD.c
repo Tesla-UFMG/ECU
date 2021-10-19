@@ -52,7 +52,7 @@ bool can_RTD_be_enabled() {
     BRAKE_STATUS_t is_brake_active = get_global_var_value(BRAKE_STATUS);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
-    if(is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO))
+    if(is_brake_active &&  !is_throttle_active && !error_flags && (race_mode != ERRO))
         return true;
     else
         return false;

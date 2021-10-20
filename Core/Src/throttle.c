@@ -78,7 +78,7 @@ uint16_t calculate_apps2(uint16_t APPS2) {
         apps2_percentage = 0.2882 * APPS2 + 142.9;
     else if (APPS2 >= 2280 && APPS2 < 2630)
         apps2_percentage = 0.2857 * APPS2 + 148.6;
-    else if (APPS2 >= 2630 && APPS2 < 2970)
+    else if (APPS2 >= 2630 && APPS2 < 3400)
         apps2_percentage = 0.2941 * APPS2 + 126.5;
 
     if (apps2_percentage > 1000)
@@ -112,7 +112,7 @@ uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
 }
 
 bool is_there_APPS_error() {        //Regulamento: T.4.2 (2021)
-    if (    APPS2 >= 3100           //Se o valor de APPS2 for acima do seu máximo
+    if (    APPS2 >= 3500           //Se o valor de APPS2 for acima do seu máximo
          || APPS1 < 1900            //Se o valor de APPS1 for abaixo do seu mínimo
          || APPS1 > 3700            //Se o valor de APPS1 for acima do seu máximo
          || APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)   //verifica se APPS1 está abaixo do valor teórico de APPS1, considerando a tolerância

@@ -23,7 +23,7 @@
 
 void reset_speed_all();
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count);
-void log_speed(WHEEL_SPEEDS_t wheel_speeds);
+void log_speed(WHEEL_SPEEDS_t* wheel_speeds);
 
 extern TIM_HandleTypeDef htim2;
 extern osMessageQueueId_t q_speed_messageHandle;
@@ -76,23 +76,23 @@ void speed_calc(void *argument) {
             wheel_speeds.speed[message.pin] = speed;     //seta velocidade especifica da roda recebida
             set_global_var(WHEEL_SPEEDS, &wheel_speeds);
             last_messages[message.pin] = message;   //guarda mensagem até a próxima interacão
-            log_speed(wheel_speeds);
+            log_speed(&wheel_speeds);
         break;
         }
     }
 }
 
-void log_speed(WHEEL_SPEEDS_t wheel_speeds){
-    log_data(ID_SPEED_FR, wheel_speeds.speed[FRONT_RIGHT]);
-    log_data(ID_SPEED_FL, wheel_speeds.speed[FRONT_LEFT]);
-    log_data(ID_SPEED_RR, wheel_speeds.speed[REAR_RIGHT]);
-    log_data(ID_SPEED_RL, wheel_speeds.speed[REAR_LEFT]);
+void log_speed(WHEEL_SPEEDS_t* wheel_speeds){
+    log_data(ID_SPEED_FR, wheel_speeds->speed[FRONT_RIGHT]);
+    log_data(ID_SPEED_FL, wheel_speeds->speed[FRONT_LEFT]);
+    log_data(ID_SPEED_RR, wheel_speeds->speed[REAR_RIGHT]);
+    log_data(ID_SPEED_RL, wheel_speeds->speed[REAR_LEFT]);
 }
 
 void reset_speed_all() {
     WHEEL_SPEEDS_t wheel_speeds = {.speed = {0, 0, 0, 0}};
     set_global_var(WHEEL_SPEEDS, &wheel_speeds);
-    log_speed(wheel_speeds);
+    log_speed(&wheel_speeds);
 }
 
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count) {

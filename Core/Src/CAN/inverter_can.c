@@ -24,7 +24,8 @@ uint32_t idinverter;
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
 	can_ptr = can_ref;
 	void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
-	initialize_CAN(can_ptr, CAN_inverter_receive_callback, &TxHeader);
+    void CAN_inverter_error_callback(FDCAN_HandleTypeDef*, uint32_t);
+    initialize_CAN(can_ptr, CAN_inverter_receive_callback, CAN_inverter_error_callback, &TxHeader);
 }
 
 
@@ -58,4 +59,13 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 			Error_Handler();
 		}
 	}
+}
+
+
+
+void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
+    HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
+    HAL_Delay(100);
+    HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
+    CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
 }

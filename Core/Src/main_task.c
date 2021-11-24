@@ -36,6 +36,10 @@ void main_task(void *argument) {
         bool isErrorPresent;
         switch (most_significant_error_flags) {
 
+            case INVERTER_BUS_OFF_ERROR_FLAG:
+                    exit_RTD();
+                break;
+
             case INVERTER_COMM_ERROR_FLAG:
                 //todo: implementar erro de comunicação com inversor
                 isErrorPresent = event_flags & INVERTER_COMM_ERROR_FLAG;    //verifica se o erro ainda está presente na flag de evento

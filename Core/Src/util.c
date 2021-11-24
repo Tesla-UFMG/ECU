@@ -37,5 +37,9 @@ bool get_individual_flag(osEventFlagsId_t ef_id, uint32_t flag){
     return (osEventFlagsGet(ef_id) & flag);
 }
 
+bool get_RTD_status(){
+    return get_individual_flag(ECU_control_event_id, RTD_FLAG);
+}
+
 
 

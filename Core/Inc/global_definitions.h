@@ -102,31 +102,37 @@ typedef enum {
 
 #define APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE 10
 
+/* Status flags:            0 to 7
+ * Warning flags:           8 to 15
+ * Zero torque Error flags: 16 to 23
+ * Severe error flags:      24 to 31
+ */
+
 
 //General Flags
-#define RTD_FLAG                    1 << 5
-#define RTD_BTN_PRESSED_FLAG        1 << 6
-#define MODE_BTN_PRESSED_FLAG       1 << 7
+#define RTD_FLAG                    1 << 0
+#define RTD_BTN_PRESSED_FLAG        1 << 1
+#define MODE_BTN_PRESSED_FLAG       1 << 2
 
 
 //Warning flags	(No actions necessary)
-#define REGEN_WARN_FLAG             1 << 10
-#define DYNAMIC_CONTROL_WARN_FLAG   1 << 11
+#define REGEN_WARN_FLAG             1 << 8
+#define DYNAMIC_CONTROL_WARN_FLAG   1 << 9
+#define GENERAL_BUS_OFF_ERROR_FLAG  1 << 10
 
-//Soft error flags (RTD keeps on, torque ref to inverter is set to 0)
+//Zero torque error flags (RTD keeps on, torque ref to inverter is set to 0)
 #define BSE_ERROR_FLAG              1 << 16     //Regulamento: EV.5.7 (2021)
 #define APPS_ERROR_FLAG             1 << 17     //Regulamento: T.4.2 (2021)
 
-//Hard error flags (RTD disable)
-#define INVERTER_COMM_ERROR_FLAG    1 << 20
-#define SU_F_ERROR_FLAG             1 << 21
+//Severe error flags (RTD disable)
+#define INVERTER_COMM_ERROR_FLAG    1 << 24
+#define SU_F_ERROR_FLAG             1 << 25
+#define INVERTER_BUS_OFF_ERROR_FLAG 1 << 26
 
 #define ALL_WARN_FLAG               REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG
-#define ALL_MINOR_ERROR_FLAG        APPS_ERROR_FLAG | BSE_ERROR_FLAG
 #define ALL_SEVERE_ERROR_FLAG       INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG
 #define ALL_ERRORS_FLAG             APPS_ERROR_FLAG | BSE_ERROR_FLAG | INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG
 
-#define ALL_THROTTLE_ERROR_FLAG     APPS_ERROR_FLAG | BSE_ERROR_FLAG
 
 
 

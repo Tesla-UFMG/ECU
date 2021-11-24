@@ -8,6 +8,8 @@
 #include "CAN/inverter_can.h"
 #include "CAN/CAN_handler.h"
 #include "debugleds.h"
+#include "global_instances.h"
+#include "util.h"
 
 static FDCAN_HandleTypeDef* can_ptr;
 
@@ -64,11 +66,21 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 
 
 void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
-    //todo: Implementar lógica que saia de RTD e trate corretamente o erro
     if(ErrorStatusITs == FDCAN_IT_BUS_OFF){
-        HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
-        HAL_Delay(100);
-        HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
-        CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
+        //caso RTD esteja ativo tratar erro na main_task e limpar bit de erro para tentar voltar a comunicação normal
+        if (get_RTD_status()){
+            osThreadFlagsSet(t_main_taskHandle, INVERTER_BUS_OFF_ERROR_FLAG);
+            CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
+        }
+        //caso RTD não esteja ativo limpar bit de erro para tentar voltar a comunicação normal
+        else {
+            HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
+            HAL_Delay(100);
+            HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
+            //todo tirar feedback sonoro quando debug do veiculo for finalizado
+            CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
+        }
     }
 }
+
+

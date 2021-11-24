@@ -7,9 +7,9 @@
 
 #include "CAN/inverter_can.h"
 #include "CAN/CAN_handler.h"
-#include "debugleds.h"
 #include "global_instances.h"
 #include "util.h"
+#include "debugleds.h"
 
 static FDCAN_HandleTypeDef* can_ptr;
 
@@ -24,8 +24,8 @@ uint32_t idinverter;
 
 //função que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
-	can_ptr = can_ref;
-	void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
+    can_ptr = can_ref;
+    void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
     void CAN_inverter_error_callback(FDCAN_HandleTypeDef*, uint32_t);
     initialize_CAN(can_ptr, CAN_inverter_receive_callback, CAN_inverter_error_callback, &TxHeader);
 }

@@ -6,7 +6,6 @@
  */
 
 #include "RTD.h"
-#include "global_variables.h"
 #include "main.h"
 #include "global_instances.h"
 #include "rgb_led.h"
@@ -15,7 +14,6 @@
 #include "util.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
-void aciona_sirene();
 bool can_RTD_be_enabled();
 void set_RTD();
 
@@ -61,10 +59,10 @@ bool can_RTD_be_enabled() {
 void set_RTD() {
     osEventFlagsSet(ECU_control_event_id, RTD_FLAG);                                         //Seta flag de RTD
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
-    aciona_sirene();
+    aciona_sirene(RTDS_TIME);
 }
 
-void aciona_sirene() {
+void aciona_sirene(uint32_t tempo_sirene) {
     HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
     osDelay(tempo_sirene);
     HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);

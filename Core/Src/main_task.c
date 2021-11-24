@@ -38,7 +38,6 @@ void main_task(void *argument) {
 
             case INVERTER_BUS_OFF_ERROR_FLAG:
                     exit_RTD();
-                    aciona_sirene(100);
                 break;
 
             case INVERTER_COMM_ERROR_FLAG:

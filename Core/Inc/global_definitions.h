@@ -26,6 +26,12 @@ typedef enum  { PRETO = 0, VERMELHO, VERDE, AZUL, AMARELO, ROXO, CIANO, BRANCO} 
 
 typedef enum modos_desempenho {ERRO = 0, ENDURO, ACELERACAO, SKIDPAD, AUTOX} race_mode_t;
 
+typedef enum {
+	NO_CONTROL = 0,
+	LONGITUDINAL = 1,
+	LATERAL = 3
+} control_type_t;
+
 typedef struct //struct de modo
 {
 	int tor_max; //torque maximo (de 0 a 4000)
@@ -35,9 +41,9 @@ typedef struct //struct de modo
 
 	//bool arranc_control;
 
-	bool traction_control; //controle de tracao (1 ativo, 0 desat)
 	bool bat_safe; //reducao de consumo de bateria se em niveis criticos (1 ativo, 0 desat)
 	int torq_gain; //ganho de torque, aconselhavel q seja proporcional ao torque maximo ( de 0 a 40)
+	control_type_t dyn_control;//controle de tracao 1 longitudinal, 3 lateral 0 desligado
 	race_mode_t mode; // 1 enduro, 2 aceleração, 3 skidpad, 4 autox
 	cores_t cor;
 } modos;
@@ -107,7 +113,8 @@ typedef enum {
 #define RTD_FLAG                    1 << 5
 #define RTD_BTN_PRESSED_FLAG        1 << 6
 #define MODE_BTN_PRESSED_FLAG       1 << 7
-
+#define DYN_CTRL_FLAG               1 << 8
+#define DYN_CTRL_BTN_PRESSED_FLAG   1 << 9
 
 //Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG             1 << 10

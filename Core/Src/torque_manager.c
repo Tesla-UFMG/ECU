@@ -11,6 +11,7 @@
 #include "stdint.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
+
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
 
@@ -26,17 +27,32 @@ void torque_manager(void *argument) {
 
 		//osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
 
-		switch (g_control_type) {
-		case LONGITUDINAL:
-			//TODO: implementar controle longitudinal
+		if(get_global_var_value(DYNAMIC_CONTROL)){
+			switch(get_global_var_value(SELECTED_MODE).dyn_control){
+		 	 case LONGITUDINAL:
+		 		 //TODO: implementar controle longitudinal
 
-			break;
-		case LATERAL:
-			//TODO: implementar controle lateral
+		 		 break;
+		 	 case LATERAL:
+		 		 //TODO: implementar controle lateral
 
-			break;
+		 		 break;
+		 	 default: ;
+		     // rampa de torque
+				uint32_t rampa_torque();
+				uint32_t ref_torque = rampa_torque();
 
-		default: ;// rampa de torque
+				ref_torque_message.ref_torque[R_MOTOR] = ref_torque;
+				ref_torque_message.ref_torque[L_MOTOR] = ref_torque;
+
+				osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
+
+				osDelay(RAMPA_DELAY);
+				break;
+			}
+		}
+		else {
+		     // rampa de torque
 			uint32_t rampa_torque();
 			uint32_t ref_torque = rampa_torque();
 
@@ -46,9 +62,9 @@ void torque_manager(void *argument) {
 			osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
 
 			osDelay(RAMPA_DELAY);
-
-			break;
 		}
+
+
 
 	}
 
@@ -72,3 +88,4 @@ uint32_t rampa_torque() {
 
 	return ref_torque;
 }
+

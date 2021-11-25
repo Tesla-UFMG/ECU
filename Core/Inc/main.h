@@ -94,8 +94,8 @@ void Error_Handler(void);
 #define C_LED_RED_GPIO_Port GPIOD
 #define C_LED_BLUE_Pin GPIO_PIN_14
 #define C_LED_BLUE_GPIO_Port GPIOD
-#define B_DEBUG2_Pin GPIO_PIN_3
-#define B_DEBUG2_GPIO_Port GPIOD
+#define B_DYN_CONTROL_Pin GPIO_PIN_3
+#define B_DYN_CONTROL_GPIO_Port GPIOD
 #define B_MODO_Pin GPIO_PIN_4
 #define B_MODO_GPIO_Port GPIOD
 #define B_MODO_EXTI_IRQn EXTI4_IRQn

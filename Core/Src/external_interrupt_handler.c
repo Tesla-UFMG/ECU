@@ -32,7 +32,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		case B_RTD_Pin:
 			osThreadFlagsSet(t_RTDHandle, RTD_BTN_PRESSED_FLAG);
 			break;
-
+		case B_DYN_CONTROL_Pin:
+			osThreadFlagsSet(t_enable_dynamic_ctrlHandle, DYN_CTRL_BTN_PRESSED_FLAG);
+			break;
 		case B_MODO_Pin: ;
 			RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
 			set_global_var_value(RACE_MODE, race_mode+1);

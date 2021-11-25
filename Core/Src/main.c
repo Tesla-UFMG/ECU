@@ -170,6 +170,13 @@ const osThreadAttr_t t_datalog_acquisition_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_enable_dynamic_ctrl */
+osThreadId_t t_enable_dynamic_ctrlHandle;
+const osThreadAttr_t t_enable_dynamic_ctrl_attributes = {
+  .name = "t_enable_dynamic_ctrl",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -243,6 +250,7 @@ extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
+extern void enable_dynamic_ctrl(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -392,6 +400,9 @@ int main(void)
 
   /* creation of t_datalog_acquisition */
   t_datalog_acquisitionHandle = osThreadNew(datalog_acquisition, NULL, &t_datalog_acquisition_attributes);
+
+  /* creation of t_enable_dynamic_ctrl */
+  t_enable_dynamic_ctrlHandle = osThreadNew(enable_dynamic_ctrl, NULL, &t_enable_dynamic_ctrl_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -984,8 +995,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : B_DEBUG2_Pin B_MODO_Pin B_RTD_Pin */
-  GPIO_InitStruct.Pin = B_DEBUG2_Pin|B_MODO_Pin|B_RTD_Pin;
+  /*Configure GPIO pins : B_DYN_CONTROL_Pin B_MODO_Pin B_RTD_Pin */
+  GPIO_InitStruct.Pin = B_DYN_CONTROL_Pin|B_MODO_Pin|B_RTD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);

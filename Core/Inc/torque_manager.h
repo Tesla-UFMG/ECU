@@ -10,13 +10,6 @@
 
 #include "stdint.h"
 
-typedef enum {
-	NO_CONTROL = 0,
-	LONGITUDINAL = 1,
-	LATERAL = 3
-} E_CONTROL_TYPE;
-
-const E_CONTROL_TYPE g_control_type = NO_CONTROL;
 
 
 // defines rampa de torque

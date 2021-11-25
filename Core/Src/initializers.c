@@ -57,7 +57,7 @@ void inicializa_modos() {
 	enduro.vel_max = vel_max_rpm;
 	enduro.freio_regen = frenagem_regenerativa;
 	enduro.dif_elt = 0;
-	enduro.traction_control = 0;
+	enduro.dyn_control = 0;
 	enduro.bat_safe = 1;
 	enduro.torq_gain = 25; //ERA 15
 	enduro.mode = ENDURO;
@@ -67,7 +67,7 @@ void inicializa_modos() {
 	aceleracao.vel_max = vel_max_rpm;
 	aceleracao.freio_regen = 0;
 	aceleracao.dif_elt = 0;
-	aceleracao.traction_control = 1;
+	aceleracao.dyn_control = 1;
 	aceleracao.bat_safe = 0;
 	aceleracao.torq_gain = 30;
 	aceleracao.mode = ACELERACAO;
@@ -77,7 +77,7 @@ void inicializa_modos() {
 	skidpad.vel_max = vel_max_rpm;
 	skidpad.freio_regen = 0;
 	skidpad.dif_elt = 0;
-	skidpad.traction_control = 0;
+	skidpad.dyn_control = 3;
 	skidpad.bat_safe = 0;
 	skidpad.torq_gain = 20;
 	skidpad.mode = SKIDPAD;
@@ -87,7 +87,7 @@ void inicializa_modos() {
 	autox.vel_max = vel_max_rpm;
 	autox.freio_regen = 0;
 	autox.dif_elt = 0;
-	autox.traction_control = 1;
+	autox.dyn_control = 0;
 	autox.bat_safe = 0;
 	autox.torq_gain = 25;
 	autox.mode = AUTOX;
@@ -108,7 +108,7 @@ void inicializa_modos() {
 	erro.vel_max = 0;
 	erro.freio_regen = 0;
 	erro.dif_elt = 0;
-	erro.traction_control = 0;
+	erro.dyn_control = 0;
 	erro.bat_safe = 0;
 	erro.torq_gain = 0;
 	erro.mode = ERRO;

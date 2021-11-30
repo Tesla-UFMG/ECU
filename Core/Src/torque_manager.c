@@ -28,12 +28,14 @@ void torque_manager(void *argument) {
 
 		//osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
 
+        void send_ref_torque_message (uint32_t *ref_torque);
+
         switch (g_control_type) {
         case LONGITUDINAL:
             //TODO: implementar controle longitudinal
 
             break;
-        case LATERAL: ;
+        case LATERAL:
             tick += LATERAL_DELAY;
             // controle lateral
             lateral_t ref_torque_decrease = lateral_control();
@@ -42,7 +44,6 @@ void torque_manager(void *argument) {
             void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque); // TODO: utilizar rampa_torque enquanto controle longitudinal nao estiver definido
             rampa_torque_lateral(&ref_torque_decrease, ref_torque_lateral);
             // enviar referencia de torque
-            void send_ref_torque_message (uint32_t *ref_torque);
             send_ref_torque_message (ref_torque_lateral);
 
             osDelayUntil(tick);
@@ -55,7 +56,6 @@ void torque_manager(void *argument) {
             uint32_t ref_torque_long[2] = {ref_torque, ref_torque};
 
             // enviar referencia de torque
-            void send_ref_torque_message (uint32_t *ref_torque);
             send_ref_torque_message (ref_torque_long);
 
             osDelay(RAMPA_DELAY);
@@ -92,6 +92,8 @@ void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) 
     ref_torque[R_MOTOR] = (uint32_t)((float)(get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
     ref_torque[L_MOTOR] = (uint32_t)((float)(get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
 
+    // A referência de torque será a referência acima menos a referência de decrescimento.
+    // Se chegar a valores negativos, então será 0.
     ref_torque[ref_torque_decrease->ref_wheel] = (uint32_t) max((int32_t)ref_torque[ref_torque_decrease->ref_wheel] - ref_torque_decrease->ref_decrease, 0);
 
     for (int i=0;i<2;i++) {

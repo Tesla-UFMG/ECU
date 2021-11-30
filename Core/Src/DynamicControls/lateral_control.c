@@ -30,15 +30,15 @@ lateral_t lateral_control() {
     double desired_yaw, max_yaw, setpoint;
     lateral_t ref_torque;
 
-    double calc_gyro(uint16_t *gyro_yaw);
-    float calc_steering(uint16_t *steering_wheel, uint8_t *internal_wheel);
+    double calc_gyro(uint16_t gyro_yaw);
+    float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
 
     // speed
     cg_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT])/2) / (10 * 3.6); // velocidade em m/s
     // steering
-    steering_adjusted = calc_steering(&steering_wheel, &internal_wheel);
+    steering_adjusted = calc_steering(steering_wheel, internal_wheel);
     // yaw rate
-    gyro_adjusted = calc_gyro(&gyro_yaw);
+    gyro_adjusted = calc_gyro(gyro_yaw);
     desired_yaw = cg_speed * steering_adjusted / (WHEELBASE + KU * cg_speed * cg_speed);
     max_yaw = sign(steering_adjusted) * FRICTION_COEFFICIENT * GRAVITY / cg_speed;
     // max desired yaw (setpoint)
@@ -59,23 +59,23 @@ lateral_t lateral_control() {
 
 // TODO: verificar os calculos quando tivermos os valores reais de gyro e steering
 
-double calc_gyro(uint16_t *gyro_yaw) {
+double calc_gyro(uint16_t gyro_yaw) {
     // ajusta o valor do yaw para aquele usado no pid
     double gyro_adjusted;
-    if (*gyro_yaw < HALF_GYRO)                              // na primeira metade, está virando
-        gyro_adjusted = (double)*gyro_yaw/ADJUST_GYRO_R;    // à direita (valor positivo)
+    if (gyro_yaw < HALF_GYRO)                              // na primeira metade, está virando
+        gyro_adjusted = (double)gyro_yaw/ADJUST_GYRO_R;    // à direita (valor positivo)
     else                                                    // e na segunda, à esquerda (negativo)
-        gyro_adjusted = - (double)*gyro_yaw/ADJUST_GYRO_L;
+        gyro_adjusted = - (double)gyro_yaw/ADJUST_GYRO_L;
 
     return gyro_adjusted;
 }
 
-float calc_steering(uint16_t *steering_wheel, uint8_t *internal_wheel) { // TODO: verificar valor do steering
+float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel) { // TODO: verificar valor do steering
     float steering_adjusted;
-    if (*internal_wheel == DIREITA)
-        steering_adjusted = Y0 + ((Y1-Y0)/(X1-X0)) * ((float)*steering_wheel - X0);
+    if (internal_wheel == DIREITA)
+        steering_adjusted = Y0 + ((Y1-Y0)/(X1-X0)) * ((float)steering_wheel - X0);
     else
-        steering_adjusted = Y0 + ((Y1-Y0)/(X1-X0)) * (- (float)*steering_wheel - X0);
+        steering_adjusted = Y0 + ((Y1-Y0)/(X1-X0)) * (- (float)steering_wheel - X0);
 
     return steering_adjusted;
 }

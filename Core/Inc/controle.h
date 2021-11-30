@@ -11,10 +11,10 @@
 #include "global_variables.h"
 
 
-const uint8_t   P_ENABLE   = 1 << 0,
-                P_RUNSTOP  = 1 << 1,
-                P_BRAKE    = 1 << 2,
-                P_THROTTLE = 1 << 3;
+#define P_ENABLE    0
+#define P_RUNSTOP   1
+#define P_BRAKE     2
+#define P_THROTTLE  3
 
 //TODO: reavaliar quantidade certa de delay
 #define CONTROLE_DELAY  50

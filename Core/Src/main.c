@@ -164,6 +164,13 @@ const osThreadAttr_t t_throttle_control_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_datalog_acquisition */
+osThreadId_t t_datalog_acquisitionHandle;
+const osThreadAttr_t t_datalog_acquisition_attributes = {
+  .name = "t_datalog_acquisition",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -236,6 +243,7 @@ extern void rgb_led(void *argument);
 extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
+extern void datalog_acquisition(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -383,6 +391,9 @@ int main(void)
 
   /* creation of t_throttle_control */
   t_throttle_controlHandle = osThreadNew(throttle_control, NULL, &t_throttle_control_attributes);
+
+  /* creation of t_datalog_acquisition */
+  t_datalog_acquisitionHandle = osThreadNew(datalog_acquisition, NULL, &t_datalog_acquisition_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -950,7 +961,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(C_LED_DEBUG2_GPIO_Port, C_LED_DEBUG2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, C_LED_BLUE_Pin|C_LED_GREEN_Pin|C_LED_RED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, C_LED_GREEN_Pin|C_LED_RED_Pin|C_LED_BLUE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
@@ -968,15 +979,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : C_LED_BLUE_Pin C_LED_GREEN_Pin C_LED_RED_Pin */
-  GPIO_InitStruct.Pin = C_LED_BLUE_Pin|C_LED_GREEN_Pin|C_LED_RED_Pin;
+  /*Configure GPIO pins : C_LED_GREEN_Pin C_LED_RED_Pin C_LED_BLUE_Pin */
+  GPIO_InitStruct.Pin = C_LED_GREEN_Pin|C_LED_RED_Pin|C_LED_BLUE_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : B_DEBUG2_Pin B_DEBUG1_Pin B_RTD_Pin B_MODO_Pin */
-  GPIO_InitStruct.Pin = B_DEBUG2_Pin|B_DEBUG1_Pin|B_RTD_Pin|B_MODO_Pin;
+  /*Configure GPIO pins : B_DEBUG2_Pin B_MODO_Pin B_RTD_Pin */
+  GPIO_InitStruct.Pin = B_DEBUG2_Pin|B_MODO_Pin|B_RTD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
@@ -995,6 +1006,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(BOOT1_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 

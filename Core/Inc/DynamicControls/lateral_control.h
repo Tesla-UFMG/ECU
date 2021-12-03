@@ -15,6 +15,11 @@
 #define KI_LATERAL 0.14843404179579// TODO: check values
 #define TI_LATERAL KP_LATERAL / KI_LATERAL
 #define LATERAL_DELAY 30
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
 //defines calculos
 #define HALF_GYRO 2000
 #define ADJUST_GYRO_R 1000

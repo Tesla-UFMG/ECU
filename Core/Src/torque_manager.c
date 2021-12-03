@@ -10,6 +10,7 @@
 #include "global_variables.h"
 #include "DynamicControls/lateral_control.h"
 #include "DynamicControls/longitudinal_control.h"
+<<<<<<< Updated upstream
 
 extern volatile float g_wheel_speed[4];
 extern volatile uint16_t steering_wheel;
@@ -17,6 +18,13 @@ extern volatile uint8_t internal_wheel;
 extern volatile uint16_t gyro_yaw; // ainda nao existe
 extern volatile uint16_t throttle_percent;
 extern modos modo_selecionado;
+=======
+#include "util.h"
+#include "global_definitions.h"
+#include "stdint.h"
+#include "CMSIS_extra/global_variables_handler.h"
+
+>>>>>>> Stashed changes
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
 
@@ -34,6 +42,7 @@ void torque_manager(void *argument) {
         #endif
 
         switch (g_control_type) {
+<<<<<<< Updated upstream
         case LONGITUDINAL:
         	tick += LONGITUDINAL_DELAY;
         	longitudinal_t torque_decrease_longitudinal = longitudinal_control(g_wheel_speed);//TODO: implementar leitura da velocidade das rodas traseiras
@@ -46,12 +55,30 @@ void torque_manager(void *argument) {
         	osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
 
         	osDelayUntil(tick);
+=======
+            //TODO: implementar controle longitudinal
+        case LONGITUDINAL:
+            tick += LONGITUDINAL_DELAY;
+            longitudinal_t torque_decrease_longitudinal = longitudinal_control(g_wheel_speed);//TODO: implementar leitura da velocidade das rodas traseiras
+            uint32_t ref_torque_longitudinal[2] = {0,0};
+            void rampa_torque_longitudinal(longitudinal_t *torque_decrease_longitudinal, uint32_t *ref_torque); //TODO: testar sem o controle sem rampa
+            rampa_torque_longitudinal(&torque_decrease_longitudinal, ref_torque_longitudinal);
+            send_ref_torque_message (ref_torque_longitudinal);
+
+            osDelayUntil(tick);
+>>>>>>> Stashed changes
 
             break;
         case LATERAL: ;
             tick += LATERAL_DELAY;
+<<<<<<< Updated upstream
 
             lateral_t torque_decrease_lateral = lateral_control(g_wheel_speed, &steering_wheel, &internal_wheel, &gyro_yaw);
+=======
+            // controle lateral
+            lateral_t ref_torque_decrease = lateral_control();
+            // controle longitudinal TODO:integrar controle longitudinal e lateral
+>>>>>>> Stashed changes
             uint32_t ref_torque_lateral[2] = {0, 0};
             void rampa_torque_lateral(lateral_t *torque_decrease_lateral, uint32_t *ref_torque); // TODO: utilizar rampa_torque enquanto controle longitudinal nao estiver definido
             rampa_torque_lateral(&torque_decrease_lateral, ref_torque_lateral);

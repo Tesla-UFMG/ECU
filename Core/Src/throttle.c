@@ -59,9 +59,27 @@ void throttle_read(void *argument) {
     }
 }
 
-//calcula o valor do APPS2
+// Calcula o valor do APPS2
 uint16_t calculate_apps2(uint16_t APPS2) {
-    uint16_t apps2_percentage = 0;
+    // matrizes com valores do apps, obtidos no excel
+    uint16_t value[APPS_MATRIX_LENGTH] = {280, 470, 860, 1220, 1570, 1933, 2280, 2630, 3400};
+    uint16_t fix_mult[APPS_MATRIX_LENGTH] = {0, 1.5789, 0.2564, 0.2778, 0.2857, 0.2754, 0.2882, 0.2857, 0.2941};
+    int16_t fix_add[APPS_MATRIX_LENGTH] = {0, -442.1, 179.5, 161.1, 151.4, 167.5, 142.9, 148.6, 126.5};
+
+    uint16_t percentage = 0;
+
+    for(int i=0; i<APPS_MATRIX_LENGTH; i++) {
+        if(APPS2 < value[i]) {
+            percentage = fix_mult[i] * APPS2 + fix_add[i];
+            break;
+        }
+    }
+    /*
+    if(APPS2 < value[0])
+        percentage = fix_mult[0];
+    else if(APPS2 < apps2_value[1])
+        apps2_percentage = 1.5789 * APPS2 - 442.1;
+
     if (APPS2 < 280)
         apps2_percentage = 0;
     else if (APPS2 >= 280 && APPS2 < 470)
@@ -80,15 +98,30 @@ uint16_t calculate_apps2(uint16_t APPS2) {
         apps2_percentage = 0.2857 * APPS2 + 148.6;
     else if (APPS2 >= 2630 && APPS2 < 3400)
         apps2_percentage = 0.2941 * APPS2 + 126.5;
+    */
+    if (percentage > 1000)
+        percentage = 1000;
 
-    if (apps2_percentage > 1000)
-        apps2_percentage = 1000;
-
-    return apps2_percentage;
+    return percentage;
 }
 
-//calcula o valor teórico de APPS1 a partir do valor de APPS2
+// Calcula o valor teórico de APPS1 a partir do valor de APPS2
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
+    // matrizes com valores do apps, obtidos no excel
+    uint16_t value[APPS_MATRIX_LENGTH] = {200, 300, 400, 500, 600, 700, 800, 900, 1135};
+    uint16_t fix_mult[APPS_MATRIX_LENGTH] = {0, 1.75, 2.05, 1.75, 1.95, 1.85, 1.85, 1.95, 1.75};
+    uint16_t fix_add[APPS_MATRIX_LENGTH] = {2065, 1735, 1645, 1765, 1665, 1725, 1725, 1645, 1825};
+
+    if(apps2_percentage < 0 || apps2_percentage > value[8])
+        return 0;
+    else {
+        for(int i=0; i<APPS_MATRIX_LENGTH; i++) {
+            if(apps2_percentage < value[i]) {
+                return ((uint16_t)(fix_mult[i] * apps2_percentage + fix_add[i]));
+            }
+        }
+    }
+    /*
     if (apps2_percentage >= 0 && apps2_percentage < 200)
         return (2065);
     else if (apps2_percentage >= 200 && apps2_percentage < 300)
@@ -109,12 +142,14 @@ uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
         return ((uint16_t) (1.75 * apps2_percentage + 1825));
     else
         return 0;
+    */
 }
 
+
 bool is_there_APPS_error() {        //Regulamento: T.4.2 (2021)
-    if (    APPS2 >= 3500           //Se o valor de APPS2 for acima do seu máximo
-         || APPS1 < 1900            //Se o valor de APPS1 for abaixo do seu mínimo
-         || APPS1 > 3700            //Se o valor de APPS1 for acima do seu máximo
+    if (    APPS2 >= APPS2_MAX      //Se o valor de APPS2 for acima do seu máximo
+         || APPS1 < APPS1_MIN       //Se o valor de APPS1 for abaixo do seu mínimo
+         || APPS1 > APPS1_MAX       //Se o valor de APPS1 for acima do seu máximo
          || APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)   //verifica se APPS1 está abaixo do valor teórico de APPS1, considerando a tolerância
          || APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0))  //verifica se APPS1 está acima do valor teórico de APPS1, considerando a tolerância
         return true;

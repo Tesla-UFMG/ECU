@@ -16,25 +16,20 @@
 #include "util.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
-extern PID_t pid_longitudinal_L;
-extern PID_t pid_longitudinal_R;
+extern longitudinal_t rear_left;
+extern longitudinal_t rear_right;
 
-longitudinal_t longitudinal_control() {
+void longitudinal_control(longitudinal_t *control_wheel) {
     float cm_speed;
-    double left_slip, right_slip;
-    longitudinal_t ref_torque;
+    double slip;
 
     // speed and slip ratios
     WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
     cm_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT])/2); // speed of the car's center of mass
-    left_slip = ((wheel_speeds.speed[REAR_LEFT] - cm_speed) / cm_speed) * 100;   // slip ratio of the rear left wheel
-    right_slip = ((wheel_speeds.speed[REAR_RIGHT] - cm_speed) / cm_speed) * 100;  // slip ratio of the rear right wheel
+    slip = ((wheel_speeds.speed[control_wheel->wheel] - cm_speed) / cm_speed) * 100;    // slip ratio of the selected wheel
     // PID
-    PID_set_setpoint(&pid_longitudinal_L, IDEAL_SLIP_DRY);
-    PID_set_setpoint(&pid_longitudinal_R, IDEAL_SLIP_DRY);//TODO: fazer logica de seleção pista seca/molhada
-    ref_torque.ref_decrease_L = PID_compute(&pid_longitudinal_L, left_slip);
-    ref_torque.ref_decrease_R = PID_compute(&pid_longitudinal_R, right_slip);
+    PID_set_setpoint(&(control_wheel->pid_longitudinal), IDEAL_SLIP_DRY);//TODO: fazer logica de seleção pista seca/molhada
+    control_wheel.ref_decrease = PID_compute(&(control_wheel->pid_longitudinal), slip);
 
 
-    return ref_torque;
 };

@@ -15,11 +15,12 @@
 
 
 typedef struct {
-	double ref_decrease_L;
-	double ref_decrease_R;
+	double ref_decrease;
+	uint8_t wheel;
+	PID_t pid_longitudinal;
 } longitudinal_t;
 
-longitudinal_t longitudinal_control();
+void longitudinal_control(longitudinal_t *control_wheel);
 
 
 #endif /* INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_ */

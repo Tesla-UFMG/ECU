@@ -66,20 +66,14 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 
 
 void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
-    if(ErrorStatusITs == FDCAN_IT_BUS_OFF){
-        //caso RTD esteja ativo tratar erro na main_task e limpar bit de erro para tentar voltar a comunicação normal
-        if (get_RTD_status()){
-            osThreadFlagsSet(t_main_taskHandle, INVERTER_BUS_OFF_ERROR_FLAG);
-            CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
-        }
-        //caso RTD não esteja ativo limpar bit de erro para tentar voltar a comunicação normal
-        else {
-            HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
-            HAL_Delay(100);
-            HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
-            //todo tirar feedback sonoro quando debug do veiculo for finalizado
-            CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
-        }
+    if(ErrorStatusITs |= FDCAN_IT_BUS_OFF){
+        HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
+        HAL_Delay(100);
+        HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
+        osEventFlagsSet(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG);
+        set_debugleds(DEBUGLED1,BLINK,3);
+        //todo tirar feedback sonoro quando debug do veiculo for finalizado
+        CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
     }
 }
 

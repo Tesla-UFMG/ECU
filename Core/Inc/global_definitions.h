@@ -119,6 +119,7 @@ typedef enum {
 #define REGEN_WARN_FLAG             1 << 8
 #define DYNAMIC_CONTROL_WARN_FLAG   1 << 9
 #define GENERAL_BUS_OFF_ERROR_FLAG  1 << 10
+#define INVERTER_BUS_OFF_ERROR_FLAG 1 << 11
 
 //Zero torque error flags (RTD keeps on, torque ref to inverter is set to 0)
 #define BSE_ERROR_FLAG              1 << 16     //Regulamento: EV.5.7 (2021)
@@ -127,7 +128,6 @@ typedef enum {
 //Severe error flags (RTD disable)
 #define INVERTER_COMM_ERROR_FLAG    1 << 24
 #define SU_F_ERROR_FLAG             1 << 25
-#define INVERTER_BUS_OFF_ERROR_FLAG 1 << 26
 
 #define ALL_WARN_FLAG               REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG
 #define ALL_SEVERE_ERROR_FLAG       INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG

@@ -7,6 +7,8 @@
 
 #include "CAN/inverter_can.h"
 #include "CAN/CAN_handler.h"
+#include "global_instances.h"
+#include "util.h"
 #include "debugleds.h"
 
 static FDCAN_HandleTypeDef* can_ptr;
@@ -22,9 +24,10 @@ uint32_t idinverter;
 
 //função que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
-	can_ptr = can_ref;
-	void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
-	initialize_CAN(can_ptr, CAN_inverter_receive_callback, &TxHeader);
+    can_ptr = can_ref;
+    void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
+    void CAN_inverter_error_callback(FDCAN_HandleTypeDef*, uint32_t);
+    initialize_CAN(can_ptr, CAN_inverter_receive_callback, CAN_inverter_error_callback, &TxHeader);
 }
 
 
@@ -59,3 +62,19 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 		}
 	}
 }
+
+
+
+void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
+    if(ErrorStatusITs |= FDCAN_IT_BUS_OFF){
+        HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
+        HAL_Delay(100);
+        HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
+        //todo tirar feedback sonoro quando debug do veiculo for finalizado
+        set_debugleds(DEBUGLED1,BLINK,3);
+        osEventFlagsSet(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG);
+        CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
+    }
+}
+
+

@@ -13,5 +13,7 @@
 #define SU_F_ERROR 3300
 #define APPS_25_PERCENT 250
 #define APPS_05_PERCENT 50
+#define SU_F_ERROR_TIMER 100 - THROTTLE_DELAY   //Regulamento: T.4.3.3 (2022)
+#define APPS_ERROR_TIMER 100 - THROTTLE_DELAY   //Regulamento: T.4.2.5 (2022)
 
 #endif /* INC_THROTTLE_H_ */

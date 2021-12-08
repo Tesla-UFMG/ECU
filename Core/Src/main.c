@@ -34,6 +34,7 @@
 #include "debugleds.h"
 #include "rgb_led.h"
 #include "CMSIS_extra/global_variables_handler.h"
+#include "error_treatment.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -206,6 +207,16 @@ osMessageQueueId_t q_throttle_controlHandle;
 const osMessageQueueAttr_t q_throttle_control_attributes = {
   .name = "q_throttle_control"
 };
+/* Definitions for tim_SU_F_error */
+osTimerId_t tim_SU_F_errorHandle;
+const osTimerAttr_t tim_SU_F_error_attributes = {
+  .name = "tim_SU_F_error"
+};
+/* Definitions for tim_APPS_error */
+osTimerId_t tim_APPS_errorHandle;
+const osTimerAttr_t tim_APPS_error_attributes = {
+  .name = "tim_APPS_error"
+};
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
@@ -244,6 +255,7 @@ extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
+extern void errors_with_timer_callback(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -316,6 +328,13 @@ int main(void)
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
+
+  /* Create the timer(s) */
+  /* creation of tim_SU_F_error */
+  tim_SU_F_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, (void*) SU_F_ERROR_FLAG, &tim_SU_F_error_attributes);
+
+  /* creation of tim_APPS_error */
+  tim_APPS_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, (void*) APPS_ERROR_FLAG, &tim_APPS_error_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */

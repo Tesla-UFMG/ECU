@@ -31,7 +31,7 @@ void update_state(bool disable) {
 		vehicle_state = S_DISABLE_E;
 	else if ((get_global_var_value(THROTTLE_PERCENT) < 100) && (frenagem_regenerativa == true) && get_global_var_value(MOTOR_SPEEDS).speed[L_MOTOR] > _5_kmph_rpm)
 	    vehicle_state = S_BRAKE_E;
-	else if(get_global_var_value(THROTTLE_PERCENT)  > 100)
+	else if(get_global_var_value(THROTTLE_PERCENT) > 100)
 		vehicle_state = S_ACCELERATE_E;
 	else
 		vehicle_state = S_NEUTER_E;

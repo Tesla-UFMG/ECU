@@ -31,6 +31,7 @@ void RTD(void *argument) {
 
         if (!is_RTD_active) {
             if(can_RTD_be_enabled())
+
                 set_RTD();                                                  //seta RTD
             else
                 set_debugleds(DEBUGLED1,BLINK,2);                           //envia uma mensagem de alerta caso n seja possível acionar RTD
@@ -44,6 +45,7 @@ void exit_RTD() {
     set_global_var_value(RACE_MODE, ERRO);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
     osEventFlagsClear(ECU_control_event_id, RTD_FLAG);  //limpa flag de RTD
+    set_debugleds(DEBUGLED1,BLINK,2);
 }
 
 bool can_RTD_be_enabled() {
@@ -52,7 +54,7 @@ bool can_RTD_be_enabled() {
     BRAKE_STATUS_t is_brake_active = get_global_var_value(BRAKE_STATUS);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
-    if(is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO))
+    if(!error_flags && (race_mode != ERRO))
         return true;
     else
         return false;

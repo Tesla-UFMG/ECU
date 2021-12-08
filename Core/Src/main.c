@@ -163,6 +163,13 @@ const osThreadAttr_t t_throttle_control_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_inv_can_error */
+osThreadId_t t_inv_can_errorHandle;
+const osThreadAttr_t t_inv_can_error_attributes = {
+  .name = "t_inv_can_error",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityBelowNormal,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -198,15 +205,15 @@ osMessageQueueId_t q_throttle_controlHandle;
 const osMessageQueueAttr_t q_throttle_control_attributes = {
   .name = "q_throttle_control"
 };
-/* Definitions for m_state_parameter_mutex */
-osMutexId_t m_state_parameter_mutexHandle;
-const osMutexAttr_t m_state_parameter_mutex_attributes = {
-  .name = "m_state_parameter_mutex"
-};
 /* Definitions for inverter_can_timer */
 osTimerId_t inverter_can_timerHandle;
 const osTimerAttr_t inverter_can_timer_attributes = {
   .name = "inverter_can_timer"
+};
+/* Definitions for m_state_parameter_mutex */
+osMutexId_t m_state_parameter_mutexHandle;
+const osMutexAttr_t m_state_parameter_mutex_attributes = {
+  .name = "m_state_parameter_mutex"
 };
 /* USER CODE BEGIN PV */
 //flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
@@ -240,7 +247,8 @@ extern void rgb_led(void *argument);
 extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
-extern void check_inverter_comm_error(void *argument);
+void inv_can_error(void *argument);
+extern void check_inverter_comm_error_callback(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -313,13 +321,13 @@ int main(void)
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
 
+  /* Create the timer(s) */
+  /* creation of inverter_can_timer */
+  inverter_can_timerHandle = osTimerNew(check_inverter_comm_error_callback, osTimerOnce, NULL, &inverter_can_timer_attributes);
+
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
-
-  /* Create the timer(s) */
-  /* creation of inverter_can_timer */
-  inverter_can_timerHandle = osTimerNew(check_inverter_comm_error, osTimerOnce, NULL, &inverter_can_timer_attributes);
 
   /* Create the queue(s) */
   /* creation of q_speed_message */
@@ -391,6 +399,9 @@ int main(void)
 
   /* creation of t_throttle_control */
   t_throttle_controlHandle = osThreadNew(throttle_control, NULL, &t_throttle_control_attributes);
+
+  /* creation of t_inv_can_error */
+  t_inv_can_errorHandle = osThreadNew(inv_can_error, NULL, &t_inv_can_error_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -983,8 +994,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : B_DEBUG2_Pin B_DEBUG1_Pin B_RTD_Pin B_MODO_Pin */
-  GPIO_InitStruct.Pin = B_DEBUG2_Pin|B_DEBUG1_Pin|B_RTD_Pin|B_MODO_Pin;
+  /*Configure GPIO pins : B_DEBUG2_Pin B_RTD_Pin B_RUIM_Pin B_MODO_Pin */
+  GPIO_InitStruct.Pin = B_DEBUG2_Pin|B_RTD_Pin|B_RUIM_Pin|B_MODO_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
@@ -1003,6 +1014,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(BOOT1_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
+
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
@@ -1031,6 +1045,26 @@ __weak void main_task(void *argument)
     osDelay(1);
   }
   /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_inv_can_error */
+/**
+* @brief Function implementing the t_inv_can_error thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_inv_can_error */
+void inv_can_error(void *argument)
+{
+  /* USER CODE BEGIN inv_can_error */
+  /* Infinite loop */
+    osEventFlagsSet(ECU_control_event_id, INV_ERROR);
+  for(;;)
+  {
+      osEventFlagsWait(ECU_control_event_id, INV_ERROR, osFlagsWaitAny, osWaitForever);
+      osTimerStart(inverter_can_timerHandle, 1000 / portTICK_PERIOD_MS);
+  }
+  /* USER CODE END inv_can_error */
 }
 
 /**

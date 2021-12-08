@@ -46,7 +46,6 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
 	can_ptr = can_ref;
 	void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
 	initialize_CAN(can_ptr, CAN_inverter_receive_callback, &TxHeader);
-	osTimerStart(inverter_can_timerHandle, 2000 / portTICK_PERIOD_MS);
 }
 
 
@@ -68,6 +67,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 		}
 
 		last_message_arrival_time = osKernelGetTickCount();
+	    osEventFlagsSet(ECU_control_event_id, INV_ERROR);
 
 		set_debugleds(DEBUGLED3,TOGGLE,0);
 
@@ -79,7 +79,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 			}
 		}
 		
-		check_inverter_comm_error(NULL);
+		check_for_errors(is_there_inverter_comm_error, INVERTER_COMM_ERROR_FLAG);
 
 		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 			/* Notification Error */
@@ -91,10 +91,11 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 bool is_there_inverter_comm_error() {
 	uint32_t current_time = osKernelGetTickCount();
 
-	return get_value(can_state_m_l) != 2 || get_value(can_state_m_r) != 2 || current_time - last_message_arrival_time > 2000;
+	return get_value(can_state_m_l) != 2 || get_value(can_state_m_r) != 2 || current_time - last_message_arrival_time > 800 * portTICK_PERIOD_MS;
 }
 
-void check_inverter_comm_error(void *argument) {
-	check_for_errors(is_there_inverter_comm_error, INVERTER_COMM_ERROR_FLAG);
-	osTimerStart(inverter_can_timerHandle, 2000 / portTICK_PERIOD_MS);
+
+void check_inverter_comm_error_callback(void *argument) {
+    check_for_errors(is_there_inverter_comm_error, INVERTER_COMM_ERROR_FLAG);
+    set_debugleds(DEBUGLED1,BLINK,1);
 }

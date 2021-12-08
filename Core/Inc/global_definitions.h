@@ -107,6 +107,7 @@ typedef enum {
 #define RTD_FLAG                    1 << 5
 #define RTD_BTN_PRESSED_FLAG        1 << 6
 #define MODE_BTN_PRESSED_FLAG       1 << 7
+#define INV_ERROR                   1 << 8
 
 
 //Warning flags	(No actions necessary)

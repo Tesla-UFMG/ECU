@@ -8,6 +8,7 @@
 #define INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_
 
 #include "stdint.h"
+#include "PID.h"
 
 #define LONGITUDINAL_DELAY 30
 #define IDEAL_SLIP_DRY 13

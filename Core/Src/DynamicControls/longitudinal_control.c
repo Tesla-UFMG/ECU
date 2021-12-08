@@ -28,8 +28,7 @@ void longitudinal_control(longitudinal_t *control_wheel) {
     cm_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT])/2); // speed of the car's center of mass
     slip = ((wheel_speeds.speed[control_wheel->wheel] - cm_speed) / cm_speed) * 100;    // slip ratio of the selected wheel
     // PID
-    PID_set_setpoint(&(control_wheel->pid_longitudinal), IDEAL_SLIP_DRY);//TODO: fazer logica de seleção pista seca/molhada
-    control_wheel.ref_decrease = PID_compute(&(control_wheel->pid_longitudinal), slip);
+    control_wheel->ref_decrease = PID_compute(&(control_wheel->pid_longitudinal), slip);
 
 
 };

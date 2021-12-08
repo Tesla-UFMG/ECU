@@ -23,6 +23,8 @@ void init_controls() {
 	rear_left.wheel = REAR_LEFT;
 	rear_right.wheel = REAR_RIGHT;
 	PID_init(&rear_left.pid_longitudinal, 1, KP_LONGITUDINAL, TI_LONGITUDINAL, 0, 4000, 0, LONGITUDINAL_DELAY);
+	PID_set_setpoint(&rear_left.pid_longitudinal, IDEAL_SLIP_DRY);                  //TODO: fazer logica de seleção pista seca/molhada
 	PID_init(&rear_right.pid_longitudinal, 1, KP_LONGITUDINAL, TI_LONGITUDINAL, 0, 4000, 0, LONGITUDINAL_DELAY);
+	PID_set_setpoint(&rear_right.pid_longitudinal, IDEAL_SLIP_DRY);
 
 }

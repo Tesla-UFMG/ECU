@@ -17,6 +17,9 @@
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
 
+extern longitudinal_t rear_left;
+extern longitudinal_t rear_right;
+
 void torque_manager(void *argument) {
 
     for (;;) {
@@ -33,15 +36,16 @@ void torque_manager(void *argument) {
 
         switch (g_control_type) {
         case LONGITUDINAL:
-            //TODO:corrigir esse case e rampa_torque_longitudinal
-        	/*tick += LONGITUDINAL_DELAY;
-        	longitudinal_t torque_decrease_longitudinal = longitudinal_control();//TODO: implementar leitura da velocidade das rodas traseiras
-        	uint32_t ref_torque_longitudinal[2] = {0,0};
-        	void rampa_torque_longitudinal(longitudinal_t *torque_decrease_longitudinal, uint32_t *ref_torque); //TODO: testar sem o controle sem rampa
-        	rampa_torque_longitudinal(&torque_decrease_longitudinal, ref_torque_longitudinal);
-        	send_ref_torque_message (ref_torque_longitudinal);
+            tick += LONGITUDINAL_DELAY;
+            longitudinal_t torque_decrease_longitudinal[2] = {rear_right, rear_right};    //array of the controlled wheels
+            uint32_t ref_torque_longitudinal[2] = {0,0};                                  //array of the torque values to be sended
+            longitudinal_control(&torque_decrease_longitudinal[R_MOTOR]);                 // Controllers
+            longitudinal_control(&torque_decrease_longitudinal[L_MOTOR]);
+            void rampa_torque_longitudinal(longitudinal_t *torque_decrease_longitudinal, uint32_t *ref_torque); // TODO: remover rampa com testes de bancada
+            rampa_torque_longitudinal(torque_decrease_longitudinal, ref_torque_longitudinal);
+            send_ref_torque_message (ref_torque_longitudinal);                                  //sends the torque command to the inverter
 
-        	osDelayUntil(tick);*/
+            osDelayUntil(tick);
 
         	break;
 
@@ -122,11 +126,10 @@ void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) 
 
 void rampa_torque_longitudinal(longitudinal_t *ref_torque_decrease, uint32_t *ref_torque) {
     static uint32_t ref_torque_ant[2] = {0, 0};
-    ref_torque[R_MOTOR] = (uint32_t)((float)(get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
-    ref_torque[L_MOTOR] = (uint32_t)((float)(get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
+    float torque = ((get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
+    ref_torque[R_MOTOR] = (uint32_t)(torque - ref_torque_decrease[R_MOTOR].ref_decrease);
+    ref_torque[L_MOTOR] = (uint32_t)(torque - ref_torque_decrease[L_MOTOR].ref_decrease);
 
-    ref_torque[R_MOTOR] = (uint32_t)((float)ref_torque[R_MOTOR] - ref_torque_decrease->ref_decrease_R);
-    ref_torque[L_MOTOR] = (uint32_t)((float)ref_torque[L_MOTOR] - ref_torque_decrease->ref_decrease_L);
 
     for (int i=0;i<2;i++) {
         if (ref_torque_ant[i] > TORQUE_INIT_LIMITE) {                       // verifica se a referencia

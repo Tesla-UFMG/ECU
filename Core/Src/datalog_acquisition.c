@@ -16,12 +16,15 @@
 #include "util.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
+uint32_t event_flag;
 
 void datalog_acquisition(){
 	modos modo_dl;
 	uint16_t flag_ecu_1;
 	uint16_t flag_ecu_2;
 	for(;;){
+
+	    event_flag = osEventFlagsGet(ECU_control_event_id) & 0xffff;
 
 		modo_dl = get_global_var_value(SELECTED_MODE);
 		//divisão da flag de 32 bits em duas mensagens de 16bits

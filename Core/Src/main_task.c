@@ -33,7 +33,7 @@ void main_task(void *argument) {
         uint32_t error_flags = osThreadFlagsGet();                                              //obtem os valores de flag de thread
         uint32_t event_flags = osEventFlagsGet(ECU_control_event_id);                           //obtem os valores de flag de evento
         uint32_t most_significant_error_flags = get_flag_MSB(error_flags &= ALL_ERRORS_FLAG);   //obtem a flag de threa mais significativa
-        bool isErrorPresent;
+        volatile bool isErrorPresent;
         switch (most_significant_error_flags) {
 
             case INVERTER_COMM_ERROR_FLAG:
@@ -44,6 +44,22 @@ void main_task(void *argument) {
                 } else {                                                    //caso o erro tenha sido resolvido:
                     osThreadFlagsClear(INVERTER_COMM_ERROR_FLAG);           //limpa flag de thread do erro
                 }
+                break;
+
+            case BUS_OFF_ERROR_FLAG:
+                isErrorPresent = event_flags & INVERTER_BUS_OFF_ERROR_FLAG;    //verifica se o erro ainda está presente na flag de evento
+                if (isErrorPresent) {
+                    exit_RTD();                                             //sai de RTD caso o erro esteja presente
+                } else {                                                    //caso o erro tenha sido resolvido:
+                    osEventFlagsSet(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG);   // seta flag de estado com a flag flagError
+                    osThreadFlagsClear(BUS_OFF_ERROR_FLAG);                    //limpa flag de thread do erro
+                    osTimerStart(tim_inverter_BUS_OFF_errorHandle, 2000/portTICK_PERIOD_MS);
+                    if (HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_BUS_OFF, 0) != HAL_OK) {
+                        /* Notification Error */
+                        Error_Handler();
+                    }
+                }
+
                 break;
 
             case SU_F_ERROR_FLAG:
@@ -83,4 +99,5 @@ void main_task(void *argument) {
         }
     }
 }
+
 

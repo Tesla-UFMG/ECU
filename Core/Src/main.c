@@ -206,6 +206,11 @@ osMessageQueueId_t q_throttle_controlHandle;
 const osMessageQueueAttr_t q_throttle_control_attributes = {
   .name = "q_throttle_control"
 };
+/* Definitions for tim_inverter_BUS_OFF_error */
+osTimerId_t tim_inverter_BUS_OFF_errorHandle;
+const osTimerAttr_t tim_inverter_BUS_OFF_error_attributes = {
+  .name = "tim_inverter_BUS_OFF_error"
+};
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
@@ -244,6 +249,7 @@ extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
+extern void inverter_BUS_OFF_error_callback(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -316,6 +322,10 @@ int main(void)
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
+
+  /* Create the timer(s) */
+  /* creation of tim_inverter_BUS_OFF_error */
+  tim_inverter_BUS_OFF_errorHandle = osTimerNew(inverter_BUS_OFF_error_callback, osTimerOnce, NULL, &tim_inverter_BUS_OFF_error_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */

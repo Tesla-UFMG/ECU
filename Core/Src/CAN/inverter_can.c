@@ -8,6 +8,8 @@
 #include "CAN/inverter_can.h"
 #include "CAN/CAN_handler.h"
 #include "debugleds.h"
+#include "global_definitions.h"
+#include "global_instances.h"
 
 static FDCAN_HandleTypeDef* can_ptr;
 
@@ -22,9 +24,10 @@ uint32_t idinverter;
 
 //função que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
-	can_ptr = can_ref;
-	void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
-	initialize_CAN(can_ptr, CAN_inverter_receive_callback, &TxHeader);
+    can_ptr = can_ref;
+    void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
+    void CAN_inverter_error_callback(FDCAN_HandleTypeDef*, uint32_t);
+    initialize_CAN(can_ptr, CAN_inverter_receive_callback, CAN_inverter_error_callback, &TxHeader);
 }
 
 
@@ -59,3 +62,20 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 		}
 	}
 }
+
+void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
+    if(ErrorStatusITs |= FDCAN_IT_BUS_OFF){
+        if (HAL_FDCAN_DeactivateNotification(hfdcan, FDCAN_IT_BUS_OFF) != HAL_OK) {
+            /* Notification Error */
+            Error_Handler();
+        }
+        osThreadFlagsSet(t_main_taskHandle, BUS_OFF_ERROR_FLAG);
+        set_debugleds(DEBUGLED1,FASTBLINK,10);
+        CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
+    }
+}
+
+void inverter_BUS_OFF_error_callback(void *argument){
+    osEventFlagsClear(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG); // limpa flag de estado flagError
+}
+        }

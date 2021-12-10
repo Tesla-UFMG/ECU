@@ -8,7 +8,7 @@
 #ifndef INC_RTD_H_
 #define INC_RTD_H_
 
-#define tempo_sirene 100
+#define tempo_sirene 1000
 
 void exit_RTD();
 

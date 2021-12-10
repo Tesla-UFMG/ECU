@@ -36,6 +36,17 @@ void main_task(void *argument) {
         bool isErrorPresent;
         switch (most_significant_error_flags) {
 
+            case INVERTER_BUS_OFF_ERROR_FLAG:
+                isErrorPresent = event_flags & INVERTER_BUS_OFF_ERROR_FLAG;    //verifica se o erro ainda está presente na flag de evento
+                if (isErrorPresent) {
+                    exit_RTD();                                             //sai de RTD caso o erro esteja presente
+                } else {                                                    //caso o erro tenha sido resolvido:
+                    osEventFlagsSet(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG);   // seta flag de estado com a flag flagError
+                    osThreadFlagsClear(INVERTER_BUS_OFF_ERROR_FLAG);                    //limpa flag de thread do erro
+                    osTimerStart(tim_inverter_BUS_OFF_errorHandle, 2000/portTICK_PERIOD_MS);
+                }
+                break;
+
             case INVERTER_COMM_ERROR_FLAG:
                 //todo: implementar erro de comunicação com inversor
                 isErrorPresent = event_flags & INVERTER_COMM_ERROR_FLAG;    //verifica se o erro ainda está presente na flag de evento

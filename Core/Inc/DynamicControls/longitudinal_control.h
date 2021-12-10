@@ -21,7 +21,7 @@ typedef struct {
 	PID_t pid_longitudinal;
 } longitudinal_t;
 
-void longitudinal_control(longitudinal_t *control_wheel);
+uint32_t longitudinal_control(uint8_t wheel_motor);
 
 
 #endif /* INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_ */

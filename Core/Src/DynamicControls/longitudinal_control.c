@@ -16,19 +16,18 @@
 #include "util.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
-extern longitudinal_t rear_left;
-extern longitudinal_t rear_right;
+extern longitudinal_t controlled_wheels[2];
 
-void longitudinal_control(longitudinal_t *control_wheel) {
+uint32_t longitudinal_control(uint8_t wheel_motor){
     float cm_speed;
     double slip;
 
     // speed and slip ratios
     WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
     cm_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT])/2); // speed of the car's center of mass
-    slip = ((wheel_speeds.speed[control_wheel->wheel] - cm_speed) / cm_speed) * 100;    // slip ratio of the selected wheel
+    slip = ((wheel_speeds.speed[controlled_wheels[wheel_motor].wheel] - cm_speed) / cm_speed) * 100;    // slip ratio of the selected wheel
     // PID
-    control_wheel->ref_decrease = PID_compute(&(control_wheel->pid_longitudinal), slip);
+    return (uint32_t)(PID_compute(&(controlled_wheels[wheel_motor].pid_longitudinal), slip));
 
 
 };

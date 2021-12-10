@@ -17,8 +17,6 @@
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
 
-extern longitudinal_t rear_left;
-extern longitudinal_t rear_right;
 
 void torque_manager(void *argument) {
 
@@ -37,17 +35,17 @@ void torque_manager(void *argument) {
         switch (g_control_type) {
         case LONGITUDINAL:
             tick += LONGITUDINAL_DELAY;
-            longitudinal_t torque_decrease_longitudinal[2] = {rear_right, rear_right};    //array of the controlled wheels
-            uint32_t ref_torque_longitudinal[2] = {0,0};                                  //array of the torque values to be sended
-            longitudinal_control(&torque_decrease_longitudinal[R_MOTOR]);                 // Controllers
-            longitudinal_control(&torque_decrease_longitudinal[L_MOTOR]);
-            void rampa_torque_longitudinal(longitudinal_t *torque_decrease_longitudinal, uint32_t *ref_torque); // TODO: remover rampa com testes de bancada
+            uint32_t ref_torque_longitudinal[2] = {0,0};                                  //array of the torque values to be sent
+            uint32_t torque_decrease_longitudinal[2] = {0,0};
+            torque_decrease_longitudinal[R_MOTOR] = longitudinal_control(R_MOTOR);                 // Controllers
+            torque_decrease_longitudinal[L_MOTOR] = longitudinal_control(L_MOTOR);
+            void rampa_torque_longitudinal(uint32_t *torque_decrease_longitudinal, uint32_t *ref_torque); // TODO: remover rampa com testes de bancada
             rampa_torque_longitudinal(torque_decrease_longitudinal, ref_torque_longitudinal);
-            send_ref_torque_message (ref_torque_longitudinal);                                  //sends the torque command to the inverter
+            send_ref_torque_message(ref_torque_longitudinal);                                  //sends the torque command to the inverter
 
             osDelayUntil(tick);
 
-        	break;
+            break;
 
         case LATERAL:
             tick += LATERAL_DELAY;
@@ -58,7 +56,7 @@ void torque_manager(void *argument) {
             void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque); // TODO: utilizar rampa_torque enquanto controle longitudinal nao estiver definido
             rampa_torque_lateral(&ref_torque_decrease, ref_torque_lateral);
             // enviar referencia de torque
-            send_ref_torque_message (ref_torque_lateral);
+            send_ref_torque_message(ref_torque_lateral);
 
             osDelayUntil(tick);
 
@@ -70,7 +68,7 @@ void torque_manager(void *argument) {
             uint32_t ref_torque_long[2] = {ref_torque, ref_torque};
 
             // enviar referencia de torque
-            send_ref_torque_message (ref_torque_long);
+            send_ref_torque_message(ref_torque_long);
 
             osDelay(RAMPA_DELAY);
 
@@ -110,39 +108,19 @@ void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) 
     // Se chegar a valores negativos, então será 0.
     ref_torque[ref_torque_decrease->ref_wheel] = (uint32_t) max((int32_t)ref_torque[ref_torque_decrease->ref_wheel] - ref_torque_decrease->ref_decrease, 0);
 
-    for (int i=0;i<2;i++) {
-        if (ref_torque_ant[i] > TORQUE_INIT_LIMITE) {                       // verifica se a referencia
-            if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE) {           // ja passou do ponto de inflexao
-                ref_torque[i] = ref_torque_ant[i] + INC_TORQUE;             // e aplica o incremento mais agressivo
-            }
-        } else {
-            if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE_INIT) {      // caso contrario usa o
-                ref_torque[i] = ref_torque_ant[i] + INC_TORQUE_INIT;        // incremento da primeira rampa
-            }
-        }
-        ref_torque_ant[i] = ref_torque[i];                                  // aplica a referencia calculada
-    }
+    void control_ramp(uint32_t *ref_torque, uint32_t *ref_torque_ant);
+    control_ramp(ref_torque, ref_torque_ant);
 }
 
-void rampa_torque_longitudinal(longitudinal_t *ref_torque_decrease, uint32_t *ref_torque) {
+void rampa_torque_longitudinal(uint32_t *ref_torque_decrease, uint32_t *ref_torque) {
     static uint32_t ref_torque_ant[2] = {0, 0};
     float torque = ((get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
-    ref_torque[R_MOTOR] = (uint32_t)(torque - ref_torque_decrease[R_MOTOR].ref_decrease);
-    ref_torque[L_MOTOR] = (uint32_t)(torque - ref_torque_decrease[L_MOTOR].ref_decrease);
+    ref_torque[R_MOTOR] = (uint32_t)(max(0, torque - ref_torque_decrease[R_MOTOR]));
+    ref_torque[L_MOTOR] = (uint32_t)(max(0, torque - ref_torque_decrease[L_MOTOR]));
 
+    void control_ramp(uint32_t *ref_torque, uint32_t *ref_torque_ant);
+    control_ramp(ref_torque, ref_torque_ant);;
 
-    for (int i=0;i<2;i++) {
-        if (ref_torque_ant[i] > TORQUE_INIT_LIMITE) {                       // verifica se a referencia
-            if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE) {           // ja passou do ponto de inflexao
-                ref_torque[i] = ref_torque_ant[i] + INC_TORQUE;             // e aplica o incremento mais agressivo
-            }
-        } else {
-            if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE_INIT) {      // caso contrario usa o
-                ref_torque[i] = ref_torque_ant[i] + INC_TORQUE_INIT;        // incremento da primeira rampa
-            }
-        }
-        ref_torque_ant[i] = ref_torque[i];                                  // aplica a referencia calculada
-    }
 }
 
 // Enviar mensagem de torque
@@ -152,4 +130,19 @@ void send_ref_torque_message (uint32_t *ref_torque) {
     ref_torque_message.ref_torque[L_MOTOR] = ref_torque[L_MOTOR];
 
     osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
+}
+
+void control_ramp(uint32_t *ref_torque, uint32_t *ref_torque_ant){
+    for (int i=0;i<2;i++) {
+            if (ref_torque_ant[i] > TORQUE_INIT_LIMITE) {                       // verifica se a referencia
+                if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE) {           // ja passou do ponto de inflexao
+                    ref_torque[i] = ref_torque_ant[i] + INC_TORQUE;             // e aplica o incremento mais agressivo
+                }
+            } else {
+                if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE_INIT) {      // caso contrario usa o
+                    ref_torque[i] = ref_torque_ant[i] + INC_TORQUE_INIT;        // incremento da primeira rampa
+                }
+            }
+            ref_torque_ant[i] = ref_torque[i];                                  // aplica a referencia calculada
+    }
 }

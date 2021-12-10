@@ -64,12 +64,8 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 }
 
 void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
-    if(ErrorStatusITs |= FDCAN_IT_BUS_OFF){
-        if (HAL_FDCAN_DeactivateNotification(hfdcan, FDCAN_IT_BUS_OFF) != HAL_OK) {
-            /* Notification Error */
-            Error_Handler();
-        }
-        osThreadFlagsSet(t_main_taskHandle, BUS_OFF_ERROR_FLAG);
+    if(ErrorStatusITs | FDCAN_IT_BUS_OFF){
+        osThreadFlagsSet(t_main_taskHandle, INVERTER_BUS_OFF_ERROR_FLAG);
         set_debugleds(DEBUGLED1,FASTBLINK,10);
         CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
     }
@@ -78,4 +74,4 @@ void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStat
 void inverter_BUS_OFF_error_callback(void *argument){
     osEventFlagsClear(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG); // limpa flag de estado flagError
 }
-        }
+

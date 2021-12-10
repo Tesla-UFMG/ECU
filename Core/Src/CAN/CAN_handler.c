@@ -50,6 +50,7 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
     TxHeader->FDFormat = FDCAN_CLASSIC_CAN;
     TxHeader->TxEventFifoControl = FDCAN_NO_TX_EVENTS;
     TxHeader->MessageMarker = 0;
+}
 
 
 //função que realiza a transmissão da mensagem

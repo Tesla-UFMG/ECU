@@ -65,8 +65,8 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
 
 
 void CAN_general_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
-    if(ErrorStatusITs |= FDCAN_IT_BUS_OFF){
-//        osEventFlagsSet(ECU_control_event_id, GENERAL_BUS_OFF_ERROR_FLAG);
+    if(ErrorStatusITs | FDCAN_IT_BUS_OFF){
+        osEventFlagsSet(ECU_control_event_id, GENERAL_BUS_OFF_ERROR_FLAG);
         CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
     }
 }

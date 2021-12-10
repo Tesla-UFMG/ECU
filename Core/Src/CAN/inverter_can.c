@@ -10,6 +10,7 @@
 #include "debugleds.h"
 #include "global_definitions.h"
 #include "global_instances.h"
+#include "error_treatment.h"
 
 static FDCAN_HandleTypeDef* can_ptr;
 
@@ -65,13 +66,13 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 
 void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
     if(ErrorStatusITs | FDCAN_IT_BUS_OFF){
+        issue_error(INVERTER_BUS_OFF_ERROR_FLAG);
         osThreadFlagsSet(t_main_taskHandle, INVERTER_BUS_OFF_ERROR_FLAG);
-        set_debugleds(DEBUGLED1,FASTBLINK,10);
         CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
     }
 }
 
 void inverter_BUS_OFF_error_callback(void *argument){
-    osEventFlagsClear(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG); // limpa flag de estado flagError
+    osEventFlagsClear(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG); // limpa flag de estado do erro
 }
 

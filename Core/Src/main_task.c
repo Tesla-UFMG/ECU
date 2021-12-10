@@ -43,7 +43,7 @@ void main_task(void *argument) {
                 } else {                                                                        //caso o erro não esteja ainda:
                     osEventFlagsSet(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG);         //seta a flag de evento para que caso tenha erro novamente saia de RTD
                     osThreadFlagsClear(INVERTER_BUS_OFF_ERROR_FLAG);                            //limpa flag de thread do erro
-                    osTimerStart(tim_inverter_BUS_OFF_errorHandle, BUS_OFF_ERROR_TIME/portTICK_PERIOD_MS);    //inicia o timer para zerar a flag
+                    osTimerStart(tim_inverter_BUS_OFF_errorHandle, BUS_OFF_ERROR_TIME);    //inicia o timer para zerar a flag
                 }
                 break;
 

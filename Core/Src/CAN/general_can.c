@@ -24,8 +24,8 @@ uint32_t idgeneral;
 
 //função que inicializa a can geral, chamada em initializer.c
 void initialize_general_CAN(FDCAN_HandleTypeDef* can_ref) {
-	can_ptr = can_ref;
-	void CAN_general_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
+    can_ptr = can_ref;
+    void CAN_general_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
     void CAN_general_error_callback(FDCAN_HandleTypeDef*, uint32_t);
     initialize_CAN(can_ptr, CAN_general_receive_callback, CAN_general_error_callback, &TxHeader);
 }
@@ -63,10 +63,10 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
 	}
 }
 
-
+//callback que será chamado quando ouver erro de BUSOFF da CAN
 void CAN_general_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
     if(ErrorStatusITs | FDCAN_IT_BUS_OFF){
-        osEventFlagsSet(ECU_control_event_id, GENERAL_BUS_OFF_ERROR_FLAG);
-        CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
+        osEventFlagsSet(ECU_control_event_id, GENERAL_BUS_OFF_ERROR_FLAG);      //seta a flag de evento para datalog
+        CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);                     // limpa o bit de INIT da CAN, voltando a receber mensagem
     }
 }

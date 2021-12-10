@@ -7,7 +7,7 @@
 
 #include "CAN/inverter_can.h"
 #include "CAN/CAN_handler.h"
-#include "CAN/inverter_can_ids.h"
+#include "CAN/inverter_can_data_manager.h"
 #include "debugleds.h"
 
 
@@ -17,18 +17,6 @@ static FDCAN_TxHeaderTypeDef TxHeader;
 
 static uint8_t RxData[8];
 static FDCAN_RxHeaderTypeDef RxHeader;
-uint32_t idInverter;
-int16_t dataInverter[NUM_STATES];
-
-void store_value(can_vars_e var_name, uint16_t value)
-{
-    dataInverter[var_name] = value;
-}
-
-uint16_t get_value(can_vars_e var_name)
-{
-    return dataInverter[var_name];
-}
 
 //função que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
@@ -37,15 +25,11 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
 	initialize_CAN(can_ptr, CAN_inverter_receive_callback, &TxHeader);
 }
 
-
-
 //função usada para transmitir alguma mensagem
 void inverter_can_transmit(uint32_t id, uint16_t* data) {
 	can_transmit(can_ptr, &TxHeader, id, data);
 	osDelay(CAN_DELAY);
 }
-
-
 
 //função de callback, chamada quando chega qualquer mensagem, de qualquer ID
 void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)  {
@@ -61,7 +45,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 		for(int i = 0; i < 4; ++i){
 			can_vars_e var_name = get_var_name_from_id_and_pos(idInverter, i);
 			if (var_name != -1) {
-				uint16_t data = (RxData[i*2] << 8) | RxData[i*2 + 1];
+				uint16_t data = (RxData[i*2 + 1] << 8) | RxData[i*2];
 				store_value(var_name, data);
 			}
 		}

@@ -40,7 +40,7 @@
     ENTRY(inv_state_m_r, 203, 0)  \
     ENTRY(failure_m_r, 203, 1)  \
     ENTRY(alarm_m_r, 203, 2)
-    
+
 
 typedef enum
 {
@@ -50,6 +50,11 @@ typedef enum
     NUM_STATES
 } can_vars_e;
 
+uint32_t idInverter;
+int16_t dataInverter[NUM_STATES];
+
+void store_value(can_vars_e var_name, uint16_t value);
+uint16_t get_value(can_vars_e var_name);
 can_vars_e get_var_name_from_id_and_pos(int id, int pos);
 
 #endif /* INC_INVERTER_CAN_IDS_H_ */

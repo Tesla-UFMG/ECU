@@ -112,6 +112,7 @@ typedef enum {
 //Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG             1 << 10
 #define DYNAMIC_CONTROL_WARN_FLAG   1 << 11
+#define GENERAL_BUS_OFF_ERROR_FLAG  1 << 12
 
 //Soft error flags (RTD keeps on, torque ref to inverter is set to 0)
 #define BSE_ERROR_FLAG              1 << 16     //Regulamento: EV.5.7 (2021)

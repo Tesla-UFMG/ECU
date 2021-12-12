@@ -34,7 +34,6 @@
 #include "debugleds.h"
 #include "rgb_led.h"
 #include "CMSIS_extra/global_variables_handler.h"
-#include "error_treatment.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

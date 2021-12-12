@@ -6,7 +6,7 @@
  */
 
 #include "error_treatment.h"
-#include "cmsis_os.h"
+#include "global_instances.h"
 
 
 
@@ -19,9 +19,7 @@ void check_for_errors(bool (* areThereErrors)(), uint32_t flagError) {
     }
 }
 
-
-
-void check_for_errors_with_timer(bool (* areThereErrors)(), uint32_t flagError, osTimerId_t timerHandler, uint16_t timerAmount) {
+void check_for_errors_with_timeout(bool (* areThereErrors)(), uint32_t flagError, osTimerId_t timerHandler, uint16_t timerAmount) {
     if (areThereErrors()) {
         if (!osTimerIsRunning(timerHandler)){                               //se o timer não tiver rodando ele será iniciado. Esse if serve para evitar reiniciar o timer
             osTimerStart(timerHandler, timerAmount/portTICK_PERIOD_MS);

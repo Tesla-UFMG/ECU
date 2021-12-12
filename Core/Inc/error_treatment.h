@@ -9,10 +9,10 @@
 #define SRC_ERROR_TREATMENT_H_
 
 #include "stdbool.h"
-#include "global_instances.h"
+#include "cmsis_os.h"
 
 void check_for_errors(bool (* areThereErrors)(), uint32_t flagError);
-void check_for_errors_with_timer(bool (* areThereErrors)(), uint32_t flagError, osTimerId_t timerHandler, uint16_t timerAmount);
+void check_for_errors_with_timeout(bool (* areThereErrors)(), uint32_t flagError, osTimerId_t timerHandler, uint16_t timerAmount);
 void errors_with_timer_callback(void *argument);
 
 #endif /* SRC_ERROR_TREATMENT_H_ */

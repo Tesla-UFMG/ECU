@@ -67,12 +67,12 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 //callback que será chamado quando ouver erro de BUSOFF da CAN
 void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
     if(ErrorStatusITs | FDCAN_IT_BUS_OFF){
-        issue_error(INVERTER_BUS_OFF_ERROR_FLAG);               // chama o erro para a main_task tratar
+        issue_error(INVERTER_BUS_OFF_ERROR_FLAG, false);    // chama o erro para a main_task tratar
         CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);     // limpa o bit de INIT da CAN, voltando a receber mensagem
     }
 }
 
 void inverter_BUS_OFF_error_callback(void *argument){
-    osEventFlagsClear(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG); // limpa flag de estado do erro
+    clear_error(INVERTER_BUS_OFF_ERROR_FLAG);                   // limpa flag de estado do erro
 }
 

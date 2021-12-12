@@ -107,7 +107,7 @@ typedef enum {
 #define RTD_FLAG                    1 << 5
 #define RTD_BTN_PRESSED_FLAG        1 << 6
 #define MODE_BTN_PRESSED_FLAG       1 << 7
-#define GENERAL_BUS_OFF_ERROR_FLAG  1 << 8
+#define GENERAL_BUS_OFF_ERROR_FLAG  (1 << 8)
 
 
 //Warning flags	(No actions necessary)
@@ -121,7 +121,7 @@ typedef enum {
 //Hard error flags (RTD disable)
 #define INVERTER_COMM_ERROR_FLAG    1 << 20
 #define SU_F_ERROR_FLAG             1 << 21
-#define INVERTER_BUS_OFF_ERROR_FLAG 1 << 22
+#define INVERTER_BUS_OFF_ERROR_FLAG (1 << 22)
 
 #define ALL_WARN_FLAG               REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG
 #define ALL_MINOR_ERROR_FLAG        APPS_ERROR_FLAG | BSE_ERROR_FLAG

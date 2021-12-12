@@ -11,7 +11,7 @@
 #include "global_definitions.h"
 #include "global_instances.h"
 
-static FDCAN_HandleTypeDef* can_ptr;;
+static FDCAN_HandleTypeDef* can_ptr;
 
 static FDCAN_TxHeaderTypeDef TxHeader;
 

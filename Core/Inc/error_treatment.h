@@ -9,7 +9,7 @@
 #define SRC_ERROR_TREATMENT_H_
 
 #include "stdbool.h"
-#include "cmsis_os.h"
+#include "stdint.h"
 
 void check_for_errors(bool (* areThereErrors)(), uint32_t flagError);
 void issue_error(uint32_t flagError, bool should_set_control_event_flag);

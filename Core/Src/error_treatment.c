@@ -7,11 +7,12 @@
 
 #include "error_treatment.h"
 #include "global_instances.h"
+#include "cmsis_os.h"
 
 
 void check_for_errors(bool (* areThereErrors)(), uint32_t flagError) {
     if (areThereErrors())
-        issue_error(flagError, true);   // seta flag de estado com a flag flagError
+        issue_error(flagError, /*should_set_control_event_flag=*/true);   // seta flag de estado com a flag flagError
      else
         clear_error(flagError);         // limpa flag de estado flagError
 }

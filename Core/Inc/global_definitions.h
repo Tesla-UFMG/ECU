@@ -104,23 +104,23 @@ typedef enum {
 
 
 //General Flags
-#define RTD_FLAG                    1 << 5
-#define RTD_BTN_PRESSED_FLAG        1 << 6
-#define MODE_BTN_PRESSED_FLAG       1 << 7
+#define RTD_FLAG                    (1 << 5)
+#define RTD_BTN_PRESSED_FLAG        (1 << 6)
+#define MODE_BTN_PRESSED_FLAG       (1 << 7)
 #define GENERAL_BUS_OFF_ERROR_FLAG  (1 << 8)
 
 
 //Warning flags	(No actions necessary)
-#define REGEN_WARN_FLAG             1 << 10
-#define DYNAMIC_CONTROL_WARN_FLAG   1 << 11
+#define REGEN_WARN_FLAG             (1 << 10)
+#define DYNAMIC_CONTROL_WARN_FLAG   (1 << 11)
 
 //Soft error flags (RTD keeps on, torque ref to inverter is set to 0)
-#define BSE_ERROR_FLAG              1 << 16     //Regulamento: EV.5.7 (2021)
-#define APPS_ERROR_FLAG             1 << 17     //Regulamento: T.4.2 (2021)
+#define BSE_ERROR_FLAG              (1 << 16)    //Regulamento: EV.5.7 (2021)
+#define APPS_ERROR_FLAG             (1 << 17)     //Regulamento: T.4.2 (2021)
 
 //Hard error flags (RTD disable)
-#define INVERTER_COMM_ERROR_FLAG    1 << 20
-#define SU_F_ERROR_FLAG             1 << 21
+#define INVERTER_COMM_ERROR_FLAG    (1 << 20)
+#define SU_F_ERROR_FLAG             (1 << 21)
 #define INVERTER_BUS_OFF_ERROR_FLAG (1 << 22)
 
 #define ALL_WARN_FLAG               REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG

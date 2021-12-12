@@ -40,8 +40,6 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
         Error_Handler();
     }
 
-
-    //  TxHeader.Identifier = 0x321;
     TxHeader->IdType = FDCAN_STANDARD_ID;
     TxHeader->TxFrameType = FDCAN_DATA_FRAME;
     TxHeader->DataLength = FDCAN_DLC_BYTES_8;

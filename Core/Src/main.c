@@ -216,6 +216,11 @@ osTimerId_t tim_APPS_errorHandle;
 const osTimerAttr_t tim_APPS_error_attributes = {
   .name = "tim_APPS_error"
 };
+/* Definitions for tim_inverter_BUS_OFF_error */
+osTimerId_t tim_inverter_BUS_OFF_errorHandle;
+const osTimerAttr_t tim_inverter_BUS_OFF_error_attributes = {
+  .name = "tim_inverter_BUS_OFF_error"
+};
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
@@ -255,6 +260,7 @@ extern void RTD(void *argument);
 extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
 extern void errors_with_timer_callback(void *argument);
+extern void inverter_BUS_OFF_error_callback(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -334,6 +340,9 @@ int main(void)
 
   /* creation of tim_APPS_error */
   tim_APPS_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, (void*) APPS_ERROR_FLAG, &tim_APPS_error_attributes);
+
+  /* creation of tim_inverter_BUS_OFF_error */
+  tim_inverter_BUS_OFF_errorHandle = osTimerNew(inverter_BUS_OFF_error_callback, osTimerOnce, NULL, &tim_inverter_BUS_OFF_error_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -979,7 +988,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(C_LED_DEBUG2_GPIO_Port, C_LED_DEBUG2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, C_LED_GREEN_Pin|C_LED_RED_Pin|C_LED_BLUE_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, C_LED_BLUE_Pin|C_LED_GREEN_Pin|C_LED_RED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
@@ -997,8 +1006,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : C_LED_GREEN_Pin C_LED_RED_Pin C_LED_BLUE_Pin */
-  GPIO_InitStruct.Pin = C_LED_GREEN_Pin|C_LED_RED_Pin|C_LED_BLUE_Pin;
+  /*Configure GPIO pins : C_LED_BLUE_Pin C_LED_GREEN_Pin C_LED_RED_Pin */
+  GPIO_InitStruct.Pin = C_LED_BLUE_Pin|C_LED_GREEN_Pin|C_LED_RED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

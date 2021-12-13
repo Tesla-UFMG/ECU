@@ -53,13 +53,13 @@ void init_CAN() {
 
 
 void inicializa_modos() {
-	enduro.tor_max = 2500;
+	enduro.tor_max = 800;
 	enduro.vel_max = vel_max_rpm;
 	enduro.freio_regen = frenagem_regenerativa;
 	enduro.dif_elt = 0;
 	enduro.traction_control = 0;
 	enduro.bat_safe = 1;
-	enduro.torq_gain = 25; //ERA 15
+	enduro.torq_gain = 8; //ERA 15
 	enduro.mode = ENDURO;
 	enduro.cor = VERDE;
 

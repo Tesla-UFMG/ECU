@@ -206,6 +206,16 @@ osMessageQueueId_t q_throttle_controlHandle;
 const osMessageQueueAttr_t q_throttle_control_attributes = {
   .name = "q_throttle_control"
 };
+/* Definitions for tim_SU_F_error */
+osTimerId_t tim_SU_F_errorHandle;
+const osTimerAttr_t tim_SU_F_error_attributes = {
+  .name = "tim_SU_F_error"
+};
+/* Definitions for tim_APPS_error */
+osTimerId_t tim_APPS_errorHandle;
+const osTimerAttr_t tim_APPS_error_attributes = {
+  .name = "tim_APPS_error"
+};
 /* Definitions for tim_inverter_BUS_OFF_error */
 osTimerId_t tim_inverter_BUS_OFF_errorHandle;
 const osTimerAttr_t tim_inverter_BUS_OFF_error_attributes = {
@@ -249,6 +259,7 @@ extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
+extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 
 /* USER CODE BEGIN PFP */
@@ -324,6 +335,12 @@ int main(void)
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* Create the timer(s) */
+  /* creation of tim_SU_F_error */
+  tim_SU_F_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, (void*) SU_F_ERROR_FLAG, &tim_SU_F_error_attributes);
+
+  /* creation of tim_APPS_error */
+  tim_APPS_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, (void*) APPS_ERROR_FLAG, &tim_APPS_error_attributes);
+
   /* creation of tim_inverter_BUS_OFF_error */
   tim_inverter_BUS_OFF_errorHandle = osTimerNew(inverter_BUS_OFF_error_callback, osTimerOnce, NULL, &tim_inverter_BUS_OFF_error_attributes);
 

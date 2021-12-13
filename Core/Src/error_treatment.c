@@ -7,14 +7,29 @@
 
 #include "error_treatment.h"
 #include "global_instances.h"
-#include "cmsis_os.h"
 
 
 void check_for_errors(bool (* areThereErrors)(), uint32_t flagError) {
     if (areThereErrors())
-        issue_error(flagError, /*should_set_control_event_flag=*/true);   // seta flag de estado com a flag flagError
+        issue_error(flagError, /*should_set_control_event_flag=*/true);   // seta flag de thread e de estado com a flag flagError
      else
         clear_error(flagError);         // limpa flag de estado flagError
+}
+
+void check_for_errors_with_timeout(bool (* areThereErrors)(), uint32_t flagError, osTimerId_t timerHandler, uint16_t timerAmount) {
+    if (areThereErrors()) {
+        if (!osTimerIsRunning(timerHandler)){                               //se o timer não tiver rodando ele será iniciado. Esse if serve para evitar reiniciar o timer
+            osTimerStart(timerHandler, timerAmount/portTICK_PERIOD_MS);
+        }
+    } else {
+        osTimerStop(timerHandler);      //interrompe o timer
+        clear_error(flagError);         // limpa flag de estado flagError
+    }
+}
+
+void errors_with_timer_callback(void *argument){
+    uint32_t flagError = (uint32_t)argument;                            //obtem a flag a partir do argumento do callback
+    issue_error(flagError, /*should_set_control_event_flag=*/true);     // seta flag de thread e de estado com a flag flagError
 }
 
 void issue_error(uint32_t flagError, bool should_set_control_event_flag){

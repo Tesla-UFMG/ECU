@@ -48,9 +48,13 @@ void throttle_read(void *argument) {
 
         log_data(ID_BRAKE, get_global_var_value(BRAKE_STATUS));
 
-        check_for_errors(is_there_APPS_error, APPS_ERROR_FLAG);           //verifica a plausabilidade dos APPSs
-        check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);             //verifica a plausabilidade do BSE
-        check_for_errors(is_there_SU_F_error, SU_F_ERROR_FLAG);           //verifica se a placa de freio está em curto
+
+        //verifica a plausabilidade do BSE
+        check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);
+        //verifica a plausabilidade dos APPSs
+        check_for_errors_with_timeout(is_there_APPS_error, APPS_ERROR_FLAG, tim_APPS_errorHandle, APPS_ERROR_TIMER);
+        //verifica se a placa de freio está em curto
+        check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG, tim_SU_F_errorHandle, SU_F_ERROR_TIMER);
 
         uint16_t message = apps2_throttle_percent;
         osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);
@@ -62,18 +66,24 @@ void throttle_read(void *argument) {
 //calcula o valor do APPS2
 uint16_t calculate_apps2(uint16_t APPS2) {
     uint16_t apps2_percentage = 0;
-    if (APPS2 < 260)
+    if (APPS2 < 280)
         apps2_percentage = 0;
-    else if (APPS2 >= 260 && APPS2 < 467)
-        apps2_percentage = 1.162 * APPS2 - 342.9;
-    else if (APPS2 >= 467 && APPS2 < 1065)
-        apps2_percentage = 0.3344 * APPS2 + 43.8;
-    else if (APPS2 >= 1065 && APPS2 < 2253)
-        apps2_percentage = 0.1684 * APPS2 + 220.7;
-    else if (APPS2 >= 2253 && APPS2 < 3211)
-        apps2_percentage = 0.2087 * APPS2 + 129.9;
-    else if (APPS2 >= 3211 && APPS2 < 3720)
-        apps2_percentage = 0.6598 * APPS2 - 1319;
+    else if (APPS2 >= 280 && APPS2 < 470)
+        apps2_percentage = 1.5789 * APPS2 - 442.1;
+    else if (APPS2 >= 470 && APPS2 < 860)
+        apps2_percentage = 0.2564 * APPS2 + 179.5;
+    else if (APPS2 >= 860 && APPS2 < 1220)
+        apps2_percentage = 0.2778 * APPS2 + 161.1;
+    else if (APPS2 >= 1220 && APPS2 < 1570)
+        apps2_percentage = 0.2857 * APPS2 + 151.4;
+    else if (APPS2 >= 1570 && APPS2 < 1933)
+        apps2_percentage = 0.2754 * APPS2 + 167.5;
+    else if (APPS2 >= 1933 && APPS2 < 2280)
+        apps2_percentage = 0.2882 * APPS2 + 142.9;
+    else if (APPS2 >= 2280 && APPS2 < 2630)
+        apps2_percentage = 0.2857 * APPS2 + 148.6;
+    else if (APPS2 >= 2630 && APPS2 < 3400)
+        apps2_percentage = 0.2941 * APPS2 + 126.5;
 
     if (apps2_percentage > 1000)
         apps2_percentage = 1000;
@@ -84,23 +94,31 @@ uint16_t calculate_apps2(uint16_t APPS2) {
 //calcula o valor teórico de APPS1 a partir do valor de APPS2
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
     if (apps2_percentage >= 0 && apps2_percentage < 200)
-        return (2212);
-    else if (apps2_percentage >= 200 && apps2_percentage < 400)
-        return ((uint16_t) (1.679 * apps2_percentage + 1876));
-    else if (apps2_percentage >= 400 && apps2_percentage < 600)
-        return ((uint16_t) (2.621 * apps2_percentage + 1499));
-    else if (apps2_percentage >= 600 && apps2_percentage < 800)
-        return ((uint16_t) (2.212 * apps2_percentage + 1745));
-    else if (apps2_percentage >= 800 && apps2_percentage < 1135)
-        return ((uint16_t) (1.515 * apps2_percentage + 2302));
+        return (2065);
+    else if (apps2_percentage >= 200 && apps2_percentage < 300)
+        return ((uint16_t) (1.75 * apps2_percentage + 1735));
+    else if (apps2_percentage >= 300 && apps2_percentage < 400)
+        return ((uint16_t) (2.05 * apps2_percentage + 1645));
+    else if (apps2_percentage >= 400 && apps2_percentage < 500)
+        return ((uint16_t) (1.75 * apps2_percentage + 1765));
+    else if (apps2_percentage >= 500 && apps2_percentage < 600)
+        return ((uint16_t) (1.95 * apps2_percentage + 1665));
+    else if (apps2_percentage >= 600 && apps2_percentage < 700)
+        return ((uint16_t) (1.85 * apps2_percentage + 1725));
+    else if (apps2_percentage >= 700 && apps2_percentage < 800)
+        return ((uint16_t) (1.85 * apps2_percentage + 1725));
+    else if (apps2_percentage >= 800 && apps2_percentage < 900)
+        return ((uint16_t) (1.95 * apps2_percentage + 1645));
+    else if (apps2_percentage >= 900 && apps2_percentage < 1135)
+        return ((uint16_t) (1.75 * apps2_percentage + 1825));
     else
         return 0;
 }
 
-bool is_there_APPS_error() {      //Regulamento: T.4.2 (2021)
-    if (    APPS2 >= 3720           //Se o valor de APPS2 for acima do seu máximo
-         || APPS1 < 1802.24         //Se o valor de APPS1 for abaixo do seu mínimo
-         || APPS1 > 3900            //Se o valor de APPS1 for acima do seu máximo
+bool is_there_APPS_error() {        //Regulamento: T.4.2 (2021)
+    if (    APPS2 >= 3500           //Se o valor de APPS2 for acima do seu máximo
+         || APPS1 < 1900            //Se o valor de APPS1 for abaixo do seu mínimo
+         || APPS1 > 3700            //Se o valor de APPS1 for acima do seu máximo
          || APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)   //verifica se APPS1 está abaixo do valor teórico de APPS1, considerando a tolerância
          || APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0))  //verifica se APPS1 está acima do valor teórico de APPS1, considerando a tolerância
         return true;

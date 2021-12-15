@@ -24,6 +24,7 @@
 void reset_speed_all();
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count);
 void log_speed(WHEEL_SPEEDS_t* wheel_speeds);
+uint32_t get_tim2_freq();
 
 extern TIM_HandleTypeDef htim2;
 extern osMessageQueueId_t q_speed_messageHandle;
@@ -34,7 +35,7 @@ void speed_calc(void *argument) {
     memset(&last_messages, 0, sizeof(speed_message_t)*4);   //inicializa com 0 buffer de ultimas mensagens
 
 
-    const uint32_t  tim_freq  = HAL_RCC_GetPCLK1Freq(),     //pega frequência do APB1, q está conectado ao tim2
+    const uint32_t  tim_freq  = get_tim2_freq(),     //pega frequência do APB1, q está conectado ao tim2
             tim_presc = htim2.Init.Prescaler+1,             //prescaler do tim2
             //valor em tempo do timer2 da velocidade máxima a ser calculada
             max_count = (10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)tim_freq/((float)tim_presc)) / MAX_SPEED,
@@ -103,4 +104,11 @@ void reset_speed_single(speed_message_t* message, speed_message_t* last_messages
             wheel_speeds.speed[i] = 0;
         }
     set_global_var(WHEEL_SPEEDS, &wheel_speeds);
+}
+
+uint32_t get_tim2_freq() {
+    if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1)   // Get PCLK1 prescaler
+        return 2*HAL_RCC_GetPCLK1Freq();    // PCLK1 prescaler different from 1 => TIMCLK = 2 * PCLK1
+    else
+        return HAL_RCC_GetPCLK1Freq();      // PCLK1 prescaler equal to 1 => TIMCLK = PCLK1
 }

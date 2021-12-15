@@ -83,8 +83,8 @@ void speed_calc(void *argument) {
 }
 
 void log_speed(WHEEL_SPEEDS_t* wheel_speeds){
-    log_data(ID_SPEED_FR, wheel_speeds->speed[FRONT_RIGHT]);
-    log_data(ID_SPEED_FL, wheel_speeds->speed[FRONT_LEFT]);
+    log_data(ID_SPEED_FR, wheel_speeds->speed[FRONT_RIGHT]*10);
+    log_data(ID_SPEED_FL, wheel_speeds->speed[FRONT_LEFT]*10);
     log_data(ID_SPEED_RR, wheel_speeds->speed[REAR_RIGHT]);
     log_data(ID_SPEED_RL, wheel_speeds->speed[REAR_LEFT]);
 }

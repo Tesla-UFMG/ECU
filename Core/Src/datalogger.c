@@ -33,7 +33,7 @@ void datalogger(void *argument) {
 			datalog_data_holder[message.id] = message.data;
 		}
 
-		const uint16_t WRITE_ITERATION_LIMIT = ECU_CAN_LAST_POPULATED_ID + ECU_CAN_LAST_DEBUG_ID-ECU_CAN_FIRST_DEBUG_ID+1;
+		const uint16_t WRITE_ITERATION_LIMIT = ECU_CAN_LAST_POPULATED_ID + ECU_CAN_LAST_DEBUG_ID-ECU_CAN_FIRST_DEBUG_ID;
 		for(uint16_t id = ECU_CAN_INITIAL_ID; id < WRITE_ITERATION_LIMIT; id++) {
 			for(uint16_t pos = 0; pos<4; pos++) {
 				uint16_t internal_index = get_internal_from_id_pos(id, pos);

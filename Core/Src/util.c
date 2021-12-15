@@ -37,7 +37,7 @@ bool get_individual_flag(osEventFlagsId_t ef_id, uint32_t flag){
     return (osEventFlagsGet(ef_id) & flag);
 }
 
-uint16_t uint8_to_uint16(uint8_t msb, uint8_t lsb) {
+uint16_t concatenate_two_uint8_to_uint16(uint8_t msb, uint8_t lsb) {
     return (msb << 8 | lsb);
 }
 

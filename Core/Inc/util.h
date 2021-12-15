@@ -15,7 +15,7 @@
 speed_pin_e get_speed_pin(uint16_t pin);
 uint32_t get_flag_MSB(uint32_t value);
 bool get_individual_flag(osEventFlagsId_t ef_id, uint32_t flag);
-uint16_t uint8_to_uint16(uint8_t msb, uint8_t lsb);
+uint16_t concatenate_two_uint8_to_uint16(uint8_t msb, uint8_t lsb);
 
 #define sign(x) (x >= 0) - (x < 0)
 #define max(x,y) (x > y) ? x : y

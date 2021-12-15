@@ -9,6 +9,9 @@
 #define INC_INVERTER_CAN_H_
 
 #include "stm32h7xx.h"
+#include "CAN/inverter_can_data_manager.h"
+
+static uint32_t dataInverter[NUM_STATES]; 
 
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref);
 void inverter_can_transmit(uint32_t id, uint16_t* data);

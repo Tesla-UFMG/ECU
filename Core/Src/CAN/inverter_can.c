@@ -12,6 +12,7 @@
 #include "global_definitions.h"
 #include "global_instances.h"
 #include "error_treatment.h"
+#include "util.h"
 
 
 static FDCAN_HandleTypeDef* can_ptr;
@@ -45,13 +46,15 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 
 		set_debugleds(DEBUGLED3,TOGGLE,0);
 
-		idInverter = RxHeader.Identifier;
+		uint32_t idInverter = RxHeader.Identifier;
 		for(int i = 0; i < 4; ++i){
 			can_vars_e var_name = get_var_name_from_id_and_pos(idInverter, i);
+
 			if (var_name != -1) {
-				uint16_t data = (RxData[i*2 + 1] << 8) | RxData[i*2];
+				uint16_t data = uint8_to_uint16(RxData[i*2 + 1], RxData[i*2]);
 				store_value(var_name, data);
 			}
+
 		}
 
 		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {

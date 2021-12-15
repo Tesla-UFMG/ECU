@@ -16,7 +16,11 @@
 #include "util.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
-extern PID_t pid_lateral;
+static PID_t pid_lateral;
+
+void init_lateral_control(){
+    PID_init(&pid_lateral, 1, KP_LATERAL, TI_LATERAL, 0, 4000, -4000, LATERAL_DELAY);
+}
 
 lateral_t lateral_control() {
     WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);

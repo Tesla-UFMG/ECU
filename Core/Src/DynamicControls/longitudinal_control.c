@@ -10,15 +10,23 @@
 #include "DynamicControls/constants_control.h"
 #include "cmsis_os.h"
 #include <math.h>
+#include "DynamicControls/PID.h"
 #include "speed_calc.h"
 #include "global_variables.h"
 #include "constants.h"
 #include "util.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
-extern longitudinal_t controlled_wheels[2];
+static longitudinal_t controlled_wheels[2] = { [L_MOTOR].wheel = REAR_LEFT, [R_MOTOR].wheel = REAR_RIGHT};
 
-uint32_t longitudinal_control(uint8_t wheel_motor){
+void init_longitudinal_control(){
+    PID_init(&controlled_wheels[L_MOTOR].pid_longitudinal, 1, KP_LONGITUDINAL, TI_LONGITUDINAL, 0, 4000, 0, LONGITUDINAL_DELAY);
+    PID_set_setpoint(&controlled_wheels[L_MOTOR].pid_longitudinal, IDEAL_SLIP_DRY);                  //TODO: fazer logica de seleção pista seca/molhada
+    PID_init(&controlled_wheels[R_MOTOR].pid_longitudinal, 1, KP_LONGITUDINAL, TI_LONGITUDINAL, 0, 4000, 0, LONGITUDINAL_DELAY);
+    PID_set_setpoint(&controlled_wheels[R_MOTOR].pid_longitudinal, IDEAL_SLIP_DRY);
+}
+
+uint32_t wheel_control(uint8_t wheel_motor){
     float cm_speed;
     double slip;
 
@@ -31,3 +39,7 @@ uint32_t longitudinal_control(uint8_t wheel_motor){
 
 
 };
+void longitudinal_control(uint32_t *torque_decrease_longitudinal){
+    torque_decrease_longitudinal[R_MOTOR] = wheel_control(R_MOTOR);
+    torque_decrease_longitudinal[L_MOTOR] = wheel_control(L_MOTOR);
+}

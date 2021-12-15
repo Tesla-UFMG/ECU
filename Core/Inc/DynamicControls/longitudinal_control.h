@@ -7,12 +7,17 @@
 #ifndef INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_
 #define INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_
 
-#include "stdint.h"
+#include <stdint.h>
 #include "PID.h"
 
 #define LONGITUDINAL_DELAY 30
 #define IDEAL_SLIP_DRY 13
 #define IDEAL_SLIP_WET 30
+
+//defines PID LONGITUDINAL
+#define KP_LONGITUDINAL 6.51864262048678// TODO: check values
+#define KI_LONGITUDINAL 0.14843404179579
+#define TI_LONGITUDINAL KP_LONGITUDINAL / KI_LONGITUDINAL
 
 
 typedef struct {
@@ -21,7 +26,8 @@ typedef struct {
 	PID_t pid_longitudinal;
 } longitudinal_t;
 
-uint32_t longitudinal_control(uint8_t wheel_motor);
-
+void longitudinal_control(uint32_t *torque_decrease_longitudinal);
+uint32_t wheel_control(uint8_t wheel_motor);
+void init_longitudinal_control();
 
 #endif /* INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_ */

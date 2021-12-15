@@ -36,9 +36,8 @@ void torque_manager(void *argument) {
         case LONGITUDINAL:
             tick += LONGITUDINAL_DELAY;
             uint32_t ref_torque_longitudinal[2] = {0,0};                                  //array of the torque values to be sent
-            uint32_t torque_decrease_longitudinal[2] = {0,0};
-            torque_decrease_longitudinal[R_MOTOR] = longitudinal_control(R_MOTOR);                 // Controllers
-            torque_decrease_longitudinal[L_MOTOR] = longitudinal_control(L_MOTOR);
+            uint32_t torque_decrease_longitudinal[2] = {0,0};                             //array of values of torque to be decreased according to the controller
+            longitudinal_control(torque_decrease_longitudinal);                           // Controller
             void rampa_torque_longitudinal(uint32_t *torque_decrease_longitudinal, uint32_t *ref_torque); // TODO: remover rampa com testes de bancada
             rampa_torque_longitudinal(torque_decrease_longitudinal, ref_torque_longitudinal);
             send_ref_torque_message(ref_torque_longitudinal);                                  //sends the torque command to the inverter
@@ -134,15 +133,8 @@ void send_ref_torque_message (uint32_t *ref_torque) {
 
 void control_ramp(uint32_t *ref_torque, uint32_t *ref_torque_ant){
     for (int i=0;i<2;i++) {
-            if (ref_torque_ant[i] > TORQUE_INIT_LIMITE) {                       // verifica se a referencia
-                if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE) {           // ja passou do ponto de inflexao
-                    ref_torque[i] = ref_torque_ant[i] + INC_TORQUE;             // e aplica o incremento mais agressivo
-                }
-            } else {
-                if (ref_torque[i] > ref_torque_ant[i] + INC_TORQUE_INIT) {      // caso contrario usa o
-                    ref_torque[i] = ref_torque_ant[i] + INC_TORQUE_INIT;        // incremento da primeira rampa
-                }
-            }
-            ref_torque_ant[i] = ref_torque[i];                                  // aplica a referencia calculada
+        uint32_t torque_increment = (ref_torque_ant[i] > TORQUE_INIT_LIMITE) ? INC_TORQUE : INC_TORQUE_INIT; // verifica se a referencia a passou do ponto de inflexao
+        ref_torque[i] = min(ref_torque[i], ref_torque_ant[i] + torque_increment);                            // e aplica o incremento mais agressivo (INC_TORQUE)
+        ref_torque_ant[i] = ref_torque[i];                                                                   // caso contrario usa o incremento da primeira rampa (INC_TORQUE_INIT)
     }
 }

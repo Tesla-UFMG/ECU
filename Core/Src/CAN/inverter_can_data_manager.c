@@ -7,7 +7,8 @@
  */
 
 #include "CAN/inverter_can_data_manager.h"
-#include "CAN/inverter_can.h"
+
+static uint32_t dataInverter[NUM_STATES]; 
 
 void store_value(can_vars_e var_name, uint16_t value)
 {

@@ -36,10 +36,12 @@ uint32_t wheel_control(uint8_t wheel_motor){
     slip = ((wheel_speeds.speed[controlled_wheels[wheel_motor].wheel] - cm_speed) / cm_speed) * 100;    // slip ratio of the selected wheel
     // PID
     return (uint32_t)(PID_compute(&(controlled_wheels[wheel_motor].pid_longitudinal), slip));
+}
+longitudinal_control_result_t  longitudinal_control(){
+    longitudinal_control_result_t result;
 
+    result.torque_decrease[R_MOTOR] = wheel_control(R_MOTOR);
+    result.torque_decrease[L_MOTOR] = wheel_control(L_MOTOR);
 
-};
-void longitudinal_control(uint32_t *torque_decrease_longitudinal){
-    torque_decrease_longitudinal[R_MOTOR] = wheel_control(R_MOTOR);
-    torque_decrease_longitudinal[L_MOTOR] = wheel_control(L_MOTOR);
+    return result;
 }

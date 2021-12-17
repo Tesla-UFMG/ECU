@@ -17,7 +17,7 @@
 //defines PID LONGITUDINAL
 #define KP_LONGITUDINAL 6.51864262048678// TODO: check values
 #define KI_LONGITUDINAL 0.14843404179579
-#define TI_LONGITUDINAL KP_LONGITUDINAL / KI_LONGITUDINAL
+#define TI_LONGITUDINAL (KP_LONGITUDINAL / KI_LONGITUDINAL)
 
 
 typedef struct {
@@ -26,7 +26,11 @@ typedef struct {
 	PID_t pid_longitudinal;
 } longitudinal_t;
 
-void longitudinal_control(uint32_t *torque_decrease_longitudinal);
+typedef struct {
+    uint32_t torque_decrease[2];
+} longitudinal_control_result_t;
+
+longitudinal_control_result_t longitudinal_control();
 uint32_t wheel_control(uint8_t wheel_motor);
 void init_longitudinal_control();
 

@@ -14,9 +14,9 @@
 
 void init_controls() {
 
-	//Lateral Control
+    //Lateral Control
     init_lateral_control();
-	//Longitudinal Control
-	init_longitudinal_control();
+    //Longitudinal Control
+    init_longitudinal_control();
 
 }

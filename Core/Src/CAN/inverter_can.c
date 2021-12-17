@@ -7,10 +7,12 @@
 
 #include "CAN/inverter_can.h"
 #include "CAN/CAN_handler.h"
+#include "CAN/inverter_can_ids.h"
 #include "debugleds.h"
 #include "global_definitions.h"
 #include "global_instances.h"
 #include "error_treatment.h"
+
 
 static FDCAN_HandleTypeDef* can_ptr;
 
@@ -18,10 +20,18 @@ static FDCAN_TxHeaderTypeDef TxHeader;
 
 static uint8_t RxData[8];
 static FDCAN_RxHeaderTypeDef RxHeader;
-int16_t datainverter[4];
-uint32_t idinverter;
+uint32_t idInverter;
+int16_t dataInverter[NUM_STATES];
 
+void store_value(can_vars_e var_name, uint16_t value)
+{
+    dataInverter[var_name] = value;
+}
 
+uint16_t get_value(can_vars_e var_name)
+{
+    return dataInverter[var_name];
+}
 
 //função que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
@@ -51,11 +61,14 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 
 		set_debugleds(DEBUGLED3,TOGGLE,0);
 
-		idinverter = RxHeader.Identifier;
-		for(int i = 0; i < 8; i += 2){
-			datainverter[i/2] = (RxData[i+1] << 8) | RxData[i];
+		idInverter = RxHeader.Identifier;
+		for(int i = 0; i < 4; ++i){
+			can_vars_e var_name = get_var_name_from_id_and_pos(idInverter, i);
+			if (var_name != -1) {
+				uint16_t data = (RxData[i*2] << 8) | RxData[i*2 + 1];
+				store_value(var_name, data);
+			}
 		}
-		//TODO: implementar lógica de colocar as mensagens nas variáveis certas
 
 		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 			/* Notification Error */

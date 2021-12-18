@@ -9,7 +9,7 @@ on:
       - master
       - '**/*develop*'
   pull_request:
-    branches: 
+    branches:
       - master
       - '**/*develop*'
 
@@ -20,10 +20,10 @@ on:
 jobs:
   clang-tidy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Install ARM toolchain
       run: |
         sudo apt-get update -y
@@ -35,16 +35,16 @@ jobs:
         echo "Creating symlinks"
         sudo ln -s /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/* /usr/bin/
         sudo apt install libncurses5
-      
+
     - name: Install clang-tidy
       run: |
         sudo apt-get install -y clang-tidy
-        
+
     - name: Analyze
       shell: bash
       working-directory: ./Build
       run: make clang-tidy
-      
+
     - name: Run clang-tidy-pr-comments action
       uses: platisd/clang-tidy-pr-comments@master
       with:
@@ -55,5 +55,3 @@ jobs:
         # Optionally set to true if you want the Action to request
         # changes in case warnings are found
         request_changes: true
-        
-  

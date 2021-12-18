@@ -20,10 +20,8 @@ on:
 jobs:
   clang-tidy:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
-
     - name: Install ARM toolchain
       run: |
         sudo apt-get update -y
@@ -54,3 +52,8 @@ jobs:
         # Optionally set to true if you want the Action to request
         # changes in case warnings are found
         request_changes: true
+
+    - name: Process clang-tidy warnings
+      uses: asarium/clang-tidy-action@v1
+      with:
+        fixesFile: Build/clang-tidy-export

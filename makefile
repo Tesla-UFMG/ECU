@@ -1,4 +1,7 @@
-INCLUDES := -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Drivers/STM32H7xx_HAL_Driver/Inc
+INCLUDES := -I./Middlewares/Third_Party/FreeRTOS/Source/include -I./Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -I./Drivers/CMSIS/Include -I./Core/Inc -I./Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I./Drivers/CMSIS/Device/ST/STM32H7xx/Include -I./Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I./Drivers/STM32H7xx_HAL_Driver/Inc
+
+BUILD_DIR := Build
+
 ARM_CLANG_CC := clang
 ARM_GNU_CC := arm-none-eabi-gcc
 ARCH_CFLAGS += \
@@ -23,7 +26,7 @@ portability-*,$\
 readability-*,$\
 -readability-magic-numbers*
 
-CLANG_TIDY_EXPORT_PATH := ./clang-tidy-export
+CLANG_TIDY_EXPORT_PATH := $(BUILD_DIR)/clang-tidy-export
 
 CLANG_TIDY_FLAGS := $(CLANG_TIDY_CHECKS) -export-fixes=$(CLANG_TIDY_EXPORT_PATH)
 
@@ -72,14 +75,18 @@ endif
 LDFLAGS := $(COMPILER_SPECIFIC_LDFLAGS)
 CFLAGS := $(INCLUDES) $(COMPILER_SPECIFIC_CFLAGS) -std=gnu11 -g3 -c -Og -Wall -fno-short-enums
 
-C_SOURCES := $(shell find .. -name '*.c')
-C_EXECUTABLE := $(C_SOURCES:../%.c=./%.o)
-S_SOURCES := $(shell find .. -name '*.s')
-S_EXECUTABLE := $(S_SOURCES:../%.s=./%.o)
+C_SOURCES := $(shell find . -name '*.c')
+C_EXECUTABLE := $(C_SOURCES:./%.c=$(BUILD_DIR)/%.o)
+S_SOURCES := $(shell find . -name '*.s')
+S_EXECUTABLE := $(S_SOURCES:./%.s=$(BUILD_DIR)/%.o)
 
 FILTER_FROM_CORE := ! -name '*stm32h7xx*.*' ! -name '*system_stm32h7xx*.*' ! -name '*sysmem.*' ! -name '*syscalls.*' ! -name '*freertos.*' ! -name '*main.*'
-C_SOURCES_CORE := $(shell find ../Core -name '*.c' $(FILTER_FROM_CORE))
-HEADERS_CORE := $(shell find ../Core -name '*.h' $(FILTER_FROM_CORE))
+C_SOURCES_CORE := $(shell find ./Core -name '*.c' $(FILTER_FROM_CORE))
+HEADERS_CORE := $(shell find ./Core -name '*.h' $(FILTER_FROM_CORE))
+# CLANG_TIDY_C_SOURCES := $(C_SOURCES_CORE:%=%.clang-tidy)
+# CLANG_TIDY_HEADERS := $(HEADERS_CORE:%=%.clang-tidy)
+# CLANG_TIDY_FILES := $(CLANG_TIDY_C_SOURCES) $(CLANG_TIDY_HEADERS)
+
 RM := rm -rf
 
 BUILD_ARTIFACT_NAME := ECU
@@ -87,18 +94,18 @@ BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
-# Add inputs and outputs from these tool invocations to the build variables 
-EXECUTABLES += \
-ECU.elf \
+# Add inputs and outputs from these tool invocations to the build variables
+EXECUTABLES := $(BUILD_DIR)/ECU.elf
 
-SIZE_OUTPUT += \
-default.size.stdout \
+SIZE_OUTPUT := $(BUILD_DIR)/default.size.stdout
 
-OBJDUMP_LIST += \
-ECU.list \
+OBJDUMP_LIST := $(BUILD_DIR)/ECU.list
 
-OBJCOPY_BIN += \
-ECU.bin \
+OBJCOPY_BIN := $(BUILD_DIR)/ECU.bin
+
+OBJ_MAP := $(BUILD_DIR)/ECU.map
+
+OBJECTS_LIST := $(BUILD_DIR)/objects.list
 
 
 .PHONY: clang clang-tidy
@@ -106,35 +113,39 @@ clang: main-build
 clang-tidy:
 	$(CLANG_TIDY) $(CLANG_TIDY_FLAGS) $(C_SOURCES_CORE) $(HEADERS_CORE) -- $(LDFLAGS) $(CFLAGS) $(STMFLAGS)
 
+# $(CLANG_TIDY_FILES):
+# 	@echo "Analyzing $(@:%.clang-tidy=%)"
+# 	$(CLANG_TIDY) $(CLANG_TIDY_FLAGS) $(@:%.clang-tidy=%) -- $(LDFLAGS) $(CFLAGS) $(STMFLAGS)
+
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: ECU.elf secondary-outputs
+main-build: $(EXECUTABLES) secondary-outputs
 
 # Tool invocations
-ECU.elf: $(C_EXECUTABLE) $(S_EXECUTABLE) ../STM32H743VITX_FLASH.ld makefile
-	arm-none-eabi-gcc -o "ECU.elf" @"objects.list" $(LIBS) -mcpu=cortex-m7 -T"../STM32H743VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ECU.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+$(EXECUTABLES): $(C_EXECUTABLE) $(S_EXECUTABLE) ./STM32H743VITX_FLASH.ld
+	arm-none-eabi-gcc -o "$(EXECUTABLES)" @"$(OBJECTS_LIST)" $(LIBS) -mcpu=cortex-m7 -T"./STM32H743VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="$(OBJ_MAP)" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-default.size.stdout: $(EXECUTABLES) makefile objects.list
+$(SIZE_OUTPUT): $(EXECUTABLES) $(OBJECTS_LIST)
 	arm-none-eabi-size  $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-ECU.list: $(EXECUTABLES) makefile objects.list
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "ECU.list"
+$(OBJDUMP_LIST): $(EXECUTABLES) $(OBJECTS_LIST)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "$(OBJDUMP_LIST)"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-ECU.bin: $(EXECUTABLES) makefile objects.list
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "ECU.bin"
+$(OBJCOPY_BIN): $(EXECUTABLES) $(OBJECTS_LIST)
+	arm-none-eabi-objcopy -O binary $(EXECUTABLES) "$(OBJCOPY_BIN)"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-objects.list:
-	touch objects.list
+$(OBJECTS_LIST):
+	touch $(OBJECTS_LIST)
 
 printit:
 	echo $(C_EXECUTABLE)
@@ -142,8 +153,8 @@ printit:
 
 # Other Targets
 clean:
-	-$(RM) $(SIZE_OUTPUT)$(OBJDUMP_LIST)$(EXECUTABLES)$(C_EXECUTABLE) $(C_EXECUTABLE:%.o=%.d) $(C_EXECUTABLE:%.o=%.su) $(S_EXECUTABLE) $(S_EXECUTABLE:%.o=%.d) $(S_EXECUTABLE:%.o=%.su) $(OBJCOPY_BIN) $(CLANG_TIDY_EXPORT_PATH) ECU.elf ECU.map objects.list
-	find . -type d -empty -delete
+	-$(RM) $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(EXECUTABLES) $(C_EXECUTABLE) $(C_EXECUTABLE:%.o=%.d) $(C_EXECUTABLE:%.o=%.su) $(S_EXECUTABLE) $(S_EXECUTABLE:%.o=%.d) $(S_EXECUTABLE:%.o=%.su) $(OBJCOPY_BIN) $(CLANG_TIDY_EXPORT_PATH) $(EXECUTABLES) $(OBJ_MAP) $(OBJECTS_LIST)
+	find $(BUILD_DIR) -mindepth 1 -type d -empty -delete
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
@@ -158,19 +169,23 @@ warn-no-linker-script-specified:
 .PHONY: all clean dependents fail-specified-linker-script-missing warn-no-linker-script-specified make-objects.list
 
 
-$(C_EXECUTABLE): make-objects.list
-	$(eval SRC_FILE := $(@:%.o=../%.c))
+$(C_EXECUTABLE): $(OBJECTS_LIST)
+	$(eval SRC_FILE := $(@:$(BUILD_DIR)/%.o=%.c))
 	@mkdir -p $(@D)
 	@echo 'Compiling: $(SRC_FILE)'
 	$(CC) "$(SRC_FILE)" $(LDFLAGS) $(CFLAGS) $(STMFLAGS) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@"
-	@echo '"$@"' >> objects.list
+	@if ! grep -q '"$@"' '$(OBJECTS_LIST)'; then \
+		echo '"$@"' >> $(OBJECTS_LIST); \
+	fi\
 
-$(S_EXECUTABLE): make-objects.list
-	$(eval SRC_FILE := $(@:%.o=../%.s))
+$(S_EXECUTABLE): $(OBJECTS_LIST)
+	$(eval SRC_FILE := $(@:$(BUILD_DIR)/%.o=%.s))
 	@mkdir -p $(@D)
 	@echo 'Compiling Assembly: $(SRC_FILE)'
 	arm-none-eabi-gcc -mcpu=cortex-m7 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "$@" "$(SRC_FILE)"
-	@echo '"$@"' >> objects.list
+	@if ! grep -q '"$@"' '$(OBJECTS_LIST)'; then \
+		echo '"$@"' >> $(OBJECTS_LIST); \
+	fi\
 
 
 # automatically generate dependency rules

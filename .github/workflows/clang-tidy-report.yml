@@ -48,6 +48,7 @@ jobs:
       uses: asarium/clang-tidy-action@v1
       with:
         fixesFile: Build/clang-tidy-export
+        noFailOnIssue: true
 
 #     - name: Run clang-tidy-pr-comments action
 #       uses: platisd/clang-tidy-pr-comments@master

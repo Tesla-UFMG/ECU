@@ -45,13 +45,18 @@ jobs:
       working-directory: ./Build
       run: make clang-tidy
 
-    - name: Run clang-tidy-pr-comments action
-      uses: platisd/clang-tidy-pr-comments@master
+    - name: Process clang-tidy warnings
+      uses: asarium/clang-tidy-action@v1
       with:
-        # The GitHub token (or a personal access token)
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        # The path to the clang-tidy fixes generated previously
-        clang_tidy_fixes: Build/clang-tidy-export
-        # Optionally set to true if you want the Action to request
-        # changes in case warnings are found
-        request_changes: true
+        fixesFile: Build/clang-tidy-export
+
+#     - name: Run clang-tidy-pr-comments action
+#       uses: platisd/clang-tidy-pr-comments@master
+#       with:
+#         # The GitHub token (or a personal access token)
+#         github_token: ${{ secrets.GITHUB_TOKEN }}
+#         # The path to the clang-tidy fixes generated previously
+#         clang_tidy_fixes: 
+#         # Optionally set to true if you want the Action to request
+#         # changes in case warnings are found
+#         request_changes: true

@@ -108,9 +108,9 @@ OBJ_MAP := $(BUILD_DIR)/ECU.map
 OBJECTS_LIST := $(BUILD_DIR)/objects.list
 
 
-.PHONY: clang clang-tidy
+.PHONY: clang clang-tidy create-build-dir
 clang: main-build
-clang-tidy:
+clang-tidy: create-build-dir
 	$(CLANG_TIDY) $(CLANG_TIDY_FLAGS) $(C_SOURCES_CORE) $(HEADERS_CORE) -- $(LDFLAGS) $(CFLAGS) $(STMFLAGS)
 
 # $(CLANG_TIDY_FILES):
@@ -144,8 +144,11 @@ $(OBJCOPY_BIN): $(EXECUTABLES) $(OBJECTS_LIST)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-$(OBJECTS_LIST):
-	mkdir -p $(BUILD_DIR)
+create-build-dir:
+	@echo 'Creating build directory: $(BUILD_DIR)'
+	@mkdir -p $(BUILD_DIR)
+
+$(OBJECTS_LIST): create-build-dir
 	touch $(OBJECTS_LIST)
 
 printit:

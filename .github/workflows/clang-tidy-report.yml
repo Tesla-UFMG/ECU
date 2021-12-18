@@ -18,7 +18,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  install-arm-toolchain:
+  clang-tidy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -33,39 +33,20 @@ jobs:
         echo "Creating symlinks"
         sudo ln -s /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/* /usr/bin/
         sudo apt install libncurses5
-    
-  install-clang-tidy:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
+
     - name: Install clang-tidy
       run: |
         sudo apt-get install -y clang-tidy
-        
-  run-clang-tidy:
-    runs-on: ubuntu-latest
-    needs: [install-arm-toolchain, install-clang-tidy]
-    steps:
-    - uses: actions/checkout@v2
+
     - name: Analyze
       shell: bash
       run: make clang-tidy
-      
-  process-warning:
-    runs-on: ubuntu-latest
-    needs: run-clang-tidy
-    steps:
-    - uses: actions/checkout@v2
+
     - name: Process clang-tidy warnings
       uses: asarium/clang-tidy-action@v1
       with:
         fixesFile: Build/clang-tidy-export
-        
-  run-pr-comments:
-    runs-on: ubuntu-latest
-    needs: run-clang-tidy
-    steps:
-    - uses: actions/checkout@v2
+
     - name: Run clang-tidy-pr-comments action
       uses: platisd/clang-tidy-pr-comments@master
       with:

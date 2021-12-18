@@ -81,8 +81,8 @@ S_SOURCES := $(shell find . -name '*.s')
 S_EXECUTABLE := $(S_SOURCES:./%.s=$(BUILD_DIR)/%.o)
 
 FILTER_FROM_CORE := ! -name '*stm32h7xx*.*' ! -name '*system_stm32h7xx*.*' ! -name '*sysmem.*' ! -name '*syscalls.*' ! -name '*freertos.*' ! -name '*main.*'
-C_SOURCES_CORE := $(shell find ./Core -name '*.c' $(FILTER_FROM_CORE))
-HEADERS_CORE := $(shell find ./Core -name '*.h' $(FILTER_FROM_CORE))
+C_SOURCES_CORE := $(shell find Core -name '*.c' $(FILTER_FROM_CORE))
+HEADERS_CORE := $(shell find Core -name '*.h' $(FILTER_FROM_CORE))
 # CLANG_TIDY_C_SOURCES := $(C_SOURCES_CORE:%=%.clang-tidy)
 # CLANG_TIDY_HEADERS := $(HEADERS_CORE:%=%.clang-tidy)
 # CLANG_TIDY_FILES := $(CLANG_TIDY_C_SOURCES) $(CLANG_TIDY_HEADERS)
@@ -145,6 +145,7 @@ $(OBJCOPY_BIN): $(EXECUTABLES) $(OBJECTS_LIST)
 	@echo ' '
 
 $(OBJECTS_LIST):
+	mkdir -p $(BUILD_DIR)
 	touch $(OBJECTS_LIST)
 
 printit:

@@ -49,10 +49,10 @@ COMPILER_SPECIFIC_CFLAGS :=
 COMPILER_SPECIFIC_LDFLAGS :=
 
 ifeq (clang,$(USING_COMPILER))
-  ARM_CORTEXM_SYSROOT = \
+  ARM_CORTEXM_SYSROOT ?= \
     $(shell $(ARM_GNU_CC) $(ARCH_CFLAGS) -print-sysroot 2>&1)
 
-  ARM_CORTEXM_MULTI_DIR = \
+  ARM_CORTEXM_MULTI_DIR ?= \
     $(shell $(ARM_GNU_CC) $(ARCH_CFLAGS) -print-multi-directory 2>&1)
 
   ARM_CORTEXM_BUILTINS ?= \

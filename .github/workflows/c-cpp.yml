@@ -22,7 +22,6 @@ jobs:
 
     - name: Build Project
       shell: bash
-      working-directory: ./Build
       run: make -j2
 
 

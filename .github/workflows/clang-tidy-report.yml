@@ -39,13 +39,6 @@ jobs:
     - name: Install clang-tidy
       run: |
         sudo apt-get install -y clang-tidy
-    
-    - name: Print info
-      run: |
-        arm-none-eabi-gcc -v
-        arm-none-eabi-gcc -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -print-sysroot
-        arm-none-eabi-gcc -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -print-multi-directory
-        arm-none-eabi-gcc -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -print-libgcc-file-name
         
     - name: Analyze
       shell: bash
@@ -58,7 +51,7 @@ jobs:
         # The GitHub token (or a personal access token)
         github_token: ${{ secrets.GITHUB_TOKEN }}
         # The path to the clang-tidy fixes generated previously
-        clang_tidy_fixes: .Build/clang-tidy-export
+        clang_tidy_fixes: Build/clang-tidy-export
         # Optionally set to true if you want the Action to request
         # changes in case warnings are found
         request_changes: true

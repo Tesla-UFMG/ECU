@@ -26,16 +26,12 @@ jobs:
     
     - name: Install ARM toolchain
       run: |
-        sudo apt-get update
-        sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi
-      
-    - name : List usr
-      run: |
-        ls -R /usr/
-    
-    - name : List arm-gcc-lib
-      run: |
-        ls -R /usr/lib/gcc/arm-none-eabi/
+        sudo apt-get update -y
+        sudo apt-get install -y curl
+        curl /tmp/arm-gcc-install.tar.bz2 -O https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+        sudo tar -xjf /tmp/arm-gcc-install.tar.bz2 -C /usr/share/
+        sudo ln -s /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-gcc/bin/* /usr/bin/
+        sudo apt install libncurses5
       
     - name: Install clang-tidy
       run: |

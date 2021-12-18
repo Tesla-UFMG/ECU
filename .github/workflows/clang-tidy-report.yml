@@ -42,7 +42,6 @@ jobs:
 
     - name: Analyze
       shell: bash
-      working-directory: ./Build
       run: make clang-tidy
 
     - name: Run clang-tidy-pr-comments action

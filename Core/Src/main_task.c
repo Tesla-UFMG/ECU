@@ -17,7 +17,6 @@
 #include "CMSIS_extra/global_variables_handler.h"
 
 
-
 void main_task(void *argument) {
 
     for(;;) {

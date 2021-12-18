@@ -36,7 +36,6 @@ void steering_read(void *argument) {
 				volante_cru -= 4095;
 		}
 
-
 		if (volante_cru < zero_aux) {
 			set_global_var_value(STEERING_WHEEL, 0);
 		}

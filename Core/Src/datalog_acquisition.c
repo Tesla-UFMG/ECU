@@ -16,7 +16,6 @@
 #include "util.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
-
 void datalog_acquisition(){
 	modos modo_dl;
 	uint16_t flag_ecu_1;

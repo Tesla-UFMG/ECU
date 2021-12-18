@@ -38,7 +38,6 @@ void RTD(void *argument) {
     }
 }
 
-
 void exit_RTD() {
     set_global_var_value(SELECTED_MODE, erro);          //seta modo_selecionado como erro
     set_global_var_value(RACE_MODE, ERRO);

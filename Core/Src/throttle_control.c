@@ -5,7 +5,6 @@
  *      Author: Felipe Telles
  */
 
-
 #include "throttle_control.h"
 #include "cmsis_os.h"
 #include "datalog_handler.h"

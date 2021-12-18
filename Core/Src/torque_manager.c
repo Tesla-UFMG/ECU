@@ -64,7 +64,6 @@ void torque_manager(void *argument) {
         }
 
     }
-
 }
 
 // Rampa normal

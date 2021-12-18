@@ -16,4 +16,3 @@ osStatus_t log_data(uint16_t id, uint16_t data) {
 	datalog_message_t message = {id, data};
 	return osMessageQueuePut(q_datalog_messageHandle, &message, 0, 0U);
 }
-

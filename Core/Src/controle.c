@@ -15,7 +15,6 @@
 #include "CMSIS_extra/global_variables_handler.h"
 
 
-
 void update_regen_state(vehicle_state_e vehicle_state);
 
 extern osMutexId_t m_state_parameter_mutexHandle;

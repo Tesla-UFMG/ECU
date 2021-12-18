@@ -15,7 +15,6 @@
  *      Author: Felipe Telles
  */
 
-
 #include "rgb_led.h"
 #include "global_variables.h"
 #include "global_instances.h"

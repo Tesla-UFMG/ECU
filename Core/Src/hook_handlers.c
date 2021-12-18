@@ -11,6 +11,7 @@
 //	//erro de alocacao de memoria
 //}
 
+
 void brkpt() {
 	;
 }

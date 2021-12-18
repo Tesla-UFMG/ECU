@@ -14,7 +14,6 @@
 #include "util.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
-
 void seleciona_modo(void *argument) {
     for(;;) {
 

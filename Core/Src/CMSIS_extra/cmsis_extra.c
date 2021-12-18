@@ -82,3 +82,4 @@ osStatus_t osMessageQueuePeek(osMessageQueueId_t mq_id, void *msg_ptr,
 
     return (stat);
 }
+

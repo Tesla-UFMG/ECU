@@ -8,7 +8,6 @@
 #include "error_treatment.h"
 #include "global_instances.h"
 
-
 void check_for_errors(bool (* areThereErrors)(), uint32_t flagError) {
     if (areThereErrors())
         issue_error(flagError, /*should_set_control_event_flag=*/true);   // seta flag de thread e de estado com a flag flagError

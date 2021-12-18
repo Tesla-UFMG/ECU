@@ -52,4 +52,3 @@ void inverter_transmit(torque_message_t* message) {
 	vet_tx[3] = message->torque_ref[R_MOTOR];
 	inverter_can_transmit(ID_COMM_FLAG, vet_tx);
 }
-

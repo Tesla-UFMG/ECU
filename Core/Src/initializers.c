@@ -50,8 +50,6 @@ void init_CAN() {
 	  initialize_CAN_IDs();
 }
 
-
-
 void inicializa_modos() {
 	enduro.tor_max = 2500;
 	enduro.vel_max = vel_max_rpm;

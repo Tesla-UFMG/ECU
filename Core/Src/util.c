@@ -42,4 +42,3 @@ uint16_t concatenate_two_uint8_to_uint16(uint8_t* data) {
 }
 
 
-

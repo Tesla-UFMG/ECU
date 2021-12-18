@@ -20,7 +20,6 @@ void datalogger(void *argument) {
 
 	uint16_t vet_tx[4];
 
-
 	for(;;) {
 
 		#ifdef DEBUG_ECU

@@ -5,7 +5,6 @@
  *      Author: Felipe Telles
  */
 
-
 #include "debugleds.h"
 #include "cmsis_os.h"
 #include "global_variables.h"

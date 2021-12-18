@@ -18,6 +18,7 @@ typedef struct {
 // create local storage of queue infos
 static global_variable_message_queue_data_t queues_info[_global_vars_quan];
 
+
 /*
  * This macro creates a Message Queue of size 1, based on the name provided by
  * var_name parameter. The Message Queue Id is then stored in the array

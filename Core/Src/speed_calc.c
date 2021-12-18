@@ -25,6 +25,7 @@ void reset_speed_all();
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count);
 void log_speed(WHEEL_SPEEDS_t* wheel_speeds);
 
+
 extern TIM_HandleTypeDef htim2;
 extern osMessageQueueId_t q_speed_messageHandle;
 

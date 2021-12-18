@@ -14,7 +14,6 @@
 #include "global_instances.h"
 #include "cmsis_os.h"
 
-
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage);
 uint16_t calculate_apps2(uint16_t APPS2);
 bool is_there_APPS_error();

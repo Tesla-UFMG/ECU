@@ -42,11 +42,6 @@ jobs:
       shell: bash
       run: make clang-tidy
 
-    - name: Process clang-tidy warnings
-      uses: asarium/clang-tidy-action@v1
-      with:
-        fixesFile: Build/clang-tidy-export
-
     - name: Run clang-tidy-pr-comments action
       uses: platisd/clang-tidy-pr-comments@master
       with:
@@ -57,3 +52,8 @@ jobs:
         # Optionally set to true if you want the Action to request
         # changes in case warnings are found
         request_changes: true
+
+    - name: Process clang-tidy warnings
+      uses: asarium/clang-tidy-action@v1
+      with:
+        fixesFile: Build/clang-tidy-export

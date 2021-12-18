@@ -1,13 +1,85 @@
 INCLUDES := -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Drivers/STM32H7xx_HAL_Driver/Inc
-CC := arm-none-eabi-gcc
-LDFLAGS :=
-CFLAGS := $(INCLUDES) -std=gnu11 -g3 -c -Og -Wall --specs=nano.specs
-STMFLAGS := -mcpu=cortex-m7 -DUSE_HAL_DRIVER -DSTM32H743xx -DDEBUG -ffunction-sections -fdata-sections -fstack-usage -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb
+ARM_CLANG_CC := clang
+ARM_GNU_CC := arm-none-eabi-gcc
+ARCH_CFLAGS += \
+  -mthumb -mcpu=cortex-m7 \
+  -mfloat-abi=hard -mfpu=fpv5-d16
+
+CLANG_TIDY := clang-tidy
+
+CLANG_TIDY_CHECKS := -checks=-*,$\
+clang-analyzer-*,$\
+-clang-analyzer-cplusplus*,$\
+bugprone-*,$\
+-bugprone-easily-swappable-parameters*,$\
+cert-*,$\
+llvm-*,$\
+-llvm-include-order*,$\
+-llvm-header-guard*,$\
+misc-*,$\
+performance-*,$\
+-performance-no-int-to-ptr*,$\
+portability-*,$\
+readability-*,$\
+-readability-magic-numbers*
+
+CLANG_TIDY_EXPORT_PATH := ./clang-tidy-export
+
+CLANG_TIDY_FLAGS := $(CLANG_TIDY_CHECKS) -export-fixes=$(CLANG_TIDY_EXPORT_PATH)
+
+CLANG_GOALS := clang-tidy clang
+
+ifneq (,$(filter $(CLANG_GOALS),$(MAKECMDGOALS)))
+   USING_COMPILER := clang
+else
+   USING_COMPILER := gnu
+endif
+
+
+ifeq (clang,$(USING_COMPILER))
+  CC := $(ARM_CLANG_CC)
+else
+  CC := $(ARM_GNU_CC)
+endif
+
+
+STMFLAGS := $(ARCH_CFLAGS) -DUSE_HAL_DRIVER -DSTM32H743xx -DDEBUG -ffunction-sections -fdata-sections
+
+COMPILER_SPECIFIC_CFLAGS :=
+COMPILER_SPECIFIC_LDFLAGS :=
+
+ifeq (clang,$(USING_COMPILER))
+  ARM_CORTEXM_SYSROOT ?= \
+    $(shell $(ARM_GNU_CC) $(ARCH_CFLAGS) -print-sysroot 2>&1)
+
+  ARM_CORTEXM_MULTI_DIR ?= \
+    $(shell $(ARM_GNU_CC) $(ARCH_CFLAGS) -print-multi-directory 2>&1)
+
+  ARM_CORTEXM_BUILTINS ?= \
+    $(shell $(ARM_GNU_CC) $(ARCH_CFLAGS) -print-libgcc-file-name 2>&1)
+
+  COMPILER_SPECIFIC_CFLAGS += \
+    --target=arm-none-eabi \
+    --sysroot=$(ARM_CORTEXM_SYSROOT)
+
+  COMPILER_SPECIFIC_LDFLAGS += \
+    -L$(ARM_CORTEXM_SYSROOT)/lib/$(ARM_CORTEXM_MULTI_DIR) \
+    $(ARM_CORTEXM_BUILTINS)
+else
+  COMPILER_SPECIFIC_CFLAGS += --specs=nano.specs
+endif
+
+LDFLAGS := $(COMPILER_SPECIFIC_LDFLAGS)
+CFLAGS := $(INCLUDES) $(COMPILER_SPECIFIC_CFLAGS) -std=gnu11 -g3 -c -Og -Wall -fno-short-enums
+
 C_SOURCES := $(shell find .. -name '*.c')
 C_EXECUTABLE := $(C_SOURCES:../%.c=./%.o)
 S_SOURCES := $(shell find .. -name '*.s')
 S_EXECUTABLE := $(S_SOURCES:../%.s=./%.o)
 
+FILTER_FROM_CORE := ! -name '*stm32h7xx*.*' ! -name '*system_stm32h7xx*.*' ! -name '*sysmem.*' ! -name '*syscalls.*' ! -name '*freertos.*' ! -name '*main.*'
+C_SOURCES_CORE := $(shell find ../Core -name '*.c' $(FILTER_FROM_CORE))
+HEADERS_CORE := $(shell find ../Core -name '*.h' $(FILTER_FROM_CORE))
 RM := rm -rf
 
 BUILD_ARTIFACT_NAME := ECU
@@ -28,6 +100,11 @@ ECU.list \
 OBJCOPY_BIN += \
 ECU.bin \
 
+
+.PHONY: clang clang-tidy
+clang: main-build
+clang-tidy:
+	$(CLANG_TIDY) $(CLANG_TIDY_FLAGS) $(C_SOURCES_CORE) $(HEADERS_CORE) -- $(LDFLAGS) $(CFLAGS) $(STMFLAGS)
 
 # All Target
 all: main-build
@@ -65,7 +142,7 @@ printit:
 
 # Other Targets
 clean:
-	-$(RM) $(SIZE_OUTPUT)$(OBJDUMP_LIST)$(EXECUTABLES)$(C_EXECUTABLE) $(C_EXECUTABLE:%.o=%.d) $(C_EXECUTABLE:%.o=%.su) $(S_EXECUTABLE) $(S_EXECUTABLE:%.o=%.d) $(S_EXECUTABLE:%.o=%.su) $(OBJCOPY_BIN) ECU.elf ECU.map objects.list
+	-$(RM) $(SIZE_OUTPUT)$(OBJDUMP_LIST)$(EXECUTABLES)$(C_EXECUTABLE) $(C_EXECUTABLE:%.o=%.d) $(C_EXECUTABLE:%.o=%.su) $(S_EXECUTABLE) $(S_EXECUTABLE:%.o=%.d) $(S_EXECUTABLE:%.o=%.su) $(OBJCOPY_BIN) $(CLANG_TIDY_EXPORT_PATH) ECU.elf ECU.map objects.list
 	find . -type d -empty -delete
 	-@echo ' '
 

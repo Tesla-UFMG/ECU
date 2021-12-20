@@ -1,0 +1,59 @@
+# This is a basic workflow to help you get started with Actions
+
+name: clang-tidy report
+
+# Controls when the workflow will run
+on:
+  push:
+    branches:
+      - master
+      - '**/*develop*'
+  pull_request:
+    branches:
+      - master
+      - '**/*develop*'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  clang-tidy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install ARM toolchain
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y curl
+        echo "Downloading toolchain..."
+        curl -o /tmp/arm-gcc-install.tar.bz2 https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+        echo "Unpacking toolchain"
+        sudo tar -xjf /tmp/arm-gcc-install.tar.bz2 -C /usr/share/
+        echo "Creating symlinks"
+        sudo ln -s /usr/share/gcc-arm-none-eabi-10.3-2021.10/bin/* /usr/bin/
+        sudo apt install libncurses5
+
+    - name: Install clang-tidy
+      run: |
+        sudo apt-get install -y clang-tidy
+
+    - name: Analyze
+      shell: bash
+      run: make clang-tidy
+
+    - name: Run clang-tidy-pr-comments action
+      uses: platisd/clang-tidy-pr-comments@master
+      with:
+        # The GitHub token (or a personal access token)
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        # The path to the clang-tidy fixes generated previously
+        clang_tidy_fixes: Build/clang-tidy-export
+        # Optionally set to true if you want the Action to request
+        # changes in case warnings are found
+        request_changes: true
+
+    - name: Process clang-tidy warnings
+      uses: asarium/clang-tidy-action@v1
+      with:
+        fixesFile: Build/clang-tidy-export

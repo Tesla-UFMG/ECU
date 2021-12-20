@@ -66,24 +66,28 @@ void throttle_read(void *argument) {
 //calcula o valor do APPS2
 uint16_t calculate_apps2(uint16_t APPS2) {
     uint16_t apps2_percentage = 0;
-    if (APPS2 < 280)
+    if (APPS2 < 277)
         apps2_percentage = 0;
-    else if (APPS2 >= 280 && APPS2 < 470)
-        apps2_percentage = 1.5789 * APPS2 - 442.1;
-    else if (APPS2 >= 470 && APPS2 < 860)
-        apps2_percentage = 0.2564 * APPS2 + 179.5;
-    else if (APPS2 >= 860 && APPS2 < 1220)
-        apps2_percentage = 0.2778 * APPS2 + 161.1;
-    else if (APPS2 >= 1220 && APPS2 < 1570)
-        apps2_percentage = 0.2857 * APPS2 + 151.4;
-    else if (APPS2 >= 1570 && APPS2 < 1933)
-        apps2_percentage = 0.2754 * APPS2 + 167.5;
-    else if (APPS2 >= 1933 && APPS2 < 2280)
-        apps2_percentage = 0.2882 * APPS2 + 142.9;
-    else if (APPS2 >= 2280 && APPS2 < 2630)
-        apps2_percentage = 0.2857 * APPS2 + 148.6;
-    else if (APPS2 >= 2630 && APPS2 < 3400)
-        apps2_percentage = 0.2941 * APPS2 + 126.5;
+    else if (APPS2 >= 277 && APPS2 < 560)
+        apps2_percentage = 0.3534 * APPS2 - 97.88;
+    else if (APPS2 >= 560 && APPS2 < 900)
+        apps2_percentage = 0.2941 * APPS2 - 64.71;
+    else if (APPS2 >= 900 && APPS2 < 1100)
+        apps2_percentage = 0.5 * APPS2 - 250;
+    else if (APPS2 >= 1100 && APPS2 < 1380)
+        apps2_percentage = 0.3571 * APPS2 - 92.86;
+    else if (APPS2 >= 1380 && APPS2 < 1610)
+        apps2_percentage = 0.4348 * APPS2 - 200;
+    else if (APPS2 >= 1610 && APPS2 < 1922)
+        apps2_percentage = 0.3205 * APPS2 - 16.03;
+    else if (APPS2 >= 1922 && APPS2 < 2140)
+        apps2_percentage = 0.4587 * APPS2 - 281.65;
+    else if (APPS2 >= 2140 && APPS2 < 2390)
+        apps2_percentage = 0.4 * APPS2 - 156;
+    else if (APPS2 >= 2390 && APPS2 < 2480)
+            apps2_percentage = 1.1111 * APPS2 - 1855.56;
+    else if (APPS2 >= 2480 && APPS2 < 2600)
+            apps2_percentage = 0.8333 * APPS2 - 1166.67;
 
     if (apps2_percentage > 1000)
         apps2_percentage = 1000;
@@ -93,24 +97,26 @@ uint16_t calculate_apps2(uint16_t APPS2) {
 
 //calcula o valor teórico de APPS1 a partir do valor de APPS2
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
-    if (apps2_percentage >= 0 && apps2_percentage < 200)
-        return (2065);
+    if (apps2_percentage >= 0 && apps2_percentage < 100)
+        return ((uint16_t) (2.08 * apps2_percentage + 2060));
+    else if (apps2_percentage >= 100 && apps2_percentage < 200)
+        return ((uint16_t) (1.42 * apps2_percentage + 2126));
     else if (apps2_percentage >= 200 && apps2_percentage < 300)
-        return ((uint16_t) (1.75 * apps2_percentage + 1735));
+        return ((uint16_t) (1.2 * apps2_percentage + 2170));
     else if (apps2_percentage >= 300 && apps2_percentage < 400)
-        return ((uint16_t) (2.05 * apps2_percentage + 1645));
+        return ((uint16_t) (1.5 * apps2_percentage + 2080));
     else if (apps2_percentage >= 400 && apps2_percentage < 500)
-        return ((uint16_t) (1.75 * apps2_percentage + 1765));
+        return ((uint16_t) (1.2 * apps2_percentage + 2200));
     else if (apps2_percentage >= 500 && apps2_percentage < 600)
-        return ((uint16_t) (1.95 * apps2_percentage + 1665));
+        return ((uint16_t) (1.65 * apps2_percentage + 1975));
     else if (apps2_percentage >= 600 && apps2_percentage < 700)
-        return ((uint16_t) (1.85 * apps2_percentage + 1725));
+        return ((uint16_t) (1.3 * apps2_percentage + 2185));
     else if (apps2_percentage >= 700 && apps2_percentage < 800)
-        return ((uint16_t) (1.85 * apps2_percentage + 1725));
+        return ((uint16_t) (1.31 * apps2_percentage + 2178));
     else if (apps2_percentage >= 800 && apps2_percentage < 900)
-        return ((uint16_t) (1.95 * apps2_percentage + 1645));
+        return ((uint16_t) (1.04 * apps2_percentage + 2394));
     else if (apps2_percentage >= 900 && apps2_percentage < 1135)
-        return ((uint16_t) (1.75 * apps2_percentage + 1825));
+        return ((uint16_t) (1 * apps2_percentage + 2430));
     else
         return 0;
 }

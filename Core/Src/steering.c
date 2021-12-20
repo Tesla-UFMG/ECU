@@ -46,6 +46,7 @@ void steering_read(void *argument) {
 
 		STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
 
+		log_data(ID_PANEL_DEBUG_1, volante_cru);
 		log_data(ID_STEERING_WHEEL, steering_wheel);
 
 		//SPAN_ALINHAMENTO é apenas um span pra ainda considerar o volante no centro

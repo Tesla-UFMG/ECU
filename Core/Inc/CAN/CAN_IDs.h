@@ -66,8 +66,8 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
 #define ECU_CAN_INITIAL_ID 				100
 #define ECU_CAN_FINAL_ID 				149
 #define ECU_CAN_LAST_POPULATED_ID 		108
-#define ECU_CAN_FIRST_DEBUG_ID			351
-#define ECU_CAN_LAST_DEBUG_ID			351
+#define ECU_CAN_FIRST_DEBUG_ID			350
+#define ECU_CAN_LAST_DEBUG_ID			352
 
 #define INTERNAL_ID_ECU_TIMER             {101, 0}
 #define INTERNAL_ID_STEERING_WHEEL        {101, 1}
@@ -98,8 +98,8 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
 #define INTERNAL_ID_CURRENT_FLAG          {108, 3}
 #define INTERNAL_ID_PANEL_DEBUG_1         {351, 0}
 #define INTERNAL_ID_PANEL_DEBUG_2         {351, 1}
-#define INTERNAL_ID_PANEL_DEBUG_3         {351, 2}
-#define INTERNAL_ID_PANEL_DEBUG_4         {351, 3}
+#define INTERNAL_ID_PANEL_DEBUG_3         {352, 0}
+#define INTERNAL_ID_PANEL_DEBUG_4         {352, 1}
 #define INTERNAL_ID_REGEN_BRAKE_STATE     {102, 1}
 
 

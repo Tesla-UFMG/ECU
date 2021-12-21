@@ -46,7 +46,8 @@ void speed_calc(void) {
     const uint32_t min_count = calculate_speed(MIN_SPEED, tim_freq, tim_presc);
     //valor em tempo do timersys da velocidade mínima a ser calculada
     const uint32_t min_timeout = calculate_timeout(MIN_SPEED, tim_freq, tim_presc);
-    uint32_t d_tim_count, speed;
+    uint32_t d_tim_count;
+    uint32_t speed;
 
     for(;;) {
         #ifdef DEBUG_ECU

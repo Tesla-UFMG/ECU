@@ -124,6 +124,6 @@ uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc){
     return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)freq/((float)presc)) / speed);
 }
 
-uint32_t calculate_timeout(uint32_t speed{
+uint32_t calculate_timeout(uint32_t speed) {
     return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * 1000 / speed);
 }

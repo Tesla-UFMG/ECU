@@ -55,6 +55,7 @@ jobs:
         # Optionally set to true if you want the Action to request
         # changes in case warnings are found
         request_changes: true
+        suggestions_per_comment: 100
 
     - name: Process clang-tidy warnings
       uses: asarium/clang-tidy-action@v1

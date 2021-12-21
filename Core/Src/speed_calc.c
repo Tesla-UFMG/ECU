@@ -70,8 +70,9 @@ void speed_calc(void *argument) {
             d_tim_count = message.tim_count - last_messages[message.pin].tim_count;
 
             //caso d_tim_count calcule uma velocidade maior do que é possível o valor será descartado
-            if(d_tim_count < max_count)
+            if(d_tim_count < max_count) {
                 continue;
+            }
 
             speed = calculate_speed(d_tim_count, tim_freq, tim_presc); //calcula a velocidade
             WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
@@ -99,21 +100,23 @@ void reset_speed_all() {
 
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count) {
     WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
-    for(speed_pin_e i = FIRST_WHEEL; i <= LAST_WHEEL; i++)
-        if((message->tim_count - last_messages[i].tim_count) > min_count)
-        {
+    for(speed_pin_e i = FIRST_WHEEL; i <= LAST_WHEEL; i++) {
+        if((message->tim_count - last_messages[i].tim_count) > min_count) {
             wheel_speeds.speed[i] = 0;
         }
+    }
     set_global_var(WHEEL_SPEEDS, &wheel_speeds);
 }
 
 //obtem a frequencia do tim2 a partir APB1, considerando que ele pode ter um prescaler que dobra a frequencia
 uint32_t get_tim2_freq() {
-    if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1)   // Get PCLK1 prescaler
+    if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) {   // Get PCLK1 prescaler
         return 2*HAL_RCC_GetPCLK1Freq();    // PCLK1 prescaler different from 1 => TIMCLK = 2 * PCLK1
-    else
+    } else {
         return HAL_RCC_GetPCLK1Freq();      // PCLK1 prescaler equal to 1 => TIMCLK = PCLK1
+    }
 }
+
 
 uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc){
     return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)freq/((float)presc)) / speed);

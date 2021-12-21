@@ -80,7 +80,7 @@ void speed_calc(void) {
             WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
             wheel_speeds.speed[message.pin] = speed;                    //seta velocidade especifica da roda recebida
             set_global_var(WHEEL_SPEEDS, &wheel_speeds);
-            last_messages[message.pin] = message;                       //guarda mensagem ate a próxima interacao
+            last_messages[message.pin] = message;                       //guarda mensagem ate a proxima interacao
             log_speed(&wheel_speeds);
         break;
         }

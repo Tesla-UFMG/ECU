@@ -26,7 +26,7 @@ void reset_speed_single(speed_message_t* message, speed_message_t* last_messages
 void log_speed(WHEEL_SPEEDS_t* wheel_speeds);
 uint32_t get_tim2_freq();
 uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
-uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc);
+uint32_t calculate_timeout(uint32_t speed);
 
 extern TIM_HandleTypeDef htim2;
 extern osMessageQueueId_t q_speed_messageHandle;
@@ -45,7 +45,7 @@ void speed_calc(void) {
     //valor em tempo do timer2 da velocidade mínima a ser calculada
     const uint32_t min_count = calculate_speed(MIN_SPEED, tim_freq, tim_presc);
     //valor em tempo do timersys da velocidade mínima a ser calculada
-    const uint32_t min_timeout = calculate_timeout(MIN_SPEED, tim_freq, tim_presc);
+    const uint32_t min_timeout = calculate_timeout(MIN_SPEED);
     uint32_t d_tim_count;
     uint32_t speed;
 
@@ -123,6 +123,6 @@ uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc){
     return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)freq/((float)presc)) / speed);
 }
 
-uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc){
+uint32_t calculate_timeout(uint32_t speed{
     return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * 1000 / speed);
 }

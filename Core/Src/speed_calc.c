@@ -33,7 +33,7 @@ extern osMessageQueueId_t q_speed_messageHandle;
 
 
 
-void speed_calc(void *argument) {
+void speed_calc(void) {
     speed_message_t message;
     speed_message_t last_messages[4];
     memset(&last_messages, 0, sizeof(speed_message_t)*4);   //inicializa com 0 buffer de ultimas mensagens

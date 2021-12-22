@@ -111,7 +111,7 @@ void reset_speed_single(speed_message_t* message, speed_message_t* last_messages
 }
 
 //obtem a frequencia do tim2 a partir APB1, considerando que ele pode ter um prescaler que dobra a frequencia
-uint32_t get_tim2_freq() {
+static inline uint32_t get_tim2_freq() {
     if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) {     // Get PCLK1 prescaler
         return 2*HAL_RCC_GetPCLK1Freq();        // PCLK1 prescaler different from 1 => TIMCLK = 2 * PCLK1
     } else {
@@ -120,10 +120,10 @@ uint32_t get_tim2_freq() {
 }
 
 
-uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc){
+static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc){
     return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)freq/((float)presc)) / speed);
 }
 
-uint32_t calculate_timeout(uint32_t speed) {
+static inline uint32_t calculate_timeout(uint32_t speed) {
     return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * 1000 / speed);
 }

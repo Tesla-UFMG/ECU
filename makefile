@@ -13,12 +13,14 @@ CLANG_TIDY := clang-tidy
 CLANG_TIDY_CHECKS := -checks=-*,$\
 clang-analyzer-*,$\
 -clang-analyzer-cplusplus*,$\
+clang-diagnostic-*,$\
 bugprone-*,$\
 -bugprone-easily-swappable-parameters*,$\
 cert-*,$\
 llvm-*,$\
 -llvm-include-order*,$\
 -llvm-header-guard*,$\
+google-*,$\
 misc-*,$\
 performance-*,$\
 -performance-no-int-to-ptr*,$\
@@ -64,6 +66,8 @@ ifeq (clang,$(USING_COMPILER))
   COMPILER_SPECIFIC_CFLAGS += \
     --target=arm-none-eabi \
     --sysroot=$(ARM_CORTEXM_SYSROOT)
+
+  COMPILER_SPECIFIC_CFLAGS += Wextra
 
   COMPILER_SPECIFIC_LDFLAGS += \
     -L$(ARM_CORTEXM_SYSROOT)/lib/$(ARM_CORTEXM_MULTI_DIR) \

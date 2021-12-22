@@ -39,11 +39,11 @@ jobs:
 
     - name: Install clang-tidy
       run: |
-        sudo apt-get install -y clang-tidy
+        sudo apt-get install -y clang-tidy-12
 
     - name: Analyze
       shell: bash
-      run: make clang-tidy
+      run: make clang-tidy CLANG_TIDY=clang-tidy-12
 
     - name: Run clang-tidy-pr-comments action
       uses: platisd/clang-tidy-pr-comments@master

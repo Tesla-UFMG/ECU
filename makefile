@@ -28,9 +28,11 @@ portability-*,$\
 readability-*,$\
 -readability-magic-numbers*
 
+CLANG_TIDY_EXTRA_FLAGS ?= \
+
 CLANG_TIDY_EXPORT_PATH := $(BUILD_DIR)/clang-tidy-export
 
-CLANG_TIDY_FLAGS := $(CLANG_TIDY_CHECKS) -export-fixes=$(CLANG_TIDY_EXPORT_PATH)
+CLANG_TIDY_FLAGS := $(CLANG_TIDY_CHECKS) -export-fixes=$(CLANG_TIDY_EXPORT_PATH) $(CLANG_TIDY_EXTRA_FLAGS)
 
 CLANG_GOALS := clang-tidy clang
 

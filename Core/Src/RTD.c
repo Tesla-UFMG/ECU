@@ -30,10 +30,11 @@ void RTD(void *argument) {
         bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
 
         if (!is_RTD_active) {
-            if(can_RTD_be_enabled())
+            if(can_RTD_be_enabled()) {
                 set_RTD();                                                  //seta RTD
-            else
+            } else {
                 set_debugleds(DEBUGLED1,BLINK,2);                           //envia uma mensagem de alerta caso n seja possível acionar RTD
+}
         }
     }
 }
@@ -52,10 +53,9 @@ bool can_RTD_be_enabled() {
     BRAKE_STATUS_t is_brake_active = get_global_var_value(BRAKE_STATUS);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
-    if(is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO))
+    if(is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)) {
         return true;
-    else
-        return false;
+    }         return false;
 }
 
 void set_RTD() {

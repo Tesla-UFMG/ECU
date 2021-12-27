@@ -50,7 +50,7 @@ osStatus_t osMessageQueuePutOverwrite(osMessageQueueId_t mq_id,
 }
 
 osStatus_t osMessageQueuePeek(osMessageQueueId_t mq_id, void *msg_ptr,
-                              uint8_t *msg_prio, uint32_t timeout) {
+                              const uint8_t *msg_prio, uint32_t timeout) {
     QueueHandle_t hQueue = (QueueHandle_t)mq_id;
     osStatus_t stat;
 

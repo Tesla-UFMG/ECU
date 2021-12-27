@@ -56,7 +56,7 @@ void can_transmit(FDCAN_HandleTypeDef* hfdcan, FDCAN_TxHeaderTypeDef* TxHeader, 
 	TxHeader->Identifier = id;
 	if (HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, TxHeader, (uint8_t*)data) != HAL_OK) {
 		//deu ruim
-		//TODO: tratar quando falhar envio de mensagem de can ao inversor
+		// TODO(renanmoreira): tratar quando falhar envio de mensagem de can ao inversor
 	}
 }
 

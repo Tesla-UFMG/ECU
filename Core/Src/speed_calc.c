@@ -114,9 +114,8 @@ void reset_speed_single(speed_message_t* message, speed_message_t* last_messages
 static inline uint32_t get_tim2_freq() {
     if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) {     // Get PCLK1 prescaler
         return 2*HAL_RCC_GetPCLK1Freq();        // PCLK1 prescaler different from 1 => TIMCLK = 2 * PCLK1
-    } else {
-        return HAL_RCC_GetPCLK1Freq();          // PCLK1 prescaler equal to 1 => TIMCLK = PCLK1
-    }
+    }         return HAL_RCC_GetPCLK1Freq();          // PCLK1 prescaler equal to 1 => TIMCLK = PCLK1
+   
 }
 
 

@@ -41,8 +41,10 @@ double PID_compute(PID_t* pid, double input)
 				   (pid->C2 * (2.0*pid->input_state[0] - input - pid->input_state[1]));
 
 	//prevenir windup
-	if (pid->output > pid->max_output) pid->output = pid->max_output;
-	if (pid->output < pid->min_output) pid->output = pid->min_output;
+	if (pid->output > pid->max_output) { pid->output = pid->max_output;
+}
+	if (pid->output < pid->min_output) { pid->output = pid->min_output;
+}
 
 	/* atualizar estados */
 	pid->error_state[1] = pid->error_state[0];

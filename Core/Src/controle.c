@@ -18,7 +18,7 @@
 
 void update_regen_state(vehicle_state_e vehicle_state);
 
-extern osMutexId_t m_state_parameter_mutexHandle;
+
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 
 volatile vehicle_state_parameters_t g_vehicle_state_parameters;
@@ -27,14 +27,15 @@ volatile vehicle_state_e vehicle_state;
 
 
 void update_state(bool disable) {
-	if (disable == true)
+	if (disable == true) {
 		vehicle_state = S_DISABLE_E;
-	else if ((get_global_var_value(THROTTLE_PERCENT) < 100) && (frenagem_regenerativa == true) && get_global_var_value(MOTOR_SPEEDS).speed[L_MOTOR] > _5_kmph_rpm)
+	} else if ((get_global_var_value(THROTTLE_PERCENT) < 100) && (frenagem_regenerativa == true) && get_global_var_value(MOTOR_SPEEDS).speed[L_MOTOR] > _5_kmph_rpm) {
 	    vehicle_state = S_BRAKE_E;
-	else if(get_global_var_value(THROTTLE_PERCENT) > 100)
+	} else if(get_global_var_value(THROTTLE_PERCENT) > 100) {
 		vehicle_state = S_ACCELERATE_E;
-	else
+	} else {
 		vehicle_state = S_NEUTER_E;
+}
 
 	update_regen_state(vehicle_state);
 }
@@ -46,7 +47,7 @@ void update_state_parameters(torque_message_t* torque_message) {
 		case S_NEUTER_E:
 			set_bit8(&torque_message->parameters, P_ENABLE, true);
 			set_bit8(&torque_message->parameters, P_BRAKE, false);
-			//TODO: mudar velocidade do motor de acordo com nova logica
+			// TODO(renanmoreira): mudar velocidade do motor de acordo com nova logica
 			MOTOR_SPEEDS_t motor_speeds = get_global_var_value(MOTOR_SPEEDS);
 			set_bit8(&torque_message->parameters, P_RUNSTOP, (motor_speeds.speed[R_MOTOR] > _5_kmph_rpm || motor_speeds.speed[L_MOTOR] > _5_kmph_rpm));
 			torque_message->torque_ref[R_MOTOR] = 0;
@@ -71,7 +72,7 @@ void update_state_parameters(torque_message_t* torque_message) {
 			set_bit8(&torque_message->parameters, P_ENABLE, true);
 			set_bit8(&torque_message->parameters, P_BRAKE, false);
 			set_bit8(&torque_message->parameters, P_RUNSTOP, true);
-			//TODO: Mudar para nova lógica de envio de mensagem de torque ao inversor
+			// TODO(renanmoreira): Mudar para nova lógica de envio de mensagem de torque ao inversor
 			torque_message->neg_torque_ref[R_MOTOR] = 0;
 			torque_message->neg_torque_ref[L_MOTOR] = 0;
 			torque_message->speed_ref[R_MOTOR] = selected_mode.vel_max;
@@ -148,8 +149,9 @@ void controle(void *argument) {
 }
 
 void update_regen_state(vehicle_state_e vehicle_state){
-    if (vehicle_state == S_BRAKE_E)
+    if (vehicle_state == S_BRAKE_E) {
         osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);     // se frenagem ativa, seta flag de aviso
-    else
+    } else {
         osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);   // se frenagem ativa, limpa flag de aviso
+}
 }

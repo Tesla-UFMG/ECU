@@ -23,7 +23,7 @@ osStatus_t osMessageQueuePutOverwrite (osMessageQueueId_t mq_id, const void *msg
 /// \param[out]    msg_prio      pointer to buffer for message priority or NULL.
 /// \param[in]     timeout       \ref CMSIS_RTOS_TimeOutValue or 0 in case of no time-out.
 /// \return status code that indicates the execution status of the function.
-osStatus_t osMessageQueuePeek (osMessageQueueId_t mq_id, void *msg_ptr, uint8_t *msg_prio, uint32_t timeout);
+osStatus_t osMessageQueuePeek (osMessageQueueId_t mq_id, void *msg_ptr, const uint8_t *msg_prio, uint32_t timeout);
 
 
 #endif /* INC_CMSIS_EXTRA_CMSIS_EXTRA_H_ */

@@ -23,8 +23,8 @@ void steering_read(void *argument) {
 
 		volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
 
-		uint16_t volante_aux = volante_cru,
-				 zero_aux = ZERO_VOLANTE;
+		uint16_t volante_aux = volante_cru;
+		uint16_t zero_aux = ZERO_VOLANTE;
 
 		//Se o mínimo do volante for menor que 0, o sensor voltará no valor máximo do ADC
 		//se isso acontecer, o valor do ADC voltará para 4095
@@ -32,8 +32,9 @@ void steering_read(void *argument) {
 		//o mesmo vale pro zero do volante
 		if (VOLANTE_MIN > VOLANTE_MAX) {
 			zero_aux -= 4095;
-			if (volante_cru > VOLANTE_MAX)
+			if (volante_cru > VOLANTE_MAX) {
 				volante_cru -= 4095;
+}
 		}
 
 

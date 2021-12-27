@@ -25,8 +25,8 @@ uint32_t idgeneral;
 //função que inicializa a can geral, chamada em initializer.c
 void initialize_general_CAN(FDCAN_HandleTypeDef* can_ref) {
     can_ptr = can_ref;
-    void CAN_general_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
-    void CAN_general_error_callback(FDCAN_HandleTypeDef*, uint32_t);
+    void CAN_general_receive_callback(FDCAN_HandleTypeDef* /*hfdcan*/, uint32_t /*RxFifo0ITs*/);
+    void CAN_general_error_callback(FDCAN_HandleTypeDef* /*hfdcan*/, uint32_t /*ErrorStatusITs*/);
     initialize_CAN(can_ptr, CAN_general_receive_callback, CAN_general_error_callback, &TxHeader);
 }
 
@@ -54,7 +54,7 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
 		for(int i = 0; i < 8; i += 2){
 			datageneral[i/2] = (RxData[i+1] << 8) | RxData[i];
 		}
-		//TODO: implementar lógica de colocar as mensagens nas variáveis certas
+		// TODO(renanmoreira): implementar lógica de colocar as mensagens nas variáveis certas
 
 		if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
 			/* Notification Error */

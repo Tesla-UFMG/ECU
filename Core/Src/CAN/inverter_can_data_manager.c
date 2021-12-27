@@ -23,8 +23,8 @@ uint16_t get_value(can_vars_e var_name)
 can_vars_e get_var_name_from_id_and_pos(int id, int pos)
 {
     #define ENTRY(a,b,c) \
-    if (id == b && pos == c) return a; else
-    VARIABLES;
+    if (id == (b) && pos == (c)) return a; else
+    
     #undef ENTRY
     return -1;
 }

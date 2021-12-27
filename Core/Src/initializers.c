@@ -24,7 +24,7 @@ void init_NVIC_priorities() {
 	NVIC_SetPriority(S_VEL3_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
 	NVIC_SetPriority(S_VEL4_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
 
-	//TODO: averiguar a prioridade correta para botões de modo e RTD
+	// TODO(renanmoreira): averiguar a prioridade correta para botões de modo e RTD
 	NVIC_SetPriority(B_RTD_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
 	NVIC_SetPriority(B_MODO_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
 }

@@ -25,8 +25,8 @@ static FDCAN_RxHeaderTypeDef RxHeader;
 //função que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
     can_ptr = can_ref;
-    void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
-    void CAN_inverter_error_callback(FDCAN_HandleTypeDef*, uint32_t);
+    void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* /*hfdcan*/, uint32_t /*RxFifo0ITs*/);
+    void CAN_inverter_error_callback(FDCAN_HandleTypeDef* /*hfdcan*/, uint32_t /*ErrorStatusITs*/);
     initialize_CAN(can_ptr, CAN_inverter_receive_callback, CAN_inverter_error_callback, &TxHeader);
 }
 

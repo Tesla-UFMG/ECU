@@ -28,11 +28,11 @@ void torque_manager(void *argument) {
 
 		//osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
 
-        void send_ref_torque_message (uint32_t *ref_torque);
+        void send_ref_torque_message (const uint32_t *ref_torque);
 
         switch (g_control_type) {
         case LONGITUDINAL:
-            //TODO: implementar controle longitudinal
+            // TODO(renanmoreira): implementar controle longitudinal
 
             break;
         case LATERAL:
@@ -41,7 +41,7 @@ void torque_manager(void *argument) {
             lateral_t ref_torque_decrease = lateral_control();
             // controle longitudinal
             uint32_t ref_torque_lateral[2] = {0, 0};
-            void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque); // TODO: utilizar rampa_torque enquanto controle longitudinal nao estiver definido
+            void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque); // TODO(renanmoreira): utilizar rampa_torque enquanto controle longitudinal nao estiver definido
             rampa_torque_lateral(&ref_torque_decrease, ref_torque_lateral);
             // enviar referencia de torque
             send_ref_torque_message (ref_torque_lateral);
@@ -111,7 +111,7 @@ void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) 
 }
 
 // Enviar mensagem de torque
-void send_ref_torque_message (uint32_t *ref_torque) {
+void send_ref_torque_message (const uint32_t *ref_torque) {
     ref_torque_t ref_torque_message;
     ref_torque_message.ref_torque[R_MOTOR] = ref_torque[R_MOTOR];
     ref_torque_message.ref_torque[L_MOTOR] = ref_torque[L_MOTOR];

@@ -10,11 +10,12 @@
 #include "constants.h"
 #include "datalog_handler.h"
 #include "global_definitions.h"
+#include "util.h"
 
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 void steering_read(void *argument) {
-    (void)argument;
+    UNUSED(argument);;
 
     double volante_cru;
     for (;;) {

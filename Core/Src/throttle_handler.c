@@ -8,9 +8,10 @@
 #include "throttle_handler.h"
 #include "CAN/CAN_IDs.h"
 #include "CAN/inverter_can.h"
+#include "util.h"
 
 void throttle_handler(void *argument) {
-    (void)argument;
+    UNUSED(argument);;
 
     torque_message_t message;
     for (;;) {

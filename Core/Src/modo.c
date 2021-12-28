@@ -14,7 +14,7 @@
 #include "util.h"
 
 void seleciona_modo(void *argument) {
-    (void)argument;
+    UNUSED(argument);;
 
     for (;;) {
 

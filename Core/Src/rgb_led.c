@@ -18,6 +18,7 @@
 #include "rgb_led.h"
 #include "global_instances.h"
 #include "global_variables.h"
+#include "util.h"
 
 void write_rgb_color(rgb rgb_gpio);
 void write_debug_color(rgb rgb_gpio);
@@ -30,7 +31,7 @@ osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control) {
 }
 
 void rgb_led(void *argument) {
-    (void)argument;
+    UNUSED(argument);;
 
     rgb_led_message_t message;
 

@@ -98,7 +98,7 @@ void update_state_parameters(torque_message_t *torque_message) {
 }
 
 void controle(void *argument) {
-    (void)argument;
+    UNUSED(argument);
 
     // veloc_total = (speed_t_total[0] + speed_t_total[1] + speed_t_total[2] +
     // speed_t_total[3]) / 4;

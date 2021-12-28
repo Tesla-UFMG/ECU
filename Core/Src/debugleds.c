@@ -9,6 +9,7 @@
 #include "cmsis_os.h"
 #include "global_definitions.h"
 #include "global_variables.h"
+#include "util.h"
 
 extern osMessageQueueId_t q_debugleds_messageHandle;
 
@@ -18,7 +19,7 @@ osStatus_t set_debugleds(uint16_t lednumber, ControlDebugLED_e control, uint8_t 
 }
 
 void debugleds(void *argument) {
-    (void)argument;
+    UNUSED(argument);
 
     debugled_message_t message;
 

@@ -18,7 +18,6 @@
 
 void main_task(void *argument) {
     UNUSED(argument);
-    ;
 
     for (;;) {
 

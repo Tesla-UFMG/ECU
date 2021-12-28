@@ -76,6 +76,6 @@ void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStat
 
 void inverter_BUS_OFF_error_callback(void *argument) {
     UNUSED(argument);
-    ;
+
     clear_error(INVERTER_BUS_OFF_ERROR_FLAG); // limpa flag de estado do erro
 }

@@ -18,7 +18,6 @@ extern osMutexId_t m_state_parameter_mutexHandle;
 
 void torque_manager(void *argument) {
     UNUSED(argument);
-    ;
 
     for (;;) {
         uint32_t tick = osKernelGetTickCount(); // NOLINT(clang-analyzer-deadcode.DeadStores)

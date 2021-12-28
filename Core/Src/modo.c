@@ -15,7 +15,6 @@
 
 void seleciona_modo(void *argument) {
     UNUSED(argument);
-    ;
 
     for (;;) {
 

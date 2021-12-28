@@ -14,7 +14,6 @@
 
 void throttle_control(void *argument) {
     UNUSED(argument);
-    ;
 
     for (;;) {
         uint16_t message;

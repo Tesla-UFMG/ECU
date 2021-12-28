@@ -10,7 +10,6 @@
 
 void odometer_calc(void *argument) {
     UNUSED(argument);
-    ;
 
     for (;;) {
         osDelay(100);

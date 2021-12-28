@@ -28,7 +28,6 @@ static uint16_t apps1_calc = 0;
 
 void throttle_read(void *argument) {
     UNUSED(argument);
-    ;
 
     for (;;) {
 

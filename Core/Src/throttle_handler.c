@@ -12,7 +12,6 @@
 
 void throttle_handler(void *argument) {
     UNUSED(argument);
-    ;
 
     torque_message_t message;
     for (;;) {

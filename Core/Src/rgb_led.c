@@ -32,7 +32,6 @@ osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control) {
 
 void rgb_led(void *argument) {
     UNUSED(argument);
-    ;
 
     rgb_led_message_t message;
 

@@ -16,7 +16,6 @@ extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 void steering_read(void *argument) {
     UNUSED(argument);
-    ;
 
     double volante_cru;
     for (;;) {

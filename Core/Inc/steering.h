@@ -8,6 +8,4 @@
 #ifndef INC_STEERING_H_
 #define INC_STEERING_H_
 
-
-
 #endif /* INC_STEERING_H_ */

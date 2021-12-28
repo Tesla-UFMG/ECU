@@ -7,25 +7,20 @@
 #include "cmsis_os.h"
 #include "stm32h7xx.h"
 
-//void vApplicationMallocFailedHook(void) {
+// void vApplicationMallocFailedHook(void) {
 //	//erro de alocacao de memoria
-//}
+// }
 
-void brkpt() {
-	;
-}
+void brkpt() { ; }
 
-void vAssertCalled( const char * pcFile,
-                    unsigned long ulLine )
-{
-    (void) pcFile;
-    (void) ulLine;
+void vAssertCalled(const char *pcFile, unsigned long ulLine) {
+    (void)pcFile;
+    (void)ulLine;
     volatile unsigned long ul = 0;
 
     taskENTER_CRITICAL();
     {
-        while( ul == 0 )
-        {
+        while (ul == 0) {
             portNOP();
         }
     }

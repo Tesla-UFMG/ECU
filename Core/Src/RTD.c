@@ -19,7 +19,7 @@ void aciona_sirene();
 bool can_RTD_be_enabled();
 void set_RTD();
 
-void RTD(void *argument) {
+void RTD(void* argument) {
     UNUSED(argument);
 
     // seta o led rgb no primeira execucao do codigo

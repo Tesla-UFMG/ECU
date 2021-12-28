@@ -13,7 +13,7 @@
 
 void brkpt() { ; }
 
-void vAssertCalled(const char *pcFile, unsigned long ulLine) {
+void vAssertCalled(const char* pcFile, unsigned long ulLine) {
     (void)pcFile;
     (void)ulLine;
     volatile unsigned long ul = 0;

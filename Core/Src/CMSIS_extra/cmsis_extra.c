@@ -15,7 +15,7 @@
 
 #define IS_IRQ() IS_IRQ_MODE()
 
-osStatus_t osMessageQueuePutOverwrite(osMessageQueueId_t mq_id, const void *msg_ptr,
+osStatus_t osMessageQueuePutOverwrite(osMessageQueueId_t mq_id, const void* msg_ptr,
                                       uint8_t msg_prio) {
     QueueHandle_t hQueue = (QueueHandle_t)mq_id;
     osStatus_t stat;
@@ -49,7 +49,7 @@ osStatus_t osMessageQueuePutOverwrite(osMessageQueueId_t mq_id, const void *msg_
     return (stat);
 }
 
-osStatus_t osMessageQueuePeek(osMessageQueueId_t mq_id, void *msg_ptr, const uint8_t *msg_prio,
+osStatus_t osMessageQueuePeek(osMessageQueueId_t mq_id, void* msg_ptr, const uint8_t* msg_prio,
                               uint32_t timeout) {
     QueueHandle_t hQueue = (QueueHandle_t)mq_id;
     osStatus_t stat;

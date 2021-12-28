@@ -26,14 +26,14 @@ typedef struct {
     double min_output;
 } PID_t;
 
-void PID_init(PID_t *pid, uint8_t reset, double Kp, double Ti, double Td, double max_output,
+void PID_init(PID_t* pid, uint8_t reset, double Kp, double Ti, double Td, double max_output,
               double min_output, double sample_period);
-void PID_set_setpoint(PID_t *pid, double Setpoint);
-void PID_set_parameters(PID_t *pid, double Kp, double Ti, double Td);
-void PID_set_limits(PID_t *pid, double max_output, double min_output);
-void PID_set_sample_period(PID_t *pid, double sample_period);
+void PID_set_setpoint(PID_t* pid, double Setpoint);
+void PID_set_parameters(PID_t* pid, double Kp, double Ti, double Td);
+void PID_set_limits(PID_t* pid, double max_output, double min_output);
+void PID_set_sample_period(PID_t* pid, double sample_period);
 
-__attribute__((always_inline)) inline double PID_compute(PID_t *pid, double input) {
+__attribute__((always_inline)) inline double PID_compute(PID_t* pid, double input) {
     double error = pid->Setpoint - input;
     pid->output += (pid->C1 * error) + (pid->C0 * pid->error_state[0]) +
                    (pid->C2 * (2.0 * pid->input_state[0] - input - pid->input_state[1]));

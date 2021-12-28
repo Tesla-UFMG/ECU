@@ -37,7 +37,7 @@ void update_state(bool disable) {
     update_regen_state(vehicle_state);
 }
 
-void update_state_parameters(torque_message_t *torque_message) {
+void update_state_parameters(torque_message_t* torque_message) {
 
     SELECTED_MODE_t selected_mode = get_global_var_value(SELECTED_MODE);
     switch (vehicle_state) {
@@ -97,7 +97,7 @@ void update_state_parameters(torque_message_t *torque_message) {
     }
 }
 
-void controle(void *argument) {
+void controle(void* argument) {
     UNUSED(argument);
 
     // veloc_total = (speed_t_total[0] + speed_t_total[1] + speed_t_total[2] +

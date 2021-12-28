@@ -33,7 +33,7 @@ void check_for_errors_with_timeout(bool (*areThereErrors)(), uint32_t flagError,
     }
 }
 
-void errors_with_timer_callback(void *argument) {
+void errors_with_timer_callback(void* argument) {
     uint32_t flagError = (uint32_t)argument; // obtem a flag a partir do argumento do callback
     issue_error(flagError,
                 /*should_set_control_event_flag=*/true); // seta flag de thread e de

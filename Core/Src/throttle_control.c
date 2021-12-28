@@ -12,7 +12,7 @@
 #include "global_instances.h"
 #include "util.h"
 
-void throttle_control(void *argument) {
+void throttle_control(void* argument) {
     UNUSED(argument);
 
     for (;;) {

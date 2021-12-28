@@ -127,11 +127,11 @@ typedef enum {
 // FUNCOES
 
 // seta o bit na posicao pos do byte como state
-__attribute__((always_inline)) inline void set_bit(uint32_t *byte, uint8_t pos, uint8_t state) {
+__attribute__((always_inline)) inline void set_bit(uint32_t* byte, uint8_t pos, uint8_t state) {
     *byte ^= (-(!!((unsigned long)state)) ^ *byte) & (1UL << pos);
 }
 
-__attribute__((always_inline)) inline void set_bit8(uint8_t *byte, uint8_t pos, uint8_t state) {
+__attribute__((always_inline)) inline void set_bit8(uint8_t* byte, uint8_t pos, uint8_t state) {
     *byte ^= (-(!!((unsigned long)state)) ^ *byte) & (1UL << pos);
 }
 

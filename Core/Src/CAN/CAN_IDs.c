@@ -59,7 +59,7 @@ void initialize_CAN_IDs() {
     // define um identificador unico a cada conjunto id & pos. Mapeia esse
     // identificador em outro vetor, para facil acesso posterior no datalog.
     for (uint16_t i = 0; i < CAN_ID_QUAN; i++) {
-        CAN_ID_t *current_ID = CAN_ID_map + i;
+        CAN_ID_t* current_ID = CAN_ID_map + i;
         uint16_t unique_index;
         // ids fora de range, de debug
         if (current_ID->id > ECU_CAN_LAST_POPULATED_ID) {

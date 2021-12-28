@@ -11,7 +11,7 @@
 #include "stm32h7xx.h"
 
 void init_NVIC_priorities();
-void init_ADC_DMA(ADC_HandleTypeDef *hadc);
+void init_ADC_DMA(ADC_HandleTypeDef* hadc);
 void init_CAN();
 void inicializa_modos();
 

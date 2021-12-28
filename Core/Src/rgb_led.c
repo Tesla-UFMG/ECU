@@ -30,7 +30,7 @@ osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control) {
     return osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
 }
 
-void rgb_led(void *argument) {
+void rgb_led(void* argument) {
     UNUSED(argument);
 
     rgb_led_message_t message;

@@ -23,9 +23,9 @@
 //               = (10*3.6*2*pi*raio/quant.dentes)*freq/(presc*timer) (10*km/s)
 
 void reset_speed_all();
-void reset_speed_single(speed_message_t *message, speed_message_t *last_messages,
+void reset_speed_single(speed_message_t* message, speed_message_t* last_messages,
                         uint32_t min_count);
-void log_speed(WHEEL_SPEEDS_t *wheel_speeds);
+void log_speed(WHEEL_SPEEDS_t* wheel_speeds);
 static inline uint32_t get_tim2_freq();
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout(uint32_t speed);
@@ -95,7 +95,7 @@ void speed_calc(void) {
     }
 }
 
-void log_speed(WHEEL_SPEEDS_t *wheel_speeds) {
+void log_speed(WHEEL_SPEEDS_t* wheel_speeds) {
     log_data(ID_SPEED_FR, (uint16_t)wheel_speeds->speed[FRONT_RIGHT]);
     log_data(ID_SPEED_FL, (uint16_t)wheel_speeds->speed[FRONT_LEFT]);
     log_data(ID_SPEED_RR, (uint16_t)wheel_speeds->speed[REAR_RIGHT]);
@@ -108,7 +108,7 @@ void reset_speed_all() {
     log_speed(&wheel_speeds);
 }
 
-void reset_speed_single(speed_message_t *message, speed_message_t *last_messages,
+void reset_speed_single(speed_message_t* message, speed_message_t* last_messages,
                         uint32_t min_count) {
     WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
     for (speed_pin_e i = FIRST_WHEEL; i <= LAST_WHEEL; i++) {

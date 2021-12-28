@@ -16,7 +16,7 @@
 #include "throttle.h"
 #include "util.h"
 
-void main_task(void *argument) {
+void main_task(void* argument) {
     UNUSED(argument);
 
     for (;;) {

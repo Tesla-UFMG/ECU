@@ -13,7 +13,7 @@
 #include "rgb_led.h"
 #include "util.h"
 
-void seleciona_modo(void *argument) {
+void seleciona_modo(void* argument) {
     UNUSED(argument);
 
     for (;;) {

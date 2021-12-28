@@ -57,8 +57,8 @@ typedef enum {
 
 void global_variables_init();
 
-void get_global_var(global_vars_e type, void *message);
-void set_global_var(global_vars_e type, void *message);
+void get_global_var(global_vars_e type, void* message);
+void set_global_var(global_vars_e type, void* message);
 
 /*
  * Use the following macros to get/set the global variables without the need of

@@ -18,7 +18,7 @@ osStatus_t set_debugleds(uint16_t lednumber, ControlDebugLED_e control, uint8_t 
     return osMessageQueuePut(q_debugleds_messageHandle, &message, 0, 0U);
 }
 
-void debugleds(void *argument) {
+void debugleds(void* argument) {
     UNUSED(argument);
 
     debugled_message_t message;

@@ -16,7 +16,7 @@
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
 
-void torque_manager(void *argument) {
+void torque_manager(void* argument) {
     UNUSED(argument);
 
     for (;;) {
@@ -30,7 +30,7 @@ void torque_manager(void *argument) {
         // osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear,
         // osWaitForever);
 
-        void send_ref_torque_message(const uint32_t *ref_torque);
+        void send_ref_torque_message(const uint32_t* ref_torque);
 
         switch (g_control_type) {
         case LONGITUDINAL:
@@ -92,7 +92,7 @@ uint32_t rampa_torque() {
 }
 
 // Rampa vetorizacao
-void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) {
+void rampa_torque_lateral(lateral_t* ref_torque_decrease, uint32_t* ref_torque) {
     static uint32_t ref_torque_ant[2] = {0, 0};
     ref_torque[R_MOTOR] = (uint32_t)((float)(get_global_var_value(SELECTED_MODE).torq_gain *
                                              get_global_var_value(THROTTLE_PERCENT)) /
@@ -123,7 +123,7 @@ void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) 
 }
 
 // Enviar mensagem de torque
-void send_ref_torque_message(const uint32_t *ref_torque) {
+void send_ref_torque_message(const uint32_t* ref_torque) {
     ref_torque_t ref_torque_message;
     ref_torque_message.ref_torque[R_MOTOR] = ref_torque[R_MOTOR];
     ref_torque_message.ref_torque[L_MOTOR] = ref_torque[L_MOTOR];

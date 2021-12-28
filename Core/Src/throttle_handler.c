@@ -10,7 +10,7 @@
 #include "CAN/inverter_can.h"
 #include "util.h"
 
-void throttle_handler(void *argument) {
+void throttle_handler(void* argument) {
     UNUSED(argument);
 
     torque_message_t message;
@@ -34,7 +34,7 @@ void throttle_handler(void *argument) {
     }
 }
 
-void inverter_transmit(torque_message_t *message) {
+void inverter_transmit(torque_message_t* message) {
     uint16_t vet_tx[4];
 
     vet_tx[0] = message->parameters;

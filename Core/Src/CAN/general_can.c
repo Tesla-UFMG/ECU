@@ -12,7 +12,7 @@
 #include "global_instances.h"
 #include "util.h"
 
-static FDCAN_HandleTypeDef *can_ptr;
+static FDCAN_HandleTypeDef* can_ptr;
 
 static FDCAN_TxHeaderTypeDef TxHeader;
 
@@ -22,21 +22,21 @@ uint16_t datageneral[4];
 uint32_t idgeneral;
 
 // funcao que inicializa a can geral, chamada em initializer.c
-void initialize_general_CAN(FDCAN_HandleTypeDef *can_ref) {
+void initialize_general_CAN(FDCAN_HandleTypeDef* can_ref) {
     can_ptr = can_ref;
-    void CAN_general_receive_callback(FDCAN_HandleTypeDef * /*hfdcan*/, uint32_t /*RxFifo0ITs*/);
-    void CAN_general_error_callback(FDCAN_HandleTypeDef * /*hfdcan*/, uint32_t /*ErrorStatusITs*/);
+    void CAN_general_receive_callback(FDCAN_HandleTypeDef* /*hfdcan*/, uint32_t /*RxFifo0ITs*/);
+    void CAN_general_error_callback(FDCAN_HandleTypeDef* /*hfdcan*/, uint32_t /*ErrorStatusITs*/);
     initialize_CAN(can_ptr, CAN_general_receive_callback, CAN_general_error_callback, &TxHeader);
 }
 
 // funcao usada para transmitir alguma mensagem
-void general_can_transmit(uint32_t id, uint16_t *data) {
+void general_can_transmit(uint32_t id, uint16_t* data) {
     can_transmit(can_ptr, &TxHeader, id, data);
     osDelay(CAN_DELAY);
 }
 
 // funcao de callback, chamada quando chega qualquer mensagem, de qualquer ID
-void CAN_general_receive_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs) {
+void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs) {
     if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
         if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
             /* Reception Error */
@@ -60,7 +60,7 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0I
 }
 
 // callback que sera chamado quando ouver erro de BUSOFF da CAN
-void CAN_general_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs) {
+void CAN_general_error_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t ErrorStatusITs) {
     if (ErrorStatusITs | FDCAN_IT_BUS_OFF) {
         osEventFlagsSet(ECU_control_event_id,
                         GENERAL_BUS_OFF_ERROR_FLAG); // seta a flag de evento para datalog

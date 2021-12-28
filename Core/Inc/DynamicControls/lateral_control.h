@@ -13,7 +13,7 @@
 #define LATERAL_DELAY 30
 
 // defines calculos
-#define HALF_GYRO 2000
+#define HALF_GYRO     2000
 #define ADJUST_GYRO_R 1000
 #define ADJUST_GYRO_L 2000
 //#define ADJUST_STEERING 2000

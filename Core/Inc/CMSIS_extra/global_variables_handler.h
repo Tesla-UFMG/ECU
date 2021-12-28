@@ -30,13 +30,13 @@ typedef modos SELECTED_MODE_t;
     { 0, 0 }
 #define WHEEL_SPEEDS_DEFAULT_VALUE                                                                 \
     { 0, 0, 0, 0 }
-#define STEERING_WHEEL_DEFAULT_VALUE 0
-#define GYRO_YAW_DEFAULT_VALUE 0
-#define INTERNAL_WHEEL_DEFAULT_VALUE 0
-#define RACE_MODE_DEFAULT_VALUE ENDURO
+#define STEERING_WHEEL_DEFAULT_VALUE   0
+#define GYRO_YAW_DEFAULT_VALUE         0
+#define INTERNAL_WHEEL_DEFAULT_VALUE   0
+#define RACE_MODE_DEFAULT_VALUE        ENDURO
 #define THROTTLE_PERCENT_DEFAULT_VALUE 0
-#define BRAKE_STATUS_DEFAULT_VALUE false
-#define THROTTLE_STATUS_DEFAULT_VALUE false
+#define BRAKE_STATUS_DEFAULT_VALUE     false
+#define THROTTLE_STATUS_DEFAULT_VALUE  false
 #define SELECTED_MODE_DEFAULT_VALUE                                                                \
     {}
 

@@ -11,7 +11,8 @@
 #include "util.h"
 
 void throttle_handler(void *argument) {
-    UNUSED(argument);;
+    UNUSED(argument);
+    ;
 
     torque_message_t message;
     for (;;) {

@@ -19,7 +19,7 @@ uint16_t concatenate_two_uint8_to_uint16(const uint8_t *data);
 
 #define UNUSED(x) ((void)(x))
 
-#define sign(x) (((x) >= 0) - ((x) < 0))
+#define sign(x)   (((x) >= 0) - ((x) < 0))
 #define max(x, y) (((x) > (y)) ? (x) : (y))
 
 #endif /* INC_UTIL_H_ */

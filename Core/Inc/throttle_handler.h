@@ -14,6 +14,6 @@
 #include "global_variables.h"
 
 #define TORQUE_MESSAGE_RESEND_TIMES 1
-#define TORQUE_MESSAGE_DELAY 10
+#define TORQUE_MESSAGE_DELAY        10
 
 #endif /* INC_THROTTLE_HANDLER_H_ */

@@ -9,7 +9,8 @@
 #include "util.h"
 
 void odometer_calc(void *argument) {
-    UNUSED(argument);;
+    UNUSED(argument);
+    ;
 
     for (;;) {
         osDelay(100);

@@ -17,7 +17,8 @@
 #include "util.h"
 
 void main_task(void *argument) {
-    UNUSED(argument);;
+    UNUSED(argument);
+    ;
 
     for (;;) {
 

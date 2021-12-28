@@ -27,7 +27,8 @@ static uint16_t apps2_throttle_percent = 0;
 static uint16_t apps1_calc = 0;
 
 void throttle_read(void *argument) {
-    UNUSED(argument);;
+    UNUSED(argument);
+    ;
 
     for (;;) {
 

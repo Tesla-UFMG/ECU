@@ -10,6 +10,7 @@
 #include "debugleds.h"
 #include "global_definitions.h"
 #include "global_instances.h"
+#include "util.h"
 
 static FDCAN_HandleTypeDef* can_ptr;
 
@@ -17,7 +18,7 @@ static FDCAN_TxHeaderTypeDef TxHeader;
 
 static uint8_t RxData[8];
 static FDCAN_RxHeaderTypeDef RxHeader;
-int16_t datageneral[4];
+uint16_t datageneral[4];
 uint32_t idgeneral;
 
 
@@ -51,8 +52,8 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
 		set_debugleds(DEBUGLED3,TOGGLE,0);
 
 		idgeneral = RxHeader.Identifier;
-		for(int i = 0; i < 8; i += 2){
-			datageneral[i/2] = (RxData[i+1] << 8) | RxData[i];
+		for(int i = 0; i < 4; ++i) {
+			datageneral[i] = concatenate_two_uint8_to_uint16(RxData + 2*i);
 		}
 		// TODO(renanmoreira): implementar logica de colocar as mensagens nas variaveis certas
 

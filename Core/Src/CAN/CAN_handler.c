@@ -17,27 +17,27 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
 
     if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
         /* Notification Error */
-        Error_Handler();
+        Error_Handler(); // NOLINT
     }
 
     if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_BUS_OFF, 0) != HAL_OK) {
         /* Notification Error */
-        Error_Handler();
+        Error_Handler(); // NOLINT
     }
 
     if (HAL_FDCAN_RegisterRxFifo0Callback(hfdcan, CAN_receive_callback) != HAL_OK) { //funcao para registrar a funcao de callback
         /* Callback Register Error */
-        Error_Handler();
+        Error_Handler(); // NOLINT
     }
 
     if (HAL_FDCAN_RegisterErrorStatusCallback(hfdcan, CAN_error_callback) != HAL_OK) { //funcao para registrar a funcao de callback
         /* Callback Register Error */
-        Error_Handler();
+        Error_Handler(); // NOLINT
     }
 
     if (HAL_FDCAN_Start(hfdcan) != HAL_OK) {
         /* Start Error */
-        Error_Handler();
+        Error_Handler(); // NOLINT
     }
 
     TxHeader->IdType = FDCAN_STANDARD_ID;

@@ -32,7 +32,7 @@ void PID_set_parameters(PID_t* pid, double Kp, double Ti, double Td);
 void PID_set_limits(PID_t* pid, double max_output, double min_output);
 void PID_set_sample_period(PID_t* pid, double sample_period);
 
-__attribute__((always_inline)) static inline
+__attribute__((always_inline)) inline
 double PID_compute(PID_t* pid, double input)
 {
 	double error = pid->Setpoint-input;

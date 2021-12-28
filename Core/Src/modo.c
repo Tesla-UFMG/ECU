@@ -16,6 +16,8 @@
 
 
 void seleciona_modo(void *argument) {
+    (void) argument;
+
     for(;;) {
 
         #ifdef DEBUG_ECU

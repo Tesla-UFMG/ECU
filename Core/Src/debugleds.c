@@ -20,6 +20,7 @@ osStatus_t set_debugleds(uint16_t lednumber, ControlDebugLED_e control, uint8_t 
 }
 
 void debugleds(void *argument) {
+	(void) argument;
 
 	debugled_message_t message;
 

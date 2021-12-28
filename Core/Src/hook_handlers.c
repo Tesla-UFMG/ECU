@@ -18,7 +18,9 @@ void brkpt() {
 void vAssertCalled( const char * pcFile,
                     unsigned long ulLine )
 {
-volatile unsigned long ul = 0;
+    (void) pcFile;
+    (void) ulLine;
+    volatile unsigned long ul = 0;
 
     taskENTER_CRITICAL();
     {

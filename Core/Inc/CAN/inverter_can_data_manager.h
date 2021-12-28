@@ -52,6 +52,6 @@ typedef enum
 
 void store_value(can_vars_e var_name, uint16_t value);
 uint16_t get_value(can_vars_e var_name);
-can_vars_e get_var_name_from_id_and_pos(int id, int pos);
+can_vars_e get_var_name_from_id_and_pos(uint32_t id, int pos);
 
 #endif /* INC_INVERTER_CAN_IDS_H_ */

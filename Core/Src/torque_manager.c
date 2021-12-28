@@ -16,10 +16,11 @@
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
 
-void torque_manager(void *argument) {
+void torque_manager(void* argument) {
+    (void) argument;
 
     for (;;) {
-        uint32_t tick = osKernelGetTickCount();
+        uint32_t tick = osKernelGetTickCount(); // NOLINT(clang-analyzer-deadcode.DeadStores)
 
         #ifdef DEBUG_ECU
         extern void brkpt();
@@ -94,7 +95,7 @@ void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) 
 
     // A referencia de torque sera a referencia acima menos a referencia de decrescimento.
     // Se chegar a valores negativos, entao sera 0.
-    ref_torque[ref_torque_decrease->ref_wheel] = (uint32_t) max((int32_t)ref_torque[ref_torque_decrease->ref_wheel] - ref_torque_decrease->ref_decrease, 0);
+    ref_torque[ref_torque_decrease->ref_wheel] = (uint32_t) max((int32_t) (ref_torque[ref_torque_decrease->ref_wheel] - ref_torque_decrease->ref_decrease), 0);
 
     for (int i=0;i<2;i++) {
         if (ref_torque_ant[i] > TORQUE_INIT_LIMITE) {                       // verifica se a referencia

@@ -97,14 +97,14 @@ void update_state_parameters(torque_message_t* torque_message) {
 }
 
 void controle(void *argument) {
+	(void) argument;
 
 	//veloc_total = (speed_t_total[0] + speed_t_total[1] + speed_t_total[2] + speed_t_total[3]) / 4;
-	vehicle_state_e vehicle_state;
 
 	//mensagem de referencia de torque. Contem qual valor de torque se deseja e se eh desejado desabilitar
 	ref_torque_t ref_torque_message;
 	//mensagem de torque completa para ser enviada ao inversor
-	torque_message_t torque_message;
+	torque_message_t torque_message = {.parameters = 0};
 
 
 	for (;;) {

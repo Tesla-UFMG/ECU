@@ -24,7 +24,7 @@ lateral_t lateral_control() {
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
     GYRO_YAW_t gyro_yaw = get_global_var_value(GYRO_YAW); // TODO(renanmoreira): receber GYRO_YAW em algum lugar
 
-    float cg_speed;
+    double cg_speed;
     double gyro_adjusted;    // entre -1.5 e 1.5
     float steering_adjusted; // entre -0.5 e 0.5
     double desired_yaw;
@@ -44,7 +44,7 @@ lateral_t lateral_control() {
     desired_yaw = cg_speed * steering_adjusted / (WHEELBASE + KU * cg_speed * cg_speed);
     max_yaw = sign(steering_adjusted) * FRICTION_COEFFICIENT * GRAVITY / cg_speed;
     // max desired yaw (setpoint)
-    setpoint = fabsf(desired_yaw) > fabsf(max_yaw) ? max_yaw : desired_yaw; // o menor valor, em modulo, sera o setpoint
+    setpoint = fabs(desired_yaw) > fabs(max_yaw) ? max_yaw : desired_yaw; // o menor valor, em modulo, sera o setpoint
     // PID
     PID_set_setpoint(&pid_lateral, setpoint);
     ref_torque.ref_decrease = PID_compute(&pid_lateral, gyro_adjusted);
@@ -55,7 +55,7 @@ lateral_t lateral_control() {
         ref_torque.ref_wheel = L_MOTOR;    // na roda esquerda
 }
 
-    ref_torque.ref_decrease = fabsf(ref_torque.ref_decrease);   // retorna o modulo da referencia
+    ref_torque.ref_decrease = fabs(ref_torque.ref_decrease);   // retorna o modulo da referencia
                                                                 // de decrescimento
     return ref_torque;
 }

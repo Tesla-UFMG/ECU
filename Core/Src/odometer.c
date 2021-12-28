@@ -8,6 +8,8 @@
 #include "cmsis_os.h"
 
 void odometer_calc(void *argument) {
+	(void) argument;
+
 	for(;;) {
 		osDelay(100);
 	}

@@ -36,6 +36,7 @@ extern osMessageQueueId_t q_speed_messageHandle;
 void speed_calc(void) {
     speed_message_t message;
     speed_message_t last_messages[4];
+    // NOLINTNEXTLINE
     memset(&last_messages, 0, sizeof(speed_message_t)*4);   //inicializa com 0 buffer de ultimas mensagens
 
     const uint32_t tim_freq = get_tim2_freq();          //pega frequencia que esta conectada ao tim2
@@ -78,7 +79,7 @@ void speed_calc(void) {
 
             speed = calculate_speed(d_tim_count, tim_freq, tim_presc);  //calcula a velocidade
             WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
-            wheel_speeds.speed[message.pin] = speed;                    //seta velocidade especifica da roda recebida
+            wheel_speeds.speed[message.pin] = (float) speed;                    //seta velocidade especifica da roda recebida
             set_global_var(WHEEL_SPEEDS, &wheel_speeds);
             last_messages[message.pin] = message;                       //guarda mensagem ate a proxima interacao
             log_speed(&wheel_speeds);
@@ -88,10 +89,10 @@ void speed_calc(void) {
 }
 
 void log_speed(WHEEL_SPEEDS_t* wheel_speeds){
-    log_data(ID_SPEED_FR, wheel_speeds->speed[FRONT_RIGHT]);
-    log_data(ID_SPEED_FL, wheel_speeds->speed[FRONT_LEFT]);
-    log_data(ID_SPEED_RR, wheel_speeds->speed[REAR_RIGHT]);
-    log_data(ID_SPEED_RL, wheel_speeds->speed[REAR_LEFT]);
+    log_data(ID_SPEED_FR, (uint16_t) wheel_speeds->speed[FRONT_RIGHT]);
+    log_data(ID_SPEED_FL, (uint16_t) wheel_speeds->speed[FRONT_LEFT]);
+    log_data(ID_SPEED_RR, (uint16_t) wheel_speeds->speed[REAR_RIGHT]);
+    log_data(ID_SPEED_RL, (uint16_t) wheel_speeds->speed[REAR_LEFT]);
 }
 
 void reset_speed_all() {
@@ -114,15 +115,15 @@ void reset_speed_single(speed_message_t* message, speed_message_t* last_messages
 static inline uint32_t get_tim2_freq() {
     if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) {     // Get PCLK1 prescaler
         return 2*HAL_RCC_GetPCLK1Freq();        // PCLK1 prescaler different from 1 => TIMCLK = 2 * PCLK1
-    }         return HAL_RCC_GetPCLK1Freq();          // PCLK1 prescaler equal to 1 => TIMCLK = PCLK1
-   
+    }
+    return HAL_RCC_GetPCLK1Freq();          // PCLK1 prescaler equal to 1 => TIMCLK = PCLK1
 }
 
 
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc){
-    return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)freq/((float)presc)) / speed);
+    return (uint32_t) ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)freq/((float)presc)) / speed);
 }
 
 static inline uint32_t calculate_timeout(uint32_t speed) {
-    return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * 1000 / speed);
+    return (uint32_t) ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * 1000 / speed);
 }

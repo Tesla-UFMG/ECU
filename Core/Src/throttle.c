@@ -28,6 +28,7 @@ static uint16_t apps2_throttle_percent = 0;
 static uint16_t apps1_calc = 0;
 
 void throttle_read(void *argument) {
+    (void) argument;
 
     for (;;) {
 
@@ -69,21 +70,21 @@ uint16_t calculate_apps2(uint16_t APPS2) {
     if (APPS2 < 280) {
         apps2_percentage = 0;
     } else if (APPS2 >= 280 && APPS2 < 470) {
-        apps2_percentage = 1.5789 * APPS2 - 442.1;
+        apps2_percentage = (uint16_t) (1.5789 * APPS2 - 442.1);
     } else if (APPS2 >= 470 && APPS2 < 860) {
-        apps2_percentage = 0.2564 * APPS2 + 179.5;
+        apps2_percentage = (uint16_t) (0.2564 * APPS2 + 179.5);
     } else if (APPS2 >= 860 && APPS2 < 1220) {
-        apps2_percentage = 0.2778 * APPS2 + 161.1;
+        apps2_percentage = (uint16_t) (0.2778 * APPS2 + 161.1);
     } else if (APPS2 >= 1220 && APPS2 < 1570) {
-        apps2_percentage = 0.2857 * APPS2 + 151.4;
+        apps2_percentage = (uint16_t) (0.2857 * APPS2 + 151.4);
     } else if (APPS2 >= 1570 && APPS2 < 1933) {
-        apps2_percentage = 0.2754 * APPS2 + 167.5;
+        apps2_percentage = (uint16_t) (0.2754 * APPS2 + 167.5);
     } else if (APPS2 >= 1933 && APPS2 < 2280) {
-        apps2_percentage = 0.2882 * APPS2 + 142.9;
+        apps2_percentage = (uint16_t) (0.2882 * APPS2 + 142.9);
     } else if (APPS2 >= 2280 && APPS2 < 2630) {
-        apps2_percentage = 0.2857 * APPS2 + 148.6;
+        apps2_percentage = (uint16_t) (0.2857 * APPS2 + 148.6);
     } else if (APPS2 >= 2630 && APPS2 < 3400) {
-        apps2_percentage = 0.2941 * APPS2 + 126.5;
+        apps2_percentage = (uint16_t) (0.2941 * APPS2 + 126.5);
 }
 
     if (apps2_percentage > 1000) {
@@ -95,26 +96,43 @@ uint16_t calculate_apps2(uint16_t APPS2) {
 
 //calcula o valor teorico de APPS1 a partir do valor de APPS2
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
-    if (apps2_percentage >= 0 && apps2_percentage < 200) {
+    if (apps2_percentage >= 0 && apps2_percentage < 200)
+    {
         return (2065);
-    } if (apps2_percentage >= 200 && apps2_percentage < 300)
+    }
+    if (apps2_percentage >= 200 && apps2_percentage < 300)
+    {
         return ((uint16_t) (1.75 * apps2_percentage + 1735));
-    else if (apps2_percentage >= 300 && apps2_percentage < 400)
+    }
+    if (apps2_percentage >= 300 && apps2_percentage < 400)
+    {
         return ((uint16_t) (2.05 * apps2_percentage + 1645));
-    else if (apps2_percentage >= 400 && apps2_percentage < 500)
+    }
+    if (apps2_percentage >= 400 && apps2_percentage < 500)
+    {
         return ((uint16_t) (1.75 * apps2_percentage + 1765));
-    else if (apps2_percentage >= 500 && apps2_percentage < 600)
+    }
+    if (apps2_percentage >= 500 && apps2_percentage < 600)
+    {
         return ((uint16_t) (1.95 * apps2_percentage + 1665));
-    else if (apps2_percentage >= 600 && apps2_percentage < 700)
+    }
+    if (apps2_percentage >= 600 && apps2_percentage < 700)
+    {
         return ((uint16_t) (1.85 * apps2_percentage + 1725));
-    else if (apps2_percentage >= 700 && apps2_percentage < 800)
+    }
+    if (apps2_percentage >= 700 && apps2_percentage < 800)
+    {
         return ((uint16_t) (1.85 * apps2_percentage + 1725));
-    else if (apps2_percentage >= 800 && apps2_percentage < 900)
+    }
+    if (apps2_percentage >= 800 && apps2_percentage < 900)
+    {
         return ((uint16_t) (1.95 * apps2_percentage + 1645));
-    else if (apps2_percentage >= 900 && apps2_percentage < 1135)
+    }
+    if (apps2_percentage >= 900 && apps2_percentage < 1135)
+    {
         return ((uint16_t) (1.75 * apps2_percentage + 1825));
-    else
-        return 0;
+    }
+    return 0;
 }
 
 bool is_there_APPS_error() {        //Regulamento: T.4.2 (2021)

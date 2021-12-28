@@ -15,6 +15,7 @@ volatile uint16_t datalog_data_holder[CAN_ID_QUAN];
 extern osMessageQueueId_t q_datalog_messageHandle;
 
 void datalogger(void *argument) {
+	(void) argument;
 
 	datalog_message_t message;
 

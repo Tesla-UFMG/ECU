@@ -20,6 +20,8 @@ bool can_RTD_be_enabled();
 void set_RTD();
 
 void RTD(void *argument) {
+    (void) argument;
+
     //seta o led rgb no primeira execucao do codigo
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
 

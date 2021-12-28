@@ -6,9 +6,9 @@
  *      Verde:      Enduro
  *      Azul:       Autox
  *      Amarelo:    Erro leve (APPS ou BSE Plausability)
- *      Roxo:       Aceleração
+ *      Roxo:       Aceleracao
  *      Ciano:      Skidpad
- *      Branco:     Aviso (REGEN ou Controle dinâmicos)
+ *      Branco:     Aviso (REGEN ou Controle dinamicos)
  *
  *
  *  Created on: May 12, 2021
@@ -44,7 +44,7 @@ void rgb_led(void *argument) {
 
         switch(osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, RGB_BLINK_DELAY)){  //espera RTD ser setado ou timeout estourar
 
-        case osErrorTimeout:                                                                   //caso timeout estore vai piscar o led, indicando que tá fora do RTD
+        case osErrorTimeout:                                                                   //caso timeout estore vai piscar o led, indicando que ta fora do RTD
             write_rgb_color(get_rgb_color(message.color));
             blink_rgb(RGB_BLINK_DELAY);
             break;

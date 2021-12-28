@@ -19,7 +19,7 @@ void check_for_errors(bool (* areThereErrors)(), uint32_t flagError) {
 
 void check_for_errors_with_timeout(bool (* areThereErrors)(), uint32_t flagError, osTimerId_t timerHandler, uint16_t timerAmount) {
     if (areThereErrors()) {
-        if (!osTimerIsRunning(timerHandler)){                               //se o timer não tiver rodando ele será iniciado. Esse if serve para evitar reiniciar o timer
+        if (!osTimerIsRunning(timerHandler)){                               //se o timer nao tiver rodando ele sera iniciado. Esse if serve para evitar reiniciar o timer
             osTimerStart(timerHandler, timerAmount/portTICK_PERIOD_MS);
         }
     } else {

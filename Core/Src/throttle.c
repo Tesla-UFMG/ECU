@@ -53,7 +53,7 @@ void throttle_read(void *argument) {
         check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);
         //verifica a plausabilidade dos APPSs
         check_for_errors_with_timeout(is_there_APPS_error, APPS_ERROR_FLAG, tim_APPS_errorHandle, APPS_ERROR_TIMER);
-        //verifica se a placa de freio está em curto
+        //verifica se a placa de freio esta em curto
         check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG, tim_SU_F_errorHandle, SU_F_ERROR_TIMER);
 
         uint16_t message = apps2_throttle_percent;
@@ -93,7 +93,7 @@ uint16_t calculate_apps2(uint16_t APPS2) {
     return apps2_percentage;
 }
 
-//calcula o valor teórico de APPS1 a partir do valor de APPS2
+//calcula o valor teorico de APPS1 a partir do valor de APPS2
 uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
     if (apps2_percentage >= 0 && apps2_percentage < 200) {
         return (2065);
@@ -118,11 +118,11 @@ uint16_t calculate_expected_apps1_from_apps2(uint16_t apps2_percentage) {
 }
 
 bool is_there_APPS_error() {        //Regulamento: T.4.2 (2021)
-    if (    APPS2 >= 3500           //Se o valor de APPS2 for acima do seu máximo
-         || APPS1 < 1900            //Se o valor de APPS1 for abaixo do seu mínimo
-         || APPS1 > 3700            //Se o valor de APPS1 for acima do seu máximo
-         || APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)   //verifica se APPS1 está abaixo do valor teórico de APPS1, considerando a tolerância
-         || APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)) {  //verifica se APPS1 está acima do valor teórico de APPS1, considerando a tolerância
+    if (    APPS2 >= 3500           //Se o valor de APPS2 for acima do seu maximo
+         || APPS1 < 1900            //Se o valor de APPS1 for abaixo do seu minimo
+         || APPS1 > 3700            //Se o valor de APPS1 for acima do seu maximo
+         || APPS1 < apps1_calc * (1-APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)   //verifica se APPS1 esta abaixo do valor teorico de APPS1, considerando a tolerancia
+         || APPS1 > apps1_calc * (1+APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE/100.0)) {  //verifica se APPS1 esta acima do valor teorico de APPS1, considerando a tolerancia
         return true;
     }         return false;
 }

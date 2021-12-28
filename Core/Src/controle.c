@@ -72,7 +72,7 @@ void update_state_parameters(torque_message_t* torque_message) {
 			set_bit8(&torque_message->parameters, P_ENABLE, true);
 			set_bit8(&torque_message->parameters, P_BRAKE, false);
 			set_bit8(&torque_message->parameters, P_RUNSTOP, true);
-			// TODO(renanmoreira): Mudar para nova lógica de envio de mensagem de torque ao inversor
+			// TODO(renanmoreira): Mudar para nova logica de envio de mensagem de torque ao inversor
 			torque_message->neg_torque_ref[R_MOTOR] = 0;
 			torque_message->neg_torque_ref[L_MOTOR] = 0;
 			torque_message->speed_ref[R_MOTOR] = selected_mode.vel_max;
@@ -101,7 +101,7 @@ void controle(void *argument) {
 	//veloc_total = (speed_t_total[0] + speed_t_total[1] + speed_t_total[2] + speed_t_total[3]) / 4;
 	vehicle_state_e vehicle_state;
 
-	//mensagem de referência de torque. Contem qual valor de torque se deseja e se é desejado desabilitar
+	//mensagem de referencia de torque. Contem qual valor de torque se deseja e se eh desejado desabilitar
 	ref_torque_t ref_torque_message;
 	//mensagem de torque completa para ser enviada ao inversor
 	torque_message_t torque_message;

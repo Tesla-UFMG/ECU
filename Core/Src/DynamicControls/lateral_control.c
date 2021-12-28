@@ -65,9 +65,9 @@ lateral_t lateral_control() {
 double calc_gyro(uint16_t gyro_yaw) {
     // ajusta o valor do yaw para aquele usado no pid
     double gyro_adjusted;
-    if (gyro_yaw < HALF_GYRO) {                              // na primeira metade, está virando
-        gyro_adjusted = (double)gyro_yaw/ADJUST_GYRO_R;    // à direita (valor positivo)
-    } else {                                                    // e na segunda, à esquerda (negativo)
+    if (gyro_yaw < HALF_GYRO) {                              // na primeira metade, esta virando
+        gyro_adjusted = (double)gyro_yaw/ADJUST_GYRO_R;    // a direita (valor positivo)
+    } else {                                                    // e na segunda, a esquerda (negativo)
         gyro_adjusted = - (double)gyro_yaw/ADJUST_GYRO_L;
 }
 

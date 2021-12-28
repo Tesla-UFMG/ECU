@@ -86,14 +86,14 @@ uint32_t rampa_torque() {
     return ref_torque;
 }
 
-// Rampa vetorização
+// Rampa vetorizacao
 void rampa_torque_lateral(lateral_t *ref_torque_decrease, uint32_t *ref_torque) {
     static uint32_t ref_torque_ant[2] = {0, 0};
     ref_torque[R_MOTOR] = (uint32_t)((float)(get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
     ref_torque[L_MOTOR] = (uint32_t)((float)(get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
 
-    // A referência de torque será a referência acima menos a referência de decrescimento.
-    // Se chegar a valores negativos, então será 0.
+    // A referencia de torque sera a referencia acima menos a referencia de decrescimento.
+    // Se chegar a valores negativos, entao sera 0.
     ref_torque[ref_torque_decrease->ref_wheel] = (uint32_t) max((int32_t)ref_torque[ref_torque_decrease->ref_wheel] - ref_torque_decrease->ref_decrease, 0);
 
     for (int i=0;i<2;i++) {

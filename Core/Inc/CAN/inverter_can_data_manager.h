@@ -10,7 +10,7 @@
 
 #include "stdint.h"
 
-//Nome variável, id da mensagem, posicao na mensagem
+//Nome variavel, id da mensagem, posicao na mensagem
 #define VARIABLES \
     ENTRY(speed_m_l, 100, 0)  \
     ENTRY(torque_m_l, 100, 1)  \

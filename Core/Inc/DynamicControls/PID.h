@@ -52,7 +52,7 @@ double PID_compute(PID_t* pid, double input)
 	pid->input_state[1] = pid->input_state[0];
 	pid->input_state[0] = input;
 
-	/* retorna saída */
+	/* retorna saida */
 	return (pid->output);
 }
 

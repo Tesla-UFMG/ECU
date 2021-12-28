@@ -9,7 +9,7 @@
 
 
 
-//função para inicializar a CAN
+//funcao para inicializar a CAN
 void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
                     void (* CAN_receive_callback)(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs),
                     void (* CAN_error_callback)(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs),
@@ -25,12 +25,12 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
         Error_Handler();
     }
 
-    if (HAL_FDCAN_RegisterRxFifo0Callback(hfdcan, CAN_receive_callback) != HAL_OK) { //função para registrar a função de callback
+    if (HAL_FDCAN_RegisterRxFifo0Callback(hfdcan, CAN_receive_callback) != HAL_OK) { //funcao para registrar a funcao de callback
         /* Callback Register Error */
         Error_Handler();
     }
 
-    if (HAL_FDCAN_RegisterErrorStatusCallback(hfdcan, CAN_error_callback) != HAL_OK) { //função para registrar a função de callback
+    if (HAL_FDCAN_RegisterErrorStatusCallback(hfdcan, CAN_error_callback) != HAL_OK) { //funcao para registrar a funcao de callback
         /* Callback Register Error */
         Error_Handler();
     }
@@ -51,7 +51,7 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
 }
 
 
-//função que realiza a transmissão da mensagem
+//funcao que realiza a transmissao da mensagem
 void can_transmit(FDCAN_HandleTypeDef* hfdcan, FDCAN_TxHeaderTypeDef* TxHeader, uint32_t id, uint16_t* data) {
 	TxHeader->Identifier = id;
 	if (HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, TxHeader, (uint8_t*)data) != HAL_OK) {

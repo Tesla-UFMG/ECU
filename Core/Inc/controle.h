@@ -18,6 +18,6 @@
 
 // TODO(renanmoreira): reavaliar quantidade certa de delay
 #define CONTROLE_DELAY  50
-#define 5_kmph_rpm     459
+#define VAL_5_kmph_rpm  459
 
 #endif /* INC_CONTROLE_H_ */

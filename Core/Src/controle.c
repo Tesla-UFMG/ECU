@@ -29,7 +29,7 @@ volatile vehicle_state_e vehicle_state;
 void update_state(bool disable) {
 	if (disable == true) {
 		vehicle_state = S_DISABLE_E;
-	} else if ((get_global_var_value(THROTTLE_PERCENT) < 100) && (frenagem_regenerativa == true) && get_global_var_value(MOTOR_SPEEDS).speed[L_MOTOR] > _5_kmph_rpm) {
+	} else if ((get_global_var_value(THROTTLE_PERCENT) < 100) && (frenagem_regenerativa == true) && get_global_var_value(MOTOR_SPEEDS).speed[L_MOTOR] > VAL_5_kmph_rpm) {
 	    vehicle_state = S_BRAKE_E;
 	} else if(get_global_var_value(THROTTLE_PERCENT) > 100) {
 		vehicle_state = S_ACCELERATE_E;
@@ -49,7 +49,7 @@ void update_state_parameters(torque_message_t* torque_message) {
 			set_bit8(&torque_message->parameters, P_BRAKE, false);
 			// TODO(renanmoreira): mudar velocidade do motor de acordo com nova logica
 			MOTOR_SPEEDS_t motor_speeds = get_global_var_value(MOTOR_SPEEDS);
-			set_bit8(&torque_message->parameters, P_RUNSTOP, (motor_speeds.speed[R_MOTOR] > _5_kmph_rpm || motor_speeds.speed[L_MOTOR] > _5_kmph_rpm));
+			set_bit8(&torque_message->parameters, P_RUNSTOP, (motor_speeds.speed[R_MOTOR] > VAL_5_kmph_rpm || motor_speeds.speed[L_MOTOR] > VAL_5_kmph_rpm));
 			torque_message->torque_ref[R_MOTOR] = 0;
 			torque_message->torque_ref[L_MOTOR] = 0;
 			torque_message->neg_torque_ref[R_MOTOR] = 0;

@@ -89,7 +89,13 @@ C_EXECUTABLE := $(C_SOURCES:./%.c=$(BUILD_DIR)/%.o)
 S_SOURCES := $(shell find . -name '*.s')
 S_EXECUTABLE := $(S_SOURCES:./%.s=$(BUILD_DIR)/%.o)
 
-FILTER_FROM_CORE := ! -name '*stm32h7xx*.*' ! -name '*system_stm32h7xx*.*' ! -name '*sysmem.*' ! -name '*syscalls.*' ! -name '*freertos.*' ! -name '*main.*'
+FILTER_FROM_CORE := ! -name '*stm32h7xx*.*' \
+					! -name '*system_stm32h7xx*.*' \
+					! -name '*sysmem.*' \
+					! -name '*syscalls.*' \
+					! -name '*freertos.*' \
+					! -name '*main.*' \
+					! -name '*Core/Inc/FreeRTOSConfig.h'
 C_SOURCES_CORE := $(shell find Core -name '*.c' $(FILTER_FROM_CORE))
 HEADERS_CORE := $(shell find Core -name '*.h' $(FILTER_FROM_CORE))
 # CLANG_TIDY_C_SOURCES := $(C_SOURCES_CORE:%=%.clang-tidy)

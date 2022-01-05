@@ -171,10 +171,10 @@ const osThreadAttr_t t_datalog_acquisition_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_inverter_no_comm_error */
-osThreadId_t t_inverter_no_comm_errorHandle;
-const osThreadAttr_t t_inverter_no_comm_error_attributes = {
-  .name = "t_inverter_no_comm_error",
+/* Definitions for t_inverter_comm_error */
+osThreadId_t t_inverter_comm_errorHandle;
+const osThreadAttr_t t_inverter_comm_error_attributes = {
+  .name = "t_inverter_comm_error",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
@@ -271,7 +271,7 @@ extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
-extern void inverter_no_comm_error(void *argument);
+extern void inverter_comm_error(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -439,8 +439,8 @@ int main(void)
   /* creation of t_datalog_acquisition */
   t_datalog_acquisitionHandle = osThreadNew(datalog_acquisition, NULL, &t_datalog_acquisition_attributes);
 
-  /* creation of t_inverter_no_comm_error */
-  t_inverter_no_comm_errorHandle = osThreadNew(inverter_no_comm_error, NULL, &t_inverter_no_comm_error_attributes);
+  /* creation of t_inverter_comm_error */
+  t_inverter_comm_errorHandle = osThreadNew(inverter_comm_error, NULL, &t_inverter_comm_error_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

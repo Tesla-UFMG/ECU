@@ -44,7 +44,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 			Error_Handler();
 		}
 
-        osThreadFlagsSet(t_inverter_no_comm_errorHandle, INVERTER_CAN_ACTIVE);
+        osThreadFlagsSet(t_inverter_comm_errorHandle, INVERTER_CAN_ACTIVE);
 
 		set_debugleds(DEBUGLED3,TOGGLE,0);
 
@@ -72,10 +72,6 @@ void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStat
         issue_error(INVERTER_BUS_OFF_ERROR_FLAG, /*should_set_control_event_flag=*/false);    // chama o erro para a main_task tratar
         CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);     // limpa o bit de INIT da CAN, voltando a receber mensagem
     }
-}
-
-void inverter_BUS_OFF_error_callback(void *argument){
-    clear_error(INVERTER_BUS_OFF_ERROR_FLAG);                   // limpa flag de estado do erro
 }
 
 

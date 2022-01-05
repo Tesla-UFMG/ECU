@@ -111,8 +111,6 @@ typedef enum {
 #define INVERTER_CAN_ACTIVE         (1 << 5)
 #define INVERTER_READY              (1 << 6)
 
-
-
 //Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG             (1 << 10)
 #define DYNAMIC_CONTROL_WARN_FLAG   (1 << 11)

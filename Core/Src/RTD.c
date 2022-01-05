@@ -52,8 +52,8 @@ bool can_RTD_be_enabled() {
     BRAKE_STATUS_t is_brake_active = get_global_var_value(BRAKE_STATUS);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
-    bool is_inverter_ready = get_individual_flag(ECU_control_event_id, INVERTER_READY);
-    if(/*is_brake_active && !is_throttle_active && */ !error_flags && is_inverter_ready && (race_mode != ERRO))
+    bool is_inverter_ready = get_individual_flag(ECU_control_event_id, INVERTER_READY);     // flag that indicates when the inverter precharge time has passed and the inverter is ready
+    if(is_brake_active && !is_throttle_active &&  !error_flags && is_inverter_ready && (race_mode != ERRO))
         return true;
     else
         return false;

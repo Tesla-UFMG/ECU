@@ -44,6 +44,8 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 			Error_Handler();
 		}
 
+        osThreadFlagsSet(t_inverter_no_comm_errorHandle, INVERTER_CAN_ACTIVE);
+
 		set_debugleds(DEBUGLED3,TOGGLE,0);
 
 		uint32_t idInverter = RxHeader.Identifier;
@@ -75,4 +77,6 @@ void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStat
 void inverter_BUS_OFF_error_callback(void *argument){
     clear_error(INVERTER_BUS_OFF_ERROR_FLAG);                   // limpa flag de estado do erro
 }
+
+
 

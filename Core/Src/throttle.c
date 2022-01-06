@@ -14,7 +14,7 @@
 #include "global_instances.h"
 #include "cmsis_os.h"
 
-uint16_t throttle_calc(uint16_t APPS_VALUE, uint16_t *ref_value, float *fix_mul, float *fix_add);
+uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref ref);
 bool is_there_APPS_error();
 bool is_there_BSE_error();
 bool is_there_SU_F_error();
@@ -35,25 +35,25 @@ void throttle_read(void *argument) {
         brkpt();
         #endif
 
-        apps1_value = ADC_DMA_buffer[APPS1_E];
-        apps2_value = ADC_DMA_buffer[APPS2_E];
+        apps1_value = 2600;//ADC_DMA_buffer[APPS1_E];
+        apps2_value = 1200;//ADC_DMA_buffer[APPS2_E];
         bse         = ADC_DMA_buffer[BRAKE_E];
 
         apps_ref apps1_ref = {APPS1_REF, APPS1_FIX_MUL, APPS1_FIX_ADD};     //valores de referencia e parametros
         apps_ref apps2_ref = {APPS2_REF, APPS2_FIX_MUL, APPS2_FIX_ADD};     //para o calculo da porcentagem.
 
-        apps1_throttle_percent = throttle_calc(apps1_value,apps1_ref.value,apps1_ref.fix_mul,apps1_ref.fix_add);    //calcula a porcentagem do pedal a partir do APPS1
-        apps2_throttle_percent = throttle_calc(apps2_value,apps2_ref.value,apps2_ref.fix_mul,apps2_ref.fix_add);    //calcula a porcentagem do pedal a partir do APPS2
-        throttle_percent = (apps1_throttle_percent + apps2_throttle_percent)/2;                                     //a porcentagem final do pedal é a media dos dois apps
+        apps1_throttle_percent = throttle_calc(apps1_value,apps1_ref);              //calcula a porcentagem do pedal a partir do APPS1
+        apps2_throttle_percent = throttle_calc(apps2_value,apps2_ref);              //calcula a porcentagem do pedal a partir do APPS2
+        throttle_percent = (apps1_throttle_percent + apps2_throttle_percent)/2;     //a porcentagem final do pedal é a media dos dois apps
 
         set_global_var_value(BRAKE_STATUS, (bse > BRAKE_ACTIVE));
         set_global_var_value(THROTTLE_STATUS, (throttle_percent > 0));
 
         log_data(ID_BRAKE, get_global_var_value(BRAKE_STATUS));
 
-        check_for_errors(is_there_APPS_error, APPS_ERROR_FLAG);                                                         //verifica a plausabilidade dos APPSs
-        check_for_errors_with_timeout(is_there_APPS_error, APPS_ERROR_FLAG, tim_APPS_errorHandle, APPS_ERROR_TIMER);    //verifica a plausabilidade do BSE
-        check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG, tim_SU_F_errorHandle, SU_F_ERROR_TIMER);    //verifica se a placa de freio está em curto
+        check_for_errors(is_there_APPS_error, APPS_ERROR_FLAG);     //verifica a plausabilidade dos APPSs
+        check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);       //verifica a plausabilidade do BSE
+        check_for_errors(is_there_SU_F_error, SU_F_ERROR_FLAG);     //verifica se a placa de freio está em curto
 
         uint16_t message = throttle_percent;
         osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);
@@ -62,15 +62,15 @@ void throttle_read(void *argument) {
     }
 }
 
-uint16_t throttle_calc(uint16_t apps_value, uint16_t *ref_value, float *fix_mul, float *fix_add) {
+uint16_t throttle_calc(uint16_t apps_value, const apps_ref ref) {
     if(apps_value < 0)
         return 0;
-    else if(apps_value >= ref_value[APPS_MATRIX_LENGTH-1])
+    else if(apps_value >= ref.value[APPS_MATRIX_LENGTH-1])
         return 1000;
     else
-        for (int i=0; i<APPS_MATRIX_LENGTH; i++) {                  // compara o valor do APPS com as faixas de acionamento
-            if(apps_value < ref_value[i]) {                         // para escolher quais parametros utilizar durante o
-                return (fix_mul[i] * apps_value + fix_add[i]);      // calculo da porcentagem.
+        for (int i=0; i<APPS_MATRIX_LENGTH; i++) {                          // compara o valor do APPS com as faixas de acionamento
+            if(apps_value < ref.value[i]) {                                 // para escolher quais parametros utilizar durante o
+                return (ref.fix_mul[i] * apps_value + ref.fix_add[i]);      // calculo da porcentagem.
         }
     }
     return 0;
@@ -81,7 +81,7 @@ bool is_there_APPS_error() {            //Regulamento: T.4.2 (2021)
          || apps2_value < APPS2_MIN     //ou abaixo do seu mínimo
          || apps1_value > APPS1_MAX     //Se o valor de APPS1 for acima do seu máximo
          || apps1_value < APPS1_MIN     //ou abaixo do seu mínimo
-         || fabs(apps1_throttle_percent - apps2_throttle_percent)/10 > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE)    //Se os APPS1 e APPS2 discordarem em mais de 10%
+         || abs(apps1_throttle_percent - apps2_throttle_percent)/10 > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE)    //Se os APPS1 e APPS2 discordarem em mais de 10%
         return true;
     else
         return false;

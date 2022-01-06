@@ -14,7 +14,7 @@
 #include "global_instances.h"
 #include "cmsis_os.h"
 
-uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref ref);
+uint16_t throttle_calc(uint16_t APPS_VALUE, apps_ref ref);
 bool is_there_APPS_error();
 bool is_there_BSE_error();
 bool is_there_SU_F_error();
@@ -62,7 +62,7 @@ void throttle_read(void *argument) {
     }
 }
 
-uint16_t throttle_calc(uint16_t apps_value, const apps_ref ref) {
+uint16_t throttle_calc(uint16_t apps_value, apps_ref ref) {
     if(apps_value < 0)
         return 0;
     else if(apps_value >= ref.value[APPS_MATRIX_LENGTH-1])

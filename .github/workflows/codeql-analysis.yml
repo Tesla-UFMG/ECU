@@ -67,7 +67,6 @@ jobs:
       run: sudo apt-get install gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi
     
     - run: |
-       cd ./Build
        make -j2
 
     - name: Perform CodeQL Analysis

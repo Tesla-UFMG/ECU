@@ -35,8 +35,8 @@ void throttle_read(void *argument) {
         brkpt();
         #endif
 
-        apps1_value = 2600;//ADC_DMA_buffer[APPS1_E];
-        apps2_value = 1200;//ADC_DMA_buffer[APPS2_E];
+        apps1_value = ADC_DMA_buffer[APPS1_E];
+        apps2_value = ADC_DMA_buffer[APPS2_E];
         bse         = ADC_DMA_buffer[BRAKE_E];
 
         apps_ref apps1_ref = {APPS1_REF, APPS1_FIX_MUL, APPS1_FIX_ADD};     //valores de referencia e parametros
@@ -51,9 +51,9 @@ void throttle_read(void *argument) {
 
         log_data(ID_BRAKE, get_global_var_value(BRAKE_STATUS));
 
-        check_for_errors(is_there_APPS_error, APPS_ERROR_FLAG);     //verifica a plausabilidade dos APPSs
-        check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);       //verifica a plausabilidade do BSE
-        check_for_errors(is_there_SU_F_error, SU_F_ERROR_FLAG);     //verifica se a placa de freio está em curto
+        check_for_errors(is_there_APPS_error, APPS_ERROR_FLAG);                                                         //verifica a plausabilidade dos APPSs
+        check_for_errors_with_timeout(is_there_APPS_error, APPS_ERROR_FLAG, tim_APPS_errorHandle, APPS_ERROR_TIMER);    //verifica a plausabilidade do BSE
+        check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG, tim_SU_F_errorHandle, SU_F_ERROR_TIMER);    //verifica se a placa de freio está em curto
 
         uint16_t message = throttle_percent;
         osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);

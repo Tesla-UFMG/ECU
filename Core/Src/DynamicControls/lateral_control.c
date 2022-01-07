@@ -32,8 +32,7 @@ lateral_result_t lateral_control() {
     double gyro_adjusted;    // entre -1.5 e 1.5
     float steering_adjusted; // entre -0.5 e 0.5
     double desired_yaw, max_yaw, setpoint, pid_result;
-    lateral_result_t ref_torque_result;
-
+    lateral_result_t ref_torque_result = { .torque_decrease = {0} };
     double calc_gyro(uint16_t gyro_yaw);
     float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
 

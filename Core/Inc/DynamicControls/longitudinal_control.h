@@ -9,7 +9,7 @@
 
 #include <stdint.h>
 #include "PID.h"
-#include "CMSIS_EXTRA/global_variables_handler.h"
+#include "CMSIS_extra/global_variables_handler.h"
 
 #define LONGITUDINAL_DELAY 30
 #define IDEAL_SLIP_DRY 13

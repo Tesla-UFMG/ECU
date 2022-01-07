@@ -26,12 +26,11 @@ void init_longitudinal_control(){
     PID_set_setpoint(&controlled_wheels[R_MOTOR].pid_longitudinal, IDEAL_SLIP_DRY);
 }
 
-uint32_t wheel_control(uint8_t wheel_motor){
+double wheel_control(uint8_t wheel_motor, WHEEL_SPEEDS_t wheel_speeds){
     float cm_speed;
     double slip;
 
     // speed and slip ratios
-    WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
     cm_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT])/2); // speed of the car's center of mass
     slip = ((wheel_speeds.speed[controlled_wheels[wheel_motor].wheel] - cm_speed) / cm_speed) * 100;    // slip ratio of the selected wheel
     // PID
@@ -39,9 +38,10 @@ uint32_t wheel_control(uint8_t wheel_motor){
 }
 longitudinal_control_result_t  longitudinal_control(){
     longitudinal_control_result_t result;
+    WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
 
-    result.torque_decrease[R_MOTOR] = wheel_control(R_MOTOR);
-    result.torque_decrease[L_MOTOR] = wheel_control(L_MOTOR);
+    result.torque_decrease[R_MOTOR] = wheel_control(R_MOTOR, wheel_speeds);
+    result.torque_decrease[L_MOTOR] = wheel_control(L_MOTOR, wheel_speeds);
 
     return result;
 }

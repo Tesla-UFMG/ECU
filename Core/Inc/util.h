@@ -17,7 +17,7 @@ uint32_t get_flag_MSB(uint32_t value);
 bool get_individual_flag(osEventFlagsId_t ef_id, uint32_t flag);
 
 #define sign(x) (x >= 0) - (x < 0)
-#define max(x,y) (x > y) ? x : y
-#define min(x,y) (x < y) ? x : y
+#define max(x,y) (((x) > (y)) ? (x) : (y))
+#define min(x,y) (((x) < (y)) ? (x) : (y))
 
 #endif /* INC_UTIL_H_ */

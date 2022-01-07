@@ -9,6 +9,7 @@
 
 #include <stdint.h>
 #include "PID.h"
+#include "CMSIS_EXTRA/global_variables_handler.h"
 
 #define LONGITUDINAL_DELAY 30
 #define IDEAL_SLIP_DRY 13
@@ -27,11 +28,11 @@ typedef struct {
 } longitudinal_t;
 
 typedef struct {
-    uint32_t torque_decrease[2];
+    double torque_decrease[2];
 } longitudinal_control_result_t;
 
 longitudinal_control_result_t longitudinal_control();
-uint32_t wheel_control(uint8_t wheel_motor);
+double wheel_control(uint8_t wheel_motor, WHEEL_SPEEDS_t wheel_speeds);
 void init_longitudinal_control();
 
 #endif /* INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_ */

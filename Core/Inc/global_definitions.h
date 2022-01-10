@@ -26,12 +26,6 @@ typedef enum  { PRETO = 0, VERMELHO, VERDE, AZUL, AMARELO, ROXO, CIANO, BRANCO} 
 
 typedef enum modos_desempenho {ERRO = 0, ENDURO, ACELERACAO, SKIDPAD, AUTOX} race_mode_t;
 
-typedef enum {
-	NO_CONTROL = 0,
-	LONGITUDINAL = 1,
-	LATERAL = 3
-} control_type_t;
-
 typedef struct //struct de modo
 {
 	int tor_max; //torque maximo (de 0 a 4000)
@@ -41,9 +35,9 @@ typedef struct //struct de modo
 
 	//bool arranc_control;
 
+	bool traction_control; //controle de tracao (1 ativo, 0 desat)
 	bool bat_safe; //reducao de consumo de bateria se em niveis criticos (1 ativo, 0 desat)
 	int torq_gain; //ganho de torque, aconselhavel q seja proporcional ao torque maximo ( de 0 a 40)
-	control_type_t dyn_control;//controle de tracao 1 longitudinal, 3 lateral 0 desligado
 	race_mode_t mode; // 1 enduro, 2 aceleração, 3 skidpad, 4 autox
 	cores_t cor;
 } modos;
@@ -110,28 +104,32 @@ typedef enum {
 
 
 //General Flags
-#define RTD_FLAG                    1 << 5
-#define RTD_BTN_PRESSED_FLAG        1 << 6
-#define MODE_BTN_PRESSED_FLAG       1 << 7
-#define DYN_CTRL_FLAG               1 << 8
-#define DYN_CTRL_BTN_PRESSED_FLAG   1 << 9
+#define RTD_FLAG                    (1 << 5)
+#define RTD_BTN_PRESSED_FLAG        (1 << 6)
+#define MODE_BTN_PRESSED_FLAG       (1 << 7)
+#define GENERAL_BUS_OFF_ERROR_FLAG  (1 << 8)
+
+
 
 //Warning flags	(No actions necessary)
-#define REGEN_WARN_FLAG             1 << 10
-#define DYNAMIC_CONTROL_WARN_FLAG   1 << 11
+#define REGEN_WARN_FLAG             (1 << 10)
+#define DYNAMIC_CONTROL_WARN_FLAG   (1 << 11)
 
 //Soft error flags (RTD keeps on, torque ref to inverter is set to 0)
-#define BSE_ERROR_FLAG              1 << 16     //Regulamento: EV.5.7 (2021)
-#define APPS_ERROR_FLAG             1 << 17     //Regulamento: T.4.2 (2021)
+
+#define BSE_ERROR_FLAG              (1 << 16)     //Regulamento: EV.5.7 (2021)
+#define APPS_ERROR_FLAG             (1 << 17)     //Regulamento: T.4.2 (2021)
 
 //Hard error flags (RTD disable)
-#define INVERTER_COMM_ERROR_FLAG    1 << 20
-#define SU_F_ERROR_FLAG             1 << 21
+#define INVERTER_COMM_ERROR_FLAG    (1 << 20)
+#define SU_F_ERROR_FLAG             (1 << 21)
+#define INVERTER_BUS_OFF_ERROR_FLAG (1 << 22)
+
 
 #define ALL_WARN_FLAG               REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG
 #define ALL_MINOR_ERROR_FLAG        APPS_ERROR_FLAG | BSE_ERROR_FLAG
 #define ALL_SEVERE_ERROR_FLAG       INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG
-#define ALL_ERRORS_FLAG             APPS_ERROR_FLAG | BSE_ERROR_FLAG | INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG
+#define ALL_ERRORS_FLAG             APPS_ERROR_FLAG | BSE_ERROR_FLAG | INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG | INVERTER_BUS_OFF_ERROR_FLAG
 
 #define ALL_THROTTLE_ERROR_FLAG     APPS_ERROR_FLAG | BSE_ERROR_FLAG
 

@@ -18,6 +18,7 @@ typedef struct {
     float speed[4];
 } WHEEL_SPEEDS_t;
 typedef uint16_t STEERING_WHEEL_t;
+typedef uint16_t GYRO_YAW_t;
 typedef uint8_t INTERNAL_WHEEL_t;
 typedef race_mode_t RACE_MODE_t;
 typedef uint16_t THROTTLE_PERCENT_t;
@@ -31,6 +32,7 @@ typedef bool DYNAMIC_CONTROL_t;
 #define WHEEL_SPEEDS_DEFAULT_VALUE                                             \
     { 0, 0, 0, 0 }
 #define STEERING_WHEEL_DEFAULT_VALUE 0
+#define GYRO_YAW_DEFAULT_VALUE 0
 #define INTERNAL_WHEEL_DEFAULT_VALUE 0
 #define RACE_MODE_DEFAULT_VALUE ENDURO
 #define THROTTLE_PERCENT_DEFAULT_VALUE 0
@@ -44,6 +46,7 @@ typedef enum {
     MOTOR_SPEEDS,
     WHEEL_SPEEDS,
     STEERING_WHEEL,
+    GYRO_YAW,
     INTERNAL_WHEEL,
     RACE_MODE,
     THROTTLE_PERCENT,

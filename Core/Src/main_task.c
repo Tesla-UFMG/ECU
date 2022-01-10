@@ -36,6 +36,19 @@ void main_task(void *argument) {
         bool isErrorPresent;
         switch (most_significant_error_flags) {
 
+            //O erro de bus off da can do inversor só será tratado se ocorrer mais de uma vez em um curto periodo de tempo (tempo definido por : BUS_OFF_ERROR_TIME)
+            //assim o RTD será desabilitado somente se tiver o erro frequente na CAN.
+            case INVERTER_BUS_OFF_ERROR_FLAG:
+                isErrorPresent = event_flags & INVERTER_BUS_OFF_ERROR_FLAG;                     //verifica se o erro está presente na flag de evento
+                if (isErrorPresent) {
+                    exit_RTD();                                                                 //sai de RTD caso o erro esteja presente
+                } else {                                                                        //caso o erro não esteja ainda:
+                    osEventFlagsSet(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG);         //seta a flag de evento para que caso tenha erro novamente saia de RTD
+                    osThreadFlagsClear(INVERTER_BUS_OFF_ERROR_FLAG);                            //limpa flag de thread do erro
+                    osTimerStart(tim_inverter_BUS_OFF_errorHandle, BUS_OFF_ERROR_TIME);         //inicia o timer para zerar a flag
+                }
+                break;
+
             case INVERTER_COMM_ERROR_FLAG:
                 //todo: implementar erro de comunicação com inversor
                 isErrorPresent = event_flags & INVERTER_COMM_ERROR_FLAG;    //verifica se o erro ainda está presente na flag de evento
@@ -83,5 +96,4 @@ void main_task(void *argument) {
         }
     }
 }
-
 

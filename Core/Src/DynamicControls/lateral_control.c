@@ -34,7 +34,7 @@ lateral_t lateral_control() {
     float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
 
     // speed
-    cg_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT])/2) / (10 * 3.6); // velocidade em m/s
+    cg_speed = avg(wheel_speeds.speed[FRONT_RIGHT],wheel_speeds.speed[FRONT_LEFT]) / (10 * 3.6); // velocidade em m/s
     // steering
     steering_adjusted = calc_steering(steering_wheel, internal_wheel);
     // yaw rate

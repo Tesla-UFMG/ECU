@@ -24,7 +24,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		case S_VEL2_Pin:
 		case S_VEL3_Pin:
 		case S_VEL4_Pin:
-			speed_message.pin = get_speed_pin(GPIO_Pin);
+			speed_message.pin = GPIO_Pin;
 			speed_message.tim_count = htim2.Instance->CNT;
 			osMessageQueuePut(q_speed_messageHandle, &speed_message, 0U, 0);
 			break;

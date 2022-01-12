@@ -24,31 +24,27 @@
 void reset_speed_all();
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count);
 void log_speed(WHEEL_SPEEDS_t* wheel_speeds);
-static inline uint32_t get_tim2_freq();
-static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout(uint32_t speed);
 
 extern TIM_HandleTypeDef htim2;
 extern osMessageQueueId_t q_speed_messageHandle;
 
-
-
-void speed_calc(void) {
+void speed_calc(void *argument) {
     speed_message_t message;
     speed_message_t last_messages[4];
     memset(&last_messages, 0, sizeof(speed_message_t)*4);   //inicializa com 0 buffer de ultimas mensagens
 
-    const uint32_t tim_freq = get_tim2_freq();          //pega frequencia que esta conectada ao tim2
-    const uint32_t tim_presc = htim2.Init.Prescaler+1;  //prescaler do tim2
-    //valor em tempo do timer2 da velocidade maxima a ser calculada
-    const uint32_t max_count = calculate_speed(MAX_SPEED, tim_freq, tim_presc);
-    //valor em tempo do timer2 da velocidade minima a ser calculada
-    const uint32_t min_count = calculate_speed(MIN_SPEED, tim_freq, tim_presc);
-    //valor em tempo do timersys da velocidade minima a ser calculada
-    const uint32_t min_timeout = calculate_timeout(MIN_SPEED);
 
-    uint32_t d_tim_count;
-    uint32_t speed;
+    const uint32_t  tim_freq  = HAL_RCC_GetPCLK1Freq(),     //pega frequência do APB1, q está conectado ao tim2
+            tim_presc = htim2.Init.Prescaler+1,             //prescaler do tim2
+            //valor em tempo do timer2 da velocidade máxima a ser calculada
+            max_count = (10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)tim_freq/((float)tim_presc)) / MAX_SPEED,
+            //valor em tempo do timer2 da velocidade mínima a ser calculada
+            min_count = (10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)tim_freq/((float)tim_presc)) / MIN_SPEED,
+            //valor em tempo do timersys da velocidade mínima a ser calculada
+            min_timeout = (10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * 1000 / MIN_SPEED;
+
+
+    uint32_t d_tim_count, speed;
 
     for(;;) {
         #ifdef DEBUG_ECU
@@ -56,7 +52,7 @@ void speed_calc(void) {
         brkpt();
         #endif
 
-        switch(osMessageQueueGet(q_speed_messageHandle, &message, NULL,  min_timeout)){     //espera ate alguma mensagem chegar ou timeout estourar
+        switch(osMessageQueueGet(q_speed_messageHandle, &message, NULL,  min_timeout)){     //espera até alguma mensagem chegar ou timeout estourar
 
         //caso a tarefa tenha sido chamada por timeout
         case osErrorTimeout:
@@ -65,22 +61,21 @@ void speed_calc(void) {
 
         //caso a tarefa tenha sido chamada pela queue
         default:
-            //verifica se alguma roda esta a muito tempo sem receber interrupcao, caso sim a velocidade dessa roda eh zerada
+            //verifica se alguma roda está a muito tempo sem receber interrupção, caso sim a velocidade dessa roda é zerada
             reset_speed_single(&message, last_messages, min_count);
 
             //diferenca entre timestamp da mensagem atual e da anterior
             d_tim_count = message.tim_count - last_messages[message.pin].tim_count;
 
-            //caso d_tim_count calcule uma velocidade maior do que eh possivel o valor sera descartado
-            if(d_tim_count < max_count) {
+            //caso d_tim_count calcule uma velocidade maior do que é possível o valor será descartado
+            if(d_tim_count < max_count)
                 continue;
-            }
 
-            speed = calculate_speed(d_tim_count, tim_freq, tim_presc);  //calcula a velocidade
+            speed = (10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)tim_freq/((float)d_tim_count*tim_presc)); //calcula a velocidade
             WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
-            wheel_speeds.speed[message.pin] = speed;                    //seta velocidade especifica da roda recebida
+            wheel_speeds.speed[message.pin] = speed;     //seta velocidade especifica da roda recebida
             set_global_var(WHEEL_SPEEDS, &wheel_speeds);
-            last_messages[message.pin] = message;                       //guarda mensagem ate a proxima interacao
+            last_messages[message.pin] = message;   //guarda mensagem até a próxima interacão
             log_speed(&wheel_speeds);
         break;
         }
@@ -102,28 +97,10 @@ void reset_speed_all() {
 
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages, uint32_t min_count) {
     WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
-    for(speed_pin_e i = FIRST_WHEEL; i <= LAST_WHEEL; i++) {
-        if((message->tim_count - last_messages[i].tim_count) > min_count) {
+    for(speed_pin_e i = FIRST_WHEEL; i <= LAST_WHEEL; i++)
+        if((message->tim_count - last_messages[i].tim_count) > min_count)
+        {
             wheel_speeds.speed[i] = 0;
         }
-    }
     set_global_var(WHEEL_SPEEDS, &wheel_speeds);
-}
-
-//obtem a frequencia do tim2 a partir APB1, considerando que ele pode ter um prescaler que dobra a frequencia
-static inline uint32_t get_tim2_freq() {
-    if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) {     // Get PCLK1 prescaler
-        return 2*HAL_RCC_GetPCLK1Freq();        // PCLK1 prescaler different from 1 => TIMCLK = 2 * PCLK1
-    } else {
-        return HAL_RCC_GetPCLK1Freq();          // PCLK1 prescaler equal to 1 => TIMCLK = PCLK1
-    }
-}
-
-
-static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc){
-    return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * ((float)freq/((float)presc)) / speed);
-}
-
-static inline uint32_t calculate_timeout(uint32_t speed) {
-    return ((10*3.6*2*M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN) * 1000 / speed);
 }

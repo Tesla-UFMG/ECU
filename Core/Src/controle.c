@@ -148,7 +148,7 @@ void controle(void *argument) {
 }
 
 void update_regen_state(vehicle_state_e vehicle_state){
-    if (vehicle_state == S_BRAKE_E)
+    if (S_BRAKE_E)
         osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);     // se frenagem ativa, seta flag de aviso
     else
         osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);   // se frenagem ativa, limpa flag de aviso

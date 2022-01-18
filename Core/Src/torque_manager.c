@@ -78,10 +78,10 @@ void rampa_torque(uint32_t *ref_torque, double *ref_torque_decrease) {
     bool should_decrease = (ref_torque_decrease != NULL);
 
     double torque = ((get_global_var_value(SELECTED_MODE).torq_gain * get_global_var_value(THROTTLE_PERCENT)) / 10);
-    desired_torque[R_MOTOR] = (uint32_t)(max(0, (float)(torque - should_decrease ?
-    		ref_torque_decrease[R_MOTOR] : 0)));
-    desired_torque[L_MOTOR] = (uint32_t)(max(0, (float)(torque - should_decrease ?
-    		ref_torque_decrease[L_MOTOR] : 0)));
+    desired_torque[R_MOTOR] = (uint32_t)(max(0, (float)(torque - (should_decrease ?
+    		ref_torque_decrease[R_MOTOR] : 0))));
+    desired_torque[L_MOTOR] = (uint32_t)(max(0, (float)(torque - (should_decrease ?
+    		ref_torque_decrease[L_MOTOR] : 0))));
 
 
     for (int i=0;i<2;i++) {

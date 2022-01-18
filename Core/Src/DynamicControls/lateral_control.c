@@ -71,7 +71,7 @@ double calc_gyro(uint16_t gyro_yaw) {
     return gyro_adjusted;
 }
 
-float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel) { // TODO: verificar valor do steering
+float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel){ // TODO: verificar valor do steering
     float steering_adjusted;
     if (internal_wheel == DIREITA)
         steering_adjusted = Y0 + ((Y1-Y0)/(X1-X0)) * ((float)steering_wheel - X0);

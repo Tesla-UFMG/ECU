@@ -19,7 +19,7 @@
 //#define ADJUST_STEERING 2000
 //lookup table
 #define Y0 (-0.523598776 - 0.599520598)/2
-#define Y1 (0.599520598 + 0.523598776)/2
+#define Y1 ((0.599520598 + 0.523598776)/2
 #define X0 -1.941983885
 #define X1 1.941983885
 //defines PID LATERAL

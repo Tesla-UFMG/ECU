@@ -171,6 +171,13 @@ const osThreadAttr_t t_datalog_acquisition_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_inverter_comm_error */
+osThreadId_t t_inverter_comm_errorHandle;
+const osThreadAttr_t t_inverter_comm_error_attributes = {
+  .name = "t_inverter_comm_error",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for t_inverter_datalog */
 osThreadId_t t_inverter_datalogHandle;
 const osThreadAttr_t t_inverter_datalog_attributes = {
@@ -228,6 +235,11 @@ osTimerId_t tim_inverter_BUS_OFF_errorHandle;
 const osTimerAttr_t tim_inverter_BUS_OFF_error_attributes = {
   .name = "tim_inverter_BUS_OFF_error"
 };
+/* Definitions for tim_inverter_ready */
+osTimerId_t tim_inverter_readyHandle;
+const osTimerAttr_t tim_inverter_ready_attributes = {
+  .name = "tim_inverter_ready"
+};
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
@@ -266,9 +278,11 @@ extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
+extern void inverter_comm_error(void *argument);
 extern void inverter_datalog(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
+extern void inverter_ready_callback(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -352,6 +366,9 @@ int main(void)
   /* creation of tim_inverter_BUS_OFF_error */
   tim_inverter_BUS_OFF_errorHandle = osTimerNew(inverter_BUS_OFF_error_callback, osTimerOnce, NULL, &tim_inverter_BUS_OFF_error_attributes);
 
+  /* creation of tim_inverter_ready */
+  tim_inverter_readyHandle = osTimerNew(inverter_ready_callback, osTimerOnce, NULL, &tim_inverter_ready_attributes);
+
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
@@ -429,6 +446,9 @@ int main(void)
 
   /* creation of t_datalog_acquisition */
   t_datalog_acquisitionHandle = osThreadNew(datalog_acquisition, NULL, &t_datalog_acquisition_attributes);
+
+  /* creation of t_inverter_comm_error */
+  t_inverter_comm_errorHandle = osThreadNew(inverter_comm_error, NULL, &t_inverter_comm_error_attributes);
 
   /* creation of t_inverter_datalog */
   t_inverter_datalogHandle = osThreadNew(inverter_datalog, NULL, &t_inverter_datalog_attributes);

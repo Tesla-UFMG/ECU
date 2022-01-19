@@ -104,12 +104,12 @@ typedef enum {
 
 
 //General Flags
-#define RTD_FLAG                    (1 << 5)
-#define RTD_BTN_PRESSED_FLAG        (1 << 6)
-#define MODE_BTN_PRESSED_FLAG       (1 << 7)
-#define GENERAL_BUS_OFF_ERROR_FLAG  (1 << 8)
-
-
+#define RTD_FLAG                    (1 << 1)
+#define RTD_BTN_PRESSED_FLAG        (1 << 2)
+#define MODE_BTN_PRESSED_FLAG       (1 << 3)
+#define GENERAL_BUS_OFF_ERROR_FLAG  (1 << 4)
+#define INVERTER_CAN_ACTIVE         (1 << 5)
+#define INVERTER_READY              (1 << 6)
 
 //Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG             (1 << 10)

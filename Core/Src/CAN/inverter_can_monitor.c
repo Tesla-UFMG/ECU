@@ -25,7 +25,7 @@ void inverter_comm_error(void *argument) {
 
         switch(osThreadFlagsWait(INVERTER_CAN_ACTIVE, osFlagsWaitAny, INVERTER_NO_MESSAGE_ERROR_TIME)){
 
-            //when the task has been called by the timeout it means the ECU is not receiving messages from the inverter
+            //when the task has been called due to timeout it means the ECU is not receiving messages from the inverter
             case osFlagsErrorTimeout :
                 set_inverter_communication_error();
                 break;

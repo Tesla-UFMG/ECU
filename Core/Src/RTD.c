@@ -64,7 +64,7 @@ void exit_RTD() {
  *      According to the rules RTD must only be possible after TS is active (which only means the shutdown circuit is closed)
  *      It also defines RTD as when "the Motors will respond to the input of the APPS". So by the definition the RTD must
  *      no be possible until both AIRs has been closed.
- *      This verification should be made reading the status of the AIRs sended by the vehicle BMS, which is not currently
+ *      This verification should be made by reading the status of the AIRs sended by the vehicle BMS, which is not currently
  *      working. While the BMS cannot make this reading, this verification will enable RTD activation after a timer which
  *      is started when the inverter sends its first message.
  *      TODO: Allow RTD activation from the status check of the AIRs.

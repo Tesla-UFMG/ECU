@@ -19,6 +19,7 @@ uint16_t concatenate_two_uint8_to_uint16(uint8_t* data);
 
 #define sign(x) (((x) >= 0) - ((x) < 0))
 #define max(x,y) ((x) > (y) ? (x) : (y))
+#define min(x,y) (((x) < (y)) ? (x) : (y))
 #define abs(x) ((x) < 0 ? -(x) : (x))
 #define avg(x,y) (((x)+(y))/2)
 

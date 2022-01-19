@@ -55,7 +55,7 @@ void exit_RTD() {
  *      - !is_throttle_active: Allow RTD activation only if the throttle pedal is not being pressed. Prevents an unexpected
  *      accelaration of the vehicle, as the driver should not be pressing the pedal before RTD activation
  *
- *      - !error_flags &= ALL_SEVERE_ERROR_FLAG: Allow RTD activation if no error that exits RTD is present
+ *      - !error_flags &= ALL_SEVERE_ERROR_FLAG: Allow RTD activation if no error that disables RTD is present
  *
  *      - race_mode != ERRO: Allow RTD activation after the driver has made an action to ignore the error. The vehicle will
  *      be on race_mode ERRO after a severe error has disabled RTD, the driver must then switch modes again to enable RTD.

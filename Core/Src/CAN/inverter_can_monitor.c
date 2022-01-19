@@ -5,7 +5,7 @@
  *      Author: Felipe Telles
  */
 
-#include <CAN/inverter_can_monitor.h>
+#include "CAN/inverter_can_monitor.h"
 #include "global_definitions.h"
 #include "global_instances.h"
 #include "error_treatment.h"

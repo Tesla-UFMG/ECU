@@ -52,9 +52,29 @@
 #define ID_PANEL_DEBUG_3		30
 #define ID_PANEL_DEBUG_4		31
 #define ID_REGEN_BRAKE_STATE    32
+#define ID_SPEED_L_MOTOR        33
+#define ID_SPEED_R_MOTOR        34
+#define ID_POWER_L_MOTOR        35
+#define ID_POWER_R_MOTOR        36
+#define ID_ENERGY_L_MOTOR       37
+#define ID_ENERGY_R_MOTOR       38
+#define ID_OVERLOAD_L_MOTOR     39
+#define ID_OVERLOAD_R_MOTOR     40
+#define ID_LOST_MSG_L_MOTOR     41
+#define ID_LOST_MSG_R_MOTOR     42
+#define ID_BUS_OFF_L_MOTOR      43
+#define ID_BUS_OFF_R_MOTOR      44
+#define ID_CAN_STATE_L_MOTOR    45
+#define ID_CAN_STATE_R_MOTOR    46
+#define ID_INV_STATE_L_MOTOR    47
+#define ID_INV_STATE_R_MOTOR    48
+#define ID_FAILURE_L_MOTOR      49
+#define ID_FAILURE_R_MOTOR      50
+#define ID_ALARM_L_MOTOR        51
+#define ID_ALARM_R_MOTOR        52
 
 
-#define CAN_ID_QUAN 32
+#define CAN_ID_QUAN 53
 
 typedef struct {
 	uint16_t id;
@@ -62,10 +82,10 @@ typedef struct {
 } CAN_ID_t;
 
 extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
-
+                                            //TODO: IMPLEMENT X-MACROS FOR CAN_ID'S
 #define ECU_CAN_INITIAL_ID 				100
 #define ECU_CAN_FINAL_ID 				149
-#define ECU_CAN_LAST_POPULATED_ID 		108
+#define ECU_CAN_LAST_POPULATED_ID 		113
 #define ECU_CAN_FIRST_DEBUG_ID			351
 #define ECU_CAN_LAST_DEBUG_ID			351
 
@@ -79,8 +99,8 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
 #define INTERNAL_ID_TORQUE_L_MOTOR        {103, 1}
 #define INTERNAL_ID_REF_TORQUE_R_MOTOR    {103, 2}
 #define INTERNAL_ID_REF_TORQUE_L_MOTOR    {103, 3}
-#define INTERNAL_ID_REF_SPEED_R           {104, 0}
-#define INTERNAL_ID_REF_SPEED_L           {104, 1}
+#define INTERNAL_ID_REF_SPEED_R_MOTOR     {104, 0}
+#define INTERNAL_ID_REF_SPEED_L_MOTOR     {104, 1}
 #define INTERNAL_ID_CONTROL_EVENT_FLAG_1  {104, 2}
 #define INTERNAL_ID_CONTROL_EVENT_FLAG_2  {104, 3}
 #define INTERNAL_ID_SPEED_FL              {105, 0}
@@ -101,6 +121,27 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
 #define INTERNAL_ID_PANEL_DEBUG_3         {351, 2}
 #define INTERNAL_ID_PANEL_DEBUG_4         {351, 3}
 #define INTERNAL_ID_REGEN_BRAKE_STATE     {102, 1}
+#define INTERNAL_ID_SPEED_L_MOTOR         {109, 0}
+#define INTERNAL_ID_SPEED_R_MOTOR         {109, 1}
+#define INTERNAL_ID_POWER_L_MOTOR         {109, 2}
+#define INTERNAL_ID_POWER_R_MOTOR         {109, 3}
+#define INTERNAL_ID_ENERGY_L_MOTOR        {110, 0}
+#define INTERNAL_ID_ENERGY_R_MOTOR        {110, 1}
+#define INTERNAL_ID_OVERLOAD_L_MOTOR      {110, 2}
+#define INTERNAL_ID_OVERLOAD_R_MOTOR      {110, 3}
+#define INTERNAL_ID_LOST_MSG_L_MOTOR      {111, 0}
+#define INTERNAL_ID_LOST_MSG_R_MOTOR      {111, 1}
+#define INTERNAL_ID_BUS_OFF_L_MOTOR       {111, 2}
+#define INTERNAL_ID_BUS_OFF_R_MOTOR       {111, 3}
+#define INTERNAL_ID_CAN_STATE_L_MOTOR     {112, 0}
+#define INTERNAL_ID_CAN_STATE_R_MOTOR     {112, 1}
+#define INTERNAL_ID_INV_STATE_L_MOTOR     {112, 2}
+#define INTERNAL_ID_INV_STATE_R_MOTOR     {112, 3}
+#define INTERNAL_ID_FAILURE_L_MOTOR       {113, 0}
+#define INTERNAL_ID_FAILURE_R_MOTOR       {113, 1}
+#define INTERNAL_ID_ALARM_L_MOTOR         {113, 2}
+#define INTERNAL_ID_ALARM_R_MOTOR         {113, 3}
+
 
 
 //----------

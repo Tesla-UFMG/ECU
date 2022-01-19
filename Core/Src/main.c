@@ -178,6 +178,13 @@ const osThreadAttr_t t_inverter_comm_error_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_inverter_datalog */
+osThreadId_t t_inverter_datalogHandle;
+const osThreadAttr_t t_inverter_datalog_attributes = {
+  .name = "t_inverter_datalog",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -272,6 +279,7 @@ extern void RTD(void *argument);
 extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
 extern void inverter_comm_error(void *argument);
+extern void inverter_datalog(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -441,6 +449,9 @@ int main(void)
 
   /* creation of t_inverter_comm_error */
   t_inverter_comm_errorHandle = osThreadNew(inverter_comm_error, NULL, &t_inverter_comm_error_attributes);
+
+  /* creation of t_inverter_datalog */
+  t_inverter_datalogHandle = osThreadNew(inverter_datalog, NULL, &t_inverter_datalog_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

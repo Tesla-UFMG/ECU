@@ -60,7 +60,7 @@ void exit_RTD() {
  *      - race_mode != ERRO: Allow RTD activation after the driver has made an action to ignore the error. The vehicle will
  *      be on race_mode ERRO after an severe error has exited RTD, the drive must then switch modes again to enable RTD.
  *
- *      - is_inverter_ready: Allow RTD activation after the precharge period is over and both AIRs has been closed.
+ *      - is_inverter_ready: Allow RTD activation after the precharge period is over and both AIRs have been closed.
  *      According to the rules RTD must only be possible after TS is active (which only means the shutdown circuit is closed)
  *      It also defines RTD as when "the Motors will respond to the input of the APPS". So by the definition the RTD cannot
  *      be enabled until both AIRs have been closed.

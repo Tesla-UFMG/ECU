@@ -28,8 +28,8 @@ void PID_init(PID_t* pid, uint8_t reset, double Kp, double Ti, double Td, double
 	if (reset)
 	{
 		/* Reseta os estados, sempre de tamanho 2 */
-		memset(pid->error_state, 0, 2U * sizeof(double));
-		memset(pid->input_state, 0, 2U * sizeof(double));
+		memset(pid->error_state, 0, 2U * sizeof(double)); // NOLINT
+		memset(pid->input_state, 0, 2U * sizeof(double)); // NOLINT
 	}
 
 }

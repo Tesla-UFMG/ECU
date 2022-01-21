@@ -15,6 +15,8 @@
 #include "CMSIS_extra/global_variables_handler.h"
 
 void throttle_control(void *argument) {
+	UNUSED(argument);
+
     for(;;) {
         uint16_t message;
 

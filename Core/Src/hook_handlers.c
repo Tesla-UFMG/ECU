@@ -6,6 +6,7 @@
  */
 #include "cmsis_os.h"
 #include "stm32h7xx.h"
+#include "util.h"
 
 //void vApplicationMallocFailedHook(void) {
 //	//erro de alocacao de memoria
@@ -18,7 +19,10 @@ void brkpt() {
 void vAssertCalled( const char * pcFile,
                     unsigned long ulLine )
 {
-volatile unsigned long ul = 0;
+    UNUSED(pcFile);
+    UNUSED(ulLine);
+
+    volatile unsigned long ul = 0;
 
     taskENTER_CRITICAL();
     {

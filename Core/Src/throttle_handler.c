@@ -10,6 +10,8 @@
 #include "CAN/CAN_IDs.h"
 
 void throttle_handler(void *argument) {
+	UNUSED(argument);
+
 	torque_message_t message;
 	for (;;) {
 		#ifdef DEBUG_ECU

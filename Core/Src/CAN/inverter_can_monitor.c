@@ -15,6 +15,7 @@ void set_inverter_communication_error();
 void precharge_monitor();
 
 void inverter_comm_error(void *argument) {
+	UNUSED(argument);
 
     for(;;) {
         #ifdef DEBUG_ECU
@@ -54,9 +55,11 @@ void precharge_monitor() {
 }
 
 void inverter_BUS_OFF_error_callback(void *argument) {
+    UNUSED(argument);
     clear_error(INVERTER_BUS_OFF_ERROR_FLAG);                   // if no more errors are present the event flag will be cleared
 }
 
 void inverter_ready_callback(void *argument) {
+    UNUSED(argument);
     osEventFlagsSet(ECU_control_event_id, INVERTER_READY);      // the flag wil be setted after the precharge time has passed
 }

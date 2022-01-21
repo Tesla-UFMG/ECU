@@ -10,11 +10,14 @@
 #include "global_definitions.h"
 #include "datalog_handler.h"
 #include "CMSIS_extra/global_variables_handler.h"
+#include "util.h"
 
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 void steering_read(void *argument) {
-	uint16_t volante_cru;
+	UNUSED(argument);
+
+	double volante_cru;
 	for(;;) {
 		#ifdef DEBUG_ECU
 		extern void brkpt();
@@ -23,8 +26,7 @@ void steering_read(void *argument) {
 
 		volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
 
-		uint16_t volante_aux = volante_cru,
-				 zero_aux = ZERO_VOLANTE;
+		double zero_aux = ZERO_VOLANTE;
 
 		//Se o minimo do volante for menor que 0, o sensor voltara no valor maximo do ADC
 		//se isso acontecer, o valor do ADC voltara para 4095
@@ -32,8 +34,9 @@ void steering_read(void *argument) {
 		//o mesmo vale pro zero do volante
 		if (VOLANTE_MIN > VOLANTE_MAX) {
 			zero_aux -= 4095;
-			if (volante_cru > VOLANTE_MAX)
+			if (volante_cru > VOLANTE_MAX) {
 				volante_cru -= 4095;
+			}
 		}
 
 
@@ -41,7 +44,7 @@ void steering_read(void *argument) {
 			set_global_var_value(STEERING_WHEEL, 0);
 		}
 		else{
-			set_global_var_value(STEERING_WHEEL, volante_cru * GANHO_VOLANTE - ZERO_VOLANTE);
+			set_global_var_value(STEERING_WHEEL, (uint16_t) volante_cru * GANHO_VOLANTE - ZERO_VOLANTE);
 		}
 
 		STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);

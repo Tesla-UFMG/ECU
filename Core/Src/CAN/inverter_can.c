@@ -22,7 +22,7 @@ static FDCAN_TxHeaderTypeDef TxHeader;
 static uint8_t RxData[8];
 static FDCAN_RxHeaderTypeDef RxHeader;
 
-//função que inicializa a can do inversor, chamada em initializer.c.
+//funcao que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
     can_ptr = can_ref;
     void CAN_inverter_receive_callback(FDCAN_HandleTypeDef*, uint32_t);
@@ -30,13 +30,13 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
     initialize_CAN(can_ptr, CAN_inverter_receive_callback, CAN_inverter_error_callback, &TxHeader);
 }
 
-//função usada para transmitir alguma mensagem
+//funcao usada para transmitir alguma mensagem
 void inverter_can_transmit(uint32_t id, uint16_t* data) {
 	can_transmit(can_ptr, &TxHeader, id, data);
 	osDelay(CAN_DELAY);
 }
 
-//função de callback, chamada quando chega qualquer mensagem, de qualquer ID
+//funcao de callback, chamada quando chega qualquer mensagem, de qualquer ID
 void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs)  {
 	if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
 		if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
@@ -66,7 +66,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 	}
 }
 
-//callback que será chamado quando ouver erro de BUSOFF da CAN
+//callback que sera chamado quando ouver erro de BUSOFF da CAN
 void CAN_inverter_error_callback(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs){
     if(ErrorStatusITs | FDCAN_IT_BUS_OFF){
         issue_error(INVERTER_BUS_OFF_ERROR_FLAG, /*should_set_control_event_flag=*/false);    // chama o erro para a main_task tratar

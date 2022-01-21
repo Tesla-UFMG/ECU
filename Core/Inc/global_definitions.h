@@ -38,7 +38,7 @@ typedef struct //struct de modo
 	bool traction_control; //controle de tracao (1 ativo, 0 desat)
 	bool bat_safe; //reducao de consumo de bateria se em niveis criticos (1 ativo, 0 desat)
 	int torq_gain; //ganho de torque, aconselhavel q seja proporcional ao torque maximo ( de 0 a 40)
-	race_mode_t mode; // 1 enduro, 2 aceleração, 3 skidpad, 4 autox
+	race_mode_t mode; // 1 enduro, 2 aceleracao, 3 skidpad, 4 autox
 	cores_t cor;
 } modos;
 

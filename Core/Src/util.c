@@ -22,7 +22,7 @@ speed_pin_e get_speed_pin(uint16_t pin) {
     }
 }
 
-//retorna uma variável do tamanho de value, porém apenas com o bit mais significativo setado em value
+//retorna uma variavel do tamanho de value, porem apenas com o bit mais significativo setado em value
 uint32_t get_flag_MSB(uint32_t value) {
     uint32_t flag = 1 << 31; // flag = 2^32
     while (flag != 0) {

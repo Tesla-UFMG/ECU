@@ -49,7 +49,7 @@ void torque_manager(void *argument) {
             tick += LATERAL_DELAY;
             lateral_result_t result_lateral = lateral_control(); 						//Controller
             rampa_torque(ref_torque, result_lateral.torque_decrease);						// TODO: utilizar rampa_torque enquanto controle longitudinal nao estiver definido
-            // enviar referencia de torque												// TODO: fazer integração dos dois controles
+            // enviar referencia de torque												// TODO: fazer integracao dos dois controles
             send_ref_torque_message(ref_torque);
 
             osDelayUntil(tick);

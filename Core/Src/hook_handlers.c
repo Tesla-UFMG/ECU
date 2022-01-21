@@ -8,17 +8,13 @@
 #include "stm32h7xx.h"
 #include "util.h"
 
-//void vApplicationMallocFailedHook(void) {
+// void vApplicationMallocFailedHook(void) {
 //	//erro de alocacao de memoria
-//}
+// }
 
-void brkpt() {
-	;
-}
+void brkpt() { ; }
 
-void vAssertCalled( const char * pcFile,
-                    unsigned long ulLine )
-{
+void vAssertCalled(const char* pcFile, unsigned long ulLine) {
     UNUSED(pcFile);
     UNUSED(ulLine);
 
@@ -26,8 +22,7 @@ void vAssertCalled( const char * pcFile,
 
     taskENTER_CRITICAL();
     {
-        while( ul == 0 )
-        {
+        while (ul == 0) {
             portNOP();
         }
     }

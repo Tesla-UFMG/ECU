@@ -10,14 +10,13 @@
 
 #include "global_variables.h"
 
-
-#define P_ENABLE    0
-#define P_RUNSTOP   1
-#define P_BRAKE     2
-#define P_THROTTLE  3
+#define P_ENABLE   0
+#define P_RUNSTOP  1
+#define P_BRAKE    2
+#define P_THROTTLE 3
 
 // TODO(renanmoreira): reavaliar quantidade certa de delay
-#define CONTROLE_DELAY  50
-#define D_5_kmph_rpm     459
+#define CONTROLE_DELAY 50
+#define D_5_kmph_rpm   459
 
 #endif /* INC_CONTROLE_H_ */

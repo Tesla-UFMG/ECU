@@ -7,24 +7,23 @@
 #ifndef INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_
 #define INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_
 
-#include <stdint.h>
-#include "PID.h"
 #include "CMSIS_extra/global_variables_handler.h"
+#include "PID.h"
+#include <stdint.h>
 
 #define LONGITUDINAL_DELAY 30
-#define IDEAL_SLIP_DRY 13
-#define IDEAL_SLIP_WET 30
+#define IDEAL_SLIP_DRY     13
+#define IDEAL_SLIP_WET     30
 
-//defines PID LONGITUDINAL
-#define KP_LONGITUDINAL 6.51864262048678// TODO(renanmoreira): check values
+// defines PID LONGITUDINAL
+#define KP_LONGITUDINAL 6.51864262048678 // TODO(renanmoreira): check values
 #define KI_LONGITUDINAL 0.14843404179579
 #define TI_LONGITUDINAL (KP_LONGITUDINAL / KI_LONGITUDINAL)
 
-
 typedef struct {
-	double ref_decrease;
-	uint8_t wheel;
-	PID_t pid_longitudinal;
+    double ref_decrease;
+    uint8_t wheel;
+    PID_t pid_longitudinal;
 } longitudinal_t;
 
 typedef struct {

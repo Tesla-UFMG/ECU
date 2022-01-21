@@ -123,7 +123,7 @@ clang-tidy: create-build-dir
 	$(CLANG_TIDY) $(CLANG_TIDY_FLAGS) $(C_SOURCES_CORE) $(HEADERS_CORE) -- $(LDFLAGS) $(CFLAGS) $(STMFLAGS)
 
 clang-format: create-build-dir
- 	$(CLANG_FORMAT) $(CLANG_FORMAT_FLAGS) $(C_SOURCES_CORE) $(HEADERS_CORE)
+	$(CLANG_FORMAT) $(CLANG_FORMAT_FLAGS) $(C_SOURCES_CORE) $(HEADERS_CORE)
 
 # $(CLANG_TIDY_FILES):
 # 	@echo "Analyzing $(@:%.clang-tidy=%)"

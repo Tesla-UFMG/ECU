@@ -28,13 +28,16 @@ portability-*,$\
 readability-*,$\
 -readability-magic-numbers*
 
-CLANG_TIDY_EXTRA_FLAGS ?= \
+CLANG_TIDY_EXTRA_FLAGS ?=
 
 CLANG_TIDY_EXPORT_PATH := $(BUILD_DIR)/clang-tidy-export
 
 CLANG_TIDY_FLAGS := $(CLANG_TIDY_CHECKS) -export-fixes=$(CLANG_TIDY_EXPORT_PATH) $(CLANG_TIDY_EXTRA_FLAGS)
 
-CLANG_GOALS := clang-tidy clang
+CLANG_FORMAT := clang-format
+CLANG_FORMAT_FLAGS := -style=file -i
+
+CLANG_GOALS := clang-tidy clang clang-format
 
 ifneq (,$(filter $(CLANG_GOALS),$(MAKECMDGOALS)))
    USING_COMPILER := clang
@@ -114,10 +117,13 @@ OBJ_MAP := $(BUILD_DIR)/ECU.map
 OBJECTS_LIST := $(BUILD_DIR)/objects.list
 
 
-.PHONY: clang clang-tidy create-build-dir
+.PHONY: clang clang-tidy clang-format create-build-dir
 clang: main-build
 clang-tidy: create-build-dir
 	$(CLANG_TIDY) $(CLANG_TIDY_FLAGS) $(C_SOURCES_CORE) $(HEADERS_CORE) -- $(LDFLAGS) $(CFLAGS) $(STMFLAGS)
+
+clang-format: create-build-dir
+ 	$(CLANG_FORMAT) $(CLANG_FORMAT_FLAGS) $(C_SOURCES_CORE) $(HEADERS_CORE)
 
 # $(CLANG_TIDY_FILES):
 # 	@echo "Analyzing $(@:%.clang-tidy=%)"

@@ -72,7 +72,7 @@ ifeq (clang,$(USING_COMPILER))
     --target=arm-none-eabi \
     --sysroot=$(ARM_CORTEXM_SYSROOT)
 
-  COMPILER_SPECIFIC_CFLAGS += Wextra
+  COMPILER_SPECIFIC_CFLAGS += -Wextra
 
   COMPILER_SPECIFIC_LDFLAGS += \
     -L$(ARM_CORTEXM_SYSROOT)/lib/$(ARM_CORTEXM_MULTI_DIR) \

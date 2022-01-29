@@ -116,7 +116,8 @@ void controle(void *argument) {
 		#endif
 
 		bool disable;
-		disable = !get_individual_flag(ECU_control_event_id, RTD_FLAG); //disable will only be FALSE when RTD_FLAG is setted
+		//disable will only be FALSE when RTD_FLAG is setted
+		disable = !get_individual_flag(ECU_control_event_id, RTD_FLAG);
 
 
 		//getflag
@@ -151,8 +152,10 @@ void controle(void *argument) {
 
 void update_regen_state(vehicle_state_e vehicle_state){
     if (vehicle_state == S_BRAKE_E) {
-        osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);     // se frenagem ativa, seta flag de aviso
+        // se frenagem ativa, seta flag de aviso
+        osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);
     } else {
-        osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);   // se frenagem ativa, limpa flag de aviso
-}
+        // se frenagem ativa, limpa flag de aviso
+        osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);
+    }
 }

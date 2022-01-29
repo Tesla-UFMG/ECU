@@ -25,12 +25,14 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
         Error_Handler(); // NOLINT
     }
 
-    if (HAL_FDCAN_RegisterRxFifo0Callback(hfdcan, CAN_receive_callback) != HAL_OK) { //funcao para registrar a funcao de callback
+    //funcao para registrar a funcao de callback
+    if (HAL_FDCAN_RegisterRxFifo0Callback(hfdcan, CAN_receive_callback) != HAL_OK) {
         /* Callback Register Error */
         Error_Handler(); // NOLINT
     }
 
-    if (HAL_FDCAN_RegisterErrorStatusCallback(hfdcan, CAN_error_callback) != HAL_OK) { //funcao para registrar a funcao de callback
+    //funcao para registrar a funcao de callback
+    if (HAL_FDCAN_RegisterErrorStatusCallback(hfdcan, CAN_error_callback) != HAL_OK) {
         /* Callback Register Error */
         Error_Handler(); // NOLINT
     }

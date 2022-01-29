@@ -112,8 +112,8 @@ void set_global_var(global_vars_e type, void *message);
  *                      to the global variables's defined type.
  * \return void
  * \example
- * if called like 'set_global_var_value(THROTTLE_PERCENT, 100)' – i.e. type=THROTTLE_PERCENT and
- * value=100 – would get expanded to:
+ * if called like 'set_global_var_value(THROTTLE_PERCENT, 100)' - i.e. type=THROTTLE_PERCENT and
+ * value=100 - would get expanded to:
  *
  *  {
  *    THROTTLE_PERCENT_t THROTTLE_PERCENT_var = 100;
@@ -136,8 +136,8 @@ void set_global_var(global_vars_e type, void *message);
  *
  * \return the current value of the global variable, of type 'type_t' (e.g. type=THROTTLE_PERCENT would yield THROTTLE_PERCENT_t)
  * \example
- * if called like 'THROTTLE_PERCENT_t thr = get_global_var_value(THROTTLE_PERCENT)' – i.e.
- * type=THROTTLE_PERCENT – would get expanded to:
+ * if called like 'THROTTLE_PERCENT_t thr = get_global_var_value(THROTTLE_PERCENT)' - i.e.
+ * type=THROTTLE_PERCENT - would get expanded to:
  *
  *      THROTTLE_PERCENT_t thr = ({
  *                                   THROTTLE_PERCENT_t THROTTLE_PERCENT_var;

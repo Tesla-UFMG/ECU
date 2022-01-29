@@ -22,12 +22,13 @@ speed_pin_e get_speed_pin(uint16_t pin) {
     }
 }
 
-//retorna uma variável do tamanho de value, porém apenas com o bit mais significativo setado em value
+//retorna uma variavel do tamanho de value, porem apenas com o bit mais significativo setado em value
 uint32_t get_flag_MSB(uint32_t value) {
     uint32_t flag = 1 << 31; // flag = 2^32
     while (flag != 0) {
-        if (value & flag)
+        if (value & flag) {
             return flag;
+}
         flag >>= 1;
     }
     return 0;
@@ -37,7 +38,7 @@ bool get_individual_flag(osEventFlagsId_t ef_id, uint32_t flag){
     return (osEventFlagsGet(ef_id) & flag);
 }
 
-uint16_t concatenate_two_uint8_to_uint16(uint8_t* data) {
+uint16_t concatenate_two_uint8_to_uint16(const uint8_t* data) {
     return (data[1] << 8 | data[0]);
 }
 

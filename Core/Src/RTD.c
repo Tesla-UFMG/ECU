@@ -20,20 +20,23 @@ bool can_RTD_be_enabled();
 void set_RTD();
 
 void RTD(void *argument) {
-    //seta o led rgb no primeira execução do código
+	UNUSED(argument);
+
+    //seta o led rgb no primeira execucao do codigo
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
 
     for(;;) {
 
-        osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);     //espera receber flag q o botão de RTD foi pressionado
+        osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);     //espera receber flag q o botao de RTD foi pressionado
 
         bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
 
         if (!is_RTD_active) {
-            if(can_RTD_be_enabled())
+            if(can_RTD_be_enabled()) {
                 set_RTD();                                                  //seta RTD
-            else
-                set_debugleds(DEBUGLED1,BLINK,2);                           //envia uma mensagem de alerta caso n seja possível acionar RTD
+            } else {
+                set_debugleds(DEBUGLED1,BLINK,2);                           //envia uma mensagem de alerta caso n seja possivel acionar RTD
+}
         }
     }
 }

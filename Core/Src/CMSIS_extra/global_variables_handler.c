@@ -35,7 +35,7 @@ static global_variable_message_queue_data_t queues_info[_global_vars_quan];
 #define INSTANTIATE_GLOBAL_VAR_QUEUE(var_name)                                 \
     /* get a pointer to the queue_data struct intance at position var_name*/   \
     global_variable_message_queue_data_t *var_name##_info =                    \
-        queues_info + var_name;                                                \
+        queues_info + (var_name);                                                \
     /* defines queue name as q_var_name */                                     \
     var_name##_info->attr = (osMessageQueueAttr_t){.name = "q_" #var_name};    \
     /* create queue of size 1, storing the queue id in the pointer created     \

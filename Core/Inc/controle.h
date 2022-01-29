@@ -16,8 +16,8 @@
 #define P_BRAKE     2
 #define P_THROTTLE  3
 
-//TODO: reavaliar quantidade certa de delay
+// TODO(renanmoreira): reavaliar quantidade certa de delay
 #define CONTROLE_DELAY  50
-#define _5_kmph_rpm     459
+#define D_5_kmph_rpm     459
 
 #endif /* INC_CONTROLE_H_ */

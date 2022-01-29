@@ -7,7 +7,7 @@
 #include "CAN/CAN_IDs.h"
 
 CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
-//TODO: talvez aumentar capacidade se precisar de mais ids de debug
+// TODO(renanmoreira): talvez aumentar capacidade se precisar de mais ids de debug
 uint16_t CAN_ID_POS_INTERNAL_ID_MAP[(ECU_CAN_LAST_POPULATED_ID-ECU_CAN_INITIAL_ID+1)*4+8];
 
 

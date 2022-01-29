@@ -16,6 +16,8 @@
 
 
 void seleciona_modo(void *argument) {
+	UNUSED(argument);
+
     for(;;) {
 
         #ifdef DEBUG_ECU
@@ -23,7 +25,7 @@ void seleciona_modo(void *argument) {
         brkpt();
         #endif
 
-        //espera um semáforo liberado por interrupção e espera está autorizado a mudar de modo
+        //espera um semaforo liberado por interrupcao e espera esta autorizado a mudar de modo
         osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 
         bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);

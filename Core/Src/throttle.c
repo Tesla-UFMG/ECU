@@ -33,6 +33,7 @@ static uint16_t apps2_throttle_percent = 0;
 static uint16_t throttle_percent = 0;
 
 void throttle_read(void *argument) {
+	UNUSED(argument);
 
     for (;;) {
 
@@ -69,16 +70,20 @@ void throttle_read(void *argument) {
 }
 
 uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
-    if(apps_value < 0)
+    if(apps_value < 0) {
         return 0;
-    else if(apps_value >= ref->value[APPS_MATRIX_LENGTH-1])
+    }
+    if(apps_value >= ref->value[APPS_MATRIX_LENGTH-1])
+    {
         return 1000;
-    else
-        for (int i=0; i<APPS_MATRIX_LENGTH; i++) {                          // compara o valor do APPS com as faixas de acionamento
-            if(apps_value < ref->value[i]) {                                 // para escolher quais parametros utilizar durante o
-                return (ref->fix_mul[i] * apps_value + ref->fix_add[i]);      // calculo da porcentagem
+    }
+
+    for (int i=0; i<APPS_MATRIX_LENGTH; i++) {                          // compara o valor do APPS com as faixas de acionamento
+        if(apps_value < ref->value[i]) {                                 // para escolher quais parametros utilizar durante o
+            return (uint16_t) (ref->fix_mul[i] * (float) apps_value + ref->fix_add[i]);      // calculo da porcentagem
         }
     }
+
     return 0;
 }
 
@@ -87,18 +92,16 @@ bool is_there_APPS_error() {            //Regulamento: T.4.2 (2021)
          || apps2_value < APPS2_MIN     //ou abaixo do seu minimo
          || apps1_value > APPS1_MAX     //Se o valor de APPS1 for acima do seu maximo
          || apps1_value < APPS1_MIN     //ou abaixo do seu minimo
-         || abs(apps1_throttle_percent - apps2_throttle_percent)/10 > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE)    //Se os APPS1 e APPS2 discordarem em mais de 10%
+         || abs(apps1_throttle_percent - apps2_throttle_percent)/10 > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {    //Se os APPS1 e APPS2 discordarem em mais de 10%
         return true;
-    else
-        return false;
+    }         return false;
 }
 
 bool is_there_BSE_error() {
     bool is_BSE_error_active = get_individual_flag(ECU_control_event_id, BSE_ERROR_FLAG);
-    if (is_BSE_error_active)
+    if (is_BSE_error_active) {
         return (throttle_percent >= APPS_05_PERCENT);                         //Regulamento: EV.5.7.2 (2021)
-    else
-        return (throttle_percent > APPS_25_PERCENT && bse > BRAKE_ACTIVE);    //Regulamento: EV.5.7.1 (2021)
+    }         return (throttle_percent > APPS_25_PERCENT && bse > BRAKE_ACTIVE);    //Regulamento: EV.5.7.1 (2021)
 }
 
 bool is_there_SU_F_error() {

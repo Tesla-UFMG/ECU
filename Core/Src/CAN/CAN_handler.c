@@ -9,7 +9,7 @@
 
 
 
-//função para inicializar a CAN
+//funcao para inicializar a CAN
 void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
                     void (* CAN_receive_callback)(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs),
                     void (* CAN_error_callback)(FDCAN_HandleTypeDef *hfdcan, uint32_t ErrorStatusITs),
@@ -17,27 +17,27 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
 
     if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
         /* Notification Error */
-        Error_Handler();
+        Error_Handler(); // NOLINT
     }
 
     if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_BUS_OFF, 0) != HAL_OK) {
         /* Notification Error */
-        Error_Handler();
+        Error_Handler(); // NOLINT
     }
 
-    if (HAL_FDCAN_RegisterRxFifo0Callback(hfdcan, CAN_receive_callback) != HAL_OK) { //função para registrar a função de callback
+    if (HAL_FDCAN_RegisterRxFifo0Callback(hfdcan, CAN_receive_callback) != HAL_OK) { //funcao para registrar a funcao de callback
         /* Callback Register Error */
-        Error_Handler();
+        Error_Handler(); // NOLINT
     }
 
-    if (HAL_FDCAN_RegisterErrorStatusCallback(hfdcan, CAN_error_callback) != HAL_OK) { //função para registrar a função de callback
+    if (HAL_FDCAN_RegisterErrorStatusCallback(hfdcan, CAN_error_callback) != HAL_OK) { //funcao para registrar a funcao de callback
         /* Callback Register Error */
-        Error_Handler();
+        Error_Handler(); // NOLINT
     }
 
     if (HAL_FDCAN_Start(hfdcan) != HAL_OK) {
         /* Start Error */
-        Error_Handler();
+        Error_Handler(); // NOLINT
     }
 
     TxHeader->IdType = FDCAN_STANDARD_ID;
@@ -51,12 +51,12 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
 }
 
 
-//função que realiza a transmissão da mensagem
+//funcao que realiza a transmissao da mensagem
 void can_transmit(FDCAN_HandleTypeDef* hfdcan, FDCAN_TxHeaderTypeDef* TxHeader, uint32_t id, uint16_t* data) {
 	TxHeader->Identifier = id;
 	if (HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, TxHeader, (uint8_t*)data) != HAL_OK) {
 		//deu ruim
-		//TODO: tratar quando falhar envio de mensagem de can ao inversor
+		// TODO(renanmoreira): tratar quando falhar envio de mensagem de can ao inversor
 	}
 }
 

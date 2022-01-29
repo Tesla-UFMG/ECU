@@ -20,6 +20,7 @@ osStatus_t set_debugleds(uint16_t lednumber, ControlDebugLED_e control, uint8_t 
 }
 
 void debugleds(void *argument) {
+	UNUSED(argument);
 
 	debugled_message_t message;
 
@@ -29,7 +30,7 @@ void debugleds(void *argument) {
 	brkpt();
 	#endif
 
-		osMessageQueueGet(q_debugleds_messageHandle, &message, NULL, osWaitForever); 	//espera até alguma mensagem chegar
+		osMessageQueueGet(q_debugleds_messageHandle, &message, NULL, osWaitForever); 	//espera ate alguma mensagem chegar
 		switch (message.control){
 			case ON:
 				HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET); 			//acende o led escolhido
@@ -42,7 +43,7 @@ void debugleds(void *argument) {
 				break;
 			case BLINK:
 				for(uint8_t i = 0; i < message.amount; i++){ 							//pisca o led escolhido por quantas vezes selecionadas
-					HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);		//delays garante que é possível contar quantas vezes piscou
+					HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);		//delays garante que eh possivel contar quantas vezes piscou
 					osDelay(300);
 					HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_SET);
 					osDelay(300);

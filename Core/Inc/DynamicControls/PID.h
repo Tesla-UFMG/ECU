@@ -32,7 +32,7 @@ void PID_set_parameters(PID_t* pid, double Kp, double Ti, double Td);
 void PID_set_limits(PID_t* pid, double max_output, double min_output);
 void PID_set_sample_period(PID_t* pid, double sample_period);
 
-__attribute__((always_inline)) static inline
+__attribute__((always_inline)) inline
 double PID_compute(PID_t* pid, double input)
 {
 	double error = pid->Setpoint-input;
@@ -41,8 +41,10 @@ double PID_compute(PID_t* pid, double input)
 				   (pid->C2 * (2.0*pid->input_state[0] - input - pid->input_state[1]));
 
 	//prevenir windup
-	if (pid->output > pid->max_output) pid->output = pid->max_output;
-	if (pid->output < pid->min_output) pid->output = pid->min_output;
+	if (pid->output > pid->max_output) { pid->output = pid->max_output;
+}
+	if (pid->output < pid->min_output) { pid->output = pid->min_output;
+}
 
 	/* atualizar estados */
 	pid->error_state[1] = pid->error_state[0];
@@ -50,7 +52,7 @@ double PID_compute(PID_t* pid, double input)
 	pid->input_state[1] = pid->input_state[0];
 	pid->input_state[0] = input;
 
-	/* retorna saída */
+	/* retorna saida */
 	return (pid->output);
 }
 

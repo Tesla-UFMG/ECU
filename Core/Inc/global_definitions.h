@@ -38,7 +38,7 @@ typedef struct //struct de modo
 	bool traction_control; //controle de tracao (1 ativo, 0 desat)
 	bool bat_safe; //reducao de consumo de bateria se em niveis criticos (1 ativo, 0 desat)
 	int torq_gain; //ganho de torque, aconselhavel q seja proporcional ao torque maximo ( de 0 a 40)
-	race_mode_t mode; // 1 enduro, 2 aceleração, 3 skidpad, 4 autox
+	race_mode_t mode; // 1 enduro, 2 aceleracao, 3 skidpad, 4 autox
 	cores_t cor;
 } modos;
 
@@ -126,24 +126,24 @@ typedef enum {
 #define INVERTER_BUS_OFF_ERROR_FLAG (1 << 22)
 
 
-#define ALL_WARN_FLAG               REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG
-#define ALL_MINOR_ERROR_FLAG        APPS_ERROR_FLAG | BSE_ERROR_FLAG
-#define ALL_SEVERE_ERROR_FLAG       INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG
-#define ALL_ERRORS_FLAG             APPS_ERROR_FLAG | BSE_ERROR_FLAG | INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG | INVERTER_BUS_OFF_ERROR_FLAG
+#define ALL_WARN_FLAG               (REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG)
+#define ALL_MINOR_ERROR_FLAG        (APPS_ERROR_FLAG | BSE_ERROR_FLAG)
+#define ALL_SEVERE_ERROR_FLAG       (INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG)
+#define ALL_ERRORS_FLAG             (APPS_ERROR_FLAG | BSE_ERROR_FLAG | INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG | INVERTER_BUS_OFF_ERROR_FLAG)
 
-#define ALL_THROTTLE_ERROR_FLAG     APPS_ERROR_FLAG | BSE_ERROR_FLAG
+#define ALL_THROTTLE_ERROR_FLAG     (APPS_ERROR_FLAG | BSE_ERROR_FLAG)
 
 
 
 //FUNCOES
 
 //seta o bit na posicao pos do byte como state
-__attribute__((always_inline)) static inline
+__attribute__((always_inline)) inline
 void set_bit(uint32_t* byte, uint8_t pos, uint8_t state) {
 	*byte ^= (-(!!((unsigned long)state)) ^ *byte) & (1UL << pos);
 }
 
-__attribute__((always_inline)) static inline
+__attribute__((always_inline)) inline
 void set_bit8(uint8_t* byte, uint8_t pos, uint8_t state) {
 	*byte ^= (-(!!((unsigned long)state)) ^ *byte) & (1UL << pos);
 }

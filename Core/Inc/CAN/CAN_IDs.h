@@ -82,7 +82,7 @@ typedef struct {
 } CAN_ID_t;
 
 extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
-                                            //TODO: IMPLEMENT X-MACROS FOR CAN_ID'S
+                                            // TODO(renanmoreira): IMPLEMENT X-MACROS FOR CAN_ID'S
 #define ECU_CAN_INITIAL_ID 				100
 #define ECU_CAN_FINAL_ID 				149
 #define ECU_CAN_LAST_POPULATED_ID 		113

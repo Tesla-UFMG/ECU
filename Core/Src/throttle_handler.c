@@ -10,6 +10,8 @@
 #include "CAN/CAN_IDs.h"
 
 void throttle_handler(void *argument) {
+	UNUSED(argument);
+
 	torque_message_t message;
 	for (;;) {
 		#ifdef DEBUG_ECU
@@ -17,7 +19,7 @@ void throttle_handler(void *argument) {
 		brkpt();
 		#endif
 
-		//espera indefinidamente até alguma mensagem de torque$ chegar
+		//espera indefinidamente ate alguma mensagem de torque$ chegar
 		osMessageQueueGet(q_torque_messageHandle, &message, NULL, osWaitForever);
 
 

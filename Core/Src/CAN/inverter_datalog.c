@@ -6,21 +6,22 @@
  */
 
 #include "CAN/inverter_datalog.h"
+#include "datalogger.h"
 #include "CAN/CAN_IDs.h"
 #include "CAN/general_can.h"
-#include "CAN/inverter_can_data_manager.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "global_definitions.h"
 #include "cmsis_os.h"
 #include "datalog_acquisition.h"
 #include "datalog_handler.h"
-#include "datalogger.h"
-#include "global_definitions.h"
-#include "global_instances.h"
 #include "global_variables.h"
+#include "global_instances.h"
 #include "util.h"
+#include "CMSIS_extra/global_variables_handler.h"
+#include "CAN/inverter_can_data_manager.h"
 
-void inverter_datalog() {
-    for (;;) {
+
+void inverter_datalog(){
+    for(;;){
         log_data(ID_SPEED_L_MOTOR, get_value(speed_m_l));
         log_data(ID_SPEED_R_MOTOR, get_value(speed_m_r));
         log_data(ID_POWER_L_MOTOR, get_value(power_m_l));

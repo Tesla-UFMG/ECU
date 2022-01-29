@@ -26,7 +26,8 @@ lateral_result_t lateral_control() {
     WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
-    GYRO_YAW_t gyro_yaw = get_global_var_value(GYRO_YAW); // TODO(renanmoreira): receber GYRO_YAW em algum lugar
+    GYRO_YAW_t gyro_yaw = get_global_var_value(GYRO_YAW);
+    // TODO(renanmoreira): receber GYRO_YAW em algum lugar
 
     double cg_speed;
     double gyro_adjusted;    // entre -1.5 e 1.5
@@ -39,24 +40,26 @@ lateral_result_t lateral_control() {
     double calc_gyro(uint16_t gyro_yaw);
     float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
 
-    // speed
-    cg_speed = avg(wheel_speeds.speed[FRONT_RIGHT],wheel_speeds.speed[FRONT_LEFT]) / (10 * 3.6); // velocidade em m/s
+    // velocidade em m/s
+    cg_speed = avg(wheel_speeds.speed[FRONT_RIGHT],wheel_speeds.speed[FRONT_LEFT]) / (10 * 3.6);
     // steering
     steering_adjusted = calc_steering(steering_wheel, internal_wheel);
     // yaw rate
     gyro_adjusted = calc_gyro(gyro_yaw);
     desired_yaw = cg_speed * steering_adjusted / (WHEELBASE + KU * cg_speed * cg_speed);
     max_yaw = sign(steering_adjusted) * FRICTION_COEFFICIENT * GRAVITY / cg_speed;
-    // max desired yaw (setpoint)
-    setpoint = fabs(desired_yaw) > fabs(max_yaw) ? max_yaw : desired_yaw; // o menor valor, em modulo, sera o setpoint
+    // max desired yaw (setpoint), o menor valor, em modulo
+    setpoint = fabs(desired_yaw) > fabs(max_yaw) ? max_yaw : desired_yaw;
     // PID
     PID_set_setpoint(&pid_lateral, setpoint);
     pid_result = PID_compute(&pid_lateral, gyro_adjusted);
     // variavel de retorno
-    if (pid_result > 0) {       // se o sinal for positivo, a reducao sera
-    	ref_torque_result.torque_decrease[R_MOTOR] = fabs(pid_result);    // na roda direita
-    } else {                                   								// caso contrario, sera
-    	ref_torque_result.torque_decrease[L_MOTOR] = fabs(pid_result);    // na roda esquerda
+
+    // se o sinal for positivo, a reducao sera na roda direita caso contrario, sera na roda esquerda
+    if (pid_result > 0) {
+    	ref_torque_result.torque_decrease[R_MOTOR] = fabs(pid_result);    /
+    } else {
+    	ref_torque_result.torque_decrease[L_MOTOR] = fabs(pid_result);
 }
 
     return ref_torque_result;
@@ -67,16 +70,18 @@ lateral_result_t lateral_control() {
 double calc_gyro(uint16_t gyro_yaw) {
     // ajusta o valor do yaw para aquele usado no pid
     double gyro_adjusted;
-    if (gyro_yaw < HALF_GYRO) {                              // na primeira metade, esta virando
-        gyro_adjusted = (double)gyro_yaw/ADJUST_GYRO_R;    // a direita (valor positivo)
-    } else {                                                    // e na segunda, a esquerda (negativo)
+    // na primeira metade, virando a direita (valor positivo) e na segunda, a esquerda (negativo)
+    if (gyro_yaw < HALF_GYRO) {
+        gyro_adjusted = (double)gyro_yaw/ADJUST_GYRO_R;
+    } else {
         gyro_adjusted = - (double)gyro_yaw/ADJUST_GYRO_L;
 }
 
     return gyro_adjusted;
 }
 
-float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel){ // TODO(renanmoreira): verificar valor do steering
+// TODO(Luiza): verificar valor do steering
+float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel){
     float steering_adjusted;
     if (internal_wheel == DIREITA) {
         steering_adjusted = Y0 + ((Y1-Y0)/(X1-X0)) * ((float)steering_wheel - X0);

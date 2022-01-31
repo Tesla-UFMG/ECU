@@ -43,30 +43,32 @@ void rgb_led(void *argument) {
         brkpt();
         #endif
 
-        switch(osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, RGB_BLINK_DELAY)){  //espera RTD ser setado ou timeout estourar
+        //espera RTD ser setado ou timeout estourar
+        switch(osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, RGB_BLINK_DELAY)){
 
-        case osErrorTimeout:                                                                   //caso timeout estore vai piscar o led, indicando que ta fora do RTD
-            write_rgb_color(get_rgb_color(message.color));
-            blink_rgb(RGB_BLINK_DELAY);
+            //caso timeout estore vai piscar o led, indicando que ta fora do RTD
+            case osErrorTimeout:
+                write_rgb_color(get_rgb_color(message.color));
+                blink_rgb(RGB_BLINK_DELAY);
             break;
 
-        default:
-            switch (message.control){
-                case FIXED:
-                    for(;;){
-                    write_rgb_color(get_rgb_color(message.color));
-                    osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, osWaitForever);
-                    if (message.control == BLINK200) {
+            default:
+                switch (message.control){
+                    case FIXED:
+                        for(;;){
+                            write_rgb_color(get_rgb_color(message.color));
+                            osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, osWaitForever);
+                            if (message.control == BLINK200) {
+                                break;
+                            }
+                        }
                         break;
-}
-                    }
-                    break;
                 default:
                     write_rgb_color(get_rgb_color(message.color));
                     blink_rgb(RGB_BLINK_DELAY);
                     break;
-            }
-            break;
+                }
+                break;
         }
     }
 }

@@ -30,20 +30,26 @@ void debugleds(void *argument) {
 	brkpt();
 	#endif
 
-		osMessageQueueGet(q_debugleds_messageHandle, &message, NULL, osWaitForever); 	//espera ate alguma mensagem chegar
+	    //espera ate alguma mensagem chegar
+		osMessageQueueGet(q_debugleds_messageHandle, &message, NULL, osWaitForever);
 		switch (message.control){
 			case ON:
-				HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET); 			//acende o led escolhido
+			    //acende o led escolhido
+				HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);
 				break;
 			case OFF:
-				HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_SET); 				//apaga o led escolhido
+			    //apaga o led escolhido
+				HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_SET);
 				break;
 			case TOGGLE:
-				HAL_GPIO_TogglePin(GPIOE, message.lednumber); 							//toggle o led escolhido
+			    //toggle o led escolhido
+				HAL_GPIO_TogglePin(GPIOE, message.lednumber);
 				break;
 			case BLINK:
-				for(uint8_t i = 0; i < message.amount; i++){ 							//pisca o led escolhido por quantas vezes selecionadas
-					HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);		//delays garante que eh possivel contar quantas vezes piscou
+			    //pisca o led escolhido, pelo valor de vezes escolhido
+			    //delays garante que eh possivel contar quantas vezes piscou
+				for(uint8_t i = 0; i < message.amount; i++){
+					HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);
 					osDelay(300);
 					HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_SET);
 					osDelay(300);

@@ -28,66 +28,79 @@ void main_task(void *argument) {
         brkpt();
         #endif
 
-        osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);        //espera RTD ser acionado. Por meio da RTD_FLAG
+        // espera RTD ser acionado. Por meio da RTD_FLAG
+        osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
 
-        osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);     //espera por qualquer erro
-        uint32_t error_flags = osThreadFlagsGet();                                              //obtem os valores de flag de thread
-        uint32_t event_flags = osEventFlagsGet(ECU_control_event_id);                           //obtem os valores de flag de evento
-        uint32_t most_significant_error_flags = get_flag_MSB(error_flags & ALL_ERRORS_FLAG);    //obtem a flag de threa mais significativa
+        // espera por qualquer erro
+        osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear, osWaitForever);
+        // obtem os valores de flag de thread e de evento
+        uint32_t error_flags = osThreadFlagsGet();
+        uint32_t event_flags = osEventFlagsGet(ECU_control_event_id);
+        // obtem a flag de thread mais significativa, ela que sera tratada
+        uint32_t most_significant_error_flags = get_flag_MSB(error_flags & ALL_ERRORS_FLAG);
         bool isErrorPresent;
         switch (most_significant_error_flags) {
 
-            //O erro de bus off da can do inversor so sera tratado se ocorrer mais de uma vez em um curto periodo de tempo (tempo definido por : BUS_OFF_ERROR_TIME)
-            //assim o RTD sera desabilitado somente se tiver o erro frequente na CAN.
+            // O erro de bus off da can do inversor so sera tratado se ocorrer mais de uma vez em um
+            // curto periodo de tempo (tempo definido por : BUS_OFF_ERROR_TIME), assim o RTD sera
+            // desabilitado somente se tiver o erro frequente na CAN.
             case INVERTER_BUS_OFF_ERROR_FLAG:
-                isErrorPresent = event_flags & INVERTER_BUS_OFF_ERROR_FLAG;                     //verifica se o erro esta presente na flag de evento
+                //verifica se o erro esta presente na flag de evento, caso esteja sai de RTD
+                isErrorPresent = event_flags & INVERTER_BUS_OFF_ERROR_FLAG;
                 if (isErrorPresent) {
-                    exit_RTD();                                                                 //sai de RTD caso o erro esteja presente
-                } else {                                                                        //caso o erro nao esteja ainda:
-                    osEventFlagsSet(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG);         //seta a flag de evento para que caso tenha erro novamente saia de RTD
-                    osThreadFlagsClear(INVERTER_BUS_OFF_ERROR_FLAG);                            //limpa flag de thread do erro
-                    osTimerStart(tim_inverter_BUS_OFF_errorHandle, BUS_OFF_ERROR_TIME);         //inicia o timer para zerar a flag
-                }
+                    exit_RTD();
+                } else {
+                    // caso o erro nao esteja presente a flag de evento sera setada e um timer
+                    // iniciado para que caso tenha o erro novamente saia de RTD
+                    osEventFlagsSet(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG);
+                    osThreadFlagsClear(INVERTER_BUS_OFF_ERROR_FLAG);
+                    osTimerStart(tim_inverter_BUS_OFF_errorHandle, BUS_OFF_ERROR_TIME);
                 break;
 
             case INVERTER_COMM_ERROR_FLAG:
-                //todo: implementar erro de comunicacao com inversor
-                isErrorPresent = event_flags & INVERTER_COMM_ERROR_FLAG;    //verifica se o erro ainda esta presente na flag de evento
+                // verifica se o erro ainda esta presente na flag de evento, caso esteja sai de RTD,
+                // caso não esteja a flag de thread é resetada
+                isErrorPresent = event_flags & INVERTER_COMM_ERROR_FLAG;
                 if (isErrorPresent) {
-                    exit_RTD();                                             //sai de RTD caso o erro esteja presente
-                } else {                                                    //caso o erro tenha sido resolvido:
-                    osThreadFlagsClear(INVERTER_COMM_ERROR_FLAG);           //limpa flag de thread do erro
+                    exit_RTD();
+                } else {
+                    osThreadFlagsClear(INVERTER_COMM_ERROR_FLAG);
                 }
                 break;
 
             case SU_F_ERROR_FLAG:
-                isErrorPresent = event_flags & SU_F_ERROR_FLAG;             //verifica se o erro ainda esta presente na flag de evento
+                // verifica se o erro ainda esta presente na flag de evento, caso esteja sai de RTD,
+                // caso não esteja a flag de thread é resetada e o led volta ao normal
+                isErrorPresent = event_flags & SU_F_ERROR_FLAG;
                 if (isErrorPresent) {
-                    exit_RTD();                                             //sai de RTD caso o erro esteja presente
-                } else {                                                    //caso o erro tenha sido resolvido:
-                    osThreadFlagsClear(SU_F_ERROR_FLAG);                    //limpa flag de thread do erro
+                    exit_RTD();
+                } else {
+                    osThreadFlagsClear(SU_F_ERROR_FLAG);
                 }
                 break;
 
-            case APPS_ERROR_FLAG:                                                       //Regulamento: T.4.2 (2021)
-                isErrorPresent = event_flags & APPS_ERROR_FLAG;                         //verifica se o erro ainda esta presente na flag de evento
-                if (isErrorPresent) {                                                   //caso o erro esteja presente:
-                    set_rgb_led(AMARELO, NO_CHANGE);                                    //seta o led rgb como amarelo
+            case APPS_ERROR_FLAG:       //Regulamento: T.4.2 (2021)
+
+                isErrorPresent = event_flags & APPS_ERROR_FLAG;
+                if (isErrorPresent) {
+                    set_rgb_led(AMARELO, NO_CHANGE);
                     osDelay(20);
-                } else {                                                                //caso o erro tenha sido resolvido:
-                    osThreadFlagsClear(APPS_ERROR_FLAG);                                //limpa flag de thread do erro
-                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);    //retorna o RGB ao funcionamento normal
+                } else {
+                    osThreadFlagsClear(APPS_ERROR_FLAG);
+                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);
                 }
                 break;
 
-            case BSE_ERROR_FLAG:                                                        //Regulamento: EV.5.7 (2021)
-                isErrorPresent = event_flags & BSE_ERROR_FLAG;                          //verifica se o erro ainda esta presente na flag de evento
-                if (isErrorPresent) {                                                   //caso o erro esteja presente:
-                    set_rgb_led(AMARELO, NO_CHANGE);                                    //seta o led rgb como amarelo
+            case BSE_ERROR_FLAG:        //Regulamento: EV.5.7 (2021)
+                // verifica se o erro ainda esta presente na flag de evento, caso esteja seta o led
+                // como amarelo, caso não esteja a flag de thread é resetada e o led volta ao normal
+                isErrorPresent = event_flags & BSE_ERROR_FLAG;
+                if (isErrorPresent) {
+                    set_rgb_led(AMARELO, NO_CHANGE);
                     osDelay(20);
-                } else {                                                                //caso o erro tenha sido resolvido:
-                    osThreadFlagsClear(BSE_ERROR_FLAG);                                 //limpa flag de thread do erro
-                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);    //retorna o RGB ao funcionamento normal
+                } else {
+                    osThreadFlagsClear(BSE_ERROR_FLAG);
+                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);
                 }
                 break;
 

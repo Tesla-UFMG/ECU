@@ -17,7 +17,8 @@
 #include "constants.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
-//inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs mantendo a prioridade maxima de ISRs
+//inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs
+// mantendo a prioridade maxima de ISRs
 void init_NVIC_priorities() {
 	NVIC_SetPriority(S_VEL1_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
 	NVIC_SetPriority(S_VEL2_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
@@ -43,7 +44,7 @@ uint16_t debug_milis =0, debug_milis_ant = 0;
 extern FDCAN_HandleTypeDef hfdcan1;
 extern FDCAN_HandleTypeDef hfdcan2;
 
-//inicializar a CAN, chamada na main.c. Existe outra funcao que inicializa o periferico da CAN na main.c
+//inicializar a CAN, chamada na main.c. Outra funcao que inicializa o periferico da CAN na main.c
 void init_CAN() {
 	  initialize_inverter_CAN(&hfdcan1);
 	  initialize_general_CAN(&hfdcan2);
@@ -92,17 +93,6 @@ void inicializa_modos() {
 	autox.torq_gain = 25;
 	autox.mode = AUTOX;
 	autox.cor = AZUL;
-
-
-
-//	reverse.tor_max = 500;
-//	reverse.vel_max = 450;
-//	reverse.freio_regen = 0;
-//	reverse.dif_elt = 0;
-//	reverse.traction_control = 0;
-//	reverse.bat_safe = 1;
-//	reverse.torq_gain = 10;
-//	reverse.cor = AMARELO;
 
 	erro.tor_max = 0;
 	erro.vel_max = 0;

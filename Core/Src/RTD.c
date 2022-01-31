@@ -27,26 +27,30 @@ void RTD(void *argument) {
 
     for(;;) {
 
-        osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);     //espera receber flag q o botao de RTD foi pressionado
+        //espera receber flag q o botao de RTD foi pressionado
+        osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 
         bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
 
         if (!is_RTD_active) {
             if(can_RTD_be_enabled()) {
-                set_RTD();                                                  //seta RTD
+                set_RTD();
             } else {
-                set_debugleds(DEBUGLED1,BLINK,2);                           //envia uma mensagem de alerta caso n seja possivel acionar RTD
-}
+                //envia uma mensagem de alerta caso n seja possivel acionar RTD
+                set_debugleds(DEBUGLED1,BLINK,2);
+            }
         }
     }
 }
 
 
 void exit_RTD() {
-    set_global_var_value(SELECTED_MODE, erro);          //seta modo_selecionado como erro
+    //seta modo_selecionado como erro
+    set_global_var_value(SELECTED_MODE, erro);
     set_global_var_value(RACE_MODE, ERRO);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
-    osEventFlagsClear(ECU_control_event_id, RTD_FLAG);  //limpa flag de RTD
+    //limpa flag de RTD
+    osEventFlagsClear(ECU_control_event_id, RTD_FLAG);
 }
 
 /*
@@ -73,12 +77,14 @@ void exit_RTD() {
  *      TODO: Allow RTD activation from the status check of the AIRs.
  */
 bool can_RTD_be_enabled() {
-    uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);                           //obtem todas as flags
-    error_flags &= ALL_SEVERE_ERROR_FLAG;                                                   //filtra apenas flags de erros severos, ignorando as outras
+    //obtem todas as flags e filtra apenas flags de erros severos, ignorando as outras
+    uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
+    error_flags &= ALL_SEVERE_ERROR_FLAG;
     BRAKE_STATUS_t is_brake_active = get_global_var_value(BRAKE_STATUS);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
-    bool is_inverter_ready = get_individual_flag(ECU_control_event_id, INVERTER_READY);     // flag that indicates when the inverter precharge time has passed and the inverter is ready
+    // flag that indicates when the inverter precharge time has passed and the inverter is ready
+    bool is_inverter_ready = get_individual_flag(ECU_control_event_id, INVERTER_READY);
     if(is_brake_active && !is_throttle_active &&  !error_flags && (race_mode != ERRO) && is_inverter_ready) {
         return true;
     }
@@ -86,7 +92,8 @@ bool can_RTD_be_enabled() {
 }
 
 void set_RTD() {
-    osEventFlagsSet(ECU_control_event_id, RTD_FLAG);                                         //Seta flag de RTD
+    //Seta flag de RTD
+    osEventFlagsSet(ECU_control_event_id, RTD_FLAG);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
     aciona_sirene();
 }

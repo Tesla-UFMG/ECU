@@ -32,26 +32,30 @@ void torque_manager(void *argument) {
         brkpt();
         #endif
 
-		//osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
         void rampa_torque(uint32_t *ref_torque, const double *ref_torque_decrease);
         void send_ref_torque_message (const uint32_t *ref_torque);
 
         switch (g_control_type) {
         case LONGITUDINAL:
             tick += LONGITUDINAL_DELAY;
-            longitudinal_control_result_t result = longitudinal_control();        	// Controller
-            rampa_torque(ref_torque, result.torque_decrease);						// TODO(renanmoreira): remover rampa com testes de bancada
-            send_ref_torque_message(ref_torque);                                 	//sends the torque command to the inverter
+            longitudinal_control_result_t result = longitudinal_control();
+            // TODO(giovanni): remover rampa com testes de bancada
+            rampa_torque(ref_torque, result.torque_decrease);
+            // sends the torque command to the inverter
+            send_ref_torque_message(ref_torque);
 
             osDelayUntil(tick);
 
             break;
 
         case LATERAL:
+            // TODO(giovanni): fazer integracao dos dois controles
             tick += LATERAL_DELAY;
-            lateral_result_t result_lateral = lateral_control(); 						//Controller
-            rampa_torque(ref_torque, result_lateral.torque_decrease);						// TODO(renanmoreira): utilizar rampa_torque enquanto controle longitudinal nao estiver definido
-            // enviar referencia de torque												// TODO: fazer integracao dos dois controles
+            lateral_result_t result_lateral = lateral_control();
+            // TODO(giovanni): utilizar rampa_torque enquanto controle longitudinal nao estiver definido
+            rampa_torque(ref_torque, result_lateral.torque_decrease);
+
+            // enviar referencia de torque
             send_ref_torque_message(ref_torque);
 
             osDelayUntil(tick);
@@ -87,9 +91,11 @@ void rampa_torque(uint32_t *ref_torque, const double *ref_torque_decrease) {
 
 
     for (int i=0;i<2;i++) {
-        uint32_t torque_increment = (ref_torque_ant[i] > TORQUE_INIT_LIMITE) ? INC_TORQUE : INC_TORQUE_INIT; // verifica se a referencia a passou do ponto de inflexao
-        ref_torque[i] = min(desired_torque[i], (ref_torque_ant[i] + torque_increment));                            // e aplica o incremento mais agressivo (INC_TORQUE)
-        ref_torque_ant[i] = ref_torque[i];                                                                   // caso contrario usa o incremento da primeira rampa (INC_TORQUE_INIT)
+        // verifica se a referencia a passou do ponto de inflexao e aplica o incremento mais
+        // agressivo (INC_TORQUE) caso contrario usa o incremento da primeira rampa (INC_TORQUE_INIT)
+        uint32_t torque_increment = (ref_torque_ant[i] > TORQUE_INIT_LIMITE) ? INC_TORQUE : INC_TORQUE_INIT;
+        ref_torque[i] = min(desired_torque[i], (ref_torque_ant[i] + torque_increment));
+        ref_torque_ant[i] = ref_torque[i];
     }
 }
 

@@ -55,6 +55,7 @@ void main_task(void *argument) {
                     osEventFlagsSet(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG);
                     osThreadFlagsClear(INVERTER_BUS_OFF_ERROR_FLAG);
                     osTimerStart(tim_inverter_BUS_OFF_errorHandle, BUS_OFF_ERROR_TIME);
+                }
                 break;
 
             case INVERTER_COMM_ERROR_FLAG:

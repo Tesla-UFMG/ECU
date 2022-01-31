@@ -57,7 +57,7 @@ lateral_result_t lateral_control() {
 
     // se o sinal for positivo, a reducao sera na roda direita caso contrario, sera na roda esquerda
     if (pid_result > 0) {
-    	ref_torque_result.torque_decrease[R_MOTOR] = fabs(pid_result);    /
+    	ref_torque_result.torque_decrease[R_MOTOR] = fabs(pid_result);
     } else {
     	ref_torque_result.torque_decrease[L_MOTOR] = fabs(pid_result);
 }

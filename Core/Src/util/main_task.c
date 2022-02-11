@@ -5,16 +5,16 @@
  *      Author: renanmoreira
  */
 
-#include "main_task.h"
-#include "global_variables.h"
-#include "global_instances.h"
+#include "util/main_task.h"
+#include "util/global_variables.h"
+#include "util/global_instances.h"
 #include "cmsis_os.h"
-#include "RTD.h"
-#include "debugleds.h"
-#include "rgb_led.h"
-#include "throttle.h"
-#include "util.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "driver_settings/RTD.h"
+#include "leds/debug_leds_handler.h"
+#include "leds/rgb_led_handler.h"
+#include "sensors/APPS.h"
+#include "util/util.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 
 

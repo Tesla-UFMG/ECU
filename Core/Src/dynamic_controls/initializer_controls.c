@@ -5,11 +5,11 @@
  *      Author: Luiza
  */
 
-#include "DynamicControls/initializer_controls.h"
-#include "DynamicControls/lateral_control.h"
-#include "global_definitions.h"
-#include "DynamicControls/longitudinal_control.h"
-#include "DynamicControls/PID.h"
+#include "dynamic_controls/initializer_controls.h"
+#include "dynamic_controls/lateral_control.h"
+#include "util/global_definitions.h"
+#include "dynamic_controls/longitudinal_control.h"
+#include "dynamic_controls/PID.h"
 
 
 void init_controls() {

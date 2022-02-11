@@ -4,17 +4,17 @@
  *  Created on: Oct 18th 2021
  *      Author: GiovanniPasa
  */
-#include "datalogger.h"
+#include "datalogging/datalogger.h"
 #include "CAN/CAN_IDs.h"
 #include "CAN/general_can.h"
-#include "global_definitions.h"
+#include "util/global_definitions.h"
 #include "cmsis_os.h"
-#include "datalog_acquisition.h"
-#include "datalog_handler.h"
-#include "global_variables.h"
-#include "global_instances.h"
-#include "util.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "datalogging/datalog_acquisition.h"
+#include "datalogging/datalog_handler.h"
+#include "util/global_variables.h"
+#include "util/global_instances.h"
+#include "util/util.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 
 void datalog_acquisition(){

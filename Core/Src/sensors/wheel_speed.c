@@ -5,13 +5,13 @@
  *      Author: renanmoreira
  */
 
-#include "speed_calc.h"
+#include "sensors/wheel_speed.h"
 #include "cmsis_os.h"
 #include "stm32h7xx.h"
 #include "math.h"
 #include "string.h"
-#include "datalog_handler.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "datalogging/datalog_handler.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 /*
  * distancia    = circuferencia dividido pela quantidade de dentes
  *              = 2*pi*raio/quant.dentes (m)

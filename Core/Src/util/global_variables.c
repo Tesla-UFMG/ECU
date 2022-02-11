@@ -6,7 +6,7 @@
  */
 
 
-#include "global_variables.h"
+#include "util/global_variables.h"
 
 volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 

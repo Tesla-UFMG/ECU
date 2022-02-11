@@ -5,9 +5,9 @@
  *      Author: renanmoreira
  */
 
-#include "datalog_handler.h"
+#include "datalogging/datalog_handler.h"
 #include "cmsis_os.h"
-#include "global_definitions.h"
+#include "util/global_definitions.h"
 #include "CAN/CAN_IDs.h"
 
 extern osMessageQueueId_t q_datalog_messageHandle;

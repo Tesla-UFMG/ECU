@@ -5,14 +5,14 @@
  *      Author: renanmoreira
  */
 
-#include "torque_manager.h"
+#include "torque_command/torque_manager.h"
 #include "cmsis_os.h"
-#include "DynamicControls/lateral_control.h"
-#include "DynamicControls/longitudinal_control.h"
-#include "util.h"
-#include "global_definitions.h"
+#include "dynamic_controls/lateral_control.h"
+#include "dynamic_controls/longitudinal_control.h"
+#include "util/util.h"
+#include "util/global_definitions.h"
 #include "stdint.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;

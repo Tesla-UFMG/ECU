@@ -10,7 +10,7 @@
 
 #include "stdint.h"
 #include "main.h"
-#include "global_definitions.h"
+#include "util/global_definitions.h"
 #include "cmsis_os.h"
 
 

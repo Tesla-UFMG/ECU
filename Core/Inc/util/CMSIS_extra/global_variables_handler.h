@@ -8,7 +8,7 @@
 #ifndef INC_CMSIS_EXTRA_GLOBAL_VARIABLES_HANDLER_H_
 #define INC_CMSIS_EXTRA_GLOBAL_VARIABLES_HANDLER_H_
 
-#include "global_definitions.h"
+#include "util/global_definitions.h"
 #include <stdint.h>
 
 typedef struct {

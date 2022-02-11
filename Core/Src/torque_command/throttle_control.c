@@ -6,13 +6,13 @@
  */
 
 
-#include "throttle_control.h"
+#include "torque_command/throttle_control.h"
 #include "cmsis_os.h"
-#include "datalog_handler.h"
-#include "global_instances.h"
-#include "datalog_handler.h"
-#include "util.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "datalogging/datalog_handler.h"
+#include "util/global_instances.h"
+#include "datalogging/datalog_handler.h"
+#include "util/util.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 void throttle_control(void *argument) {
 	UNUSED(argument);

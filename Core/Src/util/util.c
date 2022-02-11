@@ -5,8 +5,8 @@
  *      Author: Felipe Telles
  */
 
-#include "util.h"
-#include "global_instances.h"
+#include "util/util.h"
+#include "util/global_instances.h"
 #include "main.h"
 
 speed_pin_e get_speed_pin(uint16_t pin) {

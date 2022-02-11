@@ -16,9 +16,9 @@
  */
 
 
-#include "rgb_led.h"
-#include "global_variables.h"
-#include "global_instances.h"
+#include "leds/rgb_led_handler.h"
+#include "util/global_variables.h"
+#include "util/global_instances.h"
 
 void write_rgb_color(rgb rgb_gpio);
 void write_debug_color(rgb rgb_gpio);

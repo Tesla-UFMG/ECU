@@ -6,10 +6,10 @@
  */
 
 #include "CAN/inverter_can_monitor.h"
-#include "global_definitions.h"
-#include "global_instances.h"
-#include "error_treatment.h"
-#include "util.h"
+#include "util/global_definitions.h"
+#include "util/global_instances.h"
+#include "util/error_treatment.h"
+#include "util/util.h"
 
 void set_inverter_communication_error();
 void precharge_monitor();

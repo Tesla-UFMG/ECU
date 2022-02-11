@@ -9,7 +9,7 @@
 #define INC_SPEED_CALC_H_
 
 #include "stdint.h"
-#include "global_definitions.h"
+#include "util/global_definitions.h"
 
 
 #define SPEED_SENSOR_TEETH_QUAN 16  // quantidade de dentes da roda fonica

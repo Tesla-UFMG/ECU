@@ -5,17 +5,17 @@
  *      Author: renanmoreira
  */
 
-#include "initializers.h"
-#include "global_definitions.h"
-#include "global_variables.h"
+#include "util/initializers.h"
+#include "util/global_definitions.h"
+#include "util/global_variables.h"
 #include "cmsis_os.h"
 #include "main.h"
 #include "stm32h7xx.h"
 #include "CAN/inverter_can.h"
 #include "CAN/general_can.h"
 #include "CAN/CAN_IDs.h"
-#include "constants.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "util/constants.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 //inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs
 // mantendo a prioridade maxima de ISRs

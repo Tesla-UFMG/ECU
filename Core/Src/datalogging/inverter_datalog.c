@@ -5,18 +5,18 @@
  *      Author: GiovanniPasa
  */
 
-#include "CAN/inverter_datalog.h"
-#include "datalogger.h"
+#include "datalogging/inverter_datalog.h"
+#include "datalogging/datalogger.h"
 #include "CAN/CAN_IDs.h"
 #include "CAN/general_can.h"
-#include "global_definitions.h"
+#include "util/global_definitions.h"
 #include "cmsis_os.h"
-#include "datalog_acquisition.h"
-#include "datalog_handler.h"
-#include "global_variables.h"
-#include "global_instances.h"
-#include "util.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "datalogging/datalog_acquisition.h"
+#include "datalogging/datalog_handler.h"
+#include "util/global_variables.h"
+#include "util/global_instances.h"
+#include "util/util.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 #include "CAN/inverter_can_data_manager.h"
 
 

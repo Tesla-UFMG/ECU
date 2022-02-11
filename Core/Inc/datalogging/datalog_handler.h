@@ -9,7 +9,7 @@
 #define INC_DATALOG_HANDLER_H_
 
 #include "cmsis_os.h"
-#include "global_definitions.h"
+#include "util/global_definitions.h"
 #include "CAN/CAN_IDs.h"
 
 osStatus_t log_data(uint16_t id, uint16_t data);

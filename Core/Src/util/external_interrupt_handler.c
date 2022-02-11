@@ -5,14 +5,14 @@
  *      Author: renanmoreira
  */
 
-#include "external_interrupt_handler.h"
+#include "util/external_interrupt_handler.h"
 #include "main.h"
-#include "speed_calc.h"
-#include "global_instances.h"
-#include "global_definitions.h"
+#include "sensors/wheel_speed.h"
+#include "util/global_instances.h"
+#include "util/global_definitions.h"
 #include "cmsis_os.h"
-#include "util.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "util/util.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 static speed_message_t speed_message;
 

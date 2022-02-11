@@ -5,7 +5,7 @@
  *      Author: renanmoreira
  */
 
-#include "DynamicControls/PID.h"
+#include "dynamic_controls/PID.h"
 
 
 void PID_recalculate_constants(PID_t* pid) {

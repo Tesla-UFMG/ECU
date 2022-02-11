@@ -4,9 +4,9 @@
  *  Created on: May 11, 2020
  *      Author: renanmoreira
  */
-#include "odometer.h"
+#include "datalogging/odometer.h"
 #include "cmsis_os.h"
-#include "util.h"
+#include "util/util.h"
 
 void odometer_calc(void *argument) {
 	UNUSED(argument);

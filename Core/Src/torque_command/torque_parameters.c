@@ -5,14 +5,14 @@
  *      Author: renanmoreira
  */
 
-#include "controle.h"
+#include "torque_command/torque_parameters.h"
 #include "cmsis_os.h"
-#include "global_definitions.h"
-#include "constants.h"
-#include "datalog_handler.h"
-#include "global_instances.h"
-#include "util.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "util/global_definitions.h"
+#include "util/constants.h"
+#include "datalogging/datalog_handler.h"
+#include "util/global_instances.h"
+#include "util/util.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 
 

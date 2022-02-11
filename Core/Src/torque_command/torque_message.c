@@ -5,7 +5,7 @@
  *      Author: renanmoreira
  */
 
-#include "throttle_handler.h"
+#include "torque_command/torque_message.h"
 #include "CAN/inverter_can.h"
 #include "CAN/CAN_IDs.h"
 

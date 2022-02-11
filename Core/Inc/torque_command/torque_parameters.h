@@ -8,7 +8,7 @@
 #ifndef INC_CONTROLE_H_
 #define INC_CONTROLE_H_
 
-#include "global_variables.h"
+#include "util/global_variables.h"
 
 
 #define P_ENABLE    0

@@ -6,7 +6,7 @@
  */
 #include "cmsis_os.h"
 #include "stm32h7xx.h"
-#include "util.h"
+#include "util/util.h"
 
 //void vApplicationMallocFailedHook(void) {
 //	//erro de alocacao de memoria

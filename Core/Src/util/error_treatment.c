@@ -5,8 +5,8 @@
  *      Author: Felipe Telles
  */
 
-#include "error_treatment.h"
-#include "global_instances.h"
+#include "util/error_treatment.h"
+#include "util/global_instances.h"
 
 
 void check_for_errors(bool (* areThereErrors)(), uint32_t flagError) {

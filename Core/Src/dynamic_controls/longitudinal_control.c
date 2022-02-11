@@ -5,17 +5,17 @@
  *      Author: GiovanniPasa
  */
 
-#include "DynamicControls/longitudinal_control.h"
-#include "DynamicControls/PID.h"
+#include "dynamic_controls/longitudinal_control.h"
+#include "dynamic_controls/PID.h"
 #include "DynamicControls/constants_control.h"
 #include "cmsis_os.h"
 #include <math.h>
-#include "DynamicControls/PID.h"
-#include "speed_calc.h"
-#include "global_variables.h"
-#include "constants.h"
-#include "util.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "dynamic_controls/PID.h"
+#include "sensors/wheel_speed.h"
+#include "util/global_variables.h"
+#include "util/constants.h"
+#include "util/util.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 static longitudinal_t controlled_wheels[2] = { [L_MOTOR].wheel = REAR_LEFT, [R_MOTOR].wheel = REAR_RIGHT};
 

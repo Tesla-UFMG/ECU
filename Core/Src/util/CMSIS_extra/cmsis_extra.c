@@ -5,7 +5,7 @@
  *      Author: renanmoreira
  */
 
-#include "CMSIS_extra/cmsis_extra.h"
+#include "util/CMSIS_extra/cmsis_extra.h"
 
 #include "FreeRTOS.h"
 #include "queue.h"

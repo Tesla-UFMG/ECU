@@ -4,10 +4,10 @@
  *  Created on: May 11, 2020
  *      Author: renanmoreira
  */
-#include "datalogger.h"
+#include "datalogging/datalogger.h"
 #include "CAN/CAN_IDs.h"
 #include "CAN/general_can.h"
-#include "global_definitions.h"
+#include "util/global_definitions.h"
 #include "cmsis_os.h"
 
 volatile uint16_t datalog_data_holder[CAN_ID_QUAN];

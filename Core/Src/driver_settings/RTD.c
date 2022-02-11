@@ -5,15 +5,15 @@
  *      Author: Felipe Telles
  */
 
-#include "RTD.h"
-#include "global_variables.h"
+#include "driver_settings/RTD.h"
+#include "util/global_variables.h"
 #include "main.h"
-#include "global_instances.h"
-#include "rgb_led.h"
-#include "debugleds.h"
+#include "util/global_instances.h"
+#include "leds/rgb_led_handler.h"
+#include "leds/debug_leds_handler.h"
 #include "stdbool.h"
-#include "util.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "util/util.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 void aciona_sirene();
 bool can_RTD_be_enabled();

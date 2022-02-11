@@ -5,9 +5,9 @@
  *      Author: renanmoreira
  */
 
-#include "CMSIS_extra/global_variables_handler.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
-#include "CMSIS_extra/cmsis_extra.h"
+#include "util/CMSIS_extra/cmsis_extra.h"
 #include "cmsis_os2.h"
 
 typedef struct {

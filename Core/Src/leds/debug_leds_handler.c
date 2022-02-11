@@ -6,10 +6,10 @@
  */
 
 
-#include "debugleds.h"
+#include "leds/debug_leds_handler.h"
 #include "cmsis_os.h"
-#include "global_variables.h"
-#include "global_definitions.h"
+#include "util/global_variables.h"
+#include "util/global_definitions.h"
 
 
 extern osMessageQueueId_t q_debugleds_messageHandle;

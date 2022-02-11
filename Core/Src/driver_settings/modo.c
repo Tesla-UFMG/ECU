@@ -6,13 +6,13 @@
  */
 
 
-#include "modo.h"
+#include "driver_settings/modo.h"
 #include "cmsis_os.h"
-#include "global_variables.h"
-#include "global_instances.h"
-#include "rgb_led.h"
-#include "util.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "util/global_variables.h"
+#include "util/global_instances.h"
+#include "leds/rgb_led_handler.h"
+#include "util/util.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 
 void seleciona_modo(void *argument) {

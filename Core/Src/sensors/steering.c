@@ -5,12 +5,12 @@
  *      Author: renanmoreira
  */
 
-#include "steering.h"
-#include "constants.h"
-#include "global_definitions.h"
-#include "datalog_handler.h"
-#include "CMSIS_extra/global_variables_handler.h"
-#include "util.h"
+#include "sensors/steering.h"
+#include "util/constants.h"
+#include "util/global_definitions.h"
+#include "datalogging/datalog_handler.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
+#include "util/util.h"
 
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 

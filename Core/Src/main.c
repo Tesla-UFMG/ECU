@@ -25,15 +25,15 @@
 /* USER CODE BEGIN Includes */
 #include "CAN/inverter_can.h"
 #include "CAN/general_can.h"
-#include "initializers.h"
-#include "DynamicControls/initializer_controls.h"
-#include "throttle.h"
-#include "speed_calc.h"
-#include "global_instances.h"
-#include "main_task.h"
-#include "debugleds.h"
-#include "rgb_led.h"
-#include "CMSIS_extra/global_variables_handler.h"
+#include "util/initializers.h"
+#include "dynamic_controls/initializer_controls.h"
+#include "sensors/APPS.h"
+#include "sensors/wheel_speed.h"
+#include "util/global_instances.h"
+#include "util/main_task.h"
+#include "leds/debug_leds_handler.h"
+#include "leds/rgb_led_handler.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

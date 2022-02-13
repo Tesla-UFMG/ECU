@@ -29,7 +29,7 @@ typedef struct {
 	uint16_t lednumber;
 	ControlDebugLED_e control;
 	uint8_t amount;
-} debugled_message_t;
+} debug_led_message_t;
 
 osStatus_t set_debugleds(uint16_t lednumber, ControlDebugLED_e control, uint8_t amount);
 

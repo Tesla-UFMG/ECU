@@ -9,7 +9,7 @@
 #include "CAN/inverter_can.h"
 #include "CAN/CAN_IDs.h"
 
-void throttle_handler(void *argument) {
+void torque_message(void *argument) {
 	UNUSED(argument);
 
 	torque_message_t message;

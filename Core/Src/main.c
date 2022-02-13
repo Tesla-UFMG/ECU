@@ -73,10 +73,10 @@ const osThreadAttr_t t_main_task_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for t_controle */
-osThreadId_t t_controleHandle;
-const osThreadAttr_t t_controle_attributes = {
-  .name = "t_controle",
+/* Definitions for t_torque_parameters */
+osThreadId_t t_torque_parametersHandle;
+const osThreadAttr_t t_torque_parameters_attributes = {
+  .name = "t_torque_parameters",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
@@ -87,10 +87,10 @@ const osThreadAttr_t t_datalogger_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_throttle_read */
-osThreadId_t t_throttle_readHandle;
-const osThreadAttr_t t_throttle_read_attributes = {
-  .name = "t_throttle_read",
+/* Definitions for t_APPS_read */
+osThreadId_t t_APPS_readHandle;
+const osThreadAttr_t t_APPS_read_attributes = {
+  .name = "t_APPS_read",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
@@ -115,10 +115,10 @@ const osThreadAttr_t t_odometer_calc_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_thr_handler */
-osThreadId_t t_thr_handlerHandle;
-const osThreadAttr_t t_thr_handler_attributes = {
-  .name = "t_thr_handler",
+/* Definitions for t_torque_message */
+osThreadId_t t_torque_messageHandle;
+const osThreadAttr_t t_torque_message_attributes = {
+  .name = "t_torque_message",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
@@ -129,10 +129,10 @@ const osThreadAttr_t t_torque_manager_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_debugleds */
-osThreadId_t t_debugledsHandle;
-const osThreadAttr_t t_debugleds_attributes = {
-  .name = "t_debugleds",
+/* Definitions for t_debug_leds */
+osThreadId_t t_debug_ledsHandle;
+const osThreadAttr_t t_debug_leds_attributes = {
+  .name = "t_debug_leds",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
@@ -205,10 +205,10 @@ osMessageQueueId_t q_datalog_messageHandle;
 const osMessageQueueAttr_t q_datalog_message_attributes = {
   .name = "q_datalog_message"
 };
-/* Definitions for q_debugleds_message */
-osMessageQueueId_t q_debugleds_messageHandle;
-const osMessageQueueAttr_t q_debugleds_message_attributes = {
-  .name = "q_debugleds_message"
+/* Definitions for q_debug_leds_message */
+osMessageQueueId_t q_debug_leds_messageHandle;
+const osMessageQueueAttr_t q_debug_leds_message_attributes = {
+  .name = "q_debug_leds_message"
 };
 /* Definitions for q_rgb_led_message */
 osMessageQueueId_t q_rgb_led_messageHandle;
@@ -264,15 +264,15 @@ static void MX_TIM1_Init(void);
 static void MX_I2C3_Init(void);
 static void MX_TIM2_Init(void);
 void main_task(void *argument);
-extern void controle(void *argument);
+extern void torque_parameters(void *argument);
 extern void datalogger(void *argument);
-extern void throttle_read(void *argument);
+extern void APPS_read(void *argument);
 extern void steering_read(void *argument);
 extern void speed_calc(void *argument);
 extern void odometer_calc(void *argument);
-extern void throttle_handler(void *argument);
+extern void torque_message(void *argument);
 extern void torque_manager(void *argument);
-extern void debugleds(void *argument);
+extern void debug_leds(void *argument);
 extern void rgb_led(void *argument);
 extern void seleciona_modo(void *argument);
 extern void RTD(void *argument);
@@ -386,8 +386,8 @@ int main(void)
   /* creation of q_datalog_message */
   q_datalog_messageHandle = osMessageQueueNew (128, sizeof(datalog_message_t), &q_datalog_message_attributes);
 
-  /* creation of q_debugleds_message */
-  q_debugleds_messageHandle = osMessageQueueNew (16, sizeof(debugled_message_t), &q_debugleds_message_attributes);
+  /* creation of q_debug_leds_message */
+  q_debug_leds_messageHandle = osMessageQueueNew (16, sizeof(debug_led_message_t), &q_debug_leds_message_attributes);
 
   /* creation of q_rgb_led_message */
   q_rgb_led_messageHandle = osMessageQueueNew (16, sizeof(rgb_led_message_t), &q_rgb_led_message_attributes);
@@ -405,14 +405,14 @@ int main(void)
   /* creation of t_main_task */
   t_main_taskHandle = osThreadNew(main_task, NULL, &t_main_task_attributes);
 
-  /* creation of t_controle */
-  t_controleHandle = osThreadNew(controle, NULL, &t_controle_attributes);
+  /* creation of t_torque_parameters */
+  t_torque_parametersHandle = osThreadNew(torque_parameters, NULL, &t_torque_parameters_attributes);
 
   /* creation of t_datalogger */
   t_dataloggerHandle = osThreadNew(datalogger, NULL, &t_datalogger_attributes);
 
-  /* creation of t_throttle_read */
-  t_throttle_readHandle = osThreadNew(throttle_read, NULL, &t_throttle_read_attributes);
+  /* creation of t_APPS_read */
+  t_APPS_readHandle = osThreadNew(APPS_read, NULL, &t_APPS_read_attributes);
 
   /* creation of t_steering_read */
   t_steering_readHandle = osThreadNew(steering_read, NULL, &t_steering_read_attributes);
@@ -423,14 +423,14 @@ int main(void)
   /* creation of t_odometer_calc */
   t_odometer_calcHandle = osThreadNew(odometer_calc, NULL, &t_odometer_calc_attributes);
 
-  /* creation of t_thr_handler */
-  t_thr_handlerHandle = osThreadNew(throttle_handler, NULL, &t_thr_handler_attributes);
+  /* creation of t_torque_message */
+  t_torque_messageHandle = osThreadNew(torque_message, NULL, &t_torque_message_attributes);
 
   /* creation of t_torque_manager */
   t_torque_managerHandle = osThreadNew(torque_manager, NULL, &t_torque_manager_attributes);
 
-  /* creation of t_debugleds */
-  t_debugledsHandle = osThreadNew(debugleds, NULL, &t_debugleds_attributes);
+  /* creation of t_debug_leds */
+  t_debug_ledsHandle = osThreadNew(debug_leds, NULL, &t_debug_leds_attributes);
 
   /* creation of t_rgb_led */
   t_rgb_ledHandle = osThreadNew(rgb_led, NULL, &t_rgb_led_attributes);

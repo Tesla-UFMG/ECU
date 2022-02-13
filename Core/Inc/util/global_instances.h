@@ -18,7 +18,7 @@ extern TIM_HandleTypeDef htim2;
 extern osMessageQueueId_t q_speed_messageHandle;
 extern osMessageQueueId_t q_torque_messageHandle;
 extern osMessageQueueId_t q_datalog_messageHandle;
-extern osMessageQueueId_t q_debugleds_messageHandle;
+extern osMessageQueueId_t q_debug_leds_messageHandle;
 extern osMessageQueueId_t q_rgb_led_messageHandle;
 extern osMessageQueueId_t q_throttle_controlHandle;
 

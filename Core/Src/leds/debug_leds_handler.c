@@ -12,17 +12,17 @@
 #include "util/global_definitions.h"
 
 
-extern osMessageQueueId_t q_debugleds_messageHandle;
+extern osMessageQueueId_t q_debug_leds_messageHandle;
 
 osStatus_t set_debugleds(uint16_t lednumber, ControlDebugLED_e control, uint8_t amount) {
-	debugled_message_t message = {lednumber, control, amount};
-	return osMessageQueuePut(q_debugleds_messageHandle, &message, 0, 0U);
+	debug_led_message_t message = {lednumber, control, amount};
+	return osMessageQueuePut(q_debug_leds_messageHandle, &message, 0, 0U);
 }
 
-void debugleds(void *argument) {
+void debug_leds(void *argument) {
 	UNUSED(argument);
 
-	debugled_message_t message;
+	debug_led_message_t message;
 
 	for(;;) {
 	#ifdef DEBUG_ECU
@@ -31,7 +31,7 @@ void debugleds(void *argument) {
 	#endif
 
 	    //espera ate alguma mensagem chegar
-		osMessageQueueGet(q_debugleds_messageHandle, &message, NULL, osWaitForever);
+		osMessageQueueGet(q_debug_leds_messageHandle, &message, NULL, osWaitForever);
 		switch (message.control){
 			case ON:
 			    //acende o led escolhido

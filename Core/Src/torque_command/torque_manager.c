@@ -23,8 +23,8 @@ void torque_manager(void* argument) {
 
     uint32_t ref_torque[2] = {0, 0};
     for (;;) {
-        uint32_t tick =
-            osKernelGetTickCount(); // NOLINT(clang-analyzer-deadcode.DeadStores)
+        // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
+        uint32_t tick = osKernelGetTickCount();
 
 #ifdef DEBUG_ECU
         extern void brkpt();

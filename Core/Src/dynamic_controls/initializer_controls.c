@@ -6,17 +6,16 @@
  */
 
 #include "dynamic_controls/initializer_controls.h"
-#include "dynamic_controls/lateral_control.h"
-#include "util/global_definitions.h"
-#include "dynamic_controls/longitudinal_control.h"
-#include "dynamic_controls/PID.h"
 
+#include "dynamic_controls/PID.h"
+#include "dynamic_controls/lateral_control.h"
+#include "dynamic_controls/longitudinal_control.h"
+#include "util/global_definitions.h"
 
 void init_controls() {
 
-    //Lateral Control
+    // Lateral Control
     init_lateral_control();
-    //Longitudinal Control
+    // Longitudinal Control
     init_longitudinal_control();
-
 }

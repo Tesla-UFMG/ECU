@@ -8,7 +8,6 @@
 #ifndef INITIALIZERS_H_
 #define INITIALIZERS_H_
 
-
 #include "stm32h7xx.h"
 
 void init_NVIC_priorities();

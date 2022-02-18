@@ -8,9 +8,4 @@
 #ifndef INC_THROTTLE_CONTROL_H_
 #define INC_THROTTLE_CONTROL_H_
 
-
-
-
-
-
 #endif /* INC_THROTTLE_CONTROL_H_ */

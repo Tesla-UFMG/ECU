@@ -6,32 +6,33 @@
  */
 
 #include "CAN/inverter_can_monitor.h"
+
+#include "util/error_treatment.h"
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
-#include "util/error_treatment.h"
 #include "util/util.h"
 
 void set_inverter_communication_error();
 void precharge_monitor();
 
-void inverter_comm_error(void *argument) {
-	UNUSED(argument);
+void inverter_comm_error(void* argument) {
+    UNUSED(argument);
 
-    for(;;) {
-        #ifdef DEBUG_ECU
+    for (;;) {
+#ifdef DEBUG_ECU
         extern void brkpt();
         brkpt();
-        #endif
+#endif
 
+        switch (osThreadFlagsWait(INVERTER_CAN_ACTIVE, osFlagsWaitAny,
+                                  INVERTER_NO_MESSAGE_ERROR_TIME)) {
 
-        switch(osThreadFlagsWait(INVERTER_CAN_ACTIVE, osFlagsWaitAny, INVERTER_NO_MESSAGE_ERROR_TIME)){
+            // when the task has been called due to timeout it means the ECU is not
+            // receiving messages from the inverter
+            case osFlagsErrorTimeout: set_inverter_communication_error(); break;
 
-            //when the task has been called due to timeout it means the ECU is not receiving messages from the inverter
-            case osFlagsErrorTimeout :
-                set_inverter_communication_error();
-                break;
-
-            // when the task has been called by the thread flag it means the ECU is communicating with the inverter
+            // when the task has been called by the thread flag it means the ECU is
+            // communicating with the inverter
             default:
                 clear_error(INVERTER_COMM_ERROR_FLAG);
                 precharge_monitor();
@@ -54,20 +55,21 @@ void precharge_monitor() {
     // running to avoid restarting the timer
     if (!get_individual_flag(ECU_control_event_id, INVERTER_READY)) {
         if (!osTimerIsRunning(tim_inverter_readyHandle)) {
-            // timer to set a flag to indicate when the inverter is ready after the precharge period
+            // timer to set a flag to indicate when the inverter is ready after the
+            // precharge period
             osTimerStart(tim_inverter_readyHandle, INVERTER_PRECHARGE_TIME);
         }
     }
 }
 
 // if no more errors are present the event flag will be cleared
-void inverter_BUS_OFF_error_callback(void *argument) {
+void inverter_BUS_OFF_error_callback(void* argument) {
     UNUSED(argument);
     clear_error(INVERTER_BUS_OFF_ERROR_FLAG);
 }
 
 // the flag wil be setted after the precharge time has passed
-void inverter_ready_callback(void *argument) {
+void inverter_ready_callback(void* argument) {
     UNUSED(argument);
     osEventFlagsSet(ECU_control_event_id, INVERTER_READY);
 }

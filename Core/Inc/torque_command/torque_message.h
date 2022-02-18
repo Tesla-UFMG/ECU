@@ -8,12 +8,12 @@
 #ifndef INC_THROTTLE_HANDLER_H_
 #define INC_THROTTLE_HANDLER_H_
 
-#include "util/global_variables.h"
+#include "cmsis_os.h"
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
-#include "cmsis_os.h"
+#include "util/global_variables.h"
 
 #define TORQUE_MESSAGE_RESEND_TIMES 1
-#define TORQUE_MESSAGE_DELAY 10
+#define TORQUE_MESSAGE_DELAY        10
 
 #endif /* INC_THROTTLE_HANDLER_H_ */

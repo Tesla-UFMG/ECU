@@ -185,6 +185,13 @@ const osThreadAttr_t t_inverter_datalog_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_pilot_reset */
+osThreadId_t t_pilot_resetHandle;
+const osThreadAttr_t t_pilot_reset_attributes = {
+  .name = "t_pilot_reset",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -280,6 +287,7 @@ extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
 extern void inverter_comm_error(void *argument);
 extern void inverter_datalog(void *argument);
+extern void pilot_reset(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -452,6 +460,9 @@ int main(void)
 
   /* creation of t_inverter_datalog */
   t_inverter_datalogHandle = osThreadNew(inverter_datalog, NULL, &t_inverter_datalog_attributes);
+
+  /* creation of t_pilot_reset */
+  t_pilot_resetHandle = osThreadNew(pilot_reset, NULL, &t_pilot_reset_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

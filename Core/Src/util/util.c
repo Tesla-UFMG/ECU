@@ -9,6 +9,7 @@
 
 #include "main.h"
 #include "util/global_instances.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 
 speed_pin_e get_speed_pin(uint16_t pin) {
     switch (pin) {
@@ -38,4 +39,11 @@ bool get_individual_flag(osEventFlagsId_t ef_id, uint32_t flag) {
 
 uint16_t concatenate_two_uint8_to_uint16(const uint8_t* data) {
     return (data[1] << 8 | data[0]);
+}
+
+bool is_the_car_stationary(WHEEL_SPEEDS_t wheel_speeds){
+    float cm_speed;
+
+    cm_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT]) / 2);
+    return (!(cm_speed > 0));
 }

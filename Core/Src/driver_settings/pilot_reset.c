@@ -20,9 +20,10 @@
 
 
 
+
 void pilot_reset(void* argument) {
     UNUSED(argument);
-    uint32_t returns[2];
+    uint32_t thread_flag_status[2];
 
     for (;;) {
 
@@ -30,14 +31,18 @@ void pilot_reset(void* argument) {
         //in the following order: mode, rtd,  mode again, but this time with the brake pressed and with no throttle input.
         //After that the system will be reseted
         osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
-        returns[0] =  osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, RESET_BUTTONS_TIMEOUT);
-        returns[1] =  osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, RESET_BUTTONS_TIMEOUT);
+        thread_flag_status[RTD_BUTTON] =  osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, RESET_BUTTONS_TIMEOUT);
+        thread_flag_status[MODE_BUTTON] =  osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, RESET_BUTTONS_TIMEOUT);
+        // TODO(Giovanni): refazer logica quando o button handler for implementado
 
-        if(returns[0] == osFlagsErrorTimeout || returns[1] == osFlagsErrorTimeout) continue;
+        if(thread_flag_status[RTD_BUTTON] == osFlagsErrorTimeout || thread_flag_status[MODE_BUTTON] == osFlagsErrorTimeout) {continue;
+        }
 
         BRAKE_STATUS_t is_brake_active  = get_global_var_value(BRAKE_STATUS);
         THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
-        if(is_brake_active && !is_throttle_active){
+        WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
+
+        if(is_brake_active && !is_throttle_active && is_the_car_stationary(wheel_speeds)){
             HAL_NVIC_SystemReset();
         }
 

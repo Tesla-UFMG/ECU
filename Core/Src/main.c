@@ -51,7 +51,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-ADC_HandleTypeDef hadc1;
+ ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
 FDCAN_HandleTypeDef hfdcan1;
@@ -185,6 +185,13 @@ const osThreadAttr_t t_inverter_datalog_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_buttons_handler */
+osThreadId_t t_buttons_handlerHandle;
+const osThreadAttr_t t_buttons_handler_attributes = {
+  .name = "t_buttons_handler",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -280,6 +287,7 @@ extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
 extern void inverter_comm_error(void *argument);
 extern void inverter_datalog(void *argument);
+extern void buttons_handler(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -453,6 +461,9 @@ int main(void)
   /* creation of t_inverter_datalog */
   t_inverter_datalogHandle = osThreadNew(inverter_datalog, NULL, &t_inverter_datalog_attributes);
 
+  /* creation of t_buttons_handler */
+  t_buttons_handlerHandle = osThreadNew(buttons_handler, NULL, &t_buttons_handler_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   ECU_control_event_id = osEventFlagsNew(NULL);
@@ -489,14 +500,13 @@ void SystemClock_Config(void)
   /** Supply configuration update enable
   */
   HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
+
   /** Configure the main internal regulator output voltage
   */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-  /** Macro to configure the PLL clock source
-  */
-  __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
+
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
@@ -516,6 +526,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -553,6 +564,7 @@ static void MX_ADC1_Init(void)
   /* USER CODE BEGIN ADC1_Init 1 */
 
   /* USER CODE END ADC1_Init 1 */
+
   /** Common config
   */
   hadc1.Instance = ADC1;
@@ -574,6 +586,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure the ADC multi-mode
   */
   multimode.Mode = ADC_MODE_INDEPENDENT;
@@ -581,6 +594,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Regular Channel
   */
   sConfig.Channel = ADC_CHANNEL_3;
@@ -593,6 +607,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Regular Channel
   */
   sConfig.Channel = ADC_CHANNEL_4;
@@ -601,6 +616,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Regular Channel
   */
   sConfig.Channel = ADC_CHANNEL_5;
@@ -609,6 +625,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Regular Channel
   */
   sConfig.Channel = ADC_CHANNEL_7;
@@ -617,6 +634,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Regular Channel
   */
   sConfig.Channel = ADC_CHANNEL_8;
@@ -625,6 +643,7 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Regular Channel
   */
   sConfig.Channel = ADC_CHANNEL_19;
@@ -773,12 +792,14 @@ static void MX_I2C3_Init(void)
   {
     Error_Handler();
   }
+
   /** Configure Analogue filter
   */
   if (HAL_I2CEx_ConfigAnalogFilter(&hi2c3, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
   {
     Error_Handler();
   }
+
   /** Configure Digital filter
   */
   if (HAL_I2CEx_ConfigDigitalFilter(&hi2c3, 0) != HAL_OK)
@@ -1044,9 +1065,9 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : B_DEBUG2_Pin B_MODO_Pin B_RTD_Pin */
-  GPIO_InitStruct.Pin = B_DEBUG2_Pin|B_MODO_Pin|B_RTD_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  /*Configure GPIO pins : B_DYNAMICS_CONTROLS_Pin B_MODE_Pin B_RTD_Pin */
+  GPIO_InitStruct.Pin = B_DYNAMICS_CONTROLS_Pin|B_MODE_Pin|B_RTD_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
@@ -1064,12 +1085,6 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(BOOT1_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI4_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
-
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 5, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
@@ -1146,4 +1161,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-

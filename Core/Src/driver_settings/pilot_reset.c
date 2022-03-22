@@ -31,7 +31,9 @@ void pilot_reset(void* argument) {
         //in the following order: mode, rtd,  mode again, but this time with the brake pressed and with no throttle input.
         //After that the system will be reseted
         osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
+        osThreadFlagsClear(RTD_BTN_PRESSED_FLAG);
         thread_flag_status[RTD_BUTTON] =  osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, RESET_BUTTONS_TIMEOUT);
+        osThreadFlagsClear(MODE_BTN_PRESSED_FLAG);
         thread_flag_status[MODE_BUTTON] =  osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, RESET_BUTTONS_TIMEOUT);
         // TODO(Giovanni): refazer logica quando o button handler for implementado
 

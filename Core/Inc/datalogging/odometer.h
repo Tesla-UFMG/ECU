@@ -24,7 +24,7 @@ typedef struct
 {
     uint32_t tim_count;
     dist_pin_e pin;  //Da mesma maneira que para a velocidade, seria necessário adicionar um typedef enum para o pino do sensor da velocidade, porém com utilizando nomenclatura para distância?
-} dist_message_t;
+} distance_message_t;
 
 
 #endif /* INC_ODOMETER_H_ */

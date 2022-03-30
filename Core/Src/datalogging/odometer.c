@@ -10,10 +10,37 @@
     Anotações e dúvidas
 - No programa wheel_speed.c utiliza-se uma a detecção do recebimento de uma mensagem enviada para uma fila para que 
 a thread seja executada. Quem é responsável por enviar a mensagem para a fila? O que identifica a mensagem, o handler? ( a partir sinal de interrupção da roda fônica)
+
+*main.c
+    osMessageQueueId_t -> osMessageNew() (Processo de criação de fila)
+    
+*external_interrupt_handler.c
+    osMessagePut() (Criação de mensagem a partir de Callback (Interrupção))
+
+*main.c 
+    MX_GPIO_INIT() -> GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING (Configuração de pinos e seus modos)
+
 - O RTOS utilizado na ECU é na realidade uma API do FreeRTOS para microprocessadores da arquitetura ARM CORTEX. Isso faz com que 
 o processo de criação de tarefas/threads seja diferente da utilização do FreeRTOS vanilla? No programa wheel_speed.c não seria 
 necessário criar uma tarefa para a execução da rotina? definindo prioridade e etc
  
+ *main.c
+    osThreadId_t -> osThreadNew() (Processo de criação de tarefa)
+
+*/
+
+/*
+
+Se utilizássemos osDelay(100) como referência de tempo
+Considerando uma velocidade linear máxima de 150 km/h = 41,6667 m/s
+Raio da roda fônica (gira na mesma velocidade angular que a roda) = 0.26 m
+Calcula-se a velocidade angular: v = w*R -> w = 160.2565 rad/s
+Distância entre dentes da roda fônica: 2piR/quantidade de dentes = 0.102 m
+Considerando uma velocidade máxima de 160 rad/s e uma distância entre dentes de 0.1 m, 
+o tempo entre as interrupções seria de = 6.25 x 10^-4
+
+Com o delay de 100 ms muita informação seria perdida?
+
 */
 #include "datalogging/odometer.h"
 #include "datalogging/datalog_handler.h"
@@ -21,6 +48,80 @@ necessário criar uma tarefa para a execução da rotina? definindo prioridade e
 #include "util/util.h"
 #include "math.h"
 
+static inline uint32_t calculate_distance(void *argument);
+
+void odoemter_calc(void *argument)
+{
+    distance_message_t message;      //Criação de struct necessária 
+    distance_message_t last_messages[4];
+    // inicializa com 0 buffer de ultimas mensagens
+    // NOLINTNEXTLINE
+    memset(&last_messages, 0, sizeof(speed_message_t) * 4);
+
+    // pega frequencia que esta conectada ao tim2
+    const uint32_t tim_freq = get_tim2_freq();
+    // prescaler do tim2
+    const uint32_t tim_presc = htim2.Init.Prescaler + 1;
+    // valor em tempo do timer2 da velocidade maxima a ser calculada
+    const uint32_t max_count;
+    // valor em tempo do timer2 da velocidade minima a ser calculada
+    const uint32_t min_count;
+    // valor em tempo do timersys da velocidade minima a ser calculada
+    const uint32_t min_timeout;
+
+    uint32_t d_tim_count;
+    uint32_t distance;
+
+    for (;;)
+    {
+        #ifndef DEBUG_ECU
+                extern void brkpt();
+                brkpt();
+        #endif
+
+        switch (osMessageQueueGet(q_distance_messageHandle, &message, NULL, min_timeout)) {    //Criacao de fila para distancia necessaria
+
+            // caso a tarefa tenha sido chamada por timeout
+            case osErrorTimeout:
+               // reset_speed_all(); // Seria necessario resetar de alguma forma a distancia?
+                break;
+
+            // caso a tarefa tenha sido chamada pela queue
+            default:
+                // verifica se alguma roda esta a muito tempo sem receber interrupcao,
+                // caso sim a velocidade dessa roda eh zerada
+                reset_distance_single(&message, last_messages, min_count);
+
+                // diferenca entre timestamp da mensagem atual e da anterior
+                d_tim_count = message.tim_count - last_messages[message.pin].tim_count;
+
+                // caso d_tim_count calcule uma distancia muito pequena 
+                // sera descartada
+                if (d_tim_count > min_count) {
+                    continue;
+                }
+
+                //distance += calculate_distance(d_tim_count, tim_freq, tim_presc);
+                distance += (DISTANCIA_ENTRE_DENTES)*RAIO_RODA;
+                WHEEL_DISTANCE_t wheel_distances = get_global_var_value(WHEEL_DISTANCE); //Criação de variável global para distancia 
+                // seta velocidade especifica da roda recebida
+                wheel_distances.distance[message.pin] = (float)distance; //Utilizaria vetor ou somente aferição por uma roda seria suficiente?
+                set_global_var(WHEEL_DISTANCE, &wheel_distances);
+                // guarda mensagem ate a proxima interacao
+                last_messages[message.pin] = message;
+                log_distance(&wheel_distances);
+                break;
+        }
+    }
+}
+
+/*
+    
+    De alguma maneira comunicar com a tarefa de wheel_speed, de forma que o odometro somente realize uma multiplicacao entre a velocidade e a diferenca de timestamps
+
+
+*/
+/*
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
 
 void odometer_calc(void)
@@ -45,12 +146,13 @@ void odometer_calc(void)
     const uint32_t min_timeout = calculate_timeout(MIN_SPEED);
 
     
-        for (;;) 
+    for (;;) 
     {
     #ifdef DEBUG_ECU
         extern void brkpt();
         brkpt();
     #endif
+
     osDelay(100); //Suficiente para implementação utilizando RTOS e ainda contabilizar o tempo?
 
 // diferenca entre timestamp da mensagem atual e da anterior
@@ -106,11 +208,11 @@ static inline uint32_t dist_calc(uint32_t d_tim_count, uint32_t tim_freq,uint32_
 {
     //Considerando uma execução a cada 100ms?
    uint32_t speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
-   uint32_t dist = (uint32_t) (1000 * speed * (float)tim_freq/((float)tim_presc));
+   uint32_t dist = (uint32_t) (1000 * speed * (float)tim_freq/((float)tim_presc)); 
    return dist;
 }
 
-
+*/
 /*
 void odometer_calc(void* argument) {
     UNUSED(argument);

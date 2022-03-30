@@ -11,14 +11,14 @@
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/global_instances.h"
 
-void LongButtonPressHandler(available_buttons_e key);
-void ButtonReleaseHandler(available_buttons_e key);
+void long_button_press_handler(available_buttons_e button);
+void button_release_handler(available_buttons_e button);
 void initialize_buttons();
 
 static buttons_parameters_t buttons[BUTTONS_QUAN];
 
-void ButtonReleaseHandler(available_buttons_e key) {
-    switch (key) {
+void button_release_handler(available_buttons_e button) {
+    switch (button) {
         case B_RTD: osThreadFlagsSet(t_RTDHandle, RTD_BTN_PRESSED_FLAG); break;
 
         case B_MODE:;
@@ -33,8 +33,8 @@ void ButtonReleaseHandler(available_buttons_e key) {
     }
 }
 
-void LongButtonPressHandler(available_buttons_e key) {
-    switch (key) {
+void long_button_press_handler(available_buttons_e button) { // NOLINT
+    switch (button) {
         case B_RTD: break;
 
         case B_MODE: break;
@@ -70,7 +70,7 @@ void buttons_handler(void* argument) {
                 } else if (buttons[current].setCounter == LONG_PRESS_TIME
                            && buttons[current].enableLongPress) {
                     buttons[current].state = BUTTON_LONG_PRESSED;
-                    LongButtonPressHandler(current);
+                    long_button_press_handler(current);
                 }
                 // if the pin is not set the counter will be reseted
             } else {
@@ -80,7 +80,7 @@ void buttons_handler(void* argument) {
                 if (buttons[current].state != BUTTON_NOT_PRESSED) {
                     // handles a release if its not a long press
                     if (buttons[current].state == BUTTON_PRESSED) {
-                        ButtonReleaseHandler(current);
+                        button_release_handler(current);
                     }
                     buttons[current].state = BUTTON_NOT_PRESSED;
                 }

@@ -35,12 +35,9 @@ void button_release_handler(available_buttons_e button) {
 
 void long_button_press_handler(available_buttons_e button) {
     switch (button) { // NOLINT
-        case B_RTD: break;
-
-        case B_MODE: break;
-
-        case B_DYNAMICS_CONTROLS: break;
-
+            // case B_RTD: break;
+            // case B_MODE: break;
+            // case B_DYNAMICS_CONTROLS: break;
         default: break;
     }
 }

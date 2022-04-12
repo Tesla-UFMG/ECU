@@ -25,10 +25,6 @@ void init_NVIC_priorities() {
     NVIC_SetPriority(S_VEL2_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
     NVIC_SetPriority(S_VEL3_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
     NVIC_SetPriority(S_VEL4_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
-
-    // TODO(renanmoreira): averiguar a prioridade correta para botoes de modo e RTD
-    NVIC_SetPriority(B_RTD_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
-    NVIC_SetPriority(B_MODO_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
 }
 
 void init_ADC_DMA(ADC_HandleTypeDef* hadc) {

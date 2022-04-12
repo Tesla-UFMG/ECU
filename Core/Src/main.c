@@ -413,8 +413,6 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
-  global_variables_init();
-  inicializa_modos(); // must be initialized after global variables
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -477,7 +475,6 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  ECU_control_event_id = osEventFlagsNew(NULL);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -1108,7 +1105,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN Header_main_task */
 /**
   * @brief  Function implementing the t_main_task thread.
-  * @param  argument: Not used 
+  * @param  argument: Not used
   * @retval None
   */
 /* USER CODE END Header_main_task */

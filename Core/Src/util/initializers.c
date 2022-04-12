@@ -101,3 +101,5 @@ void inicializa_modos() {
 
     set_global_var_value(SELECTED_MODE, enduro); // inicializa no modo enduro
 }
+
+

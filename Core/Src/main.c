@@ -189,6 +189,9 @@ const osThreadAttr_t t_inverter_datalog_attributes = {
 osThreadId_t t_pilot_resetHandle;
 const osThreadAttr_t t_pilot_reset_attributes = {
   .name = "t_pilot_reset",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for t_buttons_handler */
 osThreadId_t t_buttons_handlerHandle;
 const osThreadAttr_t t_buttons_handler_attributes = {
@@ -468,6 +471,7 @@ int main(void)
 
   /* creation of t_pilot_reset */
   t_pilot_resetHandle = osThreadNew(pilot_reset, NULL, &t_pilot_reset_attributes);
+
   /* creation of t_buttons_handler */
   t_buttons_handlerHandle = osThreadNew(buttons_handler, NULL, &t_buttons_handler_attributes);
 

@@ -7,8 +7,7 @@
 
 #include "main.h"
 #include "datalogging/odometer.h"
-#include "CAN/CAN_IDs.h"
-#include "CAN/general_can.h"
+#include "datalogging/datalog_handler.h"
 #include "cmsis_os.h"
 #include "util/global_definitions.h"
 #include "util/util.h"
@@ -19,49 +18,37 @@
 //Function to calculate distance traveled
 static inline uint32_t calculate_distance(uint32_t speed_avg);
 
+//Function to send data via CAN
+void log_distance (DIST_TRAVELED  *distance);
+
+//Thread
 void odometer_calc()
 
 {
 	//Useful variables declaration
-	uint16_t save_counter = 0;
-	uint32_t front_speed_avg = 0;
-	uint32_t delay_dist_traveled = 0;
-    uint32_t dist_sent = 0;
-    uint32_t flash_distance[8];
-    bool first_exe = true;
+	uint16_t save_counter 		 		   = 0;
+	uint32_t front_speed_avg 	 		   = 0;
+	uint32_t delay_dist_traveled 		   = 0;
+    uint32_t dist_sent 			 		   = 0;
+    uint32_t flash_distance[8] 	 		   = {0,0,0,0,0,0,0,0};
+    bool first_exe 				 		   = true;
 
     //Distance struct variable created. Partial distance initialized
     DIST_TRAVELED_t dist_traveled;
-    dist_traveled.distances[1] = 0;
-
-    //Getting CAN Id's
-    CAN_ID_t can_id_p = get_CAN_ID_from_internal(6);
-    CAN_ID_t can_id_t = get_CAN_ID_from_internal(7);
-
-    //Initializing flash_distance array
-    for (uint8_t i = 0; i< 8; ++i)
-    {
-    	flash_distance[i] = 0;
-    }
+    dist_traveled.distances[PARTIAL_DIST]  = 0;
 
     //If it is the first code execution
     if (first_exe)
           {
             //Read distance from flash just once
-      	  Flash_Read_Data(0x080E0000, &(dist_traveled.distances[0]), 1);
+      	  Flash_Read_Data(0x080E0000, &(dist_traveled.distances[TOTAL_DIST]), 1);
 
       	  //In case the memory position has never been used/saved
-      	  if ( (dist_traveled.distances[0]) == 0x00000000 )
-      		  dist_traveled.distances[0] = 0;
+      	  if ( (dist_traveled.distances[TOTAL_DIST] == 0x00000000) || (dist_traveled.distances[TOTAL_DIST] == 0xFFFFFFFFF))
+      		  dist_traveled.distances[TOTAL_DIST] = 0;
 
       	  //Store in the global variable
       	   set_global_var(DIST_TRAVELED, &dist_traveled);
-
-		  //Send total distance data
-		  general_can_transmit(can_id_t.id, (uint16_t*)&dist_traveled.distances[0]);
-
-		  //Send partial distance data
-		  general_can_transmit(can_id_p.id, (uint16_t*)&dist_traveled.distances[1]);
 
       	  //No longer the first execution
       	   first_exe = false;
@@ -87,39 +74,36 @@ void odometer_calc()
      dist_traveled = get_global_var_value(DIST_TRAVELED);
 
      //Add the delay distance traveled to the total
-     dist_traveled.distances[0] += delay_dist_traveled;
-     dist_traveled.distances[1] += delay_dist_traveled;
+     dist_traveled.distances[TOTAL_DIST] += delay_dist_traveled;
+     dist_traveled.distances[PARTIAL_DIST] += delay_dist_traveled;
 
      //Write in the global variable
      set_global_var(DIST_TRAVELED, &dist_traveled);
 
      //Area for CAN and HMI processing
 
-     //If the distance is littler than 100 meters send partial distance data every meter traveled
-     if (dist_traveled.distances[1] < 100)
+     //If the distance is littler than 100 meters send distance data every meter traveled
+     if (dist_traveled.distances[PARTIAL_DIST] < 100)
      {
     	 //Send using CAN the distance traveled in meters
-    	 general_can_transmit(can_id_p.id, (uint16_t*)&dist_traveled.distances[1]);
+    	 log_distance(dist_traveled);
 
-    	 //Record the distance value sent
-    	 dist_sent = dist_traveled.distances[1];
+    	 //Record the partial distance value sent
+    	 dist_sent = dist_traveled.distances[PARTIAL_DIST];
      }
      else
      {
     	 //After the distance surpass 100 meters, send partial distance data only when other 100 meters are traveled
-    	 if ((dist_traveled.distances[1] - dist_sent) > 100)
+    	 if ((dist_traveled.distances[PARTIAL_DIST] - dist_sent) > 100)
     	 {
     		 //Send using CAN
-    		 general_can_transmit(can_id_p.id, (uint16_t*)&dist_traveled.distances[1]);
+    		 log_distance(dist_traveled);
 
     		 //Record the distance value sent
-    		 dist_sent = dist_traveled.distances[1];
-
-    		 //Send total distance data when 100 meters are traveled
-        	 general_can_transmit(can_id_t.id, (uint16_t*)&dist_traveled.distances[0]);
+    		 dist_sent = dist_traveled.distances[PARTIAL_DIST];
 
         	 //Edit flash distance array to save in the memory
-    		 flash_distance[0] = dist_traveled.distances[0];
+    		 flash_distance[0] = dist_traveled.distances[TOTAL_DIST];
 
     		 //In order to avoid saving multiple times and wearing the embedded flash, save up to 100 times
     		 if (save_counter < MAX_SAVE_TIMES)
@@ -137,9 +121,15 @@ void odometer_calc()
     	 }
      }
 
-     //Delay in thread execution. 5 seconds
+     //Delay in thread execution. 100 ms
      osDelay(AVG_TIME);
     }
+}
+
+void log_distance(DIST_TRAVELED *dist)
+{
+	log_data(ID_DISTANCE_T_ODOM, (uint16_t)dist->distances[TOTAL_DIST]);
+	log_data(ID_DISTANCE_P_ODOM, (uint16_t)dist->distances[PARTIAL_DIST]);
 }
 
 static inline uint32_t calculate_distance(uint32_t speed_avg)

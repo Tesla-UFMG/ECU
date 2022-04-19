@@ -19,7 +19,7 @@
 static inline uint32_t calculate_distance(uint32_t speed_avg);
 
 //Function to send data via CAN
-void log_distance (DIST_TRAVELED  *distance);
+void log_distance (DIST_TRAVELED_t  *distance);
 
 //Thread
 void odometer_calc()
@@ -86,7 +86,7 @@ void odometer_calc()
      if (dist_traveled.distances[PARTIAL_DIST] < 100)
      {
     	 //Send using CAN the distance traveled in meters
-    	 log_distance(dist_traveled);
+    	 log_distance(&dist_traveled);
 
     	 //Record the partial distance value sent
     	 dist_sent = dist_traveled.distances[PARTIAL_DIST];
@@ -97,7 +97,7 @@ void odometer_calc()
     	 if ((dist_traveled.distances[PARTIAL_DIST] - dist_sent) > 100)
     	 {
     		 //Send using CAN
-    		 log_distance(dist_traveled);
+    		 log_distance(&dist_traveled);
 
     		 //Record the distance value sent
     		 dist_sent = dist_traveled.distances[PARTIAL_DIST];
@@ -126,7 +126,7 @@ void odometer_calc()
     }
 }
 
-void log_distance(DIST_TRAVELED *dist)
+void log_distance(DIST_TRAVELED_t *dist)
 {
 	log_data(ID_DISTANCE_T_ODOM, (uint16_t)dist->distances[TOTAL_DIST]);
 	log_data(ID_DISTANCE_P_ODOM, (uint16_t)dist->distances[PARTIAL_DIST]);

@@ -74,8 +74,6 @@ void Error_Handler(void);
 #define S_VOLANTE_GPIO_Port GPIOC
 #define S_ADC_E1_Pin GPIO_PIN_5
 #define S_ADC_E1_GPIO_Port GPIOC
-#define LD1_Pin GPIO_PIN_0
-#define LD1_GPIO_Port GPIOB
 #define S_ADC_E2_Pin GPIO_PIN_1
 #define S_ADC_E2_GPIO_Port GPIOB
 #define S_VEL1_Pin GPIO_PIN_12

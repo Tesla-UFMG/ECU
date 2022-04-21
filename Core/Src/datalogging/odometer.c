@@ -26,16 +26,16 @@ void odometer_calc()
 
 {
 	//Useful variables declaration
-	uint16_t save_counter 		 		   = 0;
-	uint32_t front_speed_avg 	 		   = 0;
-	uint32_t delay_dist_traveled 		   = 0;
-    uint32_t dist_sent 			 		   = 0;
-    uint32_t flash_distance[8] 	 		   = {0,0,0,0,0,0,0,0};
-    bool first_exe 				 		   = true;
+    uint16_t save_counter                   = 0;
+    uint32_t front_speed_avg                = 0;
+    uint32_t delay_dist_traveled            = 0;
+    uint32_t dist_sent                      = 0;
+    uint32_t flash_distance[8]              = {0,0,0,0,0,0,0,0};
+    bool first_exe                          = true;
 
     //Distance struct variable created. Partial distance initialized
     DIST_TRAVELED_t dist_traveled;
-    dist_traveled.distances[PARTIAL_DIST]  = 0;
+    dist_traveled.distances[PARTIAL_DIST]   = 0;
 
     //If it is the first code execution
     if (first_exe)

@@ -31,98 +31,92 @@ void odometer_calc()
     uint32_t delay_dist_traveled            = 0;
     uint32_t dist_sent                      = 0;
     uint32_t flash_distance[8]              = {0,0,0,0,0,0,0,0};
-    bool first_exe                          = true;
 
     //Distance struct variable created. Partial distance initialized
     DIST_TRAVELED_t dist_traveled;
     dist_traveled.distances[PARTIAL_DIST]   = 0;
 
-    //If it is the first code execution
-    if (first_exe)
-          {
-            //Read distance from flash just once
-      	  Flash_Read_Data(0x080E0000, &(dist_traveled.distances[TOTAL_DIST]), 1);
+    //Read distance from flash just once
+    Flash_Read_Data(0x080E0000, &(dist_traveled.distances[TOTAL_DIST]), 1);
 
-      	  //In case the memory position has never been used/saved
-      	  if ( (dist_traveled.distances[TOTAL_DIST] == 0x00000000) || (dist_traveled.distances[TOTAL_DIST] == 0xFFFFFFFFF))
-      		  dist_traveled.distances[TOTAL_DIST] = 0;
+    //In case the memory position has never been used/saved
+    if ( (dist_traveled.distances[TOTAL_DIST] == 0x00000000) || (dist_traveled.distances[TOTAL_DIST] == 0xFFFFFFFF))
+    {
+        dist_traveled.distances[TOTAL_DIST] = 0;
+    }
 
-      	  //Store in the global variable
-      	   set_global_var(DIST_TRAVELED, &dist_traveled);
-
-      	  //No longer the first execution
-      	   first_exe = false;
-          }
+    //Store in the global variable
+    set_global_var(DIST_TRAVELED, &dist_traveled);
 
     for (;;)
     {
-		#ifdef DEBUG_ECU
-        	extern void brkpt();
-        	brkpt();
-		#endif
+    #ifdef DEBUG_ECU
+        extern void brkpt();
+        brkpt();
+    #endif
 
     //Use global defined struct to read wheel speeds
-     WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
+    WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
 
-     //Calculate the front wheel speed average due to reduced change of locking up compared to rear
-     front_speed_avg = (uint32_t)((wheel_speeds.speed[FRONT_RIGHT]+wheel_speeds.speed[FRONT_LEFT])/2);
+    //Calculate the front wheel speed average due to reduced change of locking up compared to rear
+    front_speed_avg = (uint32_t)((wheel_speeds.speed[FRONT_RIGHT]+wheel_speeds.speed[FRONT_LEFT])/2);
 
-     //Calculate the partial distance traveled from the front tires average speed
-     delay_dist_traveled = calculate_distance(front_speed_avg);
+    //Calculate the partial distance traveled from the front tires average speed
+    delay_dist_traveled = calculate_distance(front_speed_avg);
 
     //Read the global variable
-     dist_traveled = get_global_var_value(DIST_TRAVELED);
+    dist_traveled = get_global_var_value(DIST_TRAVELED);
 
-     //Add the delay distance traveled to the total
-     dist_traveled.distances[TOTAL_DIST] += delay_dist_traveled;
-     dist_traveled.distances[PARTIAL_DIST] += delay_dist_traveled;
+    //Add the delay distance traveled to the total
+    dist_traveled.distances[TOTAL_DIST] += delay_dist_traveled;
+    dist_traveled.distances[PARTIAL_DIST] += delay_dist_traveled;
 
-     //Write in the global variable
-     set_global_var(DIST_TRAVELED, &dist_traveled);
+    //Write in the global variable
+    set_global_var(DIST_TRAVELED, &dist_traveled);
 
-     //Area for CAN and HMI processing
+    //Area for CAN and HMI processing
 
-     //If the distance is littler than 100 meters send distance data every meter traveled
-     if (dist_traveled.distances[PARTIAL_DIST] < 100)
-     {
-    	 //Send using CAN the distance traveled in meters
-    	 log_distance(&dist_traveled);
+    //If the distance is littler than 100 meters send distance data every meter traveled
+    if (dist_traveled.distances[PARTIAL_DIST] < 100)
+    {
+        //Send using CAN the distance traveled in meters
+        log_distance(&dist_traveled);
 
-    	 //Record the partial distance value sent
-    	 dist_sent = dist_traveled.distances[PARTIAL_DIST];
-     }
-     else
-     {
-    	 //After the distance surpass 100 meters, send partial distance data only when other 100 meters are traveled
-    	 if ((dist_traveled.distances[PARTIAL_DIST] - dist_sent) > 100)
-    	 {
-    		 //Send using CAN
-    		 log_distance(&dist_traveled);
+        //Record the partial distance value sent
+        dist_sent = dist_traveled.distances[PARTIAL_DIST];
+    }
+    else
+    {
+        //After the distance surpass 100 meters, send partial distance data only when other 100 meters are traveled
+        if ((dist_traveled.distances[PARTIAL_DIST] - dist_sent) > 100)
+        {
+            //Send using CAN
+            log_distance(&dist_traveled);
 
-    		 //Record the distance value sent
-    		 dist_sent = dist_traveled.distances[PARTIAL_DIST];
+            //Record the distance value sent
+            dist_sent = dist_traveled.distances[PARTIAL_DIST];
 
-        	 //Edit flash distance array to save in the memory
-    		 flash_distance[0] = dist_traveled.distances[TOTAL_DIST];
+            //Edit flash distance array to save in the memory
+            flash_distance[0] = dist_traveled.distances[TOTAL_DIST];
 
-    		 //In order to avoid saving multiple times and wearing the embedded flash, save up to 100 times
-    		 if (save_counter < MAX_SAVE_TIMES)
-    		 {
-    			 //Function call to save data
-    			 Flash_Write_Data(0x080E0000, flash_distance, 8);
+            //In order to avoid saving multiple times and wearing the embedded flash, save up to 100 times
+            if (save_counter < MAX_SAVE_TIMES)
+            {
+                //Function call to save data
+                Flash_Write_Data(0x080E0000, flash_distance, 8);
 
-    			 //Increment of counter
-    			 save_counter ++;
-    		 }
-    		 else
-    		 {
-    			 //Could do something
-    		 }
-    	 }
-     }
+                //Increment of counter
+                save_counter ++;
+            }
+            else
+            {
+                //Could do something
+            }
+        }
+    }
 
-     //Delay in thread execution. 100 ms
-     osDelay(AVG_TIME);
+    //Delay in thread execution. 100 ms
+    osDelay(AVG_TIME);
     }
 }
 

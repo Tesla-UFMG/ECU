@@ -10,6 +10,29 @@
 
 #include "stdint.h"
 
+
+//Variable name, Message Id, Message word
+#define CAN_LIST \
+    CAN_LIST_DATA(ID_DISTANCE_T_ODOM, 102,1)
+
+typedef enum
+{
+#define CAN_LIST_DATA(var_name, msg_id, msg_wrd) \
+    var_name,
+    CAN_LIST
+#undef CAN_LIST_DATA
+    CAN_ID_QUAN
+} CAN_LIST_e;
+
+
+typedef struct {
+    uint16_t id;
+    uint8_t pos;
+} CAN_ID_t;
+
+
+
+
 // INVERTER
 
 #define ID_RIGHT_INVERTER 0x301
@@ -73,14 +96,7 @@
 #define ID_ALARM_L_MOTOR        51
 #define ID_ALARM_R_MOTOR        52
 
-#define CAN_ID_QUAN 53
 
-typedef struct {
-    uint16_t id;
-    uint8_t pos;
-} CAN_ID_t;
-
-extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
 // TODO(renanmoreira): IMPLEMENT X-MACROS FOR CAN_ID'S
 #define ECU_CAN_INITIAL_ID        100
 #define ECU_CAN_FINAL_ID          149
@@ -195,7 +211,6 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
 
 //----------
 
-void initialize_CAN_IDs();
 uint16_t convert_id_pos_to_index(uint16_t id, uint16_t pos);
 CAN_ID_t get_CAN_ID_from_internal(uint16_t internal);
 uint16_t get_internal_from_id_pos(uint16_t id, uint16_t pos);

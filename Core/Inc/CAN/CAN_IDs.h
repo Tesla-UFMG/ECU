@@ -101,8 +101,8 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
     { 102, 0 }
 #define INTERNAL_ID_DISTANCE_P_ODOM                                                      \
     { 102, 2 }
-#define INTERNAL_ID_DISTANCE_T_ODOM													     \
-	{102,  3 }
+#define INTERNAL_ID_DISTANCE_T_ODOM                                                      \
+    { 102, 3 }
 #define INTERNAL_ID_TORQUE_R_MOTOR                                                       \
     { 103, 0 }
 #define INTERNAL_ID_TORQUE_L_MOTOR                                                       \

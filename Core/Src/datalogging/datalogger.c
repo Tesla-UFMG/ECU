@@ -29,6 +29,15 @@ void datalogger(void* argument) {
         brkpt();
 #endif
 
+        // Chamada da estrutura
+        /*
+        estrutura
+        {
+            id_externo, vetor[id_interno(enum)]
+                        100, vetor= 0,1,2,-1
+                        101, vetor=3,-1,4,5
+        }
+        */
         // enquanto conseguir extrair item da fila de mensagens
         while (osMessageQueueGet(q_datalog_messageHandle, &message, 0, 0) == osOK) {
             datalog_data_holder[message.id] = message.data;
@@ -37,6 +46,24 @@ void datalogger(void* argument) {
         const uint16_t WRITE_ITERATION_LIMIT = ECU_CAN_LAST_POPULATED_ID
                                                + ECU_CAN_LAST_DEBUG_ID
                                                - ECU_CAN_FIRST_DEBUG_ID + 1;
+
+        // Novo algoritmo a ser implementado
+        /*
+                for (i= 0; i< tamanho estrutura; ++i)
+
+                {
+                    for (pos = 0; pos < 4; ++pos)
+
+                      id_interno = estrutura.vetor[pos];
+                    if (id_interno == -1)
+                    vex_tx[pos] = 0;
+                    else
+
+                    vex_tx[pos] = datalog_data_holder[id_interno];
+                    general_can_transmit (estrutura.id, vet_tx);
+                }
+
+        */
         for (uint16_t id = ECU_CAN_INITIAL_ID; id < WRITE_ITERATION_LIMIT; id++) {
             for (uint16_t pos = 0; pos < 4; pos++) {
                 uint16_t internal_index = get_internal_from_id_pos(id, pos);

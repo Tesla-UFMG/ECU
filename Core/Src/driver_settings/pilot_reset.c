@@ -7,14 +7,8 @@
 
 #include "driver_settings/pilot_reset.h"
 
-#include "driver_settings/RTD.h"
-#include "leds/debug_leds_handler.h"
-#include "leds/rgb_led_handler.h"
-#include "main.h"
 #include "stdbool.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
-#include "util/global_instances.h"
-#include "util/global_variables.h"
 #include "util/util.h"
 #include "util/initializers.h"
 

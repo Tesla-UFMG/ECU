@@ -38,7 +38,7 @@ double wheel_control(uint8_t wheel_motor, SPEEDS_t speeds) {
     // speed of the car's center of mass
     cm_speed = (float)get_global_var_value(REAR_AVG_SPEED);
     // slip ratio of the selected wheel
-    slip = ((speeds.wheels[controlled_wheels[wheel_motor].wheel] - cm_speed) / cm_speed)
+    slip = (((float)(speeds.wheels[controlled_wheels[wheel_motor].wheel]) - cm_speed) / cm_speed)
            * 100;
     // PID
     return (

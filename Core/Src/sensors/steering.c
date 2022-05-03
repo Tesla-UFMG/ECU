@@ -13,8 +13,6 @@
 #include "util/global_definitions.h"
 #include "util/util.h"
 
-#include "leds/debug_leds_handler.h"
-
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 void steering_read(void* argument) {
@@ -63,7 +61,6 @@ void steering_read(void* argument) {
             set_global_var_value(INTERNAL_WHEEL, CENTRO);
         }
 
-        set_debugleds(DEBUGLED3, BLINK,200);
         osDelay(100);
 
         //	return (volante);

@@ -28,7 +28,7 @@
 #include "util/initializers.h"
 #include "dynamic_controls/initializer_controls.h"
 #include "sensors/APPS.h"
-#include "sensors/wheel_speed.h"
+#include "sensors/encoder_speed.h"
 #include "util/global_instances.h"
 #include "util/main_task.h"
 #include "leds/debug_leds_handler.h"

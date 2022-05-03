@@ -10,7 +10,6 @@
 #include "DynamicControls/constants_control.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
-#include "sensors/wheel_speed.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
 #include "util/global_variables.h"

@@ -5,7 +5,7 @@
  *      Author: renanmoreira
  */
 
-#include "sensors/wheel_speed.h"
+#include "sensors/encoder_speed.h"
 
 #include "cmsis_os.h"
 #include "math.h"

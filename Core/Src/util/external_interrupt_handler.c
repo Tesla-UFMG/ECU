@@ -9,7 +9,7 @@
 
 #include "cmsis_os.h"
 #include "main.h"
-#include "sensors/wheel_speed.h"
+#include "sensors/encoder_speed.h"
 #include "util/global_instances.h"
 #include "util/util.h"
 

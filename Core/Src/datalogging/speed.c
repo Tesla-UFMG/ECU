@@ -12,6 +12,8 @@
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/util.h"
 
+#define SPEED_LOG_DELAY 10
+
 void log_speed(SPEEDS_t* speed);
 
 void speed_datalog(void* argument) {
@@ -47,6 +49,6 @@ void speed_datalog(void* argument) {
         log_data(ID_SPEED_RL, speed.wheels[REAR_LEFT]);
         // log_data(ID_SPEED_AVG, &avg_front_speed);
         // todo: (Felipe) log avg speed after updated datalogging
-        osDelay(10);
+        osDelay(SPEED_LOG_DELAY);
     }
 }

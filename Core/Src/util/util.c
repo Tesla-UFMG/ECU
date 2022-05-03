@@ -8,8 +8,8 @@
 #include "util/util.h"
 
 #include "main.h"
-#include "util/global_instances.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
+#include "util/global_instances.h"
 
 speed_pin_e get_speed_pin(uint16_t pin) {
     switch (pin) {
@@ -41,7 +41,9 @@ uint16_t concatenate_two_uint8_to_uint16(const uint8_t* data) {
     return (data[1] << 8 | data[0]);
 }
 
-bool is_the_car_stationary(WHEEL_SPEEDS_t wheel_speeds){
+bool is_the_car_stationary() {
+    WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
+
     float cm_speed;
 
     cm_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT]) / 2);

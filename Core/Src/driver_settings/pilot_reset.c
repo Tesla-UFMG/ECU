@@ -9,8 +9,8 @@
 
 #include "stdbool.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
-#include "util/util.h"
 #include "util/initializers.h"
+#include "util/util.h"
 
 void pilot_reset(void* argument) {
     UNUSED(argument);
@@ -42,10 +42,8 @@ void pilot_reset(void* argument) {
 
         BRAKE_STATUS_t is_brake_active       = get_global_var_value(BRAKE_STATUS);
         THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
-        WHEEL_SPEEDS_t wheel_speeds          = get_global_var_value(WHEEL_SPEEDS);
 
-        if (is_brake_active && !is_throttle_active
-            && is_the_car_stationary(wheel_speeds)) {
+        if (is_brake_active && !is_throttle_active && is_the_car_stationary()) {
 
             deInit_all_peripherals();
             HAL_NVIC_SystemReset();

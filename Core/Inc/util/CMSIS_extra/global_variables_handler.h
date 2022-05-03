@@ -16,7 +16,7 @@ typedef struct {
     uint16_t wheels[4];
 } SPEEDS_t;
 typedef struct {
-    float wheel_encoder_speed[WHEEL_ENCODERS_AVAILABLE];
+    float wheels[WHEEL_ENCODERS_AVAILABLE];
 } WHEEL_ENCODER_SPEEDS_t;
 typedef uint16_t FRONT_AVG_SPEED_t;
 typedef uint16_t REAR_AVG_SPEED_t;

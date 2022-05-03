@@ -8,7 +8,6 @@
 #include "sensors/wheel_speed.h"
 
 #include "cmsis_os.h"
-#include "datalogging/datalog_handler.h"
 #include "math.h"
 #include "stm32h7xx.h"
 #include "string.h"
@@ -33,7 +32,7 @@ static inline uint32_t calculate_timeout(uint32_t speed);
 extern TIM_HandleTypeDef htim2;
 extern osMessageQueueId_t q_speed_messageHandle;
 
-void wheel_sensor_speed(void) {
+void encoder_speed_calc(void) {
     speed_message_t message;
     speed_message_t last_messages[4];
     // inicializa com 0 buffer de ultimas mensagens
@@ -84,11 +83,11 @@ void wheel_sensor_speed(void) {
                 }
 
                 speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
-                WHEEL_ENCODER_SPEEDS_t wheel_speeds =
+                WHEEL_ENCODER_SPEEDS_t encoder_speed =
                     get_global_var_value(WHEEL_ENCODER_SPEEDS);
                 // seta velocidade especifica da roda recebida
-                wheel_speeds.wheel_encoder_speed[message.pin] = speed;
-                set_global_var(WHEEL_ENCODER_SPEEDS, &wheel_speeds);
+                encoder_speed.wheels[message.pin] = speed;
+                set_global_var(WHEEL_ENCODER_SPEEDS, &encoder_speed);
                 // guarda mensagem ate a proxima interacao
                 last_messages[message.pin] = message;
                 break;
@@ -97,22 +96,22 @@ void wheel_sensor_speed(void) {
 }
 
 void reset_speed_all() {
-    WHEEL_ENCODER_SPEEDS_t wheel_speeds;
+    WHEEL_ENCODER_SPEEDS_t encoder_speed;
     for (uint8_t i = 0; i < WHEEL_ENCODERS_AVAILABLE; i++) {
-        wheel_speeds.wheel_encoder_speed[i] = 0;
+        encoder_speed.wheels[i] = 0;
     }
-    set_global_var(WHEEL_ENCODER_SPEEDS, &wheel_speeds);
+    set_global_var(WHEEL_ENCODER_SPEEDS, &encoder_speed);
 }
 
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages,
                         uint32_t min_count) {
-    WHEEL_ENCODER_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_ENCODER_SPEEDS);
+    WHEEL_ENCODER_SPEEDS_t encoder_speed = get_global_var_value(WHEEL_ENCODER_SPEEDS);
     for (speed_pin_e i = FIRST_WHEEL; i <= WHEEL_ENCODERS_AVAILABLE; i++) {
         if ((message->tim_count - last_messages[i].tim_count) > min_count) {
-            wheel_speeds.wheel_encoder_speed[i] = 0;
+            encoder_speed.wheels[i] = 0;
         }
     }
-    set_global_var(WHEEL_ENCODER_SPEEDS, &wheel_speeds);
+    set_global_var(WHEEL_ENCODER_SPEEDS, &encoder_speed);
 }
 
 // obtem a frequencia do tim2 a partir APB1, considerando que ele pode ter um prescaler

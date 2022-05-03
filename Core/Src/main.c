@@ -101,10 +101,10 @@ const osThreadAttr_t t_steering_read_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_wheel_sensor_speed */
-osThreadId_t t_wheel_sensor_speedHandle;
-const osThreadAttr_t t_wheel_sensor_speed_attributes = {
-  .name = "t_wheel_sensor_speed",
+/* Definitions for t_encoder_speed_calc */
+osThreadId_t t_encoder_speed_calcHandle;
+const osThreadAttr_t t_encoder_speed_calc_attributes = {
+  .name = "t_encoder_speed_calc",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
@@ -282,7 +282,7 @@ extern void torque_parameters(void *argument);
 extern void datalogger(void *argument);
 extern void APPS_read(void *argument);
 extern void steering_read(void *argument);
-extern void wheel_sensor_speed(void *argument);
+extern void encoder_speed_calc(void *argument);
 extern void odometer_calc(void *argument);
 extern void torque_message(void *argument);
 extern void torque_manager(void *argument);
@@ -433,8 +433,8 @@ int main(void)
   /* creation of t_steering_read */
   t_steering_readHandle = osThreadNew(steering_read, NULL, &t_steering_read_attributes);
 
-  /* creation of t_wheel_sensor_speed */
-  t_wheel_sensor_speedHandle = osThreadNew(wheel_sensor_speed, NULL, &t_wheel_sensor_speed_attributes);
+  /* creation of t_encoder_speed_calc */
+  t_encoder_speed_calcHandle = osThreadNew(encoder_speed_calc, NULL, &t_encoder_speed_calc_attributes);
 
   /* creation of t_odometer_calc */
   t_odometer_calcHandle = osThreadNew(odometer_calc, NULL, &t_odometer_calc_attributes);

@@ -40,7 +40,7 @@ lateral_result_t lateral_control() {
     float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
 
     // velocidade em m/s
-    cg_speed = (double)get_global_var_value(REAR_AVG_SPEED) / (10 * 3.6);
+    cg_speed = ((double)get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);
     // steering
     steering_adjusted = calc_steering(steering_wheel, internal_wheel);
     // yaw rate

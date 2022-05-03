@@ -84,7 +84,8 @@ void wheel_sensor_speed(void) {
                 }
 
                 speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
-                WHEEL_ENCODER_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_ENCODER_SPEEDS);
+                WHEEL_ENCODER_SPEEDS_t wheel_speeds =
+                    get_global_var_value(WHEEL_ENCODER_SPEEDS);
                 // seta velocidade especifica da roda recebida
                 wheel_speeds.wheel_encoder_speed[message.pin] = speed;
                 set_global_var(WHEEL_ENCODER_SPEEDS, &wheel_speeds);
@@ -96,7 +97,10 @@ void wheel_sensor_speed(void) {
 }
 
 void reset_speed_all() {
-    WHEEL_ENCODER_SPEEDS_t wheel_speeds = {.wheel_encoder_speed = {0, 0}};
+    WHEEL_ENCODER_SPEEDS_t wheel_speeds;
+    for (uint8_t i = 0; i < WHEEL_ENCODERS_AVAILABLE; i++) {
+        wheel_speeds.wheel_encoder_speed[i] = 0;
+    }
     set_global_var(WHEEL_ENCODER_SPEEDS, &wheel_speeds);
 }
 

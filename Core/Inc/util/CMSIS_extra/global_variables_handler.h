@@ -31,8 +31,13 @@ typedef modos SELECTED_MODE_t;
 
 #define SPEEDS_DEFAULT_VALUE                                                             \
     { 0, 0, 0, 0 }
+#if WHEEL_ENCODERS_AVAILABLE == 2
 #define WHEEL_ENCODER_SPEEDS_DEFAULT_VALUE                                               \
     { 0, 0 }
+#else
+#define WHEEL_ENCODER_SPEEDS_DEFAULT_VALUE                                               \
+    { 0, 0, 0, 0 }
+#endif
 #define FRONT_AVG_SPEED_DEFAULT_VALUE  0
 #define REAR_AVG_SPEED_DEFAULT_VALUE   0
 #define STEERING_WHEEL_DEFAULT_VALUE   0

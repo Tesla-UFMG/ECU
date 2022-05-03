@@ -26,7 +26,6 @@
 void reset_speed_all();
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages,
                         uint32_t min_count);
-void log_speed(WHEEL_SPEEDS_t* wheel_speeds);
 static inline uint32_t get_tim2_freq();
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout(uint32_t speed);
@@ -34,7 +33,7 @@ static inline uint32_t calculate_timeout(uint32_t speed);
 extern TIM_HandleTypeDef htim2;
 extern osMessageQueueId_t q_speed_messageHandle;
 
-void speed_calc(void) {
+void wheel_sensor_speed(void) {
     speed_message_t message;
     speed_message_t last_messages[4];
     // inicializa com 0 buffer de ultimas mensagens
@@ -85,40 +84,31 @@ void speed_calc(void) {
                 }
 
                 speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
-                WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
+                WHEEL_ENCODER_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_ENCODER_SPEEDS);
                 // seta velocidade especifica da roda recebida
-                wheel_speeds.speed[message.pin] = (float)speed;
-                set_global_var(WHEEL_SPEEDS, &wheel_speeds);
+                wheel_speeds.wheel_encoder_speed[message.pin] = speed;
+                set_global_var(WHEEL_ENCODER_SPEEDS, &wheel_speeds);
                 // guarda mensagem ate a proxima interacao
                 last_messages[message.pin] = message;
-                log_speed(&wheel_speeds);
                 break;
         }
     }
 }
 
-void log_speed(WHEEL_SPEEDS_t* wheel_speeds) {
-    log_data(ID_SPEED_FR, (uint16_t)wheel_speeds->speed[FRONT_RIGHT]);
-    log_data(ID_SPEED_FL, (uint16_t)wheel_speeds->speed[FRONT_LEFT]);
-    log_data(ID_SPEED_RR, (uint16_t)wheel_speeds->speed[REAR_RIGHT]);
-    log_data(ID_SPEED_RL, (uint16_t)wheel_speeds->speed[REAR_LEFT]);
-}
-
 void reset_speed_all() {
-    WHEEL_SPEEDS_t wheel_speeds = {.speed = {0, 0, 0, 0}};
-    set_global_var(WHEEL_SPEEDS, &wheel_speeds);
-    log_speed(&wheel_speeds);
+    WHEEL_ENCODER_SPEEDS_t wheel_speeds = {.wheel_encoder_speed = {0, 0}};
+    set_global_var(WHEEL_ENCODER_SPEEDS, &wheel_speeds);
 }
 
 void reset_speed_single(speed_message_t* message, speed_message_t* last_messages,
                         uint32_t min_count) {
-    WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
-    for (speed_pin_e i = FIRST_WHEEL; i <= LAST_WHEEL; i++) {
+    WHEEL_ENCODER_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_ENCODER_SPEEDS);
+    for (speed_pin_e i = FIRST_WHEEL; i <= WHEEL_ENCODERS_AVAILABLE; i++) {
         if ((message->tim_count - last_messages[i].tim_count) > min_count) {
-            wheel_speeds.speed[i] = 0;
+            wheel_speeds.wheel_encoder_speed[i] = 0;
         }
     }
-    set_global_var(WHEEL_SPEEDS, &wheel_speeds);
+    set_global_var(WHEEL_ENCODER_SPEEDS, &wheel_speeds);
 }
 
 // obtem a frequencia do tim2 a partir APB1, considerando que ele pode ter um prescaler

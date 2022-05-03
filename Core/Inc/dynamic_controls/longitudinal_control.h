@@ -32,7 +32,7 @@ typedef struct {
 } longitudinal_control_result_t;
 
 longitudinal_control_result_t longitudinal_control();
-double wheel_control(uint8_t wheel_motor, WHEEL_SPEEDS_t wheel_speeds);
+double wheel_control(uint8_t wheel_motor, SPEEDS_t speeds);
 void init_longitudinal_control();
 
 #endif /* INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_ */

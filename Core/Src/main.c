@@ -101,10 +101,10 @@ const osThreadAttr_t t_steering_read_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_speed_calc */
-osThreadId_t t_speed_calcHandle;
-const osThreadAttr_t t_speed_calc_attributes = {
-  .name = "t_speed_calc",
+/* Definitions for t_wheel_sensor_speed */
+osThreadId_t t_wheel_sensor_speedHandle;
+const osThreadAttr_t t_wheel_sensor_speed_attributes = {
+  .name = "t_wheel_sensor_speed",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
@@ -192,6 +192,13 @@ const osThreadAttr_t t_buttons_handler_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_speed_datalog */
+osThreadId_t t_speed_datalogHandle;
+const osThreadAttr_t t_speed_datalog_attributes = {
+  .name = "t_speed_datalog",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -275,7 +282,7 @@ extern void torque_parameters(void *argument);
 extern void datalogger(void *argument);
 extern void APPS_read(void *argument);
 extern void steering_read(void *argument);
-extern void speed_calc(void *argument);
+extern void wheel_sensor_speed(void *argument);
 extern void odometer_calc(void *argument);
 extern void torque_message(void *argument);
 extern void torque_manager(void *argument);
@@ -288,6 +295,7 @@ extern void datalog_acquisition(void *argument);
 extern void inverter_comm_error(void *argument);
 extern void inverter_datalog(void *argument);
 extern void buttons_handler(void *argument);
+extern void speed_datalog(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -425,8 +433,8 @@ int main(void)
   /* creation of t_steering_read */
   t_steering_readHandle = osThreadNew(steering_read, NULL, &t_steering_read_attributes);
 
-  /* creation of t_speed_calc */
-  t_speed_calcHandle = osThreadNew(speed_calc, NULL, &t_speed_calc_attributes);
+  /* creation of t_wheel_sensor_speed */
+  t_wheel_sensor_speedHandle = osThreadNew(wheel_sensor_speed, NULL, &t_wheel_sensor_speed_attributes);
 
   /* creation of t_odometer_calc */
   t_odometer_calcHandle = osThreadNew(odometer_calc, NULL, &t_odometer_calc_attributes);
@@ -463,6 +471,9 @@ int main(void)
 
   /* creation of t_buttons_handler */
   t_buttons_handlerHandle = osThreadNew(buttons_handler, NULL, &t_buttons_handler_attributes);
+
+  /* creation of t_speed_datalog */
+  t_speed_datalogHandle = osThreadNew(speed_datalog, NULL, &t_speed_datalog_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

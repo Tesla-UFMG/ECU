@@ -16,6 +16,7 @@
 #include "util/global_instances.h"
 #include "util/global_variables.h"
 #include "util/util.h"
+#include "util/initializers.h"
 
 void pilot_reset(void* argument) {
     UNUSED(argument);
@@ -52,22 +53,8 @@ void pilot_reset(void* argument) {
         if (is_brake_active && !is_throttle_active
             && is_the_car_stationary(wheel_speeds)) {
 
+            deInit_all_peripherals();
             HAL_NVIC_SystemReset();
         }
     }
 }
-
-//void reset_ECU() {
-//    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_All);
-//    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_All);
-//    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_All);
-//    HAL_FDCAN_DeInit(&hfdcan1);
-//    HAL_FDCAN_DeInit(&hfdcan2);
-//    HAL_DMA_DeInit();
-//    HAL_ADC1_DeInit();
-//    HAL_LPUART1_UART_DeInit();
-//    HAL_SPI1_DeInit();
-//    HAL_TIM1_DeInit();
-//    HAL_I2C3_DeInit();
-//    HAL_TIM2_DeInit();
-//}

@@ -102,4 +102,23 @@ void inicializa_modos() {
     set_global_var_value(SELECTED_MODE, enduro); // inicializa no modo enduro
 }
 
+extern ADC_HandleTypeDef hadc1;
+extern UART_HandleTypeDef hlpuart1;
+extern SPI_HandleTypeDef hspi1;
+extern I2C_HandleTypeDef hi2c3;
+extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim2;
 
+void deInit_all_peripherals() {
+    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_All);
+    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_All);
+    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_All);
+    HAL_FDCAN_DeInit(&hfdcan1);
+    HAL_FDCAN_DeInit(&hfdcan2);
+    HAL_ADC_Init(&hadc1);
+    HAL_UART_DeInit(&hlpuart1);
+    HAL_SPI_DeInit(&hspi1);
+    HAL_I2C_DeInit(&hi2c3);
+    HAL_TIM_Base_DeInit(&htim1);
+    HAL_TIM_Base_DeInit(&htim2);
+}

@@ -26,9 +26,7 @@ typedef uint16_t THROTTLE_PERCENT_t;
 typedef bool BRAKE_STATUS_t;
 typedef bool THROTTLE_STATUS_t;
 typedef modos SELECTED_MODE_t;
-typedef struct {
-    uint32_t distances[2];
-} DIST_TRAVELED_t;
+typedef uint32_t ODOMETER_TOTAL_t;
 
 #define MOTOR_SPEEDS_DEFAULT_VALUE                                                       \
     { 0, 0 }
@@ -43,8 +41,7 @@ typedef struct {
 #define THROTTLE_STATUS_DEFAULT_VALUE  false
 #define SELECTED_MODE_DEFAULT_VALUE                                                      \
     {}
-#define DIST_TRAVELED_DEFAULT_VALUE                                                      \
-    { 0, 0 }
+#define ODOMETER_TOTAL_DEFAULT_VALUE 0
 typedef enum {
     MOTOR_SPEEDS,
     WHEEL_SPEEDS,
@@ -56,7 +53,7 @@ typedef enum {
     BRAKE_STATUS,
     THROTTLE_STATUS,
     SELECTED_MODE,
-    DIST_TRAVELED,
+    ODOMETER_TOTAL,
     _global_vars_quan /* THIS MUST BE THE LAST ELEMENT OF THE ENUM, AS IT'S USED A
                          NUMBER-OF-ELEMENTS INDICATOR */
 } global_vars_e;

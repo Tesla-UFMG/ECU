@@ -20,9 +20,6 @@
 //    - 256 bits for STM32H72x/3X devices (8x 32bits words)
 //
 
-// If using any other STM32H7 Series
-#define FLASHWORD 8
-
 // Function to determine the sector number of a user given address
 static uint32_t GetSector(uint32_t Address) {
     uint32_t sector = 0;
@@ -110,6 +107,8 @@ void Flash_Read_Data(uint32_t StartSectorAddress, uint32_t* data,
 
         // Jumps 32 bits
         StartSectorAddress += 4;
+
+        data++;
 
         if (!(numberofwords--)) {
             break;

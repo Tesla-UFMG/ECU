@@ -4,6 +4,9 @@
 
 #include "stm32h7xx_hal.h"
 
+// If using any other STM32H7 Series
+#define FLASHWORD 8
+
 uint32_t Flash_Write_Data(uint32_t StartSectorAddress, uint32_t* data,
                           uint16_t numberofwords);
 void Flash_Read_Data(uint32_t StartSectorAddress, uint32_t* data, uint16_t numberofwords);

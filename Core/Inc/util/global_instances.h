@@ -27,6 +27,7 @@ extern osThreadId_t t_main_taskHandle;
 extern osThreadId_t t_seleciona_modoHandle;
 extern osThreadId_t t_RTDHandle;
 extern osThreadId_t t_inverter_comm_errorHandle;
+extern osThreadId_t t_odometer_saveHandle;
 
 // EVENT FLAGS
 extern osEventFlagsId_t ECU_control_event_id;

@@ -45,11 +45,11 @@ typedef enum {
 #define ENTRY(a, b, c) a,
     VARIABLES
 #undef ENTRY
-        NUM_STATES
-} can_vars_e;
+        NUM_STATES_INVERSOR
+} can_vars_e_inversor;
 
-void store_value(can_vars_e var_name, uint16_t value);
-uint16_t get_value(can_vars_e var_name);
-can_vars_e get_var_name_from_id_and_pos(uint32_t id, int pos);
+void store_value_inversor(can_vars_e_inversor var_name, uint16_t value);
+uint16_t get_value_inversor(can_vars_e_inversor var_name);
+can_vars_e_inversor get_var_name_from_id_and_pos_inversor(uint32_t id, int pos);
 
 #endif /* INC_INVERTER_CAN_IDS_H_ */

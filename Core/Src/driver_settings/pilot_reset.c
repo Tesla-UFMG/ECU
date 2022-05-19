@@ -43,6 +43,7 @@ void pilot_reset(void* argument) {
         BRAKE_STATUS_t is_brake_active       = get_global_var_value(BRAKE_STATUS);
         THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
 
+        // todo (Felipe): test condition with car ready
         if (is_brake_active && !is_throttle_active && is_the_car_stationary()) {
 
             deInit_all_peripherals();

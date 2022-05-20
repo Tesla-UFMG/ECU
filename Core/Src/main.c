@@ -199,6 +199,13 @@ const osThreadAttr_t t_buttons_handler_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_odometer_save */
+osThreadId_t t_odometer_saveHandle;
+const osThreadAttr_t t_odometer_save_attributes = {
+  .name = "t_odometer_save",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_speed_message */
 osMessageQueueId_t q_speed_messageHandle;
 const osMessageQueueAttr_t q_speed_message_attributes = {
@@ -296,6 +303,7 @@ extern void inverter_comm_error(void *argument);
 extern void inverter_datalog(void *argument);
 extern void pilot_reset(void *argument);
 extern void buttons_handler(void *argument);
+extern void odometer_save(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -472,6 +480,9 @@ int main(void)
 
   /* creation of t_buttons_handler */
   t_buttons_handlerHandle = osThreadNew(buttons_handler, NULL, &t_buttons_handler_attributes);
+
+  /* creation of t_odometer_save */
+  t_odometer_saveHandle = osThreadNew(odometer_save, NULL, &t_odometer_save_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

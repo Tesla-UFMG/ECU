@@ -9,6 +9,6 @@
 #ifndef INC_STEERING_H_
 #define INC_STEERING_H_
 
-float calculo_steering (double volante_atual, double zero_volante, double volante_max, double ang_max);
+float calculo_steering (float volante_atual, float zero_volante, float volante_max, float ang_max);
 
 #endif /* INC_STEERING_H_ */

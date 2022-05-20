@@ -19,7 +19,7 @@ extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 	//calculo do angulo atual com base na leitura atual do adc, no angulo maximo do volante e da
     //leitura do min e do maximo na calibracao usando teorema de Tales
-float calculo_steering (double volante_atual, double zero_volante, double volante_max, double ang_max)
+float calculo_steering (float volante_atual, float zero_volante, float volante_max, float ang_max)
 {
         float steering_calc_a;
         steering_calc_a = ang_max * ((volante_atual - zero_volante)/(volante_max - zero_volante));

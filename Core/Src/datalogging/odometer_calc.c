@@ -6,8 +6,10 @@
  */
 
 #include "datalogging/odometer_calc.h"
+
 #include "cmsis_os.h"
 #include "datalogging/datalog_handler.h"
+#include "datalogging/odometer_save.h"
 #include "main.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/flash_sector_h7.h"
@@ -33,7 +35,7 @@ void odometer_calc()
     ODOMETER_TOTAL_t total_dist_traveled;
 
     // Read distance from flash just once
-    Flash_Read_Data(FLASH_ADDR, &(total_dist_traveled), ONE_WORD);
+    Flash_Read_Data(ODOMETER_DATA_FLASH_ADDR, &(total_dist_traveled), WORDS_READ_ONE);
 
     // In case the memory position has never been used/saved
     if ((total_dist_traveled == 0x00000000) || (total_dist_traveled == 0xFFFFFFFF)) {
@@ -78,7 +80,7 @@ void odometer_calc()
         log_distance(total_dist_traveled, partial_dist_traveled);
 
         // Delay in thread execution. 100 ms
-        osDelay(AVG_TIME);
+        osDelay(CALC_DELAY);
     }
 }
 
@@ -93,5 +95,5 @@ static inline uint32_t calculate_distance(uint32_t speed_avg) {
      * speed_avg (10*km/h)
      * 1/36000 is a correction factor to make distance in meters (m)
      */
-    return (((1 / 36000) * speed_avg) * (AVG_TIME));
+    return (((1 / 36000) * speed_avg) * (CALC_DELAY));
 }

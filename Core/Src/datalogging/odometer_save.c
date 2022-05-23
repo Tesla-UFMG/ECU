@@ -5,6 +5,7 @@
  *      Author: dmroh
  */
 #include "datalogging/odometer_save.h"
+
 #include "cmsis_os.h"
 #include "datalogging/datalog_handler.h"
 #include "main.h"
@@ -30,10 +31,11 @@ void odometer_save() {
         total_distance_traveled_g = get_global_var_value(ODOMETER_TOTAL);
 
         // Read distance and number of saves in flash
-        Flash_Read_Data(FLASH_ADDR, flash_read_data, TWO_WORDS);
+        Flash_Read_Data(ODOMETER_DATA_FLASH_ADDR, flash_read_data, WORDS_READ_TWO);
 
         // If distance traveled is greater than 10 meters
-        if ((total_distance_traveled_g - flash_read_data[TOTAL_DISTANCE]) >= METERS_100) {
+        if ((total_distance_traveled_g - flash_read_data[TOTAL_DISTANCE])
+            >= MINIMUM_SAVE_DISTANCE) {
 
             // Edit flash distance array to save in the memory
             flash_distance[TOTAL_DISTANCE] = total_distance_traveled_g;
@@ -41,10 +43,11 @@ void odometer_save() {
 
             // In order to avoid saving multiple times and wearing the embedded flash,
             // save up to 20 times
-            if (save_counter < MAX_SAVE_TIMES) {
+            if (save_counter < MAXIMUM_SAVE_TIMES) {
 
                 // Function call to save data
-                Flash_Write_Data(FLASH_ADDR, flash_distance, FLASHWORD);
+                Flash_Write_Data(ODOMETER_DATA_FLASH_ADDR, flash_distance,
+                                 FLASH_WORD_SIZE);
 
                 // Increment of counter
                 save_counter++;

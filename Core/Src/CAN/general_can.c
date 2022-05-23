@@ -8,6 +8,7 @@
 #include "CAN/general_can.h"
 
 #include "CAN/CAN_handler.h"
+#include "CAN/CAN_IDs.h"
 #include "leds/debug_leds_handler.h"
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
@@ -51,11 +52,14 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
 
         idgeneral = RxHeader.Identifier;
         for (int i = 0; i < 4; ++i) {
-            datageneral[i] = concatenate_two_uint8_to_uint16(RxData + 2 * i);
-        }
-        // TODO(renanmoreira): implementar logica de colocar as mensagens nas variaveis
-        // certas
+            can_vars_e_geral var_name = get_var_name_from_id_and_pos_geral(idgeneral, i);
 
+            if((int)var_name != -1){
+                uint16_t data_general = concatenate_two_uint8_to_uint16(RxData + i * 2);
+                store_value_geral(var_name, data_general);
+            }
+        }
+        
         if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0)
             != HAL_OK) {
             /* Notification Error */

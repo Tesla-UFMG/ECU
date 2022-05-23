@@ -57,7 +57,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 
             if ((int)var_name != -1) {
                 uint16_t data = concatenate_two_uint8_to_uint16(RxData + i * 2);
-                store_value(var_name, data);
+                store_value_inversor(var_name, data);
             }
         }
 

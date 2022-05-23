@@ -95,9 +95,26 @@ void initialize_CAN_IDs() {
         }
         CAN_ID_POS_INTERNAL_ID_MAP[unique_index] = i;
     }
+}
 
+static uint32_t data_cangeral[NUM_STATES_GERAL];
 
+void store_value_geral(can_vars_e_geral var_name, uint16_t value_can_geral) {
+    data_cangeral[var_name] = value_can_geral;
+}
 
+uint16_t get_value_geral(can_vars_e_geral var_name) {
+    return data_cangeral[var_name];
+}
 
-
+// NOLINTNEXTLINE
+can_vars_e_geral get_var_name_from_id_and_pos_geral(uint32_t id, int pos) {
+#define ENTRY(a, b, c)                                                                   \
+    if (id == (b) && pos == (c))                                                         \
+        return a;                                                                        \
+    else
+    // NOLINTNEXTLINE
+    VARIABLES;
+#undef ENTRY
+    return -1;
 }

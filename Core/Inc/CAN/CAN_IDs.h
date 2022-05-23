@@ -216,7 +216,7 @@ uint16_t convert_id_pos_to_index(uint16_t id, uint16_t pos);
 CAN_ID_t get_CAN_ID_from_internal(uint16_t internal);
 uint16_t get_internal_from_id_pos(uint16_t id, uint16_t pos);
 
-void store_value_geral(can_vars_e_geral var_name, uint16_t value);
+void store_value_geral(can_vars_e_geral var_name, uint16_t value_can_geral);
 uint16_t get_value_geral(can_vars_e_geral var_name);
 can_vars_e_geral get_var_name_from_id_and_pos_geral(uint32_t id, int pos);
 

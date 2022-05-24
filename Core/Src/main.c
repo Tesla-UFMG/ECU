@@ -185,6 +185,13 @@ const osThreadAttr_t t_inverter_datalog_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_pilot_reset */
+osThreadId_t t_pilot_resetHandle;
+const osThreadAttr_t t_pilot_reset_attributes = {
+  .name = "t_pilot_reset",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for t_buttons_handler */
 osThreadId_t t_buttons_handlerHandle;
 const osThreadAttr_t t_buttons_handler_attributes = {
@@ -294,6 +301,7 @@ extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
 extern void inverter_comm_error(void *argument);
 extern void inverter_datalog(void *argument);
+extern void pilot_reset(void *argument);
 extern void buttons_handler(void *argument);
 extern void speed_datalog(void *argument);
 extern void errors_with_timer_callback(void *argument);
@@ -413,8 +421,6 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
-  global_variables_init();
-  inicializa_modos(); // must be initialized after global variables
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -469,6 +475,9 @@ int main(void)
   /* creation of t_inverter_datalog */
   t_inverter_datalogHandle = osThreadNew(inverter_datalog, NULL, &t_inverter_datalog_attributes);
 
+  /* creation of t_pilot_reset */
+  t_pilot_resetHandle = osThreadNew(pilot_reset, NULL, &t_pilot_reset_attributes);
+
   /* creation of t_buttons_handler */
   t_buttons_handlerHandle = osThreadNew(buttons_handler, NULL, &t_buttons_handler_attributes);
 
@@ -477,7 +486,6 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-  ECU_control_event_id = osEventFlagsNew(NULL);
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -1108,7 +1116,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN Header_main_task */
 /**
   * @brief  Function implementing the t_main_task thread.
-  * @param  argument: Not used 
+  * @param  argument: Not used
   * @retval None
   */
 /* USER CODE END Header_main_task */

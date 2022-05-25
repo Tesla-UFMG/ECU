@@ -31,8 +31,6 @@ static inline uint32_t get_tim2_freq();
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout(uint32_t speed);
 
-extern TIM_HandleTypeDef htim2;
-
 static encoder_speeds_message_t speeds_message;
 
 void encoder_speed_calc(void) {

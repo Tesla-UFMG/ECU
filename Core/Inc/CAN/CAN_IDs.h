@@ -194,7 +194,7 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
     { 113, 3 }
 
 //----------
-#define VARIABLES                                                                        \
+#define VARIABLES_GENERAL                                                                       \
     ENTRY(AccelX, 130, 0)                                                                \
     ENTRY(AccelY, 130, 1)                                                                \
     ENTRY(AccelZ, 130, 2)                                                                \
@@ -206,19 +206,19 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
 
 typedef enum {
 #define ENTRY(a,b,c) a,
-    VARIABLES
+    VARIABLES_GENERAL
 #undef ENTRY
-        NUM_STATES_GERAL
-} can_vars_e_geral;
+        NUM_STATES_GENERAL
+} can_vars_e_general;
 
 void initialize_CAN_IDs();
 uint16_t convert_id_pos_to_index(uint16_t id, uint16_t pos);
 CAN_ID_t get_CAN_ID_from_internal(uint16_t internal);
 uint16_t get_internal_from_id_pos(uint16_t id, uint16_t pos);
 
-void store_value_geral(can_vars_e_geral var_name, uint16_t value_can_geral);
-uint16_t get_value_geral(can_vars_e_geral var_name);
-can_vars_e_geral get_var_name_from_id_and_pos_geral(uint32_t id, int pos);
+void store_value_general(can_vars_e_general var_name, uint16_t value_can_general);
+uint16_t get_value_general(can_vars_e_general var_name);
+can_vars_e_general get_var_name_from_id_and_pos_general(uint32_t id, int pos);
 
 
 #endif /* INC_CAN_CAN_IDS_H_ */

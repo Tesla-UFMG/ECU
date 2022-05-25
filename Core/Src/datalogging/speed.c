@@ -37,7 +37,7 @@ void speed_datalog(void* argument) {
 #endif
         SPEEDS_t speed;
 
-        // Timeout to keep getting inverter speeds even in wheels encoder are stopped.
+        // Timeout to keep getting inverter speeds even if wheels encoder are stopped.
         // Note that if the task is released by a timeout the queue message pointer is not
         // overwritten
         osMessageQueueGet(q_encoder_speeds_messageHandle, &encoder_speeds_message, NULL,

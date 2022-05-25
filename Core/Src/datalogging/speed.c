@@ -10,12 +10,23 @@
 #include "CAN/inverter_can_data_manager.h"
 #include "datalogging/datalog_handler.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
+#include "util/global_instances.h"
 #include "util/util.h"
 
 #define SPEED_LOG_DELAY 10
 
-void log_speed(SPEEDS_t* speed);
+#if WHEEL_ENCODERS_AVAILABLE == 2
+static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0}};
+#else
+static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0, 0, 0}};
+#endif
 
+/**
+ * @brief Acquire speed values from wheel encoder and inverter speeds to creates global
+ * variables with average front, average rear and all four wheels speeds
+ *
+ * @param argument
+ */
 void speed_datalog(void* argument) {
     UNUSED(argument);
 
@@ -25,12 +36,18 @@ void speed_datalog(void* argument) {
         brkpt();
 #endif
         SPEEDS_t speed;
-        WHEEL_ENCODER_SPEEDS_t encoder_speed = get_global_var_value(WHEEL_ENCODER_SPEEDS);
-        uint16_t motor_speed_right           = get_value(speed_m_r);
-        uint16_t motor_speed_left            = get_value(speed_m_r);
 
-        speed.wheels[FRONT_RIGHT] = encoder_speed.wheels[FRONT_RIGHT];
-        speed.wheels[FRONT_LEFT]  = encoder_speed.wheels[FRONT_LEFT];
+        // Timeout to keep getting inverter speeds even in wheels encoder are stopped.
+        // Note that if the task is released by a timeout the queue message pointer is not
+        // overwritten
+        osMessageQueueGet(q_encoder_speeds_messageHandle, &encoder_speeds_message, NULL,
+                          SPEED_LOG_DELAY);
+
+        uint16_t motor_speed_right = get_value(speed_m_r);
+        uint16_t motor_speed_left  = get_value(speed_m_r);
+
+        speed.wheels[FRONT_RIGHT] = encoder_speeds_message.wheels[FRONT_RIGHT];
+        speed.wheels[FRONT_LEFT]  = encoder_speeds_message.wheels[FRONT_LEFT];
         speed.wheels[REAR_RIGHT]  = motor_speed_right;
         speed.wheels[REAR_LEFT]   = motor_speed_left;
 
@@ -48,7 +65,8 @@ void speed_datalog(void* argument) {
         log_data(ID_SPEED_RR, speed.wheels[REAR_RIGHT]);
         log_data(ID_SPEED_RL, speed.wheels[REAR_LEFT]);
         // log_data(ID_SPEED_AVG, &avg_front_speed);
-        // todo: (Felipe) log avg speed after updated datalogging
+        // todo: (Felipe) log avg speed after updated datalogging task
+
         osDelay(SPEED_LOG_DELAY);
     }
 }

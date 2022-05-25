@@ -15,9 +15,9 @@
 #define P_BRAKE    2
 #define P_THROTTLE 3
 
-// TODO(renanmoreira): reavaliar quantidade certa de delay
-#define CONTROLE_DELAY 50
-// TODO(Felipe): verificar se esse define tá certo
-#define D_5_kmph_rpm   459
+#define TORQUE_PARAMETERS_DELAY 50
+
+// TODO(Felipe): verify if this define is correct
+#define RPM_KMPH_5 459
 
 #endif /* INC_CONTROLE_H_ */

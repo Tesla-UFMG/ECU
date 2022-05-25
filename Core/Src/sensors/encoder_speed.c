@@ -7,47 +7,50 @@
 
 #include "sensors/encoder_speed.h"
 
-#include "cmsis_os.h"
+#include "datalogging/speed.h"
 #include "math.h"
 #include "stm32h7xx.h"
 #include "string.h"
-#include "util/CMSIS_extra/global_variables_handler.h"
+#include "util/CMSIS_extra/cmsis_extra.h"
+#include "util/global_instances.h"
+
 /*
- * distancia    = circuferencia dividido pela quantidade de dentes
- *              = 2*pi*raio/quant.dentes (m)
- * tempo        = valor do timer multiplicado pelo prescaler dividido pela frequencia
- *              = timer*prescaler/frequencia (s)
- * velocidade   = distancia/tempo
- *              = (2*pi*raio/quant.dentes)*freq/(presc*timer) (m/s)
- *              = (10*3.6*2*pi*raio/quant.dentes)*freq/(presc*timer) (10*km/s)
+ * distance = circumference divided by the number of teeth
+ *          = 2*pi*radius/teeth_number (m)
+ * time     = timer value multiplied by the prescaler divided by frequency
+ *          = timer*prescaler/frequency (s)
+ * speed    = distance/time
+ *          = (2*pi*radius/teeth_number)*freq/(presc*timer) (m/s)
+ *          = (10*3.6*2*pi*radius/teeth_number)*freq/(presc*timer) (10*km/h)
  */
 
-void reset_speed_all();
-void reset_speed_single(speed_message_t* message, speed_message_t* last_messages,
-                        uint32_t min_count);
+static void reset_speed_all();
+static void reset_speed_single(encoder_int_message_t* message,
+                               encoder_int_message_t* last_messages, uint32_t min_count);
 static inline uint32_t get_tim2_freq();
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout(uint32_t speed);
 
 extern TIM_HandleTypeDef htim2;
-extern osMessageQueueId_t q_speed_messageHandle;
+
+static encoder_speeds_message_t speeds_message;
 
 void encoder_speed_calc(void) {
-    speed_message_t message;
-    speed_message_t last_messages[4];
-    // inicializa com 0 buffer de ultimas mensagens
+    encoder_int_message_t interrupt_message;
+    encoder_int_message_t last_interrupt_messages[4];
+    // initialize with zeros the last messages buffer
     // NOLINTNEXTLINE
-    memset(&last_messages, 0, sizeof(speed_message_t) * 4);
+    memset(&last_interrupt_messages, 0, sizeof(encoder_int_message_t) * 4);
 
-    // pega frequencia que esta conectada ao tim2
+    // gets tim2 frequency
     const uint32_t tim_freq = get_tim2_freq();
-    // prescaler do tim2
+    //  tim2 prescaler
     const uint32_t tim_presc = htim2.Init.Prescaler + 1;
-    // valor em tempo do timer2 da velocidade maxima a ser calculada
+    // value in tim2 time of the maximum speed which will be calculated
     const uint32_t max_count = calculate_speed(MAX_SPEED, tim_freq, tim_presc);
-    // valor em tempo do timer2 da velocidade minima a ser calculada
+    // value in tim2 time of the minimum speed which will be calculated
     const uint32_t min_count = calculate_speed(MIN_SPEED, tim_freq, tim_presc);
-    // valor em tempo do timersys da velocidade minima a ser calculada
+    // value in timersys time of the minimum speed which will be calculated
     const uint32_t min_timeout = calculate_timeout(MIN_SPEED);
 
     uint32_t d_tim_count;
@@ -59,63 +62,61 @@ void encoder_speed_calc(void) {
         brkpt();
 #endif
 
-        // espera ate alguma mensagem chegar ou timeout estourar
-        switch (osMessageQueueGet(q_speed_messageHandle, &message, NULL, min_timeout)) {
+        // waits until a message arrives or until timeout
+        switch (osMessageQueueGet(q_encoder_int_messageHandle, &interrupt_message, NULL,
+                                  min_timeout)) {
 
-            // caso a tarefa tenha sido chamada por timeout
+            // case the task was called by timeout
             case osErrorTimeout:
-                reset_speed_all(); // zera a velocidade de todas as rodas
+                reset_speed_all(); // zeros all wheels speed
                 break;
 
-            // caso a tarefa tenha sido chamada pela queue
+            // case the task was called by a new message arriving
             default:
-                // verifica se alguma roda esta a muito tempo sem receber interrupcao,
-                // caso sim a velocidade dessa roda eh zerada
-                reset_speed_single(&message, last_messages, min_count);
+                // verifies if any wheel is without an interruption for a long time,
+                // if yes that wheel speed is zeroed
+                reset_speed_single(&interrupt_message, last_interrupt_messages,
+                                   min_count);
 
-                // diferenca entre timestamp da mensagem atual e da anterior
-                d_tim_count = message.tim_count - last_messages[message.pin].tim_count;
+                // difference between current message and last message timestamp
+                d_tim_count = interrupt_message.tim_count
+                              - last_interrupt_messages[interrupt_message.pin].tim_count;
 
-                // caso d_tim_count calcule uma velocidade maior do que eh possivel ela
-                // sera descartada
+                // discards value if d_tim_count results in a speed greater than that
+                // configured as maximum
                 if (d_tim_count < max_count) {
                     continue;
                 }
 
                 speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
-                WHEEL_ENCODER_SPEEDS_t encoder_speed =
-                    get_global_var_value(WHEEL_ENCODER_SPEEDS);
-                // seta velocidade especifica da roda recebida
-                encoder_speed.wheels[message.pin] = speed;
-                set_global_var(WHEEL_ENCODER_SPEEDS, &encoder_speed);
-                // guarda mensagem ate a proxima interacao
-                last_messages[message.pin] = message;
+                // saves the speed only of the wheel which speed was just calculated
+                speeds_message.wheels[interrupt_message.pin] = speed;
+
+                // store message to use in the next iteration
+                last_interrupt_messages[interrupt_message.pin] = interrupt_message;
                 break;
         }
+        osMessageQueuePutOverwrite(q_encoder_speeds_messageHandle, &speeds_message, 0);
     }
 }
 
-void reset_speed_all() {
-    WHEEL_ENCODER_SPEEDS_t encoder_speed;
+static void reset_speed_all() {
     for (uint8_t i = 0; i < WHEEL_ENCODERS_AVAILABLE; i++) {
-        encoder_speed.wheels[i] = 0;
+        speeds_message.wheels[i] = 0;
     }
-    set_global_var(WHEEL_ENCODER_SPEEDS, &encoder_speed);
 }
 
-void reset_speed_single(speed_message_t* message, speed_message_t* last_messages,
-                        uint32_t min_count) {
-    WHEEL_ENCODER_SPEEDS_t encoder_speed = get_global_var_value(WHEEL_ENCODER_SPEEDS);
+static void reset_speed_single(encoder_int_message_t* message,
+                               encoder_int_message_t* last_messages, uint32_t min_count) {
     for (speed_pin_e i = FIRST_WHEEL; i <= WHEEL_ENCODERS_AVAILABLE; i++) {
         if ((message->tim_count - last_messages[i].tim_count) > min_count) {
-            encoder_speed.wheels[i] = 0;
+            speeds_message.wheels[i] = 0;
         }
     }
-    set_global_var(WHEEL_ENCODER_SPEEDS, &encoder_speed);
 }
 
-// obtem a frequencia do tim2 a partir APB1, considerando que ele pode ter um prescaler
-// que dobra a frequencia
+// gets tim2 frequency from the APB1 clock domain, considering that it might have an
+// prescaler which doubles the frequency
 static inline uint32_t get_tim2_freq() {
     // Get PCLK1 prescaler
     if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) {
@@ -127,11 +128,11 @@ static inline uint32_t get_tim2_freq() {
 }
 
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc) {
-    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN)
+    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER)
                       * ((float)freq / ((float)presc)) / speed);
 }
 
 static inline uint32_t calculate_timeout(uint32_t speed) {
-    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_QUAN)
+    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER)
                       * 1000 / speed);
 }

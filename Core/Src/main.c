@@ -34,6 +34,7 @@
 #include "leds/debug_leds_handler.h"
 #include "leds/rgb_led_handler.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
+#include "datalogging/speed.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -206,10 +207,10 @@ const osThreadAttr_t t_speed_datalog_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for q_speed_message */
-osMessageQueueId_t q_speed_messageHandle;
-const osMessageQueueAttr_t q_speed_message_attributes = {
-  .name = "q_speed_message"
+/* Definitions for q_encoder_int_message */
+osMessageQueueId_t q_encoder_int_messageHandle;
+const osMessageQueueAttr_t q_encoder_int_message_attributes = {
+  .name = "q_encoder_int_message"
 };
 /* Definitions for q_torque_message */
 osMessageQueueId_t q_torque_messageHandle;
@@ -240,6 +241,11 @@ const osMessageQueueAttr_t q_rgb_led_message_attributes = {
 osMessageQueueId_t q_throttle_controlHandle;
 const osMessageQueueAttr_t q_throttle_control_attributes = {
   .name = "q_throttle_control"
+};
+/* Definitions for q_encoder_speeds_message */
+osMessageQueueId_t q_encoder_speeds_messageHandle;
+const osMessageQueueAttr_t q_encoder_speeds_message_attributes = {
+  .name = "q_encoder_speeds_message"
 };
 /* Definitions for tim_SU_F_error */
 osTimerId_t tim_SU_F_errorHandle;
@@ -398,8 +404,8 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the queue(s) */
-  /* creation of q_speed_message */
-  q_speed_messageHandle = osMessageQueueNew (16, sizeof(speed_message_t), &q_speed_message_attributes);
+  /* creation of q_encoder_int_message */
+  q_encoder_int_messageHandle = osMessageQueueNew (16, sizeof(encoder_int_message_t), &q_encoder_int_message_attributes);
 
   /* creation of q_torque_message */
   q_torque_messageHandle = osMessageQueueNew (16, sizeof(torque_message_t), &q_torque_message_attributes);
@@ -418,6 +424,9 @@ int main(void)
 
   /* creation of q_throttle_control */
   q_throttle_controlHandle = osMessageQueueNew (16, sizeof(uint16_t), &q_throttle_control_attributes);
+
+  /* creation of q_encoder_speeds_message */
+  q_encoder_speeds_messageHandle = osMessageQueueNew (1, sizeof(encoder_speeds_message_t), &q_encoder_speeds_message_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */

@@ -11,7 +11,7 @@
 #include "stdint.h"
 
 // Nome variavel, id da mensagem, posicao na mensagem
-#define VARIABLES_INVERTER                                                                      \
+#define VARIABLES_INVERTER                                                               \
     ENTRY(speed_m_l, 100, 0)                                                             \
     ENTRY(torque_m_l, 100, 1)                                                            \
     ENTRY(power_m_l, 100, 2)                                                             \

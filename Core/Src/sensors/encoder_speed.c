@@ -25,8 +25,9 @@
  */
 
 static void reset_speed_all();
-static void reset_speed_single(encoder_int_message_t* message,
-                               encoder_int_message_t* last_messages, uint32_t min_count);
+static void reset_speed_single(const encoder_int_message_t* message,
+                               const encoder_int_message_t* last_messages,
+                               uint32_t min_count);
 static inline uint32_t get_tim2_freq();
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout(uint32_t speed);
@@ -104,8 +105,9 @@ static void reset_speed_all() {
     }
 }
 
-static void reset_speed_single(encoder_int_message_t* message,
-                               encoder_int_message_t* last_messages, uint32_t min_count) {
+static void reset_speed_single(const encoder_int_message_t* message,
+                               const encoder_int_message_t* last_messages,
+                               uint32_t min_count) {
     for (speed_pin_e i = FIRST_WHEEL; i <= WHEEL_ENCODERS_AVAILABLE; i++) {
         if ((message->tim_count - last_messages[i].tim_count) > min_count) {
             speeds_message.wheels[i] = 0;

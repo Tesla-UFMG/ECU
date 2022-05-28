@@ -28,12 +28,13 @@
 #include "util/initializers.h"
 #include "dynamic_controls/initializer_controls.h"
 #include "sensors/APPS.h"
-#include "sensors/wheel_speed.h"
+#include "sensors/encoder_speed.h"
 #include "util/global_instances.h"
 #include "util/main_task.h"
 #include "leds/debug_leds_handler.h"
 #include "leds/rgb_led_handler.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
+#include "datalogging/speed.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -101,10 +102,10 @@ const osThreadAttr_t t_steering_read_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_speed_calc */
-osThreadId_t t_speed_calcHandle;
-const osThreadAttr_t t_speed_calc_attributes = {
-  .name = "t_speed_calc",
+/* Definitions for t_encoder_speed_calc */
+osThreadId_t t_encoder_speed_calcHandle;
+const osThreadAttr_t t_encoder_speed_calc_attributes = {
+  .name = "t_encoder_speed_calc",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
@@ -199,10 +200,17 @@ const osThreadAttr_t t_buttons_handler_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for q_speed_message */
-osMessageQueueId_t q_speed_messageHandle;
-const osMessageQueueAttr_t q_speed_message_attributes = {
-  .name = "q_speed_message"
+/* Definitions for t_speed_datalog */
+osThreadId_t t_speed_datalogHandle;
+const osThreadAttr_t t_speed_datalog_attributes = {
+  .name = "t_speed_datalog",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for q_encoder_int_message */
+osMessageQueueId_t q_encoder_int_messageHandle;
+const osMessageQueueAttr_t q_encoder_int_message_attributes = {
+  .name = "q_encoder_int_message"
 };
 /* Definitions for q_torque_message */
 osMessageQueueId_t q_torque_messageHandle;
@@ -233,6 +241,11 @@ const osMessageQueueAttr_t q_rgb_led_message_attributes = {
 osMessageQueueId_t q_throttle_controlHandle;
 const osMessageQueueAttr_t q_throttle_control_attributes = {
   .name = "q_throttle_control"
+};
+/* Definitions for q_encoder_speeds_message */
+osMessageQueueId_t q_encoder_speeds_messageHandle;
+const osMessageQueueAttr_t q_encoder_speeds_message_attributes = {
+  .name = "q_encoder_speeds_message"
 };
 /* Definitions for tim_SU_F_error */
 osTimerId_t tim_SU_F_errorHandle;
@@ -282,7 +295,7 @@ extern void torque_parameters(void *argument);
 extern void datalogger(void *argument);
 extern void APPS_read(void *argument);
 extern void steering_read(void *argument);
-extern void speed_calc(void *argument);
+extern void encoder_speed_calc(void *argument);
 extern void odometer_calc(void *argument);
 extern void torque_message(void *argument);
 extern void torque_manager(void *argument);
@@ -296,6 +309,7 @@ extern void inverter_comm_error(void *argument);
 extern void inverter_datalog(void *argument);
 extern void pilot_reset(void *argument);
 extern void buttons_handler(void *argument);
+extern void speed_datalog(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -390,8 +404,8 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the queue(s) */
-  /* creation of q_speed_message */
-  q_speed_messageHandle = osMessageQueueNew (16, sizeof(speed_message_t), &q_speed_message_attributes);
+  /* creation of q_encoder_int_message */
+  q_encoder_int_messageHandle = osMessageQueueNew (16, sizeof(encoder_int_message_t), &q_encoder_int_message_attributes);
 
   /* creation of q_torque_message */
   q_torque_messageHandle = osMessageQueueNew (16, sizeof(torque_message_t), &q_torque_message_attributes);
@@ -410,6 +424,9 @@ int main(void)
 
   /* creation of q_throttle_control */
   q_throttle_controlHandle = osMessageQueueNew (16, sizeof(uint16_t), &q_throttle_control_attributes);
+
+  /* creation of q_encoder_speeds_message */
+  q_encoder_speeds_messageHandle = osMessageQueueNew (1, sizeof(encoder_speeds_message_t), &q_encoder_speeds_message_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -431,8 +448,8 @@ int main(void)
   /* creation of t_steering_read */
   t_steering_readHandle = osThreadNew(steering_read, NULL, &t_steering_read_attributes);
 
-  /* creation of t_speed_calc */
-  t_speed_calcHandle = osThreadNew(speed_calc, NULL, &t_speed_calc_attributes);
+  /* creation of t_encoder_speed_calc */
+  t_encoder_speed_calcHandle = osThreadNew(encoder_speed_calc, NULL, &t_encoder_speed_calc_attributes);
 
   /* creation of t_odometer_calc */
   t_odometer_calcHandle = osThreadNew(odometer_calc, NULL, &t_odometer_calc_attributes);
@@ -472,6 +489,9 @@ int main(void)
 
   /* creation of t_buttons_handler */
   t_buttons_handlerHandle = osThreadNew(buttons_handler, NULL, &t_buttons_handler_attributes);
+
+  /* creation of t_speed_datalog */
+  t_speed_datalogHandle = osThreadNew(speed_datalog, NULL, &t_speed_datalog_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

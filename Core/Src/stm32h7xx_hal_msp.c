@@ -114,9 +114,6 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
   }
 
   /* USER CODE END ADC1_MspInit 0 */
-  /** Initializes the peripherals clock
-  */
-
     /* Peripheral clock enable */
     __HAL_RCC_ADC12_CLK_ENABLE();
 

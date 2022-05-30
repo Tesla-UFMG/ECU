@@ -7,7 +7,6 @@
 
 #include "sensors/steering.h"
 
-
 #include "datalogging/datalog_handler.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
@@ -16,66 +15,63 @@
 
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
-
-	//calculo do angulo atual com base na leitura atual do adc, no angulo maximo do volante e da
-    //leitura do min e do maximo na calibracao usando teorema de Tales
-float calculo_steering (float volante_atual, float zero_volante, float volante_max, float ang_max)
-{
-        float steering_calc_a;
-        steering_calc_a = ang_max * ((volante_atual - zero_volante)/(volante_max - zero_volante));
-        return steering_calc_a;
+// calculation of current angle based on current adc reading, maximum steering wheel angle
+// and from the min and max reading in the calibration using Thales' theorem
+double calculation_steering(double current_read) {
+    double steering_calc;
+    steering_calc = ANG_MAX_STEERING
+                    * ((current_read - MIN_STEERING) / (MAX_STEERING - MIN_STEERING));
+    return (uint16_t)steering_calc;
 }
-
 
 void steering_read(void* argument) {
     UNUSED(argument);
 
-    double volante_cru;
+    double current_read;
     for (;;) {
 #ifdef DEBUG_ECU
         extern void brkpt();
         brkpt();
 #endif
 
-        volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
+        current_read = ADC_DMA_buffer[STEERING_WHEEL_E];
 
-        double zero_aux = ZERO_VOLANTE;
+        double zero_aux = MIN_STEERING;
 
-        // Como o sensor nao possui batente, se o minimo do volante for menor que o 0 do ADC,
-        // o sensor voltara no valor maximo do ADC (4095)
-        // entao é subtraido 4095 do valor lido, dando um valor negativo que pode ser aplicado
-        // na formula
-        if (ZERO_VOLANTE > VOLANTE_MAX) {
+        // As the sensor does not have a stop, if the steering minimum is lower than the 0
+        // of the ADC, the sensor will return at the maximum value of the ADC (4095) so
+        // 4095 is subtracted from the value read, giving a negative value that can be
+        // applied to the formula
+        if (MIN_STEERING > MAX_STEERING) {
             zero_aux -= 4095;
-            if (volante_cru > VOLANTE_MAX) {
-                volante_cru -= 4095;
+            if (current_read > MAX_STEERING) {
+                current_read -= 4095;
             }
         }
 
-
-
-        // A funcao converte o valor do ADC para o valor em graus do estercamento do volante
-        // Tambem informa a direcao do volante
-        // SPAN_ALINHAMENTO eh apenas um span pra ainda considerar o volante no centro
-        // ate uma certa quantidade
-        if (volante_cru > VOLANTE_ALINHADO + SPAN_ALINHAMENTO) {
+        // The function converts the value of the ADC to the value in degrees of the
+        // screeching of the steering wheel, Also informs the steering wheel direction.
+        // SPAN_ALINHAMENTO is just a span to still consider the steering wheel in the
+        // center up to a certain amount
+        if (current_read > ALIGNED_STEERING + SPAN_ALIGNMENT) {
             set_global_var_value(INTERNAL_WHEEL, ESQUERDA);
-            set_global_var_value(STEERING_WHEEL,
-                                       (uint16_t)(calculo_steering(volante_cru, ZERO_VOLANTE, VOLANTE_MAX, ANG_MAX_VOLANTE) - ANGULO_VOLANTE_ALINHADO));
-        } else if (volante_cru < VOLANTE_ALINHADO - SPAN_ALINHAMENTO) {
+            set_global_var_value(STEERING_WHEEL, calculation_steering(current_read)
+                                                     - ALIGNED_STEERING_ANGLE);
+        } else if (current_read < ALIGNED_STEERING - SPAN_ALIGNMENT) {
             set_global_var_value(INTERNAL_WHEEL, DIREITA);
-            set_global_var_value(STEERING_WHEEL,
-            							(uint16_t)ANGULO_VOLANTE_ALINHADO - calculo_steering(volante_cru, ZERO_VOLANTE, VOLANTE_MAX, ANG_MAX_VOLANTE));
+            set_global_var_value(STEERING_WHEEL, (ALIGNED_STEERING_ANGLE
+                                                  - calculation_steering(current_read)));
         } else {
             set_global_var_value(INTERNAL_WHEEL, CENTRO);
-            set_global_var_value(STEERING_WHEEL, 0);
+            set_global_var_value(
+                STEERING_WHEEL,
+                (uint16_t)(calculation_steering(current_read) - ALIGNED_STEERING_ANGLE));
         }
 
         STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
 
         log_data(ID_STEERING_WHEEL, steering_wheel);
 
-        osDelay(100);
-
+        osDelay(STEERING_CALC_DELAY);
     }
 }

@@ -5,10 +5,11 @@
  *      Author: renanmoreira
  */
 
-
 #ifndef INC_STEERING_H_
 #define INC_STEERING_H_
 
-float calculo_steering (float volante_atual, float zero_volante, float volante_max, float ang_max);
+#define STEERING_CALC_DELAY 50
+
+double calculation_steering(double current_read);
 
 #endif /* INC_STEERING_H_ */

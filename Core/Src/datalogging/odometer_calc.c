@@ -22,7 +22,6 @@ static void log_distance(ODOMETER_TOTAL_t total_dist, uint32_t partial_dist);
 
 void odometer_calc() {
 
-    uint32_t front_speed_avg       = 0;
     uint32_t partial_dist_traveled = 0;
     ODOMETER_TOTAL_t total_dist_traveled;
     // Read distance from flash just once
@@ -41,12 +40,9 @@ void odometer_calc() {
 #endif
         waitForRTD();
         // Calculate and log distance traveled
-        WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
-        front_speed_avg =
-            (uint32_t)((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT])
-                       / 2);
-        partial_dist_traveled = calculate_distance(front_speed_avg);
-        total_dist_traveled   = get_global_var_value(ODOMETER_TOTAL);
+        FRONT_AVG_SPEED_t front_speed_avg = get_global_var_value(FRONT_AVG_SPEED);
+        partial_dist_traveled             = calculate_distance(front_speed_avg);
+        total_dist_traveled               = get_global_var_value(ODOMETER_TOTAL);
         total_dist_traveled += partial_dist_traveled;
         set_global_var(ODOMETER_TOTAL, &total_dist_traveled);
         log_distance(total_dist_traveled, partial_dist_traveled);

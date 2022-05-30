@@ -49,3 +49,7 @@ bool is_the_car_stationary() {
     cm_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT]) / 2);
     return (!(cm_speed > 0));
 }
+
+void waitForRTD() {
+    osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
+}

@@ -28,7 +28,7 @@ void update_state(bool disable) {
         vehicle_state = S_DISABLE_E;
     } else if ((get_global_var_value(THROTTLE_PERCENT) < 100)
                && (frenagem_regenerativa == true)
-               && get_global_var_value(MOTOR_SPEEDS).speed[L_MOTOR] > D_5_kmph_rpm) {
+               && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
         vehicle_state = S_BRAKE_E;
     } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {
         vehicle_state = S_ACCELERATE_E;
@@ -46,11 +46,10 @@ void update_state_parameters(torque_message_t* torque_message) {
         case S_NEUTER_E:
             set_bit8(&torque_message->parameters, P_ENABLE, true);
             set_bit8(&torque_message->parameters, P_BRAKE, false);
-            // TODO(renanmoreira): mudar velocidade do motor de acordo com nova logica
-            MOTOR_SPEEDS_t motor_speeds = get_global_var_value(MOTOR_SPEEDS);
+            SPEEDS_t speeds = get_global_var_value(SPEEDS);
             set_bit8(&torque_message->parameters, P_RUNSTOP,
-                     (motor_speeds.speed[R_MOTOR] > D_5_kmph_rpm
-                      || motor_speeds.speed[L_MOTOR] > D_5_kmph_rpm));
+                     (speeds.wheels[R_MOTOR] > RPM_KMPH_5
+                      || speeds.wheels[L_MOTOR] > RPM_KMPH_5));
             torque_message->torque_ref[R_MOTOR]     = 0;
             torque_message->torque_ref[L_MOTOR]     = 0;
             torque_message->neg_torque_ref[R_MOTOR] = 0;
@@ -73,15 +72,10 @@ void update_state_parameters(torque_message_t* torque_message) {
             set_bit8(&torque_message->parameters, P_ENABLE, true);
             set_bit8(&torque_message->parameters, P_BRAKE, false);
             set_bit8(&torque_message->parameters, P_RUNSTOP, true);
-            // TODO(renanmoreira): Mudar para nova logica de envio de mensagem de torque
-            // ao inversor
             torque_message->neg_torque_ref[R_MOTOR] = 0;
             torque_message->neg_torque_ref[L_MOTOR] = 0;
             torque_message->speed_ref[R_MOTOR]      = selected_mode.vel_max;
             torque_message->speed_ref[L_MOTOR]      = selected_mode.vel_max;
-
-            // if (modo_selecionado.traction_control == true) tc_system();
-            // else torque_vectoring();
             break;
 
         case S_DISABLE_E:
@@ -101,14 +95,10 @@ void update_state_parameters(torque_message_t* torque_message) {
 void torque_parameters(void* argument) {
     UNUSED(argument);
 
-    // veloc_total = (speed_t_total[0] + speed_t_total[1] + speed_t_total[2] +
-    // speed_t_total[3]) / 4;
-    //  vehicle_state_e vehicle_state;
-
-    // mensagem de referencia de torque. Contem qual valor de torque se deseja e se eh
-    // desejado desabilitar
+    // torque reference message. Includes the desired torque value and if a disable is
+    // intended
     ref_torque_t ref_torque_message;
-    // mensagem de torque completa para ser enviada ao inversor
+    // complete message to be sent to inverter
     torque_message_t torque_message = {.parameters = 0};
 
     for (;;) {
@@ -122,9 +112,8 @@ void torque_parameters(void* argument) {
         // disable will only be FALSE when RTD_FLAG is setted
         disable = !get_individual_flag(ECU_control_event_id, RTD_FLAG);
 
-        // getflag
         switch (osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0,
-                                  CONTROLE_DELAY)) {
+                                  TORQUE_PARAMETERS_DELAY)) {
 
             case osOK:
 
@@ -153,12 +142,15 @@ void torque_parameters(void* argument) {
     }
 }
 
+/**
+ * @brief Set regenerative braking warning flag
+ *
+ * @param vehicle_state
+ */
 void update_regen_state(vehicle_state_e vehicle_state) {
     if (vehicle_state == S_BRAKE_E) {
-        // se frenagem ativa, seta flag de aviso
         osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);
     } else {
-        // se frenagem ativa, limpa flag de aviso
         osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);
     }
 }

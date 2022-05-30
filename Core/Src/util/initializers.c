@@ -114,7 +114,7 @@ void deInit_all_peripherals() {
     HAL_GPIO_DeInit(GPIOE, GPIO_PIN_All);
     HAL_FDCAN_DeInit(&hfdcan1);
     HAL_FDCAN_DeInit(&hfdcan2);
-    HAL_ADC_Init(&hadc1);
+    HAL_ADC_DeInit(&hadc1);
     HAL_UART_DeInit(&hlpuart1);
     HAL_SPI_DeInit(&hspi1);
     HAL_I2C_DeInit(&hi2c3);

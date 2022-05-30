@@ -20,8 +20,13 @@ speed_pin_e get_speed_pin(uint16_t pin) {
     }
 }
 
-// retorna uma variavel do tamanho de value, porem apenas com o bit mais significativo
-// setado em value
+/**
+ * @brief Get the flag most significant bit
+ *
+ * @param value flag to get MSB
+ * @return uint32_t a variable with the same size as value, but only with value's most
+ * significant set
+ */
 uint32_t get_flag_MSB(uint32_t value) {
     uint32_t flag = 1 << 31; // flag = 2^32
     while (flag != 0) {
@@ -42,10 +47,7 @@ uint16_t concatenate_two_uint8_to_uint16(const uint8_t* data) {
 }
 
 bool is_the_car_stationary() {
-    WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
+    FRONT_AVG_SPEED_t front_avg_speed = get_global_var_value(FRONT_AVG_SPEED);
 
-    float cm_speed;
-
-    cm_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT]) / 2);
-    return (!(cm_speed > 0));
+    return (front_avg_speed == 0);
 }

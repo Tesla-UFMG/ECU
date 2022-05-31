@@ -51,8 +51,9 @@ static global_variable_message_queue_data_t queues_info[_global_vars_quan];
 void init_global_variables() {
 
     // instantiating single-element message queues for each global variable
-    INSTANTIATE_GLOBAL_VAR_QUEUE(MOTOR_SPEEDS);
-    INSTANTIATE_GLOBAL_VAR_QUEUE(WHEEL_SPEEDS);
+    INSTANTIATE_GLOBAL_VAR_QUEUE(SPEEDS);
+    INSTANTIATE_GLOBAL_VAR_QUEUE(FRONT_AVG_SPEED);
+    INSTANTIATE_GLOBAL_VAR_QUEUE(REAR_AVG_SPEED);
     INSTANTIATE_GLOBAL_VAR_QUEUE(STEERING_WHEEL);
     INSTANTIATE_GLOBAL_VAR_QUEUE(GYRO_YAW);
     INSTANTIATE_GLOBAL_VAR_QUEUE(INTERNAL_WHEEL);

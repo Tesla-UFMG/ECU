@@ -17,6 +17,7 @@
 #include "util/constants.h"
 #include "util/global_definitions.h"
 #include "util/global_variables.h"
+#include "dynamic_controls/initializer_controls.h"
 
 // inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs
 //  mantendo a prioridade maxima de ISRs
@@ -54,7 +55,7 @@ void init_CAN() {
     initialize_CAN_IDs();
 }
 
-void inicializa_modos() {
+void init_modes() {
     enduro.tor_max          = 2500;
     enduro.vel_max          = vel_max_rpm;
     enduro.freio_regen      = frenagem_regenerativa;
@@ -120,4 +121,12 @@ void deInit_all_peripherals() {
     HAL_I2C_DeInit(&hi2c3);
     HAL_TIM_Base_DeInit(&htim1);
     HAL_TIM_Base_DeInit(&htim2);
+}
+
+void init_all_ECU(ADC_HandleTypeDef* hadc) {
+    init_ADC_DMA(hadc);
+    init_CAN();
+    init_global_variables(); // must be before controls and modes (functions that use global variables)
+    init_controls();
+    init_modes();
 }

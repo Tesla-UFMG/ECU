@@ -26,7 +26,6 @@
 #include "CAN/inverter_can.h"
 #include "CAN/general_can.h"
 #include "util/initializers.h"
-#include "dynamic_controls/initializer_controls.h"
 #include "sensors/APPS.h"
 #include "sensors/wheel_speed.h"
 #include "util/global_instances.h"
@@ -259,9 +258,12 @@ osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
   .name = "m_state_parameter_mutex"
 };
+/* Definitions for e_ECU_control_flags */
+osEventFlagsId_t e_ECU_control_flagsHandle;
+const osEventFlagsAttr_t e_ECU_control_flags_attributes = {
+  .name = "e_ECU_control_flags"
+};
 /* USER CODE BEGIN PV */
-//flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
-osEventFlagsId_t ECU_control_event_id;
 
 /* USER CODE END PV */
 
@@ -352,9 +354,7 @@ int main(void)
 	{
 		;
 	}
-  init_ADC_DMA(&hadc1);
-  init_CAN();
-  init_controls();
+  init_all_ECU(&hadc1);
   HAL_TIM_Base_Start(&htim2);
   /* USER CODE END 2 */
 
@@ -476,6 +476,9 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
+
+  /* creation of e_ECU_control_flags */
+  e_ECU_control_flagsHandle = osEventFlagsNew(&e_ECU_control_flags_attributes);
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */

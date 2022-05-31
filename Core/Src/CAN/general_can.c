@@ -46,9 +46,6 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
             /* Reception Error */
             Error_Handler();
         }
-
-        set_debugleds(DEBUGLED3, TOGGLE, 0);
-
         idgeneral = RxHeader.Identifier;
         for (int i = 0; i < 4; ++i) {
             datageneral[i] = concatenate_two_uint8_to_uint16(RxData + 2 * i);

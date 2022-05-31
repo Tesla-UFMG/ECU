@@ -44,7 +44,7 @@ void speed_datalog(void* argument) {
                           SPEED_LOG_DELAY);
 
         uint16_t motor_speed_right = get_value(speed_m_r);
-        uint16_t motor_speed_left  = get_value(speed_m_r);
+        uint16_t motor_speed_left  = get_value(speed_m_l);
 
         speed.wheels[FRONT_RIGHT] = encoder_speeds_message.wheels[FRONT_RIGHT];
         speed.wheels[FRONT_LEFT]  = encoder_speeds_message.wheels[FRONT_LEFT];

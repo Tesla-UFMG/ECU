@@ -17,10 +17,10 @@
 
 void odometer_save() {
 
-    ODOMETER_TOTAL_t total_distance_traveled = 0;
-    uint32_t save_counter                    = 0;
-    uint32_t flash_read_data[2]              = {0, 0};
-    uint32_t flash_distance[8]               = {0, 0, 0, 0, 0, 0, 0, 0};
+    odometer_message_t total_distance_traveled = 0;
+    uint32_t save_counter                      = 0;
+    uint32_t flash_read_data[2]                = {0, 0};
+    uint32_t flash_distance[8]                 = {0, 0, 0, 0, 0, 0, 0, 0};
 
     for (;;) {
 #ifdef DEBUG_ECU
@@ -31,7 +31,8 @@ void odometer_save() {
         // Wait the flag to be set so the task runs. The flag is set when RTD state is
         // left
         osThreadFlagsWait(ODOMETER_SAVE_FLAG, osFlagsWaitAny, osWaitForever);
-        total_distance_traveled = get_global_var_value(ODOMETER_TOTAL);
+        osMessageQueueGet(q_odometer_calc_save_messageHandle, &total_distance_traveled,
+                          NULL, SAVE_DELAY);
 
         // Read distance and number of saves in flash
         Flash_Read_Data(ODOMETER_DATA_FLASH_ADDR, flash_read_data, WORDS_READ_TWO);

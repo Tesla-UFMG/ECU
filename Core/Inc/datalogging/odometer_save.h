@@ -5,6 +5,8 @@
  *      Author: dmroh
  */
 
+#include "stdint.h"
+
 #ifndef INC_DATALOGGING_ODOMETER_SAVE_H_
 #define INC_DATALOGGING_ODOMETER_SAVE_H_
 
@@ -17,6 +19,8 @@
 #define MAXIMUM_SAVE_TIMES 20
 
 #define MINIMUM_SAVE_DISTANCE 100
+
+typedef uint32_t odometer_message_t;
 
 enum { TOTAL_DISTANCE = 0, FLASH_WEAR };
 

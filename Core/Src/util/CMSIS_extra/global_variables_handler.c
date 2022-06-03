@@ -62,7 +62,6 @@ void global_variables_init() {
     INSTANTIATE_GLOBAL_VAR_QUEUE(BRAKE_STATUS);
     INSTANTIATE_GLOBAL_VAR_QUEUE(THROTTLE_STATUS);
     INSTANTIATE_GLOBAL_VAR_QUEUE(SELECTED_MODE);
-    INSTANTIATE_GLOBAL_VAR_QUEUE(ODOMETER_TOTAL);
 }
 
 void get_global_var(global_vars_e type, void* message) {

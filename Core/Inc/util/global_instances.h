@@ -22,6 +22,7 @@ extern osMessageQueueId_t q_debug_leds_messageHandle;
 extern osMessageQueueId_t q_rgb_led_messageHandle;
 extern osMessageQueueId_t q_throttle_controlHandle;
 extern osMessageQueueId_t q_encoder_speeds_messageHandle;
+extern osMessageQueueId_t q_odometer_calc_save_messageHandle;
 
 // TASKS
 extern osThreadId_t t_main_taskHandle;

@@ -35,6 +35,7 @@
 #include "leds/rgb_led_handler.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "datalogging/speed.h"
+#include "datalogging/odometer_save.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -254,6 +255,11 @@ osMessageQueueId_t q_encoder_speeds_messageHandle;
 const osMessageQueueAttr_t q_encoder_speeds_message_attributes = {
   .name = "q_encoder_speeds_message"
 };
+/* Definitions for q_odometer_calc_save_message */
+osMessageQueueId_t q_odometer_calc_save_messageHandle;
+const osMessageQueueAttr_t q_odometer_calc_save_message_attributes = {
+  .name = "q_odometer_calc_save_message"
+};
 /* Definitions for tim_SU_F_error */
 osTimerId_t tim_SU_F_errorHandle;
 const osTimerAttr_t tim_SU_F_error_attributes = {
@@ -435,6 +441,9 @@ int main(void)
 
   /* creation of q_encoder_speeds_message */
   q_encoder_speeds_messageHandle = osMessageQueueNew (1, sizeof(encoder_speeds_message_t), &q_encoder_speeds_message_attributes);
+
+  /* creation of q_odometer_calc_save_message */
+  q_odometer_calc_save_messageHandle = osMessageQueueNew (1, sizeof(odometer_message_t), &q_odometer_calc_save_message_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */

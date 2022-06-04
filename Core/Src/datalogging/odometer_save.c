@@ -32,7 +32,7 @@ void odometer_save() {
         // left
         osThreadFlagsWait(ODOMETER_SAVE_FLAG, osFlagsWaitAny, osWaitForever);
         osMessageQueueGet(q_odometer_calc_save_messageHandle, &total_distance_traveled,
-                          NULL, SAVE_DELAY);
+                          NULL, osWaitForever);
 
         // Read distance and number of saves in flash
         Flash_Read_Data(ODOMETER_DATA_FLASH_ADDR, flash_read_data, WORDS_READ_TWO);

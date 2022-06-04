@@ -27,7 +27,6 @@ void main_task(void* argument) {
         brkpt();
 #endif
 
-        // espera RTD ser acionado. Por meio da RTD_FLAG
         wait_for_rtd();
 
         // espera por qualquer erro

@@ -53,5 +53,5 @@ bool is_the_car_stationary() {
 }
 
 void wait_for_rtd() {
-    osEventFlagsWait(ECU_control_event_id, RTD_FLAG, osFlagsNoClear, osWaitForever);
+    osEventFlagsWait(e_ECU_control_flagsHandle, RTD_FLAG, osFlagsNoClear, osWaitForever);
 }

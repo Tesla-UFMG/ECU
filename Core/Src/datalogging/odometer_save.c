@@ -51,7 +51,7 @@ void odometer_save() {
                 save_counter++;
             } else {
                 // Set a flag to warn if the saving limit was overcome
-                osEventFlagsSet(ECU_control_event_id, FLASH_SAVE_LIMIT_FLAG);
+                osEventFlagsSet(e_ECU_control_flagsHandle, FLASH_SAVE_LIMIT_FLAG);
             }
         }
         osDelay(SAVE_DELAY);

@@ -48,7 +48,7 @@ static global_variable_message_queue_data_t queues_info[_global_vars_quan];
     /* place this value in the queue */                                                  \
     osMessageQueuePut(var_name##_info->id, &var_name##_msg, 0, 0);
 
-void global_variables_init() {
+void init_global_variables() {
 
     // instantiating single-element message queues for each global variable
     INSTANTIATE_GLOBAL_VAR_QUEUE(SPEEDS);
@@ -62,7 +62,6 @@ void global_variables_init() {
     INSTANTIATE_GLOBAL_VAR_QUEUE(BRAKE_STATUS);
     INSTANTIATE_GLOBAL_VAR_QUEUE(THROTTLE_STATUS);
     INSTANTIATE_GLOBAL_VAR_QUEUE(SELECTED_MODE);
-    INSTANTIATE_GLOBAL_VAR_QUEUE(ODOMETER_TOTAL);
 }
 
 void get_global_var(global_vars_e type, void* message) {

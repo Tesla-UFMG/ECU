@@ -5,6 +5,7 @@
  *      Author: dmroh
  */
 #include "datalogging/odometer_save.h"
+
 #include "cmsis_os.h"
 #include "datalogging/datalog_handler.h"
 #include "main.h"
@@ -16,42 +17,41 @@
 
 void odometer_save() {
 
-    ODOMETER_TOTAL_t total_distance_traveled_g = 0;
+    odometer_message_t total_distance_traveled = 0;
     uint32_t save_counter                      = 0;
     uint32_t flash_read_data[2]                = {0, 0};
     uint32_t flash_distance[8]                 = {0, 0, 0, 0, 0, 0, 0, 0};
 
     for (;;) {
+#ifdef DEBUG_ECU
+        extern void brkpt();
+        brkpt();
+#endif
 
-        // Wait the flag to be set so the task runs. The flag is set when RTD is exited
+        // Wait the flag to be set so the task runs. The flag is set when RTD state is
+        // left
         osThreadFlagsWait(ODOMETER_SAVE_FLAG, osFlagsWaitAny, osWaitForever);
-
-        // Reads Odometer global variable
-        total_distance_traveled_g = get_global_var_value(ODOMETER_TOTAL);
+        osMessageQueueGet(q_odometer_calc_save_messageHandle, &total_distance_traveled,
+                          NULL, osWaitForever);
 
         // Read distance and number of saves in flash
-        Flash_Read_Data(FLASH_ADDR, flash_read_data, TWO_WORDS);
+        Flash_Read_Data(ODOMETER_DATA_FLASH_ADDR, flash_read_data, WORDS_READ_TWO);
 
-        // If distance traveled is greater than 10 meters
-        if ((total_distance_traveled_g - flash_read_data[TOTAL_DISTANCE]) >= METERS_100) {
-
-            // Edit flash distance array to save in the memory
-            flash_distance[TOTAL_DISTANCE] = total_distance_traveled_g;
+        // Check if the distance traveled is enough to save. Fill the data array and save
+        // in flash if the maximum save times have not been passed.
+        if ((total_distance_traveled - flash_read_data[TOTAL_DISTANCE])
+            >= MINIMUM_SAVE_DISTANCE) {
+            flash_distance[TOTAL_DISTANCE] = total_distance_traveled;
             flash_distance[FLASH_WEAR]     = (++flash_read_data[FLASH_WEAR]);
 
-            // In order to avoid saving multiple times and wearing the embedded flash,
-            // save up to 20 times
-            if (save_counter < MAX_SAVE_TIMES) {
-
-                // Function call to save data
-                Flash_Write_Data(FLASH_ADDR, flash_distance, FLASHWORD);
-
-                // Increment of counter
+            if (save_counter < MAXIMUM_SAVE_TIMES) {
+                // Write data in the flash
+                Flash_Write_Data(ODOMETER_DATA_FLASH_ADDR, flash_distance,
+                                 FLASH_WORD_SIZE);
                 save_counter++;
             } else {
-
                 // Set a flag to warn if the saving limit was overcome
-                osEventFlagsSet(ECU_control_event_id, FLASH_SAVE_LIMIT_FLAG);
+                osEventFlagsSet(e_ECU_control_flagsHandle, FLASH_SAVE_LIMIT_FLAG);
             }
         }
         osDelay(SAVE_DELAY);

@@ -46,9 +46,6 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
             /* Reception Error */
             Error_Handler();
         }
-
-        set_debugleds(DEBUGLED3, TOGGLE, 0);
-
         idgeneral = RxHeader.Identifier;
         for (int i = 0; i < 4; ++i) {
             datageneral[i] = concatenate_two_uint8_to_uint16(RxData + 2 * i);
@@ -68,7 +65,7 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
 void CAN_general_error_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t ErrorStatusITs) {
     if (ErrorStatusITs | FDCAN_IT_BUS_OFF) {
         // seta a flag de evento para datalog
-        osEventFlagsSet(ECU_control_event_id, GENERAL_BUS_OFF_ERROR_FLAG);
+        osEventFlagsSet(e_ECU_control_flagsHandle, GENERAL_BUS_OFF_ERROR_FLAG);
         // limpa o bit de INIT da CAN, voltando a receber mensagem
         CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
     }

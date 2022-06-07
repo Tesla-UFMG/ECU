@@ -44,10 +44,10 @@ void issue_error(uint32_t flagError, bool should_set_control_event_flag) {
     osThreadFlagsSet(t_main_taskHandle, flagError);
     if (should_set_control_event_flag) {
         // seta flag de thread da main task com a flag flagError
-        osEventFlagsSet(ECU_control_event_id, flagError);
+        osEventFlagsSet(e_ECU_control_flagsHandle, flagError);
     }
 }
 
 void clear_error(uint32_t flagError) {
-    osEventFlagsClear(ECU_control_event_id, flagError);
+    osEventFlagsClear(e_ECU_control_flagsHandle, flagError);
 }

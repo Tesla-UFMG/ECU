@@ -51,3 +51,7 @@ bool is_the_car_stationary() {
 
     return (front_avg_speed == 0);
 }
+
+void wait_for_rtd() {
+    osEventFlagsWait(e_ECU_control_flagsHandle, RTD_FLAG, osFlagsNoClear, osWaitForever);
+}

@@ -1,3 +1,19 @@
+/**
+  ***************************************************************************************************************
+  ***************************************************************************************************************
+  ***************************************************************************************************************
+  File:       FLASH_SECTOR_H7.c
+  Modifier:   ControllersTech.com
+  Updated:    27th MAY 2021
+  ***************************************************************************************************************
+  Copyright (C) 2017 ControllersTech.com
+  This is a free software under the GNU license, you can redistribute it and/or modify it
+  under the terms of the GNU General Public License version 3 as published by the Free
+  Software Foundation. This software library is shared with public for educational
+  purposes, without WARRANTY and Author is not liable for any damages caused directly or
+  indirectly by this software, read more about this on the GNU General Public License.
+  ***************************************************************************************************************
+*/
 
 #include "util/flash_sector_h7.h"
 
@@ -79,10 +95,10 @@ uint32_t Flash_Write_Data(uint32_t StartSectorAddress, uint32_t* data,
             == HAL_OK) {
             // Sector address goes from 32 to 32 positions, as each saved number is 256
             // bits length
-            StartSectorAddress += 4 * FLASHWORD;
+            StartSectorAddress += 4 * FLASH_WORD_SIZE;
 
             // As it saves 256 bits at a time, jumps from 8 positions of 32 bit words
-            sofar += FLASHWORD;
+            sofar += FLASH_WORD_SIZE;
         }
 
         else {

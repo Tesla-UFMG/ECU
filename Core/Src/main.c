@@ -26,7 +26,6 @@
 #include "CAN/inverter_can.h"
 #include "CAN/general_can.h"
 #include "util/initializers.h"
-#include "dynamic_controls/initializer_controls.h"
 #include "sensors/APPS.h"
 #include "sensors/encoder_speed.h"
 #include "util/global_instances.h"
@@ -35,6 +34,7 @@
 #include "leds/rgb_led_handler.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "datalogging/speed.h"
+#include "datalogging/odometer_save.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -207,6 +207,13 @@ const osThreadAttr_t t_speed_datalog_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_odometer_save */
+osThreadId_t t_odometer_saveHandle;
+const osThreadAttr_t t_odometer_save_attributes = {
+  .name = "t_odometer_save",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_encoder_int_message */
 osMessageQueueId_t q_encoder_int_messageHandle;
 const osMessageQueueAttr_t q_encoder_int_message_attributes = {
@@ -247,6 +254,11 @@ osMessageQueueId_t q_encoder_speeds_messageHandle;
 const osMessageQueueAttr_t q_encoder_speeds_message_attributes = {
   .name = "q_encoder_speeds_message"
 };
+/* Definitions for q_odometer_calc_save_message */
+osMessageQueueId_t q_odometer_calc_save_messageHandle;
+const osMessageQueueAttr_t q_odometer_calc_save_message_attributes = {
+  .name = "q_odometer_calc_save_message"
+};
 /* Definitions for tim_SU_F_error */
 osTimerId_t tim_SU_F_errorHandle;
 const osTimerAttr_t tim_SU_F_error_attributes = {
@@ -272,9 +284,12 @@ osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
   .name = "m_state_parameter_mutex"
 };
+/* Definitions for e_ECU_control_flags */
+osEventFlagsId_t e_ECU_control_flagsHandle;
+const osEventFlagsAttr_t e_ECU_control_flags_attributes = {
+  .name = "e_ECU_control_flags"
+};
 /* USER CODE BEGIN PV */
-//flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
-osEventFlagsId_t ECU_control_event_id;
 
 /* USER CODE END PV */
 
@@ -310,6 +325,7 @@ extern void inverter_datalog(void *argument);
 extern void pilot_reset(void *argument);
 extern void buttons_handler(void *argument);
 extern void speed_datalog(void *argument);
+extern void odometer_save(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -361,15 +377,7 @@ int main(void)
   MX_I2C3_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  /* ### - 2 - Start calibration ############################################ */
-	if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
-	{
-		;
-	}
-  init_ADC_DMA(&hadc1);
-  init_CAN();
-  init_controls();
-  HAL_TIM_Base_Start(&htim2);
+  init_ECU();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -427,6 +435,9 @@ int main(void)
 
   /* creation of q_encoder_speeds_message */
   q_encoder_speeds_messageHandle = osMessageQueueNew (1, sizeof(encoder_speeds_message_t), &q_encoder_speeds_message_attributes);
+
+  /* creation of q_odometer_calc_save_message */
+  q_odometer_calc_save_messageHandle = osMessageQueueNew (1, sizeof(odometer_message_t), &q_odometer_calc_save_message_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -493,9 +504,15 @@ int main(void)
   /* creation of t_speed_datalog */
   t_speed_datalogHandle = osThreadNew(speed_datalog, NULL, &t_speed_datalog_attributes);
 
+  /* creation of t_odometer_save */
+  t_odometer_saveHandle = osThreadNew(odometer_save, NULL, &t_odometer_save_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
+
+  /* creation of e_ECU_control_flags */
+  e_ECU_control_flagsHandle = osEventFlagsNew(&e_ECU_control_flags_attributes);
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */

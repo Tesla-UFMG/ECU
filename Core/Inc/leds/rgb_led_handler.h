@@ -16,35 +16,35 @@
 #define RGB_BLINK_DELAY 200
 
 #define RGB_BLACK                                                                        \
-    (rgb) {                                                                              \
+    (rgb_t) {                                                                              \
         0, 0, 0                                                                          \
     }
 #define RGB_RED                                                                          \
-    (rgb) {                                                                              \
+    (rgb_t) {                                                                              \
         1, 0, 0                                                                          \
     }
 #define RGB_GREEN                                                                        \
-    (rgb) {                                                                              \
+    (rgb_t) {                                                                              \
         0, 1, 0                                                                          \
     }
 #define RGB_BLUE                                                                         \
-    (rgb) {                                                                              \
+    (rgb_t) {                                                                              \
         0, 0, 1                                                                          \
     }
 #define RGB_YELLOW                                                                       \
-    (rgb) {                                                                              \
+    (rgb_t) {                                                                              \
         1, 1, 0                                                                          \
     }
 #define RGB_PURBLE                                                                       \
-    (rgb) {                                                                              \
+    (rgb_t) {                                                                              \
         1, 0, 1                                                                          \
     }
 #define RGB_CYAN                                                                         \
-    (rgb) {                                                                              \
+    (rgb_t) {                                                                              \
         0, 1, 1                                                                          \
     }
 #define RGB_WHITE                                                                        \
-    (rgb) {                                                                              \
+    (rgb_t) {                                                                              \
         1, 1, 1                                                                          \
     }
 
@@ -59,7 +59,7 @@ typedef struct {
     GPIO_PinState red;
     GPIO_PinState green;
     GPIO_PinState blue;
-} rgb;
+} rgb_t;
 
 osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control);
 

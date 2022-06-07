@@ -34,7 +34,7 @@ void main_task(void* argument) {
                           osWaitForever);
         // obtem os valores de flag de thread e de evento
         uint32_t error_flags = osThreadFlagsGet();
-        uint32_t event_flags = osEventFlagsGet(ECU_control_event_id);
+        uint32_t event_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
         // obtem a flag de thread mais significativa, ela que sera tratada
         uint32_t most_significant_error_flags =
             get_flag_MSB(error_flags & ALL_ERRORS_FLAG);
@@ -53,7 +53,7 @@ void main_task(void* argument) {
                 } else {
                     // caso o erro nao esteja presente a flag de evento sera setada e um
                     // timer iniciado para que caso tenha o erro novamente saia de RTD
-                    osEventFlagsSet(ECU_control_event_id, INVERTER_BUS_OFF_ERROR_FLAG);
+                    osEventFlagsSet(e_ECU_control_flagsHandle, INVERTER_BUS_OFF_ERROR_FLAG);
                     osThreadFlagsClear(INVERTER_BUS_OFF_ERROR_FLAG);
                     osTimerStart(tim_inverter_BUS_OFF_errorHandle, BUS_OFF_ERROR_TIME);
                 }

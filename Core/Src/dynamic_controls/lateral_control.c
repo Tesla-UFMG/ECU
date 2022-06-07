@@ -7,7 +7,7 @@
 
 #include "dynamic_controls/lateral_control.h"
 
-#include "DynamicControls/constants_control.h"
+#include "dynamic_controls/constants_control.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
 #include "math.h"

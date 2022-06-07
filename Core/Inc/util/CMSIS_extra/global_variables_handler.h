@@ -56,7 +56,7 @@ typedef enum {
                          NUMBER-OF-ELEMENTS INDICATOR */
 } global_vars_e;
 
-void global_variables_init();
+void init_global_variables();
 
 void get_global_var(global_vars_e type, void* message);
 void set_global_var(global_vars_e type, void* message);

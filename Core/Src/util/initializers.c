@@ -13,10 +13,12 @@
 #include "cmsis_os.h"
 #include "main.h"
 #include "stm32h7xx.h"
+#include "stm32h7xx_hal.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
 #include "util/global_definitions.h"
 #include "util/global_variables.h"
+#include "dynamic_controls/initializer_controls.h"
 
 // inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs
 //  mantendo a prioridade maxima de ISRs
@@ -54,7 +56,7 @@ void init_CAN() {
     initialize_CAN_IDs();
 }
 
-void inicializa_modos() {
+void init_modes() {
     enduro.tor_max          = 2500;
     enduro.vel_max          = vel_max_rpm;
     enduro.freio_regen      = frenagem_regenerativa;
@@ -120,4 +122,20 @@ void deInit_all_peripherals() {
     HAL_I2C_DeInit(&hi2c3);
     HAL_TIM_Base_DeInit(&htim1);
     HAL_TIM_Base_DeInit(&htim2);
+}
+
+void init_ECU() {
+    /* ### - 2 - Start calibration ############################################ */
+    if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
+        {
+            ;
+        }
+    HAL_TIM_Base_Start(&htim2);
+    init_ADC_DMA(&hadc1);
+    init_CAN();
+    // init_global_variables must be before init_controls and init_modes
+    // (i.e. before functions that use global variables)
+    init_global_variables();
+    init_controls();
+    init_modes();
 }

@@ -26,7 +26,6 @@
 #include "CAN/inverter_can.h"
 #include "CAN/general_can.h"
 #include "util/initializers.h"
-#include "dynamic_controls/initializer_controls.h"
 #include "sensors/APPS.h"
 #include "sensors/encoder_speed.h"
 #include "util/global_instances.h"
@@ -285,9 +284,12 @@ osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
   .name = "m_state_parameter_mutex"
 };
+/* Definitions for e_ECU_control_flags */
+osEventFlagsId_t e_ECU_control_flagsHandle;
+const osEventFlagsAttr_t e_ECU_control_flags_attributes = {
+  .name = "e_ECU_control_flags"
+};
 /* USER CODE BEGIN PV */
-//flag que controla aspectos gerais de execucao de tarefas da ECU, como RTD e etc
-osEventFlagsId_t ECU_control_event_id;
 
 /* USER CODE END PV */
 
@@ -375,15 +377,7 @@ int main(void)
   MX_I2C3_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  /* ### - 2 - Start calibration ############################################ */
-	if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
-	{
-		;
-	}
-  init_ADC_DMA(&hadc1);
-  init_CAN();
-  init_controls();
-  HAL_TIM_Base_Start(&htim2);
+  init_ECU();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -516,6 +510,9 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
+
+  /* creation of e_ECU_control_flags */
+  e_ECU_control_flagsHandle = osEventFlagsNew(&e_ECU_control_flags_attributes);
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */

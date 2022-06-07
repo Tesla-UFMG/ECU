@@ -33,7 +33,7 @@ extern osThreadId_t t_inverter_comm_errorHandle;
 extern osThreadId_t t_odometer_saveHandle;
 
 // EVENT FLAGS
-extern osEventFlagsId_t ECU_control_event_id;
+extern osEventFlagsId_t e_ECU_control_flagsHandle;
 
 // SEMAPHORES
 

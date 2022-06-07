@@ -110,7 +110,7 @@ void torque_parameters(void* argument) {
 
         bool disable;
         // disable will only be FALSE when RTD_FLAG is setted
-        disable = !get_individual_flag(ECU_control_event_id, RTD_FLAG);
+        disable = !get_individual_flag(e_ECU_control_flagsHandle, RTD_FLAG);
 
         switch (osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0,
                                   TORQUE_PARAMETERS_DELAY)) {
@@ -149,8 +149,10 @@ void torque_parameters(void* argument) {
  */
 void update_regen_state(vehicle_state_e vehicle_state) {
     if (vehicle_state == S_BRAKE_E) {
-        osEventFlagsSet(ECU_control_event_id, REGEN_WARN_FLAG);
+        // se frenagem ativa, seta flag de aviso
+        osEventFlagsSet(e_ECU_control_flagsHandle, REGEN_WARN_FLAG);
     } else {
-        osEventFlagsClear(ECU_control_event_id, REGEN_WARN_FLAG);
+        // se frenagem ativa, limpa flag de aviso
+        osEventFlagsClear(e_ECU_control_flagsHandle, REGEN_WARN_FLAG);
     }
 }

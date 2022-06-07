@@ -27,8 +27,7 @@ void main_task(void* argument) {
         brkpt();
 #endif
 
-        // espera RTD ser acionado. Por meio da RTD_FLAG
-        osEventFlagsWait(e_ECU_control_flagsHandle, RTD_FLAG, osFlagsNoClear, osWaitForever);
+        wait_for_rtd();
 
         // espera por qualquer erro
         osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,

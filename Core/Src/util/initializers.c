@@ -13,6 +13,7 @@
 #include "cmsis_os.h"
 #include "main.h"
 #include "stm32h7xx.h"
+#include "stm32h7xx_hal.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
 #include "util/global_definitions.h"
@@ -123,10 +124,18 @@ void deInit_all_peripherals() {
     HAL_TIM_Base_DeInit(&htim2);
 }
 
-void init_all_ECU(ADC_HandleTypeDef* hadc) {
-    init_ADC_DMA(hadc);
+void init_ECU() {
+    /* ### - 2 - Start calibration ############################################ */
+    if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
+        {
+            ;
+        }
+    HAL_TIM_Base_Start(&htim2);
+    init_ADC_DMA(&hadc1);
     init_CAN();
-    init_global_variables(); // must be before controls and modes (functions that use global variables)
+    // init_global_variables must be before init_controls and init_modes
+    // (i.e. before functions that use global variables)
+    init_global_variables();
     init_controls();
     init_modes();
 }

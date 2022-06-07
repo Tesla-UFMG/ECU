@@ -363,13 +363,7 @@ int main(void)
   MX_I2C3_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  /* ### - 2 - Start calibration ############################################ */
-	if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
-	{
-		;
-	}
-  init_all_ECU(&hadc1);
-  HAL_TIM_Base_Start(&htim2);
+  init_ECU();
   /* USER CODE END 2 */
 
   /* Init scheduler */

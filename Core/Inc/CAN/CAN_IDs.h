@@ -72,8 +72,9 @@
 #define ID_FAILURE_R_MOTOR      50
 #define ID_ALARM_L_MOTOR        51
 #define ID_ALARM_R_MOTOR        52
+#define ID_INTERNAL_WHEEL       53
 
-#define CAN_ID_QUAN 53
+#define CAN_ID_QUAN 54
 
 typedef struct {
     uint16_t id;

@@ -5,11 +5,13 @@
  *      Author: renanmoreira
  */
 
+#include "stdint.h"
+
 #ifndef INC_STEERING_H_
 #define INC_STEERING_H_
 
 #define STEERING_CALC_DELAY 50
 
-double calculation_steering(double current_read);
+uint16_t calculate_steering(double current_read);
 
 #endif /* INC_STEERING_H_ */

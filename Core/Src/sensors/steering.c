@@ -7,6 +7,7 @@
 
 #include "sensors/steering.h"
 
+#include "cmsis_os.h"
 #include "datalogging/datalog_handler.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
@@ -17,7 +18,7 @@ extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 // calculation of current angle based on current adc reading, maximum steering wheel angle
 // and from the min and max reading in the calibration using Thales' theorem
-double calculation_steering(double current_read) {
+uint16_t calculate_steering(double current_read) {
     double steering_calc;
     steering_calc = ANG_MAX_STEERING
                     * ((current_read - MIN_STEERING) / (MAX_STEERING - MIN_STEERING));
@@ -54,24 +55,26 @@ void steering_read(void* argument) {
         // SPAN_ALINHAMENTO is just a span to still consider the steering wheel in the
         // center up to a certain amount
         if (current_read > ALIGNED_STEERING + SPAN_ALIGNMENT) {
-            set_global_var_value(INTERNAL_WHEEL, ESQUERDA);
-            set_global_var_value(STEERING_WHEEL, calculation_steering(current_read)
+            set_global_var_value(INTERNAL_WHEEL, LEFT);
+            set_global_var_value(STEERING_WHEEL, calculate_steering(current_read)
                                                      - ALIGNED_STEERING_ANGLE);
         } else if (current_read < ALIGNED_STEERING - SPAN_ALIGNMENT) {
-            set_global_var_value(INTERNAL_WHEEL, DIREITA);
+            set_global_var_value(INTERNAL_WHEEL, RIGHT);
             set_global_var_value(STEERING_WHEEL, (ALIGNED_STEERING_ANGLE
-                                                  - calculation_steering(current_read)));
+                                                  - calculate_steering(current_read)));
         } else {
-            set_global_var_value(INTERNAL_WHEEL, CENTRO);
+            set_global_var_value(INTERNAL_WHEEL, CENTER);
             set_global_var_value(
                 STEERING_WHEEL,
-                (uint16_t)(calculation_steering(current_read) - ALIGNED_STEERING_ANGLE));
+                (uint16_t)(calculate_steering(current_read) - ALIGNED_STEERING_ANGLE));
         }
 
-        STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
+        STEERING_WHEEL_t steering_wheel_datalog = get_global_var_value(STEERING_WHEEL);
+        INTERNAL_WHEEL_t internal_wheel_datalog = get_global_var_value(INTERNAL_WHEEL);
 
-        log_data(ID_STEERING_WHEEL, steering_wheel);
+        log_data(ID_STEERING_WHEEL, steering_wheel_datalog);
+        log_data(ID_INTERNAL_WHEEL, internal_wheel_datalog)
 
-        osDelay(STEERING_CALC_DELAY);
+            osDelay(STEERING_CALC_DELAY);
     }
 }

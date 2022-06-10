@@ -27,8 +27,8 @@
 #define MAX_STEERING           3189
 #define GAIN_ARRANC            1.1
 #define INC_VELOC              50
-#define DIREITA                0
-#define ESQUERDA               1
-#define CENTRO                 2
+#define RIGHT                  0
+#define LEFT                   1
+#define CENTER                 2
 
 #endif /* INC_CONSTANTS_H_ */

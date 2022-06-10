@@ -193,6 +193,8 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
     { 113, 2 }
 #define INTERNAL_ID_ALARM_R_MOTOR                                                        \
     { 113, 3 }
+#define INTERNAL_ID_INTERNAL_WHEEL                                                       \
+    { 106, 1 }
 
 //----------
 

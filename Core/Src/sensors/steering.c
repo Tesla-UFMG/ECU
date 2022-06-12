@@ -58,7 +58,7 @@ void steering_read(void* argument) {
         } else if (steering_wheel < VOLANTE_ALINHADO - SPAN_ALINHAMENTO) {
             set_global_var_value(INTERNAL_WHEEL, DIREITA);
         } else {
-            set_global_var_value(INTERNAL_WHEEL, CENTRO);
+            set_global_var_value(INTERNAL_WHEEL, CENTRO)
         }
 
         osDelay(100);

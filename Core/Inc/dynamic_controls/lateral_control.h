@@ -10,6 +10,7 @@
 
 #include "stdint.h"
 
+
 #define LATERAL_DELAY 30
 
 // defines calculos
@@ -26,6 +27,7 @@
 #define KP_LATERAL    6.51864262048678
 #define KI_LATERAL    43.9160892044863
 #define TI_LATERAL    (KP_LATERAL / KI_LATERAL) // 0.14843404179579
+
 
 typedef struct {
     double torque_decrease[2];

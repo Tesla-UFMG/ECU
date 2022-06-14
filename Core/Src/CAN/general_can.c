@@ -5,6 +5,7 @@
  *      Author: renanmoreira
  */
 
+#include <CAN/general_can_data_manager.h>
 #include "CAN/general_can.h"
 
 #include "CAN/CAN_IDs.h"
@@ -13,6 +14,8 @@
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
 #include "util/util.h"
+
+#include "general_can_data_manager.c"
 
 static FDCAN_HandleTypeDef* can_ptr;
 
@@ -52,12 +55,12 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
 
         idgeneral = RxHeader.Identifier;
         for (int i = 0; i < 4; ++i) {
-            can_vars_e_general var_name =
-                get_var_name_from_id_and_pos_general(idgeneral, i);
+            general_can_vars_e var_name =
+                general_get_var_name_from_id_and_pos(idgeneral, i);
 
             if ((int)var_name != -1) {
                 uint16_t data_general = concatenate_two_uint8_to_uint16(RxData + i * 2);
-                store_value_general(var_name, data_general);
+                general_store_value(var_name, data_general);
             }
         }
 

@@ -194,30 +194,19 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
     { 113, 3 }
 
 //----------
-#define VARIABLES_GENERAL                                                                \
-    ENTRY(AccelX, 130, 0)                                                                \
-    ENTRY(AccelY, 130, 1)                                                                \
-    ENTRY(AccelZ, 130, 2)                                                                \
-    ENTRY(ErrorIMUAccel, 130, 3)                                                         \
-    ENTRY(GyroX, 131, 0)                                                                 \
-    ENTRY(Gyroy, 131, 1)                                                                 \
-    ENTRY(GyroZ, 131, 2)                                                                 \
-    ENTRY(ERRORIMUGyro, 131, 3)
-
-typedef enum {
-#define ENTRY(a, b, c) a,
-    VARIABLES_GENERAL
-#undef ENTRY
-        NUM_STATES_GENERAL
-} can_vars_e_general;
+#define VARIABLES_CAN_RX_IDS                                                             \
+    ENTRY(acceletometer_x, 130, 0)                                                       \
+    ENTRY(accelerometer_y, 130, 1)                                                       \
+    ENTRY(accelerometer_z, 130, 2)                                                       \
+    ENTRY(error_imu_accelerometer, 130, 3)                                               \
+    ENTRY(gyroscope_x, 131, 0)                                                           \
+    ENTRY(gyroscope_y, 131, 1)                                                           \
+    ENTRY(gyroscope_z, 131, 2)                                                           \
+    ENTRY(error_imu_gyroscope, 131, 3)
 
 void initialize_CAN_IDs();
 uint16_t convert_id_pos_to_index(uint16_t id, uint16_t pos);
 CAN_ID_t get_CAN_ID_from_internal(uint16_t internal);
 uint16_t get_internal_from_id_pos(uint16_t id, uint16_t pos);
-
-void store_value_general(can_vars_e_general var_name, uint16_t value_can_general);
-uint16_t get_value_general(can_vars_e_general var_name);
-can_vars_e_general get_var_name_from_id_and_pos_general(uint32_t id, int pos);
 
 #endif /* INC_CAN_CAN_IDS_H_ */

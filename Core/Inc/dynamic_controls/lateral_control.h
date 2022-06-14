@@ -8,6 +8,7 @@
 #ifndef INC_DYNAMICCONTROLS_LATERAL_CONTROL_H_
 #define INC_DYNAMICCONTROLS_LATERAL_CONTROL_H_
 
+
 #include "stdint.h"
 
 

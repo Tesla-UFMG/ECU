@@ -6,6 +6,8 @@
  */
 #include "CAN/general_can_data_manager.h"
 
+#include "CAN/CAN_IDs.h"
+
 static uint32_t general_data_can[NUM_STATES_GENERAL];
 
 void general_store_value(general_can_vars_e var_name, uint16_t general_value_can) {
@@ -23,7 +25,7 @@ general_can_vars_e general_get_var_name_from_id_and_pos(uint32_t id, int pos) {
         return a;                                                                        \
     else
     // NOLINTNEXTLINE
-    VARIABLES_CAN_RX_IDS;
+    VARIABLES_GENERAL_CAN_RX_IDS;
 #undef ENTRY
     return -1;
 }

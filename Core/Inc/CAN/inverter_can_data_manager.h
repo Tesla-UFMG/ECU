@@ -11,7 +11,7 @@
 #include "stdint.h"
 
 // Nome variavel, id da mensagem, posicao na mensagem
-#define VARIABLES_INVERTER                                                               \
+#define VARIABLES_INVERTER_CAN_RX                                                        \
     ENTRY(speed_m_l, 100, 0)                                                             \
     ENTRY(torque_m_l, 100, 1)                                                            \
     ENTRY(power_m_l, 100, 2)                                                             \
@@ -43,13 +43,13 @@
 
 typedef enum {
 #define ENTRY(a, b, c) a,
-    VARIABLES_INVERTER
+    VARIABLES_INVERTER_CAN_RX
 #undef ENTRY
         NUM_STATES_INVERTER
-} can_vars_e_inverter;
+} can_vars_inverter_e;
 
-void store_value_inverter(can_vars_e_inverter var_name, uint16_t value_inverter);
-uint16_t get_value_inverter(can_vars_e_inverter var_name);
-can_vars_e_inverter get_var_name_from_id_and_pos_inverter(uint32_t id, int pos);
+void inverter_store_value(can_vars_inverter_e var_name, uint16_t inverter_value);
+uint16_t inverter_get_value(can_vars_inverter_e var_name);
+can_vars_inverter_e inverter_get_var_name_from_id_and_pos(uint32_t id, int pos);
 
 #endif /* INC_INVERTER_CAN_IDS_H_ */

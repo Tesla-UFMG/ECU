@@ -53,12 +53,12 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 
         uint32_t idInverter = RxHeader.Identifier;
         for (int i = 0; i < 4; ++i) {
-            can_vars_e_inverter var_name =
-                get_var_name_from_id_and_pos_inverter(idInverter, i);
+            can_vars_inverter_e var_name =
+                inverter_get_var_name_from_id_and_pos(idInverter, i);
 
             if ((int)var_name != -1) {
                 uint16_t data = concatenate_two_uint8_to_uint16(RxData + i * 2);
-                store_value_inverter(var_name, data);
+                inverter_store_value(var_name, data);
             }
         }
 

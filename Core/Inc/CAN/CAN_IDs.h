@@ -194,7 +194,7 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
     { 113, 3 }
 
 //----------
-#define VARIABLES_CAN_RX_IDS                                                             \
+#define VARIABLES_GENERAL_CAN_RX_IDS                                                     \
     ENTRY(acceletometer_x, 130, 0)                                                       \
     ENTRY(accelerometer_y, 130, 1)                                                       \
     ENTRY(accelerometer_z, 130, 2)                                                       \

@@ -12,7 +12,7 @@
 
 typedef enum {
 #define ENTRY(a, b, c) a,
-    VARIABLES_CAN_RX_IDS
+    VARIABLES_GENERAL_CAN_RX_IDS
 #undef ENTRY
         NUM_STATES_GENERAL
 } general_can_vars_e;

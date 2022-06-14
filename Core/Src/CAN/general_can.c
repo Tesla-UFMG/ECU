@@ -5,17 +5,15 @@
  *      Author: renanmoreira
  */
 
-#include <CAN/general_can_data_manager.h>
 #include "CAN/general_can.h"
 
 #include "CAN/CAN_IDs.h"
 #include "CAN/CAN_handler.h"
+#include "CAN/general_can_data_manager.h"
 #include "leds/debug_leds_handler.h"
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
 #include "util/util.h"
-
-#include "general_can_data_manager.c"
 
 static FDCAN_HandleTypeDef* can_ptr;
 

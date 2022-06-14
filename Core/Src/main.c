@@ -279,6 +279,11 @@ osTimerId_t tim_inverter_readyHandle;
 const osTimerAttr_t tim_inverter_ready_attributes = {
   .name = "tim_inverter_ready"
 };
+/* Definitions for tim_inverter_can_transmit_error */
+osTimerId_t tim_inverter_can_transmit_errorHandle;
+const osTimerAttr_t tim_inverter_can_transmit_error_attributes = {
+  .name = "tim_inverter_can_transmit_error"
+};
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
@@ -406,6 +411,9 @@ int main(void)
 
   /* creation of tim_inverter_ready */
   tim_inverter_readyHandle = osTimerNew(inverter_ready_callback, osTimerOnce, NULL, &tim_inverter_ready_attributes);
+
+  /* creation of tim_inverter_can_transmit_error */
+  tim_inverter_can_transmit_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, NULL, &tim_inverter_can_transmit_error_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */

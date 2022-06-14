@@ -53,9 +53,21 @@ void main_task(void* argument) {
                 } else {
                     // caso o erro nao esteja presente a flag de evento sera setada e um
                     // timer iniciado para que caso tenha o erro novamente saia de RTD
-                    osEventFlagsSet(e_ECU_control_flagsHandle, INVERTER_BUS_OFF_ERROR_FLAG);
+                    osEventFlagsSet(e_ECU_control_flagsHandle,
+                                    INVERTER_BUS_OFF_ERROR_FLAG);
                     osThreadFlagsClear(INVERTER_BUS_OFF_ERROR_FLAG);
                     osTimerStart(tim_inverter_BUS_OFF_errorHandle, BUS_OFF_ERROR_TIME);
+                }
+                break;
+
+            case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
+
+                isErrorPresent = event_flags & INVERTER_CAN_TRANSMIT_ERROR_FLAG;
+                if (isErrorPresent) {
+                    exit_RTD();
+                } else {
+
+                    osThreadFlagsClear(INVERTER_CAN_TRANSMIT_ERROR_FLAG);
                 }
                 break;
 

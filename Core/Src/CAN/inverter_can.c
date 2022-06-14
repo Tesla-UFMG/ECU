@@ -22,6 +22,10 @@ static FDCAN_TxHeaderTypeDef TxHeader;
 static uint8_t RxData[8];
 static FDCAN_RxHeaderTypeDef RxHeader;
 
+static uint8_t inverter_can_status;
+
+bool is_there_inverter_can_transmit_error();
+
 // funcao que inicializa a can do inversor, chamada em initializer.c.
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
     can_ptr = can_ref;
@@ -33,9 +37,21 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
                    &TxHeader);
 }
 
+bool is_there_inverter_can_transmit_error()
+{
+    if (inverter_can_status == HAL_OK)
+        return true;
+    else
+        if (inverter_can_status == HAL_ERROR)
+            return false;
+        else
+            return false;
+}
+
 // funcao usada para transmitir alguma mensagem
 void inverter_can_transmit(uint32_t id, uint16_t* data) {
-    can_transmit(can_ptr, &TxHeader, id, data);
+    inverter_can_status = can_transmit(can_ptr, &TxHeader, id, data);
+    check_for_errors_with_timeout(is_there_inverter_can_transmit_error, INVERTER_CAN_TRANSMIT_ERROR_FLAG, tim_inverter_can_transmit_errorHandle, INVERTER_CAN_TRANSMIT_ERROR_TIMER);
     osDelay(CAN_DELAY);
 }
 

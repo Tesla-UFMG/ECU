@@ -7,6 +7,10 @@
 
 #include "CAN/CAN_handler.h"
 
+#include "util/error_treatment.h"
+#include "util/global_definitions.h"
+#include "util/global_instances.h"
+
 // funcao para inicializar a CAN
 void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
                     void (*CAN_receive_callback)(FDCAN_HandleTypeDef* hfdcan,
@@ -52,13 +56,14 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
     TxHeader->TxEventFifoControl  = FDCAN_NO_TX_EVENTS;
     TxHeader->MessageMarker       = 0;
 }
+bool isThereCanInverterError() {
+    return true;
+}
 
 // funcao que realiza a transmissao da mensagem
-void can_transmit(FDCAN_HandleTypeDef* hfdcan, FDCAN_TxHeaderTypeDef* TxHeader,
-                  uint32_t id, uint16_t* data) {
+HAL_StatusTypeDef can_transmit(FDCAN_HandleTypeDef* hfdcan,
+                               FDCAN_TxHeaderTypeDef* TxHeader, uint32_t id,
+                               uint16_t* data) {
     TxHeader->Identifier = id;
-    if (HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, TxHeader, (uint8_t*)data) != HAL_OK) {
-        // deu ruim
-        //  TODO(renanmoreira): tratar quando falhar envio de mensagem de can ao inversor
-    }
+    return HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, TxHeader, (uint8_t*)data);
 }

@@ -8,7 +8,6 @@
 #ifndef INC_INVERTER_CAN_H_
 #define INC_INVERTER_CAN_H_
 
-#include "stdint.h"
 #include "stm32h7xx.h"
 
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref);

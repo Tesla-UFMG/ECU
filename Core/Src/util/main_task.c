@@ -29,30 +29,32 @@ void main_task(void* argument) {
 
         wait_for_rtd();
 
-        // espera por qualquer erro
+        // wait for any error
         osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
                           osWaitForever);
-        // obtem os valores de flag de thread e de evento
+        // get the thread and event flags
         uint32_t error_flags = osThreadFlagsGet();
         uint32_t event_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
-        // obtem a flag de thread mais significativa, ela que sera tratada
+        // get the most significant thread flag. then treats it
         uint32_t most_significant_error_flags =
             get_flag_MSB(error_flags & ALL_ERRORS_FLAG);
         bool isErrorPresent;
         switch (most_significant_error_flags) {
 
-            // O erro de bus off da can do inversor so sera tratado se ocorrer mais de uma
-            // vez em um curto periodo de tempo (tempo definido por : BUS_OFF_ERROR_TIME),
-            // assim o RTD sera desabilitado somente se tiver o erro frequente na CAN.
+                // the inverter can busoff error will be treated if it happens more than
+                // once in a short period of time (period defined by: BUS_OFF_ERROR_TIME),
+                // this way the car leaves RTD mode only if there is a frequent CAN error.
+
             case INVERTER_BUS_OFF_ERROR_FLAG:
-                // verifica se o erro esta presente na flag de evento, caso esteja sai de
-                // RTD
+                // verifies if the error is set(exists) in the event flag. if it is the
+                // car leaves RTD mode
                 isErrorPresent = event_flags & INVERTER_BUS_OFF_ERROR_FLAG;
                 if (isErrorPresent) {
                     exit_RTD();
                 } else {
-                    // caso o erro nao esteja presente a flag de evento sera setada e um
-                    // timer iniciado para que caso tenha o erro novamente saia de RTD
+                    // if the error is not set(doesnt exist) in the event flag a timer
+                    // will be initialized. the error is checked again with the timer so
+                    // the car leaves RTD mode if the error becomes present again.
                     osEventFlagsSet(e_ECU_control_flagsHandle,
                                     INVERTER_BUS_OFF_ERROR_FLAG);
                     osThreadFlagsClear(INVERTER_BUS_OFF_ERROR_FLAG);
@@ -62,18 +64,24 @@ void main_task(void* argument) {
 
             case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
 
+                // verifies if the error is set(exists) in the event flag. if it is the
+                // car leaves RTD mode a timer of 75 ms is used to check constant errors
+                // so the car only leaves RTD mode after multiple occurrences
                 isErrorPresent = event_flags & INVERTER_CAN_TRANSMIT_ERROR_FLAG;
                 if (isErrorPresent) {
                     exit_RTD();
                 } else {
-
+                    // if the error is not set(doesnt exist) in the event flag a timer
+                    // will be initialized. the error is checked again with the timer so
+                    // the car leaves RTD mode if the error becomes present again.
                     osThreadFlagsClear(INVERTER_CAN_TRANSMIT_ERROR_FLAG);
                 }
                 break;
 
             case INVERTER_COMM_ERROR_FLAG:
-                // verifica se o erro ainda esta presente na flag de evento, caso esteja
-                // sai de RTD, caso não esteja a flag de thread é resetada
+                // verifies if the error is still set in the event flag. if it is
+                // the car leaves RTD mode .if it is not the thread flag is cleared
+
                 isErrorPresent = event_flags & INVERTER_COMM_ERROR_FLAG;
                 if (isErrorPresent) {
                     exit_RTD();
@@ -83,9 +91,9 @@ void main_task(void* argument) {
                 break;
 
             case SU_F_ERROR_FLAG:
-                // verifica se o erro ainda esta presente na flag de evento, caso esteja
-                // sai de RTD, caso não esteja a flag de thread é resetada e o led volta
-                // ao normal
+                // verifies if the error is still set in the event flag. if it is
+                // the car leaves RTD mode. if it is not the thread flag is cleared and
+                //  the led returns to normal
                 isErrorPresent = event_flags & SU_F_ERROR_FLAG;
                 if (isErrorPresent) {
                     exit_RTD();
@@ -107,9 +115,9 @@ void main_task(void* argument) {
                 break;
 
             case BSE_ERROR_FLAG: // Regulamento: EV.5.7 (2021)
-                // verifica se o erro ainda esta presente na flag de evento, caso esteja
-                // seta o led como amarelo, caso não esteja a flag de thread é resetada e
-                // o led volta ao normal
+                // verifies if the error is still set in the event flag. if it is
+                // sets the led to yellow. if it is not the thread flag is cleared
+                // and the led returns to normal
                 isErrorPresent = event_flags & BSE_ERROR_FLAG;
                 if (isErrorPresent) {
                     set_rgb_led(AMARELO, NO_CHANGE);

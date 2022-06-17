@@ -11,7 +11,7 @@
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
 
-// funcao para inicializar a CAN
+// function to initialize CAN
 void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
                     void (*CAN_receive_callback)(FDCAN_HandleTypeDef* hfdcan,
                                                  uint32_t RxFifo0ITs),
@@ -30,13 +30,13 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
         Error_Handler(); // NOLINT
     }
 
-    // funcao para registrar a funcao de callback
+    // function to register the custom can receive callback routine
     if (HAL_FDCAN_RegisterRxFifo0Callback(hfdcan, CAN_receive_callback) != HAL_OK) {
         /* Callback Register Error */
         Error_Handler(); // NOLINT
     }
 
-    // funcao para registrar a funcao de callback
+    // function to register the custom can error callback routine
     if (HAL_FDCAN_RegisterErrorStatusCallback(hfdcan, CAN_error_callback) != HAL_OK) {
         /* Callback Register Error */
         Error_Handler(); // NOLINT
@@ -56,11 +56,8 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
     TxHeader->TxEventFifoControl  = FDCAN_NO_TX_EVENTS;
     TxHeader->MessageMarker       = 0;
 }
-bool isThereCanInverterError() {
-    return true;
-}
 
-// funcao que realiza a transmissao da mensagem
+// function to transmit a message via can
 HAL_StatusTypeDef can_transmit(FDCAN_HandleTypeDef* hfdcan,
                                FDCAN_TxHeaderTypeDef* TxHeader, uint32_t id,
                                uint16_t* data) {

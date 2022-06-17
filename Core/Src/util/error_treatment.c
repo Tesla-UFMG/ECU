@@ -11,7 +11,7 @@
 
 void check_for_errors(bool (*areThereErrors)(), uint32_t flagError) {
     if (areThereErrors()) {
-        // seta flag de thread e de estado com a flag flagError
+        // sets the thread flag and the event flag with flagError
         issue_error(flagError, /*should_set_control_event_flag=*/true);
     } else {
         clear_error(flagError);
@@ -21,29 +21,30 @@ void check_for_errors(bool (*areThereErrors)(), uint32_t flagError) {
 void check_for_errors_with_timeout(bool (*areThereErrors)(), uint32_t flagError,
                                    osTimerId_t timerHandler, uint16_t timerAmount) {
     if (areThereErrors()) {
-        // se o timer nao tiver rodando ele sera iniciado. O if  evita o reinicio do timer
+        // if the timer is not running it is initialized. the if protects against a timer
+        // reset
         if (!osTimerIsRunning(timerHandler)) {
             osTimerStart(timerHandler, timerAmount / portTICK_PERIOD_MS);
         }
     } else {
-        // interrompe o timer
+        // stops the timer
         osTimerStop(timerHandler);
         clear_error(flagError);
     }
 }
 
 void errors_with_timer_callback(void* argument) {
-    // obtem a flag a partir do argumento do callback
+    // get the flag from callback argument
     uint32_t flagError = (uint32_t)argument;
-    // seta flag de thread e de estado com a flag flagError
+    // sets the thread flag and the event flag with flagError
     issue_error(flagError, /*should_set_control_event_flag=*/true);
 }
 
 void issue_error(uint32_t flagError, bool should_set_control_event_flag) {
-    // seta flag de thread da main task com a flag flagError
+    // sets main_task.c thread flag with flagError
     osThreadFlagsSet(t_main_taskHandle, flagError);
     if (should_set_control_event_flag) {
-        // seta flag de evento da main task com a flag flagError
+        // sets the event flag with flagError
         osEventFlagsSet(e_ECU_control_flagsHandle, flagError);
     }
 }

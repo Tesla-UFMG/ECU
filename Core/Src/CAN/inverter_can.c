@@ -38,11 +38,13 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
 }
 
 bool is_there_inverter_can_transmit_error() {
+    bool is_error_present;
     if (inverter_can_status == HAL_OK) {
-        return false;
+        is_error_present = false;
     } else {
-        return true;
+        is_error_present = true;
     }
+    return is_error_present;
 }
 
 // function used to send a message via can

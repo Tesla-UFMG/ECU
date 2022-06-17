@@ -24,10 +24,10 @@ void init_lateral_control() {
 }
 
 lateral_result_t lateral_control() {
-    WHEEL_SPEEDS_t wheel_speeds     = get_global_var_value(WHEEL_SPEEDS);
-    STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
-    INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
-    GYRO_YAW_t gyro_yaw             = get_global_var_value(GYRO_YAW);
+
+    WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
+    STEERING_WHEEL_t steering_wheel;
+    GYRO_YAW_t gyro_yaw = get_global_var_value(GYRO_YAW);
     // TODO(renanmoreira): receber GYRO_YAW em algum lugar
 
     double cg_speed;
@@ -37,9 +37,26 @@ lateral_result_t lateral_control() {
     double max_yaw;
     double setpoint;
     double pid_result;
+    int internal_wheel;
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
     double calc_gyro(uint16_t gyro_yaw);
     float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
+
+    // The function informs the steering wheel direction. SPAN_ALINHAMENTO is just a span
+    // to still consider the steering wheel in the center up to a certain amount, it also
+    // serves to consider the 0 from the center for the global variable, instead of the 0
+    // being all to the right
+    uint16_t current_read = get_global_var_value(STEERING_WHEEL);
+    if (current_read > ALIGNED_STEERING_ANGLE + SPAN_ALIGNMENT) {
+        internal_wheel = LEFT;
+        steering_wheel = current_read - ALIGNED_STEERING_ANGLE;
+    } else if (current_read < ALIGNED_STEERING_ANGLE - SPAN_ALIGNMENT) {
+        internal_wheel = RIGHT;
+        steering_wheel = ALIGNED_STEERING_ANGLE - current_read;
+    } else {
+        internal_wheel = CENTER;
+        steering_wheel = ALIGNED_STEERING_ANGLE - current_read;
+    }
 
     // velocidade em m/s
     cg_speed =
@@ -90,8 +107,10 @@ float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel) {
     float steering_adjusted;
     if (internal_wheel == RIGHT) {
         steering_adjusted = Y0 + ((Y1 - Y0) / (X1 - X0)) * ((float)steering_wheel - X0);
+    } else if (internal_wheel == LEFT) {
+        steering_adjusted = Y0 + ((Y1 - Y0) / (X1 - X0)) * (-(float)steering_wheel - X0);
     } else {
-        steering_adjusted = Y0 + ((Y1 - Y0) / (X1 - X0)) * (-(float)(steering_wheel)-X0);
+        steering_adjusted = 0;
     }
 
     return steering_adjusted;

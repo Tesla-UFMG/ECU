@@ -18,11 +18,10 @@
 #define modo_enduro            0
 #define zona_morta_acelerador  10
 #define TORQUE_GAIN            1
-#define GANHO_VOLANTE          11.375 // 4096 do ADC dividido por 360 graus
-#define ALIGNED_STEERING       1809
+#define GANHO_VOLANTE          11.375 // 4096 do ADC dividido por 365 graus
 #define ALIGNED_STEERING_ANGLE 97
 #define ANG_MAX_STEERING       207
-#define SPAN_ALIGNMENT         70
+#define SPAN_ALIGNMENT         5
 #define MIN_STEERING           662
 #define MAX_STEERING           3189
 #define GAIN_ARRANC            1.1

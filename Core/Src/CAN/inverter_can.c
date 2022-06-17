@@ -37,18 +37,20 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
                    &TxHeader);
 }
 
-bool is_there_inverter_can_transmit_error()
-{
-    if (inverter_can_status == HAL_OK)
+bool is_there_inverter_can_transmit_error() {
+    if (inverter_can_status == HAL_OK) {
         return false;
-    else
-       return true;
+    } else {
+        return true;
+    }
 }
 
 // function used to send a message via can
 void inverter_can_transmit(uint32_t id, uint16_t* data) {
     inverter_can_status = can_transmit(can_ptr, &TxHeader, id, data);
-    check_for_errors_with_timeout(is_there_inverter_can_transmit_error, INVERTER_CAN_TRANSMIT_ERROR_FLAG, tim_inverter_can_transmit_errorHandle, INVERTER_CAN_TRANSMIT_ERROR_TIMER);
+    check_for_errors_with_timeout(
+        is_there_inverter_can_transmit_error, INVERTER_CAN_TRANSMIT_ERROR_FLAG,
+        tim_inverter_can_transmit_errorHandle, INVERTER_CAN_TRANSMIT_ERROR_TIMER);
     osDelay(CAN_DELAY);
 }
 

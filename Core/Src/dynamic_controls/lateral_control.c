@@ -7,6 +7,7 @@
 
 #include "dynamic_controls/lateral_control.h"
 
+#include "CAN/general_can_data_manager.h"
 #include "DynamicControls/constants_control.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
@@ -40,6 +41,8 @@ lateral_result_t lateral_control() {
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
     double calc_gyro(uint16_t gyro_yaw);
     float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
+
+    set_global_var_value(GYRO_YAW, general_get_value(gyroscope_y));
 
     // velocidade em m/s
     cg_speed =

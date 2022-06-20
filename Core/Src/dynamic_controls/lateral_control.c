@@ -7,14 +7,10 @@
 
 #include "dynamic_controls/lateral_control.h"
 
-ECU3.0/recebimento_can_geral
 #include "CAN/general_can_data_manager.h"
-#include "DynamicControls/constants_control.h"
-
-#include "dynamic_controls/constants_control.h"
-ECU3.0/develop
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
+#include "dynamic_controls/constants_control.h"
 #include "math.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"

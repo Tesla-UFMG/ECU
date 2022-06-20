@@ -13,6 +13,6 @@
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref);
 void inverter_can_transmit(uint32_t id, uint16_t* data);
 
-#define INVERTER_CAN_TRANSMIT_ERROR_TIMER 75
+#define INVERTER_CAN_TRANSMIT_ERROR_TIMER 200
 
 #endif /* INC_INVERTER_CAN_H_ */

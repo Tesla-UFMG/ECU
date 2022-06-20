@@ -413,7 +413,7 @@ int main(void)
   tim_inverter_readyHandle = osTimerNew(inverter_ready_callback, osTimerOnce, NULL, &tim_inverter_ready_attributes);
 
   /* creation of tim_inverter_can_transmit_error */
-  tim_inverter_can_transmit_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, NULL, &tim_inverter_can_transmit_error_attributes);
+  tim_inverter_can_transmit_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, (void*) INVERTER_CAN_TRANSMIT_ERROR_FLAG, &tim_inverter_can_transmit_error_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */

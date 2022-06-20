@@ -11,8 +11,8 @@
 
 void check_for_errors(bool (*areThereErrors)(), uint32_t flagError) {
     if (areThereErrors()) {
-        // sets the thread flag and the event flag with flagError
-        issue_error(flagError, /*should_set_control_event_flag=*/true);
+        // Sets the thread flag and the event flag with flagError
+        issue_error(flagError, /*Should_set_control_event_flag=*/true);
     } else {
         clear_error(flagError);
     }
@@ -21,30 +21,30 @@ void check_for_errors(bool (*areThereErrors)(), uint32_t flagError) {
 void check_for_errors_with_timeout(bool (*areThereErrors)(), uint32_t flagError,
                                    osTimerId_t timerHandler, uint16_t timerAmount) {
     if (areThereErrors()) {
-        // if the timer is not running it is initialized. the if protects against a timer
-        // reset
+        // Starts the timer only if it has not already been started, so that the timer
+        // isn't restarted.
         if (!osTimerIsRunning(timerHandler)) {
             osTimerStart(timerHandler, timerAmount / portTICK_PERIOD_MS);
         }
     } else {
-        // stops the timer
+        // Stops the timer
         osTimerStop(timerHandler);
         clear_error(flagError);
     }
 }
 
 void errors_with_timer_callback(void* argument) {
-    // get the flag from callback argument
+    // Get the flag from callback argument
     uint32_t flagError = (uint32_t)argument;
-    // sets the thread flag and the event flag with flagError
+    // Sets the thread flag and the event flag with flagError
     issue_error(flagError, /*should_set_control_event_flag=*/true);
 }
 
 void issue_error(uint32_t flagError, bool should_set_control_event_flag) {
-    // sets main_task.c thread flag with flagError
+    // Sets main_task.c thread flag with flagError
     osThreadFlagsSet(t_main_taskHandle, flagError);
     if (should_set_control_event_flag) {
-        // sets the event flag with flagError
+        // Sets the event flag with flagError
         osEventFlagsSet(e_ECU_control_flagsHandle, flagError);
     }
 }

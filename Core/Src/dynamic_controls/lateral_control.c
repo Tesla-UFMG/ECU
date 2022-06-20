@@ -7,12 +7,15 @@
 
 #include "dynamic_controls/lateral_control.h"
 
+ECU3.0/recebimento_can_geral
 #include "CAN/general_can_data_manager.h"
 #include "DynamicControls/constants_control.h"
+
+#include "dynamic_controls/constants_control.h"
+ECU3.0/develop
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
 #include "math.h"
-#include "sensors/wheel_speed.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
 #include "util/global_variables.h"
@@ -25,7 +28,6 @@ void init_lateral_control() {
 }
 
 lateral_result_t lateral_control() {
-    WHEEL_SPEEDS_t wheel_speeds     = get_global_var_value(WHEEL_SPEEDS);
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
     GYRO_YAW_t gyro_yaw             = get_global_var_value(GYRO_YAW);
@@ -45,8 +47,7 @@ lateral_result_t lateral_control() {
     set_global_var_value(GYRO_YAW, general_get_value(gyroscope_y));
 
     // velocidade em m/s
-    cg_speed =
-        avg(wheel_speeds.speed[FRONT_RIGHT], wheel_speeds.speed[FRONT_LEFT]) / (10 * 3.6);
+    cg_speed = ((double)get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);
     // steering
     steering_adjusted = calc_steering(steering_wheel, internal_wheel);
     // yaw rate

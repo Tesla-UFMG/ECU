@@ -46,11 +46,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
             /* Reception Error */
             Error_Handler();
         }
-
         osThreadFlagsSet(t_inverter_comm_errorHandle, INVERTER_CAN_ACTIVE);
-
-        set_debugleds(DEBUGLED3, TOGGLE, 0);
-
         uint32_t idInverter = RxHeader.Identifier;
         for (int i = 0; i < 4; ++i) {
             can_vars_inverter_e var_name =

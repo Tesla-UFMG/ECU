@@ -11,25 +11,29 @@
 #include "cmsis_os.h"
 #include "stm32h7xx.h"
 
-// PERIFERICOS
+// PERIPHERALS
 extern TIM_HandleTypeDef htim2;
 
 // QUEUES
-extern osMessageQueueId_t q_speed_messageHandle;
+extern osMessageQueueId_t q_encoder_int_messageHandle;
 extern osMessageQueueId_t q_torque_messageHandle;
 extern osMessageQueueId_t q_datalog_messageHandle;
 extern osMessageQueueId_t q_debug_leds_messageHandle;
 extern osMessageQueueId_t q_rgb_led_messageHandle;
 extern osMessageQueueId_t q_throttle_controlHandle;
+extern osMessageQueueId_t q_encoder_speeds_messageHandle;
+extern osMessageQueueId_t q_odometer_calc_save_messageHandle;
 
 // TASKS
 extern osThreadId_t t_main_taskHandle;
 extern osThreadId_t t_seleciona_modoHandle;
 extern osThreadId_t t_RTDHandle;
+extern osThreadId_t t_pilot_resetHandle;
 extern osThreadId_t t_inverter_comm_errorHandle;
+extern osThreadId_t t_odometer_saveHandle;
 
 // EVENT FLAGS
-extern osEventFlagsId_t ECU_control_event_id;
+extern osEventFlagsId_t e_ECU_control_flagsHandle;
 
 // SEMAPHORES
 

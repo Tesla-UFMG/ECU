@@ -26,7 +26,7 @@ static uint8_t inverter_can_status;
 
 bool is_there_inverter_can_transmit_error();
 
-// function that initializes the inverter can. called in initializer.c
+// Initialize the inverter CAN. Called in initializer.c
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
     can_ptr = can_ref;
     void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* /*hfdcan*/,
@@ -47,7 +47,7 @@ bool is_there_inverter_can_transmit_error() {
     return is_error_present;
 }
 
-// function used to send a message via can
+// Function used to send a message via can
 void inverter_can_transmit(uint32_t id, uint16_t* data) {
     inverter_can_status = can_transmit(can_ptr, &TxHeader, id, data);
     check_for_errors_with_timeout(
@@ -56,7 +56,7 @@ void inverter_can_transmit(uint32_t id, uint16_t* data) {
     osDelay(CAN_DELAY);
 }
 
-// callback function. called when any message is received from any ID
+// Callback function called when any inverter message is received via CAN
 void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs) {
     if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
         if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
@@ -82,12 +82,12 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
     }
 }
 
-// callback called when there is a BUSOFF CAN error
+// Callback called when there is a BUSOFF CAN error
 void CAN_inverter_error_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t ErrorStatusITs) {
     if (ErrorStatusITs | FDCAN_IT_BUS_OFF) {
-        // issue the error so main_task.c treats it
+        // Issue the error so main_task.c treats it
         issue_error(INVERTER_BUS_OFF_ERROR_FLAG, /*should_set_control_event_flag=*/false);
-        // clean the INIT CAN bit to start receiving messages again
+        // Clean the INIT CAN bit to start receiving messages again
         CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
     }
 }

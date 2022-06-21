@@ -27,17 +27,19 @@ speed_pin_e get_speed_pin(uint16_t pin) {
  * @return uint32_t a variable with the same size as value, but only with value's most
  * significant set
  */
-
-uint32_t get_most_significant_thread_flag() {
-    uint32_t thread_flag           = osThreadFlagsGet();
-    uint32_t most_significant_flag = 1 << 31;
-    while (thread_flag != 0) {
-        if (most_significant_flag & thread_flag) {
-            return most_significant_flag;
+uint32_t get_flag_MSB(uint32_t value) {
+    uint32_t flag = 1 << 31; // flag = 2^32
+    while (flag != 0) {
+        if (value & flag) {
+            return flag;
         }
-        most_significant_flag >>= 1;
+        flag >>= 1;
     }
     return 0;
+}
+uint32_t get_most_significant_thread_flag() {
+    uint32_t thread_flag = osThreadFlagsGet();
+    return get_flag_MSB(thread_flag);
 }
 
 bool get_individual_flag(osEventFlagsId_t ef_id, uint32_t flag) {

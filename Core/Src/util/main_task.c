@@ -72,8 +72,8 @@ void main_task(void* argument) {
                 }
                 break;
 
-            case APPS_ERROR_FLAG: // Regulamento: T.4.2 (2021)
-            case BSE_ERROR_FLAG:  // Regulamento: EV.5.7 (2021)
+            case APPS_ERROR_FLAG: // FSAE Rules: T.4.2 (2021)
+            case BSE_ERROR_FLAG:  // FSAE Rules: EV.5.7 (2021)
 
                 // If the event flag contains the error flag ECU led is set to yellow
                 isErrorPresent = event_flags & most_significant_error_flag;

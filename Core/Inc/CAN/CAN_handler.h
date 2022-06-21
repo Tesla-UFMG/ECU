@@ -19,7 +19,8 @@ void initialize_CAN(FDCAN_HandleTypeDef* hfdcan,
                                                uint32_t ErrorStatusITs),
                     FDCAN_TxHeaderTypeDef* TxHeader);
 
-void can_transmit(FDCAN_HandleTypeDef* hfdcan, FDCAN_TxHeaderTypeDef* TxHeader,
-                  uint32_t id, uint16_t* data);
+HAL_StatusTypeDef can_transmit(FDCAN_HandleTypeDef* hfdcan,
+                               FDCAN_TxHeaderTypeDef* TxHeader, uint32_t id,
+                               uint16_t* data);
 
 #endif /* INC_CAN_HANDLER_H_ */

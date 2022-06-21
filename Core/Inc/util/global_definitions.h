@@ -120,16 +120,17 @@ typedef enum {
 #define APPS_ERROR_FLAG (1 << 17) // Regulamento: T.4.2 (2021)
 
 // Hard error flags (RTD disable)
-#define INVERTER_COMM_ERROR_FLAG    (1 << 20)
-#define SU_F_ERROR_FLAG             (1 << 21)
-#define INVERTER_BUS_OFF_ERROR_FLAG (1 << 22)
+#define INVERTER_CAN_TRANSMIT_ERROR_FLAG (1 << 19)
+#define INVERTER_COMM_ERROR_FLAG         (1 << 20)
+#define SU_F_ERROR_FLAG                  (1 << 21)
+#define INVERTER_BUS_OFF_ERROR_FLAG      (1 << 22)
 
-#define ALL_WARN_FLAG         (REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG)
-#define ALL_MINOR_ERROR_FLAG  (APPS_ERROR_FLAG | BSE_ERROR_FLAG)
-#define ALL_SEVERE_ERROR_FLAG (INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG)
-#define ALL_ERRORS_FLAG                                                                  \
-    (APPS_ERROR_FLAG | BSE_ERROR_FLAG | INVERTER_COMM_ERROR_FLAG | SU_F_ERROR_FLAG       \
+#define ALL_WARN_FLAG        (REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG)
+#define ALL_MINOR_ERROR_FLAG (APPS_ERROR_FLAG | BSE_ERROR_FLAG)
+#define ALL_SEVERE_ERROR_FLAG                                                            \
+    (INVERTER_COMM_ERROR_FLAG | INVERTER_CAN_TRANSMIT_ERROR_FLAG | SU_F_ERROR_FLAG       \
      | INVERTER_BUS_OFF_ERROR_FLAG)
+#define ALL_ERRORS_FLAG (ALL_SEVERE_ERROR_FLAG | ALL_MINOR_ERROR_FLAG)
 
 #define ALL_THROTTLE_ERROR_FLAG (APPS_ERROR_FLAG | BSE_ERROR_FLAG)
 

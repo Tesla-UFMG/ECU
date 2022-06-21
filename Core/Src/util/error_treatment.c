@@ -11,8 +11,8 @@
 
 void check_for_errors(bool (*areThereErrors)(), uint32_t flagError) {
     if (areThereErrors()) {
-        // seta flag de thread e de estado com a flag flagError
-        issue_error(flagError, /*should_set_control_event_flag=*/true);
+        // Sets the thread flag and the event flag with flagError
+        issue_error(flagError, /*Should_set_control_event_flag=*/true);
     } else {
         clear_error(flagError);
     }
@@ -21,29 +21,30 @@ void check_for_errors(bool (*areThereErrors)(), uint32_t flagError) {
 void check_for_errors_with_timeout(bool (*areThereErrors)(), uint32_t flagError,
                                    osTimerId_t timerHandler, uint16_t timerAmount) {
     if (areThereErrors()) {
-        // se o timer nao tiver rodando ele sera iniciado. O if  evita o reinicio do timer
+        // Starts the timer only if it has not already been started, so that the timer
+        // isn't restarted.
         if (!osTimerIsRunning(timerHandler)) {
             osTimerStart(timerHandler, timerAmount / portTICK_PERIOD_MS);
         }
     } else {
-        // interrompe o timer
+        // Stops the timer
         osTimerStop(timerHandler);
         clear_error(flagError);
     }
 }
 
 void errors_with_timer_callback(void* argument) {
-    // obtem a flag a partir do argumento do callback
+    // Get the flag from callback argument
     uint32_t flagError = (uint32_t)argument;
-    // seta flag de thread e de estado com a flag flagError
+    // Sets the thread flag and the event flag with flagError
     issue_error(flagError, /*should_set_control_event_flag=*/true);
 }
 
 void issue_error(uint32_t flagError, bool should_set_control_event_flag) {
-    // seta flag de thread da main task com a flag flagError
+    // Sets main_task.c thread flag with flagError
     osThreadFlagsSet(t_main_taskHandle, flagError);
     if (should_set_control_event_flag) {
-        // seta flag de thread da main task com a flag flagError
+        // Sets the event flag with flagError
         osEventFlagsSet(e_ECU_control_flagsHandle, flagError);
     }
 }

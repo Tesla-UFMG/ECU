@@ -32,14 +32,13 @@ void main_task(void* argument) {
         // Wait for any error
         osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
                           osWaitForever);
-        // Get the thread and event flags
-        uint32_t error_flags = osThreadFlagsGet();
+        // Get the most significant thread flag
+        uint32_t most_significant_error_flag = get_most_significant_thread_flag();
+        // Get the event flag
         uint32_t event_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
-        // Get the most significant thread flag. then treats it
-        uint32_t most_significant_error_flags =
-            get_flag_MSB(error_flags & ALL_ERRORS_FLAG);
+
         bool isErrorPresent;
-        switch (most_significant_error_flags) {
+        switch (most_significant_error_flag) {
 
                 // BUSOFF error is treated when it happens more than once in a short
                 // period of time (period defined by: BUS_OFF_ERROR_TIME).The car leaves
@@ -62,56 +61,28 @@ void main_task(void* argument) {
 
             case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
             case INVERTER_COMM_ERROR_FLAG:
-
+            case SU_F_ERROR_FLAG:
                 // If the event flag contains the error flag the car leaves RTD mode.
-                isErrorPresent =
-                    event_flags
-                    & (INVERTER_CAN_TRANSMIT_ERROR_FLAG | INVERTER_COMM_ERROR_FLAG);
+                isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
                     exit_RTD();
                 } else {
                     // Clear the thread flag
-                    osThreadFlagsClear(INVERTER_CAN_TRANSMIT_ERROR_FLAG);
-                    osThreadFlagsClear(INVERTER_COMM_ERROR_FLAG);
-                }
-                break;
-
-            case SU_F_ERROR_FLAG:
-
-                // If the event flag contains the error flag the car leaves RTD mode.
-                isErrorPresent = event_flags & SU_F_ERROR_FLAG;
-                if (isErrorPresent) {
-                    exit_RTD();
-                } else {
-                    // Clear the thread flag so ECU led returns to normal
-                    osThreadFlagsClear(SU_F_ERROR_FLAG);
+                    osThreadFlagsClear(most_significant_error_flag);
                 }
                 break;
 
             case APPS_ERROR_FLAG: // Regulamento: T.4.2 (2021)
-
-                // If the event flag contains the error flag the car leaves RTD mode.
-                isErrorPresent = event_flags & APPS_ERROR_FLAG;
-                if (isErrorPresent) {
-                    set_rgb_led(AMARELO, NO_CHANGE);
-                    osDelay(20);
-                } else {
-                    // Clear the thread flag and set ECU led to normal
-                    osThreadFlagsClear(APPS_ERROR_FLAG);
-                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);
-                }
-                break;
-
-            case BSE_ERROR_FLAG: // Regulamento: EV.5.7 (2021)
+            case BSE_ERROR_FLAG:  // Regulamento: EV.5.7 (2021)
 
                 // If the event flag contains the error flag ECU led is set to yellow
-                isErrorPresent = event_flags & BSE_ERROR_FLAG;
+                isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
                     set_rgb_led(AMARELO, NO_CHANGE);
                     osDelay(20);
                 } else {
                     // Clear the thread flag and set ECU led to normal
-                    osThreadFlagsClear(BSE_ERROR_FLAG);
+                    osThreadFlagsClear(most_significant_error_flag);
                     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);
                 }
                 break;

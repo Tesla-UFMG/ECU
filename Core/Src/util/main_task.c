@@ -29,81 +29,60 @@ void main_task(void* argument) {
 
         wait_for_rtd();
 
-        // espera por qualquer erro
+        // Wait for any error
         osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
                           osWaitForever);
-        // obtem os valores de flag de thread e de evento
-        uint32_t error_flags = osThreadFlagsGet();
+        // Get the most significant thread flag
+        uint32_t most_significant_error_flag = get_most_significant_thread_flag();
+        // Get the event flag
         uint32_t event_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
-        // obtem a flag de thread mais significativa, ela que sera tratada
-        uint32_t most_significant_error_flags =
-            get_flag_MSB(error_flags & ALL_ERRORS_FLAG);
-        bool isErrorPresent;
-        switch (most_significant_error_flags) {
 
-            // O erro de bus off da can do inversor so sera tratado se ocorrer mais de uma
-            // vez em um curto periodo de tempo (tempo definido por : BUS_OFF_ERROR_TIME),
-            // assim o RTD sera desabilitado somente se tiver o erro frequente na CAN.
+        bool isErrorPresent;
+        switch (most_significant_error_flag) {
+
+                // BUSOFF error is treated when it happens more than once in a short
+                // period of time (period defined by: BUS_OFF_ERROR_TIME).The car leaves
+                // RTD mode only if there is a frequent CAN error.
             case INVERTER_BUS_OFF_ERROR_FLAG:
-                // verifica se o erro esta presente na flag de evento, caso esteja sai de
-                // RTD
+
+                // If the event flag contains the error flag the car leaves RTD mode.
                 isErrorPresent = event_flags & INVERTER_BUS_OFF_ERROR_FLAG;
                 if (isErrorPresent) {
                     exit_RTD();
                 } else {
-                    // caso o erro nao esteja presente a flag de evento sera setada e um
-                    // timer iniciado para que caso tenha o erro novamente saia de RTD
-                    osEventFlagsSet(e_ECU_control_flagsHandle, INVERTER_BUS_OFF_ERROR_FLAG);
+                    // Starts a timer. If the error happens again before the timer expires
+                    // the car leaves RTD mode.
+                    osEventFlagsSet(e_ECU_control_flagsHandle,
+                                    INVERTER_BUS_OFF_ERROR_FLAG);
                     osThreadFlagsClear(INVERTER_BUS_OFF_ERROR_FLAG);
                     osTimerStart(tim_inverter_BUS_OFF_errorHandle, BUS_OFF_ERROR_TIME);
                 }
                 break;
 
+            case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
             case INVERTER_COMM_ERROR_FLAG:
-                // verifica se o erro ainda esta presente na flag de evento, caso esteja
-                // sai de RTD, caso não esteja a flag de thread é resetada
-                isErrorPresent = event_flags & INVERTER_COMM_ERROR_FLAG;
-                if (isErrorPresent) {
-                    exit_RTD();
-                } else {
-                    osThreadFlagsClear(INVERTER_COMM_ERROR_FLAG);
-                }
-                break;
-
             case SU_F_ERROR_FLAG:
-                // verifica se o erro ainda esta presente na flag de evento, caso esteja
-                // sai de RTD, caso não esteja a flag de thread é resetada e o led volta
-                // ao normal
-                isErrorPresent = event_flags & SU_F_ERROR_FLAG;
+                // If the event flag contains the error flag the car leaves RTD mode.
+                isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
                     exit_RTD();
                 } else {
-                    osThreadFlagsClear(SU_F_ERROR_FLAG);
+                    // Clear the thread flag
+                    osThreadFlagsClear(most_significant_error_flag);
                 }
                 break;
 
-            case APPS_ERROR_FLAG: // Regulamento: T.4.2 (2021)
+            case APPS_ERROR_FLAG: // FSAE Rules: T.4.2 (2021)
+            case BSE_ERROR_FLAG:  // FSAE Rules: EV.5.7 (2021)
 
-                isErrorPresent = event_flags & APPS_ERROR_FLAG;
+                // If the event flag contains the error flag ECU led is set to yellow
+                isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
                     set_rgb_led(AMARELO, NO_CHANGE);
                     osDelay(20);
                 } else {
-                    osThreadFlagsClear(APPS_ERROR_FLAG);
-                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);
-                }
-                break;
-
-            case BSE_ERROR_FLAG: // Regulamento: EV.5.7 (2021)
-                // verifica se o erro ainda esta presente na flag de evento, caso esteja
-                // seta o led como amarelo, caso não esteja a flag de thread é resetada e
-                // o led volta ao normal
-                isErrorPresent = event_flags & BSE_ERROR_FLAG;
-                if (isErrorPresent) {
-                    set_rgb_led(AMARELO, NO_CHANGE);
-                    osDelay(20);
-                } else {
-                    osThreadFlagsClear(BSE_ERROR_FLAG);
+                    // Clear the thread flag and set ECU led to normal
+                    osThreadFlagsClear(most_significant_error_flag);
                     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);
                 }
                 break;

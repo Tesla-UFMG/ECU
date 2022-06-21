@@ -46,5 +46,6 @@ extern osTimerId_t tim_APPS_errorHandle;
 ;
 extern osTimerId_t tim_inverter_BUS_OFF_errorHandle;
 extern osTimerId_t tim_inverter_readyHandle;
+extern osTimerId_t tim_inverter_can_transmit_errorHandle;
 
 #endif /* INC_GLOBAL_INSTANCES_H_ */

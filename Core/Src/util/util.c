@@ -37,6 +37,10 @@ uint32_t get_flag_MSB(uint32_t value) {
     }
     return 0;
 }
+uint32_t get_most_significant_thread_flag() {
+    uint32_t thread_flag = osThreadFlagsGet();
+    return get_flag_MSB(thread_flag);
+}
 
 bool get_individual_flag(osEventFlagsId_t ef_id, uint32_t flag) {
     return (osEventFlagsGet(ef_id) & flag);

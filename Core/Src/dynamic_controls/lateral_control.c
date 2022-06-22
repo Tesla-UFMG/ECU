@@ -7,9 +7,10 @@
 
 #include "dynamic_controls/lateral_control.h"
 
-#include "dynamic_controls/constants_control.h"
+#include "CAN/general_can_data_manager.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
+#include "dynamic_controls/constants_control.h"
 #include "math.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
@@ -25,8 +26,6 @@ void init_lateral_control() {
 lateral_result_t lateral_control() {
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
-    GYRO_YAW_t gyro_yaw             = get_global_var_value(GYRO_YAW);
-    // TODO(renanmoreira): receber GYRO_YAW em algum lugar
 
     double cg_speed;
     double gyro_adjusted;    // entre -1.5 e 1.5
@@ -38,6 +37,8 @@ lateral_result_t lateral_control() {
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
     double calc_gyro(uint16_t gyro_yaw);
     float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
+
+    int16_t gyro_yaw = (int16_t)general_get_value(gyroscope_y);
 
     // velocidade em m/s
     cg_speed = ((double)get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);

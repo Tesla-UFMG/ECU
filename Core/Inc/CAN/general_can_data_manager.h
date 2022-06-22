@@ -1,8 +1,8 @@
 /*
  * general_can_data_manager.h
  *
- *  Created on: Oct 16, 2020
- *      Author: renanmoreira
+ *  Created on: Jun 22, 2022
+ *      Author: joaopedronunes
  */
 
 #ifndef INC_GENERAL_CAN_DATA_MANAGER_H_

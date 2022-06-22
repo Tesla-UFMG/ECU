@@ -22,7 +22,7 @@ static FDCAN_TxHeaderTypeDef TxHeader;
 static uint8_t RxData[8];
 static FDCAN_RxHeaderTypeDef RxHeader;
 uint16_t datageneral[4];
-uint32_t idgeneral;
+uint32_t id;
 
 // funcao que inicializa a can geral, chamada em initializer.c
 void initialize_general_CAN(FDCAN_HandleTypeDef* can_ref) {
@@ -48,14 +48,13 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
             /* Reception Error */
             Error_Handler();
         }
-        idgeneral = RxHeader.Identifier;
+        uint32_t id = RxHeader.Identifier;
         for (int i = 0; i < 4; ++i) {
-            general_can_vars_e var_name =
-                general_get_var_name_from_id_and_pos(idgeneral, i);
+            general_can_vars_e var_name = general_get_var_name_from_id_and_pos(id, i);
 
             if ((int)var_name != -1) {
-                uint16_t data_general = concatenate_two_uint8_to_uint16(RxData + i * 2);
-                general_store_value(var_name, data_general);
+                uint16_t data = concatenate_two_uint8_to_uint16(RxData + i * 2);
+                general_store_value(var_name, data);
             }
         }
 

@@ -26,7 +26,6 @@ void init_lateral_control() {
 lateral_result_t lateral_control() {
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
-    // TODO(renanmoreira): receber GYRO_YAW em algum lugar
 
     double cg_speed;
     double gyro_adjusted;    // entre -1.5 e 1.5

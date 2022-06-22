@@ -26,7 +26,6 @@ void init_lateral_control() {
 lateral_result_t lateral_control() {
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
-    GYRO_YAW_t gyro_yaw             = get_global_var_value(GYRO_YAW);
     // TODO(renanmoreira): receber GYRO_YAW em algum lugar
 
     double cg_speed;
@@ -40,7 +39,7 @@ lateral_result_t lateral_control() {
     double calc_gyro(uint16_t gyro_yaw);
     float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
 
-    set_global_var_value(GYRO_YAW, general_get_value(gyroscope_y));
+    int16_t gyro_yaw = (int16_t)general_get_value(gyroscope_y);
 
     // velocidade em m/s
     cg_speed = ((double)get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);

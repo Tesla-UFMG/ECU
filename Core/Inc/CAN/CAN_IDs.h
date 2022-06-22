@@ -197,15 +197,6 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
     { 113, 3 }
 
 //----------
-#define VARIABLES_GENERAL_CAN_RX_IDS                                                     \
-    ENTRY(acceletometer_x, 130, 0)                                                       \
-    ENTRY(accelerometer_y, 130, 1)                                                       \
-    ENTRY(accelerometer_z, 130, 2)                                                       \
-    ENTRY(error_imu_accelerometer, 130, 3)                                               \
-    ENTRY(gyroscope_x, 131, 0)                                                           \
-    ENTRY(gyroscope_y, 131, 1)                                                           \
-    ENTRY(gyroscope_z, 131, 2)                                                           \
-    ENTRY(error_imu_gyroscope, 131, 3)
 
 void initialize_CAN_IDs();
 uint16_t convert_id_pos_to_index(uint16_t id, uint16_t pos);

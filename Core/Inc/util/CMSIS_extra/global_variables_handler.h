@@ -13,12 +13,12 @@
 #include <stdint.h>
 
 typedef struct {
-    uint16_t speed[2];
-} MOTOR_SPEEDS_t;
-typedef struct {
-    float speed[4];
-} WHEEL_SPEEDS_t;
-typedef int16_t STEERING_WHEEL_t;
+    uint16_t wheels[4];
+} SPEEDS_t;
+typedef uint16_t FRONT_AVG_SPEED_t;
+typedef uint16_t REAR_AVG_SPEED_t;
+typedef uint16_t STEERING_WHEEL_t;
+
 typedef uint16_t GYRO_YAW_t;
 typedef race_mode_t RACE_MODE_t;
 typedef uint16_t THROTTLE_PERCENT_t;
@@ -26,10 +26,10 @@ typedef bool BRAKE_STATUS_t;
 typedef bool THROTTLE_STATUS_t;
 typedef modos SELECTED_MODE_t;
 
-#define MOTOR_SPEEDS_DEFAULT_VALUE                                                       \
-    { 0, 0 }
-#define WHEEL_SPEEDS_DEFAULT_VALUE                                                       \
+#define SPEEDS_DEFAULT_VALUE                                                             \
     { 0, 0, 0, 0 }
+#define FRONT_AVG_SPEED_DEFAULT_VALUE  0
+#define REAR_AVG_SPEED_DEFAULT_VALUE   0
 #define STEERING_WHEEL_DEFAULT_VALUE   0
 #define GYRO_YAW_DEFAULT_VALUE         0
 #define RACE_MODE_DEFAULT_VALUE        ENDURO
@@ -38,10 +38,11 @@ typedef modos SELECTED_MODE_t;
 #define THROTTLE_STATUS_DEFAULT_VALUE  false
 #define SELECTED_MODE_DEFAULT_VALUE                                                      \
     {}
-
 typedef enum {
-    MOTOR_SPEEDS,
-    WHEEL_SPEEDS,
+    SPEEDS,
+    WHEEL_ENCODER_SPEEDS,
+    FRONT_AVG_SPEED,
+    REAR_AVG_SPEED,
     STEERING_WHEEL,
     GYRO_YAW,
     RACE_MODE,
@@ -53,7 +54,7 @@ typedef enum {
                          NUMBER-OF-ELEMENTS INDICATOR */
 } global_vars_e;
 
-void global_variables_init();
+void init_global_variables();
 
 void get_global_var(global_vars_e type, void* message);
 void set_global_var(global_vars_e type, void* message);

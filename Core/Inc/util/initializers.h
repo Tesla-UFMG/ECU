@@ -13,6 +13,13 @@
 void init_NVIC_priorities();
 void init_ADC_DMA(ADC_HandleTypeDef* hadc);
 void init_CAN();
-void inicializa_modos();
+void init_modes();
+void init_ECU();
+
+/**
+ * @brief deinitialize all ECU peripherals.
+ *
+ */
+void deInit_all_peripherals();
 
 #endif /* INITIALIZERS_H_ */

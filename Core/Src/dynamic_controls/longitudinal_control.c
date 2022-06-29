@@ -7,10 +7,9 @@
 
 #include "dynamic_controls/longitudinal_control.h"
 
-#include "DynamicControls/constants_control.h"
+#include "dynamic_controls/constants_control.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
-#include "sensors/wheel_speed.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
 #include "util/global_variables.h"
@@ -31,27 +30,27 @@ void init_longitudinal_control() {
     // TODO(Giovanni): fazer logica de selecao pista seca/molhada
 }
 
-double wheel_control(uint8_t wheel_motor, WHEEL_SPEEDS_t wheel_speeds) {
+double wheel_control(uint8_t wheel_motor, SPEEDS_t speeds) {
     float cm_speed;
     double slip;
 
     // speed and slip ratios
     // speed of the car's center of mass
-    cm_speed = ((wheel_speeds.speed[FRONT_RIGHT] + wheel_speeds.speed[FRONT_LEFT]) / 2);
+    cm_speed = (float)get_global_var_value(REAR_AVG_SPEED);
     // slip ratio of the selected wheel
-    slip =
-        ((wheel_speeds.speed[controlled_wheels[wheel_motor].wheel] - cm_speed) / cm_speed)
-        * 100;
+    slip = (((float)(speeds.wheels[controlled_wheels[wheel_motor].wheel]) - cm_speed) / cm_speed)
+           * 100;
     // PID
     return (
         uint32_t)(PID_compute(&(controlled_wheels[wheel_motor].pid_longitudinal), slip));
 }
+
 longitudinal_control_result_t longitudinal_control() {
     longitudinal_control_result_t result;
-    WHEEL_SPEEDS_t wheel_speeds = get_global_var_value(WHEEL_SPEEDS);
+    SPEEDS_t speeds = get_global_var_value(SPEEDS);
 
-    result.torque_decrease[R_MOTOR] = wheel_control(R_MOTOR, wheel_speeds);
-    result.torque_decrease[L_MOTOR] = wheel_control(L_MOTOR, wheel_speeds);
+    result.torque_decrease[R_MOTOR] = wheel_control(R_MOTOR, speeds);
+    result.torque_decrease[L_MOTOR] = wheel_control(L_MOTOR, speeds);
 
     return result;
 }

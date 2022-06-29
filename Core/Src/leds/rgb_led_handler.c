@@ -20,9 +20,9 @@
 #include "util/global_instances.h"
 #include "util/global_variables.h"
 
-void write_rgb_color(rgb rgb_gpio);
-void write_debug_color(rgb rgb_gpio);
-rgb get_rgb_color(cores_t color);
+void write_rgb_color(rgb_t rgb_gpio);
+void write_debug_color(rgb_t rgb_gpio);
+rgb_t get_rgb_color(cores_t color);
 void blink_rgb(uint32_t delay);
 
 osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control) {
@@ -78,20 +78,20 @@ void blink_rgb(uint32_t delay) {
     write_rgb_color(get_rgb_color(PRETO));
 }
 
-void write_rgb_color(rgb rgb_gpio) {
+void write_rgb_color(rgb_t rgb_gpio) {
     HAL_GPIO_WritePin(C_LED_RED_GPIO_Port, C_LED_RED_Pin, rgb_gpio.red);
     HAL_GPIO_WritePin(C_LED_GREEN_GPIO_Port, C_LED_GREEN_Pin, rgb_gpio.green);
     HAL_GPIO_WritePin(C_LED_BLUE_GPIO_Port, C_LED_BLUE_Pin, rgb_gpio.blue);
     // write_debug_color(rgb_gpio); //apenas para debug
 }
 
-void write_debug_color(rgb rgb_gpio) {
+void write_debug_color(rgb_t rgb_gpio) {
     HAL_GPIO_WritePin(C_LED_DEBUG1_GPIO_Port, C_LED_DEBUG1_Pin, !rgb_gpio.red);
     HAL_GPIO_WritePin(C_LED_DEBUG2_GPIO_Port, C_LED_DEBUG2_Pin, !rgb_gpio.green);
     HAL_GPIO_WritePin(C_LED_DEBUG3_GPIO_Port, C_LED_DEBUG3_Pin, !rgb_gpio.blue);
 }
 
-rgb get_rgb_color(cores_t color) {
+rgb_t get_rgb_color(cores_t color) {
     switch (color) {
         case PRETO: return RGB_BLACK;
         case VERMELHO: return RGB_RED;

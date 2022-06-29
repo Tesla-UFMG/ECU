@@ -27,7 +27,6 @@ lateral_result_t lateral_control() {
 
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
 
-
     double cg_speed;
     double gyro_adjusted;    // entre -1.5 e 1.5
     float steering_adjusted; // entre -0.5 e 0.5
@@ -93,8 +92,7 @@ float calc_steering(int16_t steering_wheel) {
         && steering_wheel > -lat_ctrl_steering_tolerance) {
         steering_adjusted = 0;
     } else {
-        steering_adjusted =
-            Y0 + ((Y1 - Y0) / (X1 - X0)) * ((float)(steering_wheel / 10) - X0);
+        steering_adjusted = Y0 + ((Y1 - Y0) / (X1 - X0)) * ((steering_wheel / 10) - X0);
     }
 
     return steering_adjusted;

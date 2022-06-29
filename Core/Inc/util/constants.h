@@ -18,7 +18,7 @@
 #define modo_enduro           0
 #define zona_morta_acelerador 10
 #define TORQUE_GAIN           1
-#define ANG_MIN_STEERING      -970
+#define ANG_MIN_STEERING      (-970)
 #define ANG_MAX_STEERING      2070
 #define SPAN_ALIGNMENT        5
 #define MIN_STEERING          662

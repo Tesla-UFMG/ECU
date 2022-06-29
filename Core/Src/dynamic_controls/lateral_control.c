@@ -92,7 +92,8 @@ float calc_steering(int16_t steering_wheel) {
         && steering_wheel > -lat_ctrl_steering_tolerance) {
         steering_adjusted = 0;
     } else {
-        steering_adjusted = Y0 + ((Y1 - Y0) / (X1 - X0)) * ((steering_wheel / 10) - X0);
+        steering_adjusted =
+            Y0 + ((Y1 - Y0) / (X1 - X0)) * (((float)steering_wheel / 10) - X0);
     }
 
     return steering_adjusted;

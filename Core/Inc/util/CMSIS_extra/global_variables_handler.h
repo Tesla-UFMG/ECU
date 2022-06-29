@@ -17,7 +17,7 @@ typedef struct {
 } SPEEDS_t;
 typedef uint16_t FRONT_AVG_SPEED_t;
 typedef uint16_t REAR_AVG_SPEED_t;
-typedef uint16_t STEERING_WHEEL_t;
+typedef int16_t STEERING_WHEEL_t;
 
 typedef uint16_t GYRO_YAW_t;
 typedef race_mode_t RACE_MODE_t;

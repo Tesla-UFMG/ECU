@@ -15,12 +15,13 @@
 #include "util/util.h"
 
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
+static int16_t calculate_steering(uint16_t current_read);
 
 // calculation of current angle based on current adc reading, maximum steering wheel angle
 // and from the min and max reading in the calibration using Thales' theorem. The function
 // returns a value between -970 and 1100 with -970 being all the way to the right, 1100
 // being all the way to the left and 0 being the middle
-int16_t calculate_steering(uint16_t current_read) {
+static int16_t calculate_steering(uint16_t current_read) {
     static double steering_calc;
     steering_calc =
         ((ANG_MAX_STEERING - ANG_MIN_STEERING)

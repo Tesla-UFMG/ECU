@@ -20,18 +20,19 @@ extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 // and from the min and max reading in the calibration using Thales' theorem. The function
 // returns a value between -970 and 1100 with -970 being all the way to the right, 1100
 // being all the way to the left and 0 being the middle
-int16_t calculate_steering(double current_read) {
+static int16_t calculate_steering(uint16_t current_read) {
     double steering_calc;
-    steering_calc = ((ANG_MAX_STEERING - ANG_MIN_STEERING)
-                     * ((current_read - MIN_STEERING) / (MAX_STEERING - MIN_STEERING)))
-                    + ANG_MIN_STEERING;
+    steering_calc =
+        ((ANG_MAX_STEERING - ANG_MIN_STEERING)
+         * (((double)current_read - MIN_STEERING) / (MAX_STEERING - MIN_STEERING)))
+        + ANG_MIN_STEERING;
     return (int16_t)steering_calc;
 }
 
 void steering_read(void* argument) {
     UNUSED(argument);
 
-    double current_read;
+    uint16_t current_read;
     for (;;) {
 #ifdef DEBUG_ECU
         extern void brkpt();
@@ -55,7 +56,7 @@ void steering_read(void* argument) {
 
         STEERING_WHEEL_t steering_wheel = calculate_steering(current_read);
         set_global_var_value(STEERING_WHEEL, steering_wheel);
-        log_data(ID_STEERING_WHEEL, steering_wheel + DATALOG_STEERING_OFFSET);
+        log_data(ID_STEERING_WHEEL, (uint16_t)(steering_wheel + DATALOG_STEERING_OFFSET));
 
         osDelay(STEERING_CALC_DELAY);
     }

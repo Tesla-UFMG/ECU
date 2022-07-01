@@ -86,7 +86,6 @@ double calc_gyro(uint16_t gyro_yaw) {
 // TODO(Luiza): verificar valor do steering
 float calc_steering(int16_t steering_wheel) {
     float steering_adjusted;
-    int lat_ctrl_steering_tolerance = 50;
     if (steering_wheel
             < lat_ctrl_steering_tolerance // tolerance to consider the steering centered
         && steering_wheel > -lat_ctrl_steering_tolerance) {

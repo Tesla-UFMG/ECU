@@ -61,7 +61,7 @@ void main_task(void* argument) {
 
             case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
             case INVERTER_COMM_ERROR_FLAG:
-            case SU_F_ERROR_FLAG:
+            //case SU_F_ERROR_FLAG:
                 // If the event flag contains the error flag the car leaves RTD mode.
                 isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {

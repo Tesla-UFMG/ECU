@@ -86,7 +86,7 @@ bool can_RTD_be_enabled() {
     // obtem todas as flags e filtra apenas flags de erros severos, ignorando as outras
     uint32_t error_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
     error_flags &= ALL_SEVERE_ERROR_FLAG;
-    BRAKE_STATUS_t is_brake_active       = get_global_var_value(BRAKE_STATUS);
+    BRAKE_STATUS_t is_brake_active       = 1;//get_global_var_value(BRAKE_STATUS);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     RACE_MODE_t race_mode                = get_global_var_value(RACE_MODE);
     // flag that indicates when the inverter precharge time has passed and the inverter is

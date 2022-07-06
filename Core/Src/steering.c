@@ -8,10 +8,14 @@
 #include "steering.h"
 #include "constants.h"
 #include "global_definitions.h"
+#include "global_instances.h"
 #include "datalog_handler.h"
 #include "CMSIS_extra/global_variables_handler.h"
 
+
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
+
+volatile uint32_t event_flags;
 
 void steering_read(void *argument) {
 	uint16_t volante_cru;
@@ -57,7 +61,7 @@ void steering_read(void *argument) {
 		} else {
 			set_global_var_value(INTERNAL_WHEEL, CENTRO);
 		}
-
+		event_flags = osEventFlagsGet(ECU_control_event_id);
 		osDelay(100);
 
 	//	return (volante);

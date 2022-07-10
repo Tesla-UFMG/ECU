@@ -28,6 +28,12 @@ typedef enum modos_desempenho {
     AUTOX
 } race_mode_t;
 
+typedef enum controles_dinamicos{
+    NO_CONTROL = 0,
+    LONGITUDINAL = 1,
+    LATERAL = 3
+} dynamic_control_t;
+
 typedef struct // struct de modo
 {
     int tor_max;      // torque maximo (de 0 a 4000)
@@ -109,6 +115,7 @@ typedef enum {
 #define INVERTER_CAN_ACTIVE        (1 << 5)
 #define INVERTER_READY             (1 << 6)
 #define ODOMETER_SAVE_FLAG         (1 << 7)
+#define CHOOSE_DYNAMIC_CONTROL_BTN_PRESSED_FLAG (1 << 8)
 
 // Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG           (1 << 10)

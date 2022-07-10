@@ -7,6 +7,7 @@
 
 #include "torque_command/torque_manager.h"
 
+#include "Util/global_variables.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/lateral_control.h"
 #include "dynamic_controls/longitudinal_control.h"
@@ -15,6 +16,8 @@
 #include "util/global_definitions.h"
 #include "util/util.h"
 
+#include <driver_settings/choose_dynamic_controls.h>
+
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
 
@@ -22,6 +25,7 @@ void torque_manager(void* argument) {
     UNUSED(argument);
 
     uint32_t ref_torque[2] = {0, 0};
+
     for (;;) {
         // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
         uint32_t tick = osKernelGetTickCount();
@@ -33,6 +37,8 @@ void torque_manager(void* argument) {
 
         void rampa_torque(uint32_t * ref_torque, const double* ref_torque_decrease);
         void send_ref_torque_message(const uint32_t* ref_torque);
+
+        DYNAMIC_CONTROL_t g_control_type = get_global_var_value(DYNAMIC_CONTROL);
 
         switch (g_control_type) {
             case LONGITUDINAL:

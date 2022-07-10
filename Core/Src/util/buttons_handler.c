@@ -31,7 +31,10 @@ void button_release_handler(available_buttons_e button) {
             osThreadFlagsSet(t_pilot_resetHandle, MODE_BTN_PRESSED_FLAG);
             break;
 
-        case B_DYNAMICS_CONTROLS:; break;
+        case B_DYNAMICS_CONTROLS:;
+            osThreadFlagsSet(t_choose_dynamic_controlHANDLE,
+                             CHOOSE_DYNAMIC_CONTROL_BTN_PRESSED_FLAG);
+            break;
 
         default: break;
     }

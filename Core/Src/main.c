@@ -214,6 +214,13 @@ const osThreadAttr_t t_odometer_save_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_choose_dynamic_control */
+osThreadId_t t_choose_dynamic_controlHandle;
+const osThreadAttr_t t_choose_dynamic_control_attributes = {
+  .name = "t_choose_dynamic_control",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_encoder_int_message */
 osMessageQueueId_t q_encoder_int_messageHandle;
 const osMessageQueueAttr_t q_encoder_int_message_attributes = {
@@ -514,6 +521,9 @@ int main(void)
 
   /* creation of t_odometer_save */
   t_odometer_saveHandle = osThreadNew(odometer_save, NULL, &t_odometer_save_attributes);
+
+  /* creation of t_choose_dynamic_control */
+  t_choose_dynamic_controlHandle = osThreadNew(choose_dynamic_control, NULL, &t_choose_dynamic_control_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

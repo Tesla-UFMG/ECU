@@ -25,6 +25,7 @@ typedef uint16_t THROTTLE_PERCENT_t;
 typedef bool BRAKE_STATUS_t;
 typedef bool THROTTLE_STATUS_t;
 typedef modos SELECTED_MODE_t;
+typedef dynamic_control_t DYNAMIC_CONTROL_t;
 
 #define SPEEDS_DEFAULT_VALUE                                                             \
     { 0, 0, 0, 0 }
@@ -37,8 +38,10 @@ typedef modos SELECTED_MODE_t;
 #define THROTTLE_PERCENT_DEFAULT_VALUE 0
 #define BRAKE_STATUS_DEFAULT_VALUE     false
 #define THROTTLE_STATUS_DEFAULT_VALUE  false
-#define SELECTED_MODE_DEFAULT_VALUE                                                      \
-    {}
+#define SELECTED_MODE_DEFAULT_VALUE
+#define DYNAMIC_CONTROL_DEFAULT_VALUE  NO_CONTROL                                       \
+{}
+
 typedef enum {
     SPEEDS,
     WHEEL_ENCODER_SPEEDS,
@@ -52,6 +55,7 @@ typedef enum {
     BRAKE_STATUS,
     THROTTLE_STATUS,
     SELECTED_MODE,
+    DYNAMIC_CONTROL,
     _global_vars_quan /* THIS MUST BE THE LAST ELEMENT OF THE ENUM, AS IT'S USED A
                          NUMBER-OF-ELEMENTS INDICATOR */
 } global_vars_e;

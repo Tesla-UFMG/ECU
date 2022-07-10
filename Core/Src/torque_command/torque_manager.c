@@ -7,7 +7,6 @@
 
 #include "torque_command/torque_manager.h"
 
-#include "Util/global_variables.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/lateral_control.h"
 #include "dynamic_controls/longitudinal_control.h"
@@ -15,8 +14,7 @@
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/global_definitions.h"
 #include "util/util.h"
-
-#include <driver_settings/dynamic_controls_choice.h>
+#include "driver_settings/dynamic_controls_choice.h"
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;

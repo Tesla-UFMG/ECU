@@ -214,10 +214,10 @@ const osThreadAttr_t t_odometer_save_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_choose_dynamic_control */
-osThreadId_t t_choose_dynamic_controlHandle;
-const osThreadAttr_t t_choose_dynamic_control_attributes = {
-  .name = "t_choose_dynamic_control",
+/* Definitions for t_dynamic_control_choice */
+osThreadId_t t_dynamic_control_choiceHandle;
+const osThreadAttr_t t_dynamic_control_choice_attributes = {
+  .name = "t_dynamic_control_choice",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
@@ -523,8 +523,8 @@ int main(void)
   /* creation of t_odometer_save */
   t_odometer_saveHandle = osThreadNew(odometer_save, NULL, &t_odometer_save_attributes);
 
-  /* creation of t_choose_dynamic_control */
-  t_choose_dynamic_controlHandle = osThreadNew(dyn_control, NULL, &t_choose_dynamic_control_attributes);
+  /* creation of t_dynamic_control_choice */
+  t_dynamic_control_choiceHandle = osThreadNew(dyn_control, NULL, &t_dynamic_control_choice_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

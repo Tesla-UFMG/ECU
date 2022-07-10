@@ -15,7 +15,7 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-void enable_dynamic_controls(void* argument) {
+void dynamic_controls_choice(void* argument) {
     UNUSED(argument);
 
     for (;;) {
@@ -25,7 +25,7 @@ void enable_dynamic_controls(void* argument) {
         brkpt();
 #endif
 
-        osThreadFlagsWait(CHOOSE_DYNAMIC_CONTROL_BTN_PRESSED_FLAG, osFlagsWaitAny,
+        osThreadFlagsWait(DYNAMIC_CONTROL_CHOICE_BTN_PRESSED_FLAG, osFlagsWaitAny,
                           osWaitForever);
 
         bool is_RTD_active = get_individual_flag(e_ECU_control_flagsHandle, RTD_FLAG);

@@ -115,7 +115,7 @@ typedef enum {
 #define INVERTER_CAN_ACTIVE        (1 << 5)
 #define INVERTER_READY             (1 << 6)
 #define ODOMETER_SAVE_FLAG         (1 << 7)
-#define CHOOSE_DYNAMIC_CONTROL_BTN_PRESSED_FLAG (1 << 8)
+#define DYNAMIC_CONTROL_CHOICE_BTN_PRESSED_FLAG (1 << 8)
 
 // Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG           (1 << 10)

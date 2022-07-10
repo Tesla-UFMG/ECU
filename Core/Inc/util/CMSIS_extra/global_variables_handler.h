@@ -38,9 +38,9 @@ typedef dynamic_control_t DYNAMIC_CONTROL_t;
 #define THROTTLE_PERCENT_DEFAULT_VALUE 0
 #define BRAKE_STATUS_DEFAULT_VALUE     false
 #define THROTTLE_STATUS_DEFAULT_VALUE  false
-#define SELECTED_MODE_DEFAULT_VALUE
-#define DYNAMIC_CONTROL_DEFAULT_VALUE  NO_CONTROL                                       \
+#define SELECTED_MODE_DEFAULT_VALUE                                                     \
 {}
+#define DYNAMIC_CONTROL_DEFAULT_VALUE  NO_CONTROL
 
 typedef enum {
     SPEEDS,

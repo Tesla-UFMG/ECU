@@ -338,6 +338,7 @@ extern void pilot_reset(void *argument);
 extern void buttons_handler(void *argument);
 extern void speed_datalog(void *argument);
 extern void odometer_save(void *argument);
+extern void dyn_control(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -523,7 +524,7 @@ int main(void)
   t_odometer_saveHandle = osThreadNew(odometer_save, NULL, &t_odometer_save_attributes);
 
   /* creation of t_choose_dynamic_control */
-  t_choose_dynamic_controlHandle = osThreadNew(choose_dynamic_control, NULL, &t_choose_dynamic_control_attributes);
+  t_choose_dynamic_controlHandle = osThreadNew(dyn_control, NULL, &t_choose_dynamic_control_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

@@ -43,6 +43,11 @@ void dynamic_controls_choice(void* argument) {
                     }
                     set_global_var_value(DYNAMIC_CONTROL, selected_control);
                     break;
+
+                case 0:
+                    if (get_global_var_value(SELECTED_MODE).dif_elt == 0) {
+                        set_global_var_value(DYNAMIC_CONTROL, NO_CONTROL);
+                    }
             }
             switch (get_global_var_value(SELECTED_MODE).dif_elt) {
 
@@ -57,6 +62,11 @@ void dynamic_controls_choice(void* argument) {
                     }
                     set_global_var_value(DYNAMIC_CONTROL, selected_control);
                     break;
+
+                case 0:
+                    if (get_global_var_value(SELECTED_MODE).traction_control == 0) {
+                        set_global_var_value(DYNAMIC_CONTROL, NO_CONTROL);
+                    }
             }
         }
     }

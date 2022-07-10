@@ -16,7 +16,7 @@
 #include "util/global_definitions.h"
 #include "util/util.h"
 
-#include <driver_settings/choose_dynamic_controls.h>
+#include <driver_settings/dynamic_controls_choice.h>
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;

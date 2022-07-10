@@ -33,55 +33,30 @@ void dynamic_controls_choice(void* argument) {
 
             DYNAMIC_CONTROL_t selected_control = get_global_var_value(DYNAMIC_CONTROL);
 
-            if (get_global_var_value(SELECTED_MODE).traction_control == 1
-                && get_global_var_value(SELECTED_MODE).dif_elt == 0) {
-                if (selected_control == LONGITUDINAL) {
-                    selected_control = NO_CONTROL;
+            switch (get_global_var_value(SELECTED_MODE).traction_control) {
+
+                case 1:
+                    ++selected_control;
+
+                    if (selected_control > 1) {
+                        selected_control = 0;
+                    }
                     set_global_var_value(DYNAMIC_CONTROL, selected_control);
                     break;
-                }
-                if (selected_control == NO_CONTROL) {
-                    selected_control = LONGITUDINAL;
-                    set_global_var_value(DYNAMIC_CONTROL, selected_control);
-                    break;
-                }
             }
-            if (get_global_var_value(SELECTED_MODE).dif_elt == 1
-                && get_global_var_value(SELECTED_MODE).traction_control == 0) {
-                if (selected_control == LATERAL) {
-                    selected_control = NO_CONTROL;
+            switch (get_global_var_value(SELECTED_MODE).dif_elt) {
+
+                case 1:
+                    ++selected_control;
+
+                    if (selected_control == 1) {
+                        selected_control = 3;
+                    }
+                    if (selected_control > 3) {
+                        selected_control = 0;
+                    }
                     set_global_var_value(DYNAMIC_CONTROL, selected_control);
                     break;
-                }
-                if (selected_control == NO_CONTROL) {
-                    selected_control = LATERAL;
-                    set_global_var_value(DYNAMIC_CONTROL, selected_control);
-                    break;
-                }
-            }
-            if (get_global_var_value(SELECTED_MODE).dif_elt == 1
-                && get_global_var_value(SELECTED_MODE).traction_control == 1) {
-                if (selected_control == LONGITUDINAL) {
-                    selected_control = NO_CONTROL;
-                    set_global_var_value(DYNAMIC_CONTROL, selected_control);
-                    break;
-                }
-                if (selected_control == NO_CONTROL) {
-                    selected_control = LATERAL;
-                    set_global_var_value(DYNAMIC_CONTROL, selected_control);
-                    break;
-                }
-                if (selected_control == LATERAL) {
-                    selected_control = LONGITUDINAL;
-                    set_global_var_value(DYNAMIC_CONTROL, selected_control);
-                    break;
-                }
-            }
-            if (get_global_var_value(SELECTED_MODE).dif_elt == 0
-                && get_global_var_value(SELECTED_MODE).traction_control == 0) {
-                selected_control = NO_CONTROL;
-                set_global_var_value(DYNAMIC_CONTROL, selected_control);
-                break;
             }
         }
     }

@@ -108,7 +108,7 @@ bool is_there_APPS_error() {       // Regulamento: T.4.2 (2021)
 }
 
 bool is_there_BSE_error() {
-    bool is_BSE_error_active = get_individual_flag(ECU_control_event_id, BSE_ERROR_FLAG);
+    bool is_BSE_error_active = get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
     if (is_BSE_error_active) {
         // Regulamento: EV.5.7.2 (2021)
         return (throttle_percent >= APPS_05_PERCENT);

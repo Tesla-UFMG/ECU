@@ -7,11 +7,11 @@
 
 #include "dynamic_controls/lateral_control.h"
 
-#include "DynamicControls/constants_control.h"
+#include "CAN/general_can_data_manager.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
+#include "dynamic_controls/constants_control.h"
 #include "math.h"
-#include "sensors/wheel_speed.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
 #include "util/global_variables.h"
@@ -24,11 +24,8 @@ void init_lateral_control() {
 }
 
 lateral_result_t lateral_control() {
-    WHEEL_SPEEDS_t wheel_speeds     = get_global_var_value(WHEEL_SPEEDS);
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
-    GYRO_YAW_t gyro_yaw             = get_global_var_value(GYRO_YAW);
-    // TODO(renanmoreira): receber GYRO_YAW em algum lugar
 
     double cg_speed;
     double gyro_adjusted;    // entre -1.5 e 1.5
@@ -41,9 +38,10 @@ lateral_result_t lateral_control() {
     double calc_gyro(uint16_t gyro_yaw);
     float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
 
+    int16_t gyro_yaw = (int16_t)general_get_value(gyroscope_y);
+
     // velocidade em m/s
-    cg_speed =
-        avg(wheel_speeds.speed[FRONT_RIGHT], wheel_speeds.speed[FRONT_LEFT]) / (10 * 3.6);
+    cg_speed = ((double)get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);
     // steering
     steering_adjusted = calc_steering(steering_wheel, internal_wheel);
     // yaw rate

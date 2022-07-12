@@ -45,7 +45,7 @@ void set_inverter_communication_error() {
     // alert the main_task that the error is present
     issue_error(INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
     // reset the flag that indicates if the inverter is ready
-    osEventFlagsClear(ECU_control_event_id, INVERTER_READY);
+    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
     // stop the timer that sets the flag
     osTimerStop(tim_inverter_readyHandle);
 }
@@ -53,7 +53,7 @@ void set_inverter_communication_error() {
 void precharge_monitor() {
     // start the timer only when the flag is reseted and the timer is not alredy
     // running to avoid restarting the timer
-    if (!get_individual_flag(ECU_control_event_id, INVERTER_READY)) {
+    if (!get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY)) {
         if (!osTimerIsRunning(tim_inverter_readyHandle)) {
             // timer to set a flag to indicate when the inverter is ready after the
             // precharge period
@@ -71,5 +71,5 @@ void inverter_BUS_OFF_error_callback(void* argument) {
 // the flag wil be setted after the precharge time has passed
 void inverter_ready_callback(void* argument) {
     UNUSED(argument);
-    osEventFlagsSet(ECU_control_event_id, INVERTER_READY);
+    osEventFlagsSet(e_ECU_control_flagsHandle, INVERTER_READY);
 }

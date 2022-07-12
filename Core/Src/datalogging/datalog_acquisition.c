@@ -27,10 +27,10 @@ void datalog_acquisition() {
         // divisao da flag de 32 bits em duas mensagens de 16bits, para isso o valor da
         // flag eh passado e shiftado para a direita 16x, apos ser shiftado o que
         // permaneceu nos 16 bits mais significativos eh ignorado a partir da operacao and
-        flag_ecu_1 = (osEventFlagsGet(ECU_control_event_id) >> 16);
+        flag_ecu_1 = (osEventFlagsGet(e_ECU_control_flagsHandle) >> 16);
         flag_ecu_1 = flag_ecu_1 & 0xffff;
         // o mesmo ocorre na segunda parte da msg porem sem o shift.
-        flag_ecu_2 = (osEventFlagsGet(ECU_control_event_id) & 0xffff);
+        flag_ecu_2 = (osEventFlagsGet(e_ECU_control_flagsHandle) & 0xffff);
 
         log_data(ID_MODE, modo_dl.mode);
         log_data(ID_TORQUE_GAIN, modo_dl.torq_gain);

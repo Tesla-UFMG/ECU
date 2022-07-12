@@ -17,7 +17,6 @@
 
 // Variable name, Message Id, Message word
 #define CAN_LIST                                                                         \
-    CAN_LIST_DATA(RESERVADO, 0, 0)                                                       \
     CAN_LIST_DATA(ID_ECU_TIMER, 101, 0)                                                  \
     CAN_LIST_DATA(ID_STEERING_WHEEL, 101, 1)                                             \
     CAN_LIST_DATA(ID_THROTTLE, 101, 2)                                                   \
@@ -85,20 +84,21 @@ typedef struct {
     uint8_t pos;
 } CAN_ID_t;
 
+typedef struct {
+    uint16_t extern_ID;
+    int8_t pos[4];
+} datalog_send_t;
+
+#define QUANT_RESERVED_ID 50
+
 // INVERTER
 #define ID_RIGHT_INVERTER 0x301
 #define ID_LEFT_INVERTER  0x300
 #define ID_COMM_FLAG      0x302 // flag de comunicacao ecu-inv ok
 
-// TODO(renanmoreira): IMPLEMENT X-MACROS FOR CAN_ID'S
-#define ECU_CAN_INITIAL_ID        100
-#define ECU_CAN_FINAL_ID          149
-#define ECU_CAN_LAST_POPULATED_ID 113
-#define ECU_CAN_FIRST_DEBUG_ID    351
-#define ECU_CAN_LAST_DEBUG_ID     351
-
-uint16_t convert_id_pos_to_index(uint16_t id, uint16_t pos);
-CAN_ID_t get_CAN_ID_from_internal(uint16_t internal);
-uint16_t get_internal_from_id_pos(uint16_t id, uint16_t pos);
+void sort_struct();
+int get_quant_id();
+void initialize_CAN_IDs_struct();
+void initialize_map_CAN_IDs();
 
 #endif /* INC_CAN_CAN_IDS_H_ */

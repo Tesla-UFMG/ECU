@@ -15,12 +15,16 @@ volatile uint16_t datalog_data_holder[CAN_ID_QUAN];
 
 extern osMessageQueueId_t q_datalog_messageHandle;
 
+extern datalog_send_t datalog_send_struct[QUANT_RESERVED_ID + 1];
+
 void datalogger(void* argument) {
     UNUSED(argument);
 
     datalog_message_t message;
 
     uint16_t vet_tx[4];
+
+    uint16_t intern_id;
 
     for (;;) {
 
@@ -29,55 +33,27 @@ void datalogger(void* argument) {
         brkpt();
 #endif
 
-        // Chamada da estrutura
-        /*
-        estrutura
-        {
-            id_externo, vetor[id_interno(enum)]
-                        100, vetor= 0,1,2,-1
-                        101, vetor=3,-1,4,5
-        }
-        */
-        // enquanto conseguir extrair item da fila de mensagens
+        // as long as you can extract item from the message queue
         while (osMessageQueueGet(q_datalog_messageHandle, &message, 0, 0) == osOK) {
             datalog_data_holder[message.id] = message.data;
         }
 
-        const uint16_t WRITE_ITERATION_LIMIT = ECU_CAN_LAST_POPULATED_ID
-                                               + ECU_CAN_LAST_DEBUG_ID
-                                               - ECU_CAN_FIRST_DEBUG_ID + 1;
-
-        // Novo algoritmo a ser implementado
-        /*
-                for (i= 0; i< tamanho estrutura; ++i)
-
-                {
-                    for (pos = 0; pos < 4; ++pos)
-
-                      id_interno = estrutura.vetor[pos];
-                    if (id_interno == -1)
-                    vex_tx[pos] = 0;
-                    else
-
-                    vex_tx[pos] = datalog_data_holder[id_interno];
-                    general_can_transmit (estrutura.id, vet_tx);
-                }
-
-        */
-        for (uint16_t id = ECU_CAN_INITIAL_ID; id < WRITE_ITERATION_LIMIT; id++) {
+        // does the for using the size of the structure
+        for (uint16_t i = 1; i < get_quant_id(); i++) {
             for (uint16_t pos = 0; pos < 4; pos++) {
-                uint16_t internal_index = get_internal_from_id_pos(id, pos);
-                // caso passe por uma combinacao de id e posicao inexistente, internal
-                // sera 0. a posicao 0 e sempre vazia para preencher lacunas
-                vet_tx[pos] = datalog_data_holder[internal_index];
+                intern_id = datalog_send_struct[i].pos[pos];
+                // if internal id does not exist
+                if (intern_id == -1)
+                    vet_tx[pos] = 0;
+                else
+                    vet_tx[pos] = datalog_data_holder[intern_id];
             }
-            CAN_ID_t can_id = get_CAN_ID_from_internal(get_internal_from_id_pos(id, 0));
-            // transmite a mensagem
-            general_can_transmit(can_id.id, vet_tx);
+            // transmit data via CAN
+            general_can_transmit(datalog_send_struct[i].extern_ID, vet_tx);
         }
 
-        // quando extrair todos os itens enfileirados e enviar, espera uma certa
-        // quantidade de tempo para extrair novamente
+        // when extracting all queued items and sending, wait a certain amount of time to
+        // extract again
         osDelay(DATALOGGER_DELAY);
     }
 }

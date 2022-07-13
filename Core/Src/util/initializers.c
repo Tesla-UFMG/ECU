@@ -11,6 +11,7 @@
 #include "CAN/general_can.h"
 #include "CAN/inverter_can.h"
 #include "cmsis_os.h"
+#include "dynamic_controls/initializer_controls.h"
 #include "main.h"
 #include "stm32h7xx.h"
 #include "stm32h7xx_hal.h"
@@ -18,7 +19,6 @@
 #include "util/constants.h"
 #include "util/global_definitions.h"
 #include "util/global_variables.h"
-#include "dynamic_controls/initializer_controls.h"
 
 // inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs
 //  mantendo a prioridade maxima de ISRs
@@ -126,10 +126,10 @@ void deInit_all_peripherals() {
 
 void init_ECU() {
     /* ### - 2 - Start calibration ############################################ */
-    if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
-        {
-            ;
-        }
+    if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED)
+        != HAL_OK) {
+        ;
+    }
     HAL_TIM_Base_Start(&htim2);
     init_ADC_DMA(&hadc1);
     init_CAN();

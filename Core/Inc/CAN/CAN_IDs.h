@@ -87,7 +87,7 @@ typedef struct {
 
 typedef struct {
     uint16_t extern_ID;
-    int8_t pos[4];
+    int16_t pos[4];
 } datalog_send_t;
 
 #define QUANT_RESERVED_ID 50

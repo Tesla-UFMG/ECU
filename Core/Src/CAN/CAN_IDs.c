@@ -54,7 +54,7 @@ int get_quant_id() {
             quant++;
         }
     }
-    return quant++;
+    return quant;
 }
 
 // function that populates the datalogger sending structure

@@ -45,7 +45,7 @@ extern FDCAN_HandleTypeDef hfdcan2;
 void init_CAN() {
     initialize_inverter_CAN(&hfdcan1);
     initialize_general_CAN(&hfdcan2);
-    void initialize_CAN_IDs_struct();
+    initialize_CAN_IDs_struct();
 }
 
 void inicializa_modos() {

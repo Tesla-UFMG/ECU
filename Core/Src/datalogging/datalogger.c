@@ -24,7 +24,7 @@ void datalogger(void* argument) {
 
     uint16_t vet_tx[4];
 
-    uint16_t intern_id;
+    int16_t intern_id;
 
     for (;;) {
 
@@ -39,14 +39,15 @@ void datalogger(void* argument) {
         }
 
         // does the for using the size of the structure
-        for (uint16_t i = 1; i < get_quant_id(); i++) {
-            for (uint16_t pos = 0; pos < 4; pos++) {
+        for (int i = 1; i < get_quant_id(); i++) {
+            for (int pos = 0; pos < 4; pos++) {
                 intern_id = datalog_send_struct[i].pos[pos];
                 // if internal id does not exist
-                if (intern_id == -1)
+                if (intern_id == -1) {
                     vet_tx[pos] = 0;
-                else
+                } else {
                     vet_tx[pos] = datalog_data_holder[intern_id];
+                }
             }
             // transmit data via CAN
             general_can_transmit(datalog_send_struct[i].extern_ID, vet_tx);

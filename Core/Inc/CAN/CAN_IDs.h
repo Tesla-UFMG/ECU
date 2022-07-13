@@ -78,6 +78,7 @@ typedef enum {
         CAN_ID_QUAN
 } CAN_LIST_e;
 
+
 typedef struct {
     CAN_LIST_e var;
     uint16_t id;

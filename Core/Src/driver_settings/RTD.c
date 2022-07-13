@@ -1,5 +1,5 @@
 /*
- * RTD_handler.c
+ * RTD.c
  *
  *  Created on: Aug 15, 2021
  *      Author: Felipe Telles
@@ -31,7 +31,7 @@ void RTD(void* argument) {
         // espera receber flag q o botao de RTD foi pressionado
         osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 
-        bool is_RTD_active = get_individual_flag(ECU_control_event_id, RTD_FLAG);
+        bool is_RTD_active = get_individual_flag(e_ECU_control_flagsHandle, RTD_FLAG);
 
         if (!is_RTD_active) {
             if (can_RTD_be_enabled()) {
@@ -50,7 +50,8 @@ void exit_RTD() {
     set_global_var_value(RACE_MODE, ERRO);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
     // limpa flag de RTD
-    osEventFlagsClear(ECU_control_event_id, RTD_FLAG);
+    osEventFlagsClear(e_ECU_control_flagsHandle, RTD_FLAG);
+    osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_FLAG);
 }
 
 /*
@@ -83,14 +84,14 @@ void exit_RTD() {
  */
 bool can_RTD_be_enabled() {
     // obtem todas as flags e filtra apenas flags de erros severos, ignorando as outras
-    uint32_t error_flags = osEventFlagsGet(ECU_control_event_id);
+    uint32_t error_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
     error_flags &= ALL_SEVERE_ERROR_FLAG;
     BRAKE_STATUS_t is_brake_active       = get_global_var_value(BRAKE_STATUS);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     RACE_MODE_t race_mode                = get_global_var_value(RACE_MODE);
     // flag that indicates when the inverter precharge time has passed and the inverter is
     // ready
-    bool is_inverter_ready = get_individual_flag(ECU_control_event_id, INVERTER_READY);
+    bool is_inverter_ready = get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY);
     if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
         && is_inverter_ready) {
         return true;
@@ -100,7 +101,7 @@ bool can_RTD_be_enabled() {
 
 void set_RTD() {
     // Seta flag de RTD
-    osEventFlagsSet(ECU_control_event_id, RTD_FLAG);
+    osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
     aciona_sirene();
 }

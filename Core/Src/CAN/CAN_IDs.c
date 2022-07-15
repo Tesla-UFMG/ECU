@@ -22,7 +22,6 @@ void initialize_map_CAN_IDs() {
     CAN_ID_map[var_name].pos = msg_wrd;
     CAN_LIST
 #undef CAN_LIST_DATA
-    CAN_ID_map[CAN_ID_QUAN].id = 0; // to avoid warning
 }
 
 // Mapped structure ordering function
@@ -67,14 +66,20 @@ void initialize_CAN_IDs_struct() {
             datalog_send_struct[i].pos[j] = -1;
         }
     }
+
     // populate the struct with the external id and intern id in the array
-    int pos_struct = 0;
-    for (int pos_ord = 0; pos_ord < CAN_ID_QUAN; pos_ord++) {
-        datalog_send_struct[pos_struct].pos[CAN_ID_map[pos_ord].pos] =
-            CAN_ID_map[pos_ord].var;
-        if (CAN_ID_map[pos_ord].id != CAN_ID_map[pos_ord + 1].id) {
-            datalog_send_struct[pos_struct].extern_ID = CAN_ID_map[pos_ord].id;
-            pos_struct++;
+    int i = 0;
+    int j = 0;
+    // puts the internal id "CAN_ID_map[j].var" in the vector using its corresponding
+    // position "CAN_ID_map[j].pos"
+    datalog_send_struct[i].pos[CAN_ID_map[j].pos] = CAN_ID_map[j].var;
+    datalog_send_struct[i].extern_ID              = CAN_ID_map[j].id;
+    for (j = 1; j < CAN_ID_QUAN; j++) {
+        // do the same for the next positions
+        if (CAN_ID_map[j].id != CAN_ID_map[j - 1].id) {
+            i++;
+            datalog_send_struct[i].extern_ID = CAN_ID_map[j].id;
         }
+        datalog_send_struct[i].pos[CAN_ID_map[j].pos] = CAN_ID_map[j].var;
     }
 }

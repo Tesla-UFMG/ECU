@@ -18,7 +18,6 @@
 #include "util/util.h"
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
-extern osMutexId_t m_state_parameter_mutexHandle;
 
 void torque_manager(void* argument) {
     UNUSED(argument);
@@ -37,7 +36,7 @@ void torque_manager(void* argument) {
         void rampa_torque(uint32_t * ref_torque, const double* ref_torque_decrease);
         void send_ref_torque_message(const uint32_t* ref_torque);
 
-        bool is_DYNAMIC_CONTROL_active =
+        uint8_t is_DYNAMIC_CONTROL_active =
             get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
         // todo: adicionar novos "if's" quando for implementada a integração dos controles
@@ -45,7 +44,7 @@ void torque_manager(void* argument) {
         if (get_global_var_value(SELECTED_MODE).dif_elt == 1
             && get_global_var_value(SELECTED_MODE).traction_control == 0) {
             switch (is_DYNAMIC_CONTROL_active) {
-                case true:
+                case 1:
                     // TODO(giovanni): fazer integracao dos dois controles
                     tick += LATERAL_DELAY;
                     lateral_result_t result_lateral = lateral_control();
@@ -60,7 +59,7 @@ void torque_manager(void* argument) {
 
                     break;
 
-                case false:
+                case 0:
                     // rampa de torque
                     rampa_torque(ref_torque, NULL);
 
@@ -75,7 +74,7 @@ void torque_manager(void* argument) {
         if (get_global_var_value(SELECTED_MODE).traction_control == 1
             && get_global_var_value(SELECTED_MODE).dif_elt == 0) {
             switch (is_DYNAMIC_CONTROL_active) {
-                case true:
+                case 1:
                     tick += LONGITUDINAL_DELAY;
                     longitudinal_control_result_t result = longitudinal_control();
                     // TODO(giovanni): remover rampa com testes de bancada
@@ -86,7 +85,7 @@ void torque_manager(void* argument) {
                     osDelayUntil(tick);
 
                     break;
-                case false:
+                case 0:
                     // rampa de torque
                     rampa_torque(ref_torque, NULL);
 

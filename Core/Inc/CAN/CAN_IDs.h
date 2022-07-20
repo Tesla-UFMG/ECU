@@ -12,11 +12,9 @@
 
 //----------
 // DATALOGGER
-// LEGENDA:  LABEL               INTERNAL_ID
 // 0 E RESERVADO PARA LACUNAS NO PACOTE
-
 // Variable name, Message Id, Message word
-#define CAN_LIST                                                                         \
+#define VARIABLES_GENERAL_CAN_TX                                                         \
     CAN_LIST_DATA(ID_SPEED_AVG, 101, 0)                                                  \
     CAN_LIST_DATA(ID_STEERING_WHEEL, 101, 1)                                             \
     CAN_LIST_DATA(ID_THROTTLE, 101, 2)                                                   \
@@ -69,13 +67,13 @@
 
 typedef enum {
 #define CAN_LIST_DATA(var_name, msg_id, msg_wrd) var_name,
-    CAN_LIST
+    VARIABLES_GENERAL_CAN_TX
 #undef CAN_LIST_DATA
         CAN_ID_QUAN
-} CAN_LIST_e;
+} CAN_list_e;
 
 typedef struct {
-    CAN_LIST_e var;
+    CAN_list_e var;
     uint16_t id;
     uint8_t pos;
 } CAN_ID_t;

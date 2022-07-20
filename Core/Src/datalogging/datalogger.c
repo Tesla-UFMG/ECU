@@ -15,7 +15,7 @@ volatile uint16_t datalog_data_holder[CAN_ID_QUAN];
 
 extern osMessageQueueId_t q_datalog_messageHandle;
 
-extern datalog_send_t datalog_send_struct[QUANT_RESERVED_ID + 1];
+extern datalog_send_t* datalog_send_struct;
 
 void datalogger(void* argument) {
     UNUSED(argument);
@@ -24,7 +24,7 @@ void datalogger(void* argument) {
 
     uint16_t vet_tx[4];
 
-    int16_t intern_id;
+    int16_t internal_id;
 
     for (;;) {
 
@@ -39,14 +39,14 @@ void datalogger(void* argument) {
         }
 
         // does the for using the size of the structure
-        for (int i = 1; i < get_quant_id(); i++) {
-            for (int pos = 0; pos < 4; pos++) {
-                intern_id = datalog_send_struct[i].pos[pos];
+        for (uint16_t i = 1; i < get_quant_id(); i++) {
+            for (uint16_t pos = 0; pos < 4; pos++) {
+                internal_id = datalog_send_struct[i].pos[pos];
                 // if internal id does not exist
-                if (intern_id == -1) {
+                if (internal_id == -1) {
                     vet_tx[pos] = 0;
                 } else {
-                    vet_tx[pos] = datalog_data_holder[intern_id];
+                    vet_tx[pos] = datalog_data_holder[internal_id];
                 }
             }
             // transmit data via CAN

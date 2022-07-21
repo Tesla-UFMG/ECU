@@ -16,6 +16,8 @@
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
 #include "util/util.h"
+#include "CAN/CAN_IDs.h"
+#include "datalogging/datalog_handler.h"
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 
@@ -23,6 +25,7 @@ void torque_manager(void* argument) {
     UNUSED(argument);
 
     uint32_t ref_torque[2] = {0, 0};
+    uint32_t ref_torque_teste[2] = {0, 0};
 
     for (;;) {
         // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
@@ -35,11 +38,22 @@ void torque_manager(void* argument) {
 
         void rampa_torque(uint32_t * ref_torque, const double* ref_torque_decrease);
         void send_ref_torque_message(const uint32_t* ref_torque);
-
+        void log_data_ref_torque_teste(const uint32_t* ref_torque_teste);
         uint8_t is_DYNAMIC_CONTROL_active =
             get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
         // todo: adicionar novos "if's" quando for implementada a integração dos controles
+
+
+        // rampa de torque
+                            rampa_torque(ref_torque, NULL);
+
+                            // enviar referencia de torque
+                            send_ref_torque_message(ref_torque);
+
+                            osDelay(RAMPA_DELAY);
+
+
 
         if (get_global_var_value(SELECTED_MODE).dif_elt == 1
             && get_global_var_value(SELECTED_MODE).traction_control == 0) {
@@ -50,10 +64,9 @@ void torque_manager(void* argument) {
                     lateral_result_t result_lateral = lateral_control();
                     // TODO(giovanni): utilizar rampa_torque enquanto controle
                     // longitudinal nao estiver definido
-                    rampa_torque(ref_torque, result_lateral.torque_decrease);
+                    rampa_torque(ref_torque_teste, result_lateral.torque_decrease);
 
-                    // enviar referencia de torque
-                    send_ref_torque_message(ref_torque);
+                    log_data_ref_torque_teste(ref_torque_teste);
 
                     osDelayUntil(tick);
 
@@ -61,10 +74,9 @@ void torque_manager(void* argument) {
 
                 case 0:
                     // rampa de torque
-                    rampa_torque(ref_torque, NULL);
+                    rampa_torque(ref_torque_teste, NULL);
 
-                    // enviar referencia de torque
-                    send_ref_torque_message(ref_torque);
+                    log_data_ref_torque_teste(ref_torque_teste);
 
                     osDelay(RAMPA_DELAY);
 
@@ -78,34 +90,23 @@ void torque_manager(void* argument) {
                     tick += LONGITUDINAL_DELAY;
                     longitudinal_control_result_t result = longitudinal_control();
                     // TODO(giovanni): remover rampa com testes de bancada
-                    rampa_torque(ref_torque, result.torque_decrease);
-                    // sends the torque command to the inverter
-                    send_ref_torque_message(ref_torque);
+                    rampa_torque(ref_torque_teste, result.torque_decrease);
+
+                    log_data_ref_torque_teste(ref_torque_teste);
 
                     osDelayUntil(tick);
 
                     break;
                 case 0:
                     // rampa de torque
-                    rampa_torque(ref_torque, NULL);
+                    rampa_torque(ref_torque_teste, NULL);
 
-                    // enviar referencia de torque
-                    send_ref_torque_message(ref_torque);
+                    log_data_ref_torque_teste(ref_torque_teste);
 
                     osDelay(RAMPA_DELAY);
 
                     break;
             }
-        } else {
-            // rampa de torque
-            rampa_torque(ref_torque, NULL);
-
-            // enviar referencia de torque
-            send_ref_torque_message(ref_torque);
-
-            osDelay(RAMPA_DELAY);
-
-            break;
         }
     }
 }
@@ -144,3 +145,15 @@ void send_ref_torque_message(const uint32_t* ref_torque) {
 
     osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
 }
+// Envia para a datalogger o torque solicitado ao utilizar os controles dinâmicos
+void log_data_ref_torque_teste(const uint32_t* ref_torque_teste){
+
+	 ref_torque_teste_t ref_torque_teste_message;
+
+	 ref_torque_teste_message.ref_torque_teste[R_MOTOR] = ref_torque_teste[R_MOTOR];
+	 ref_torque_teste_message.ref_torque_teste[L_MOTOR] = ref_torque_teste[L_MOTOR];
+
+	 log_data(ID_REF_TORQUE_TESTE_R_MOTOR, ref_torque_teste_message.ref_torque_teste[R_MOTOR]);
+	 log_data(ID_REF_TORQUE_TESTE_L_MOTOR, ref_torque_teste_message.ref_torque_teste[L_MOTOR]);
+}
+

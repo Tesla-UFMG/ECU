@@ -73,6 +73,8 @@
 #define ID_FAILURE_R_MOTOR      51
 #define ID_ALARM_L_MOTOR        52
 #define ID_ALARM_R_MOTOR        53
+#define ID_REF_TORQUE_TESTE_R_MOTOR   54
+#define ID_REF_TORQUE_TESTE_L_MOTOR   55
 
 #define CAN_ID_QUAN 54
 

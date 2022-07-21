@@ -64,6 +64,11 @@ typedef struct {
     bool disable;
 } ref_torque_t;
 
+typedef struct {
+	uint16_t ref_torque_teste[2];
+	bool disable;
+}ref_torque_teste_t;
+
 typedef enum estado_veiculo {
     S_DISABLE_E    = 0,
     S_BRAKE_E      = 1,

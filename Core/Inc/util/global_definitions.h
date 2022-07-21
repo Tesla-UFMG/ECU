@@ -104,14 +104,12 @@ typedef enum {
 
 // General Flags
 #define RTD_FLAG                                 (1 << 1)
-#define RTD_BTN_PRESSED_FLAG                     (1 << 2)
-#define MODE_BTN_PRESSED_FLAG                    (1 << 3)
-#define GENERAL_BUS_OFF_ERROR_FLAG               (1 << 4)
-#define INVERTER_CAN_ACTIVE                      (1 << 5)
-#define INVERTER_READY                           (1 << 6)
-#define ODOMETER_SAVE_FLAG                       (1 << 7)
-#define DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_FLAG (1 << 8)
-#define DYNAMIC_CONTROL_FLAG                     (1 << 9)
+#define GENERAL_BUS_OFF_ERROR_FLAG               (1 << 2)
+#define INVERTER_CAN_ACTIVE                      (1 << 3)
+#define INVERTER_READY                           (1 << 4)
+#define ODOMETER_SAVE_FLAG                       (1 << 5)
+#define DYNAMIC_CONTROL_FLAG                     (1 << 6)
+
 
 // Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG           (1 << 10)
@@ -127,6 +125,11 @@ typedef enum {
 #define INVERTER_COMM_ERROR_FLAG         (1 << 20)
 #define SU_F_ERROR_FLAG                  (1 << 21)
 #define INVERTER_BUS_OFF_ERROR_FLAG      (1 << 22)
+
+// Pressed Buttons Flags
+#define RTD_BTN_PRESSED_FLAG                     (1 << 23)
+#define MODE_BTN_PRESSED_FLAG                    (1 << 24)
+#define DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_FLAG (1 << 25)
 
 #define ALL_WARN_FLAG        (REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG)
 #define ALL_MINOR_ERROR_FLAG (APPS_ERROR_FLAG | BSE_ERROR_FLAG)

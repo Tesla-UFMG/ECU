@@ -91,8 +91,12 @@ typedef struct {
 #define ID_COMM_FLAG      0x302 // flag de comunicacao ecu-inv ok
 
 void sort_struct();
-int get_quant_id();
+uint16_t get_amount_ext_id();
 void initialize_CAN_IDs_struct();
 void initialize_map_CAN_IDs();
+void fill_spaces_with_minus_one();
+void populate_datalog_send_struct();
+int16_t get_internal_id_from_pos_and_word(uint16_t pos_struct, uint16_t pos_vector);
+uint16_t get_external_id_from_struct_pos(uint16_t struct_pos);
 
 #endif /* INC_CAN_CAN_IDS_H_ */

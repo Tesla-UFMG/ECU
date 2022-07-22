@@ -15,7 +15,6 @@ volatile uint16_t datalog_data_holder[CAN_ID_QUAN];
 
 extern osMessageQueueId_t q_datalog_messageHandle;
 
-extern datalog_send_t* datalog_send_struct;
 
 void datalogger(void* argument) {
     UNUSED(argument);
@@ -25,6 +24,8 @@ void datalogger(void* argument) {
     uint16_t vet_tx[4];
 
     int16_t internal_id;
+
+    uint16_t external_id;
 
     for (;;) {
 
@@ -39,18 +40,19 @@ void datalogger(void* argument) {
         }
 
         // does the for using the size of the structure
-        for (uint16_t i = 1; i < get_quant_id(); i++) {
-            for (uint16_t pos = 0; pos < 4; pos++) {
-                internal_id = datalog_send_struct[i].pos[pos];
+        for (uint16_t struct_pos = 1; struct_pos < get_amount_ext_id(); struct_pos++) {
+            for (uint16_t word = 0; word < 4; word++) {
+                internal_id = get_internal_id_from_pos_and_word(struct_pos, word);
                 // if internal id does not exist
                 if (internal_id == -1) {
-                    vet_tx[pos] = 0;
+                    vet_tx[word] = 0;
                 } else {
-                    vet_tx[pos] = datalog_data_holder[internal_id];
+                    vet_tx[word] = datalog_data_holder[internal_id];
                 }
             }
             // transmit data via CAN
-            general_can_transmit(datalog_send_struct[i].extern_ID, vet_tx);
+            external_id = get_external_id_from_struct_pos(struct_pos);
+            general_can_transmit(external_id, vet_tx);
         }
 
         // when extracting all queued items and sending, wait a certain amount of time to

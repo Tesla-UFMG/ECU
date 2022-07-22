@@ -12,7 +12,9 @@ static CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
 
 static CAN_ID_t CAN_ID_map_aux;
 
-datalog_send_t datalog_send_struct[QUANT_RESERVED_ID];
+static datalog_send_t datalog_send_struct[QUANT_RESERVED_ID];
+
+static uint16_t quant_of_ext_id;
 
 void initialize_map_CAN_IDs() {
     // does the mapping of the ids in a structure that will be sorted
@@ -26,8 +28,8 @@ void initialize_map_CAN_IDs() {
 
 // Mapped structure ordering function
 void sort_struct() {
-    for (uint16_t i = 0; i < CAN_ID_QUAN; i++) {
-        for (uint16_t j = i + 1; j < CAN_ID_QUAN; j++) {
+    for (uint16_t i = 0; i < (uint16_t)CAN_ID_QUAN; i++) {
+        for (uint16_t j = i + 1; j < (uint16_t)CAN_ID_QUAN; j++) {
             // Sort by ID
             if (CAN_ID_map[j].id < CAN_ID_map[i].id) {
                 CAN_ID_map_aux = CAN_ID_map[i];
@@ -45,36 +47,36 @@ void sort_struct() {
     }
 }
 
-// function that gets the amount of external ids being used
-int get_quant_id() {
-    uint16_t quant = 1;
-    for (uint16_t i = 0; i < CAN_ID_QUAN - 1; i++) {
-        if (CAN_ID_map[i].id != CAN_ID_map[i + 1].id) {
-            quant++;
-        }
-    }
-    return quant;
-}
-
-// function that populates the datalogger sending structure
-void initialize_CAN_IDs_struct() {
-    initialize_map_CAN_IDs();
-    sort_struct();
-    // fills all spaces in the array of internal IDs with -1
-    for (uint16_t i = 0; i < get_quant_id(); i++) {
+void fill_spaces_with_minus_one() {
+    for (uint16_t i = 0; i < get_amount_ext_id(); i++) {
         for (uint16_t j = 0; j < 4; j++) {
             datalog_send_struct[i].pos[j] = -1;
         }
     }
+}
 
-    // populate the struct with the external id and intern id in the array
+void initialize_CAN_IDs_struct() {
+    initialize_map_CAN_IDs();
+    sort_struct();
+    // gets the amount of external id
+    quant_of_ext_id = 1;
+    for (uint16_t i = 0; i < (uint16_t)CAN_ID_QUAN - 1; i++) {
+        if (CAN_ID_map[i].id != CAN_ID_map[i + 1].id) {
+            quant_of_ext_id++;
+        }
+    }
+    fill_spaces_with_minus_one();
+    populate_datalog_send_struct();
+}
+
+void populate_datalog_send_struct() {
     uint16_t i = 0;
     uint16_t j = 0;
     // puts the internal id "CAN_ID_map[j].var" in the vector using its corresponding
     // position "CAN_ID_map[j].pos"
     datalog_send_struct[i].pos[CAN_ID_map[j].pos] = CAN_ID_map[j].var;
     datalog_send_struct[i].extern_ID              = CAN_ID_map[j].id;
-    for (j = 1; j < CAN_ID_QUAN; j++) {
+    for (j = 1; j < (uint16_t)CAN_ID_QUAN; j++) {
         // do the same for the next positions
         if (CAN_ID_map[j].id != CAN_ID_map[j - 1].id) {
             i++;
@@ -82,4 +84,16 @@ void initialize_CAN_IDs_struct() {
         }
         datalog_send_struct[i].pos[CAN_ID_map[j].pos] = CAN_ID_map[j].var;
     }
+}
+
+int16_t get_internal_id_from_pos_and_word(uint16_t pos_struct, uint16_t pos_word) {
+    return datalog_send_struct[pos_struct].pos[pos_word];
+}
+
+uint16_t get_external_id_from_struct_pos(uint16_t struct_pos) {
+    return datalog_send_struct[struct_pos].extern_ID;
+}
+
+uint16_t get_amount_ext_id() {
+    return quant_of_ext_id;
 }

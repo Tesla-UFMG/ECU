@@ -36,65 +36,42 @@ void torque_manager(void* argument) {
         void rampa_torque(uint32_t * ref_torque, const double* ref_torque_decrease);
         void send_ref_torque_message(const uint32_t* ref_torque);
 
-        uint8_t is_DYNAMIC_CONTROL_active =
+        bool is_DYNAMIC_CONTROL_active =
             get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
         // todo: adicionar novos "if's" quando for implementada a integração dos controles
 
         if (get_global_var_value(SELECTED_MODE).dif_elt == 1
             && get_global_var_value(SELECTED_MODE).traction_control == 0) {
-            switch (is_DYNAMIC_CONTROL_active) {
-                case 1:
-                    // TODO(giovanni): fazer integracao dos dois controles
-                    tick += LATERAL_DELAY;
-                    lateral_result_t result_lateral = lateral_control();
-                    // TODO(giovanni): utilizar rampa_torque enquanto controle
-                    // longitudinal nao estiver definido
-                    rampa_torque(ref_torque, result_lateral.torque_decrease);
+            if (is_DYNAMIC_CONTROL_active == true) {
+                // TODO(giovanni): fazer integracao dos dois controles
+                tick += LATERAL_DELAY;
+                lateral_result_t result_lateral = lateral_control();
+                // TODO(giovanni): utilizar rampa_torque enquanto controle
+                // longitudinal nao estiver definido
+                rampa_torque(ref_torque, result_lateral.torque_decrease);
 
-                    // enviar referencia de torque
-                    send_ref_torque_message(ref_torque);
+                // enviar referencia de torque
+                send_ref_torque_message(ref_torque);
 
-                    osDelayUntil(tick);
+                osDelayUntil(tick);
 
-                    break;
-
-                case 0:
-                    // rampa de torque
-                    rampa_torque(ref_torque, NULL);
-
-                    // enviar referencia de torque
-                    send_ref_torque_message(ref_torque);
-
-                    osDelay(RAMPA_DELAY);
-
-                    break;
+                break;
             }
         }
         if (get_global_var_value(SELECTED_MODE).traction_control == 1
             && get_global_var_value(SELECTED_MODE).dif_elt == 0) {
-            switch (is_DYNAMIC_CONTROL_active) {
-                case 1:
-                    tick += LONGITUDINAL_DELAY;
-                    longitudinal_control_result_t result = longitudinal_control();
-                    // TODO(giovanni): remover rampa com testes de bancada
-                    rampa_torque(ref_torque, result.torque_decrease);
-                    // sends the torque command to the inverter
-                    send_ref_torque_message(ref_torque);
+            if (is_DYNAMIC_CONTROL_active == true) {
+                tick += LONGITUDINAL_DELAY;
+                longitudinal_control_result_t result = longitudinal_control();
+                // TODO(giovanni): remover rampa com testes de bancada
+                rampa_torque(ref_torque, result.torque_decrease);
+                // sends the torque command to the inverter
+                send_ref_torque_message(ref_torque);
 
-                    osDelayUntil(tick);
+                osDelayUntil(tick);
 
-                    break;
-                case 0:
-                    // rampa de torque
-                    rampa_torque(ref_torque, NULL);
-
-                    // enviar referencia de torque
-                    send_ref_torque_message(ref_torque);
-
-                    osDelay(RAMPA_DELAY);
-
-                    break;
+                break;
             }
         } else {
             // rampa de torque

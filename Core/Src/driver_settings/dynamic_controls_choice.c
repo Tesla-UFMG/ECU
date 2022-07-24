@@ -28,18 +28,16 @@ void dynamic_controls_choice(void* argument) {
         osThreadFlagsWait(DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_FLAG, osFlagsWaitAny,
                           osWaitForever);
 
-        bool is_RTD_active = get_individual_flag(e_ECU_control_flagsHandle, RTD_FLAG);
+        if (!is_RTD_active()) {
+            continue;
+        }
+        bool is_DYNAMIC_CONTROL_active =
+            get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
-        if (!is_RTD_active) {
-
-        	bool is_DYNAMIC_CONTROL_active = get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
-
-        	if(!is_DYNAMIC_CONTROL_active){
-        		osEventFlagsSet(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
-        	}
-        	if(is_DYNAMIC_CONTROL_active == true){
-        		osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
-        	}
+        if (!is_DYNAMIC_CONTROL_active) {
+            osEventFlagsSet(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
+        } else {
+            osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
         }
     }
 }

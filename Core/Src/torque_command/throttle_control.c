@@ -25,13 +25,12 @@ void throttle_control(void* argument) {
         // verifica a se a flag de RTD esta ativada e se as flags de erro de BSE e APPS
         // estao desativadas, caso sim, atualiza o valor de throttle_percent para o da
         // mensagem, caso nao atualiza para 0
-        bool is_RTD_active = get_individual_flag(e_ECU_control_flagsHandle, RTD_FLAG);
         bool is_apps_error_present =
             get_individual_flag(e_ECU_control_flagsHandle, APPS_ERROR_FLAG);
         bool is_bse_error_present =
             get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
 
-        if (is_RTD_active && !is_apps_error_present && !is_bse_error_present) {
+        if (is_RTD_active() && !is_apps_error_present && !is_bse_error_present) {
             set_global_var_value(THROTTLE_PERCENT, message);
         } else {
             set_global_var_value(THROTTLE_PERCENT, 0);

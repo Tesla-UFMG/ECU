@@ -29,7 +29,7 @@ void RTD(void* argument) {
     for (;;) {
 
         // espera receber flag q o botao de RTD foi pressionado
-        osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
+        osThreadFlagsWait(RTD_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
 
         if (!is_RTD_active()) {
@@ -49,8 +49,8 @@ void exit_RTD() {
     set_global_var_value(RACE_MODE, ERRO);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
     // limpa flag de RTD
-    osEventFlagsClear(e_ECU_control_flagsHandle, RTD_FLAG);
-    osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_FLAG);
+    osEventFlagsClear(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
+    osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
 }
 
 /*
@@ -90,7 +90,7 @@ bool can_RTD_be_enabled() {
     RACE_MODE_t race_mode                = get_global_var_value(RACE_MODE);
     // flag that indicates when the inverter precharge time has passed and the inverter is
     // ready
-    bool is_inverter_ready = get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY);
+    bool is_inverter_ready = get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG);
     if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
         && is_inverter_ready) {
         return true;
@@ -100,7 +100,7 @@ bool can_RTD_be_enabled() {
 
 void set_RTD() {
     // Seta flag de RTD
-    osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
+    osEventFlagsSet(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
     aciona_sirene();
 }

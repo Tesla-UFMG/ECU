@@ -8,7 +8,6 @@
 #include "torque_command/torque_manager.h"
 
 #include "cmsis_os.h"
-#include "driver_settings/dynamic_controls_choice.h"
 #include "dynamic_controls/lateral_control.h"
 #include "dynamic_controls/longitudinal_control.h"
 #include "stdint.h"
@@ -37,13 +36,13 @@ void torque_manager(void* argument) {
         void send_ref_torque_message(const uint32_t* ref_torque);
         void select_dynamic_control(bool is_DYNAMIC_CONTROL_active);
 
-        bool is_DYNAMIC_CONTROL_active =
-            get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
+        const bool is_DYNAMIC_CONTROL_active =
+            get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_THREAD_FLAG);
 
         select_dynamic_control(is_DYNAMIC_CONTROL_active);
 
-        // todo: adicionar novos "case's" quando for implementada a integração dos
-        // controles
+        // todo (João Pedro): add new "case's" when the integration of controls is
+        // implemented
 
         switch (g_control_type) {
             case LATERAL: // TODO(giovanni): fazer integracao dos dois controles
@@ -121,6 +120,7 @@ void send_ref_torque_message(const uint32_t* ref_torque) {
 }
 
 void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
+    // todo (João Pedro): add new "if's" when the integration of controls is implemented
     if (is_DYNAMIC_CONTROL_active) {
         if (get_global_var_value(SELECTED_MODE).dif_elt == 1
             && get_global_var_value(SELECTED_MODE).traction_control == 0) {

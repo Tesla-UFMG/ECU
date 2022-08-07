@@ -22,24 +22,24 @@
 // Explicacoes e mais detalhes disponiveis na planilha:
 // https://docs.google.com/spreadsheets/d/1oN8rV0IG5MuoPPMHFQrklaCpWQLI31Kn/edit?usp=sharing&ouid=111087741893616112745&rtpof=true&sd=true
 
-#define APPS_MATRIX_LENGTH 8
+#define APPS_MATRIX_LENGTH 10
 // APPS 1
 #define APPS1_REF                                                                        \
-    { 2200, 2284, 2502, 2587, 2824, 2955, 3186, 3424 }
+    { 2200, 2270, 2430, 2570, 2700, 2900, 3110, 3200, 3460, 3520 }
 #define APPS1_FIX_MUL                                                                    \
-    { 0, 1.1070, 0.6550, 1.68, 0.6025, 1.0901, 0.6182, 0.6 }
+    { 0, 1.0526, 0.625, 0.7143, 0.7692, 0.5, 0.4762, 1.1111, 0.3846, 1.6667 }
 #define APPS1_FIX_ADD                                                                    \
-    { 0, -2385.5, -1353.3, -3917.8, -1130.3, -2507.2, -1112.7, -1054.4 }
-#define APPS1_MAX 3600
+    { 0, -2259.5, -1307.7, -1513.5, -1643.6, -905.6, -825.4, -2788.9, -453.1, -4877.9}
+#define APPS1_MAX 3700
 #define APPS1_MIN 2000
 // APPS 2
 #define APPS2_REF                                                                        \
-    { 508, 799, 1256, 1466, 1901, 2185, 2663, 3138 }
+    { 310, 600, 955, 1280, 1570, 2000, 2350, 2700, 3035, 3120 }
 #define APPS2_FIX_MUL                                                                    \
-    { 0, 0.4907, 0.3125, 0.68, 0.3283, 0.5028, 0.2987, 0.3006 }
+    { 0, 0.3125, 0.2817, 0.3077, 0.3448, 0.2326, 0.2857, 0.2857, 0.2985, 1.1765 }
 #define APPS2_FIX_ADD                                                                    \
-    { 0, -249.3, -106.9, -568.5, -52.8, -384.6, 61.2, 56.6 }
+    { 0, -87.5, -57.9, -71.6, -108.1, 79.3, -15.9, -4.8, -28.3, -2681.8 }
 #define APPS2_MAX 3300
-#define APPS2_MIN 0
+#define APPS2_MIN 100
 
 #endif /* INC_THROTTLE_H_ */

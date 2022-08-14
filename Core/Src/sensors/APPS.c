@@ -60,6 +60,8 @@ void APPS_read(void* argument) {
         set_global_var_value(THROTTLE_STATUS, (throttle_percent > 0));
 
         log_data(ID_BRAKE, get_global_var_value(BRAKE_STATUS));
+        log_data(ID_DISTANCE_P_ODOM, apps1_value);
+        log_data(ID_DISTANCE_T_ODOM, apps2_value);
 
         // verifica a plausabilidade do APPS e BSE e plausabilidade dos APPSs
         check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);

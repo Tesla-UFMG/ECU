@@ -13,6 +13,8 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
+uint16_t debug_throttle_percent = 0;
+
 void throttle_control(void* argument) {
     UNUSED(argument);
 
@@ -33,8 +35,10 @@ void throttle_control(void* argument) {
 
         if (is_RTD_active && !is_apps_error_present && !is_bse_error_present) {
             set_global_var_value(THROTTLE_PERCENT, message);
+            debug_throttle_percent = message;
         } else {
             set_global_var_value(THROTTLE_PERCENT, 0);
+            debug_throttle_percent = 0;
         }
 
         log_data(ID_THROTTLE, get_global_var_value(THROTTLE_PERCENT));

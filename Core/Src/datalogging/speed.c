@@ -60,7 +60,7 @@ void speed_datalog(void* argument) {
         set_global_var(FRONT_AVG_SPEED, &avg_front_speed);
         set_global_var(REAR_AVG_SPEED, &avg_rear_speed);
 
-        log_data(ID_SPEED_FR, speed.wheels[FRONT_RIGHT]);
+        //log_data(ID_SPEED_FR, speed.wheels[FRONT_RIGHT]);
         log_data(ID_SPEED_FL, speed.wheels[FRONT_LEFT]);
         log_data(ID_SPEED_RR, speed.wheels[REAR_RIGHT]);
         log_data(ID_SPEED_RL, speed.wheels[REAR_LEFT]);

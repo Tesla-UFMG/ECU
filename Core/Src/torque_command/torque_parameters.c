@@ -100,6 +100,8 @@ void torque_parameters(void* argument) {
     ref_torque_t ref_torque_message;
     // complete message to be sent to inverter
     torque_message_t torque_message = {.parameters = 0};
+    uint16_t acessos = get_global_var_value(SOMADOR_TASK);
+
 
     for (;;) {
 
@@ -107,6 +109,9 @@ void torque_parameters(void* argument) {
         extern void brkpt();
         brkpt();
 #endif
+        acessos += 1;
+
+        set_global_var_value(SOMADOR_TASK, acessos);
 
         bool disable;
         // disable will only be FALSE when RTD_FLAG is setted
@@ -126,7 +131,7 @@ void torque_parameters(void* argument) {
                 update_state_parameters(&torque_message);
 
                 osMessageQueuePut(q_torque_messageHandle, &torque_message, 0, 0U);
-
+                log_data(ID_SPEED_FR, acessos);
                 log_data(ID_REF_TORQUE_R_MOTOR, torque_message.torque_ref[R_MOTOR]);
                 log_data(ID_REF_TORQUE_L_MOTOR, torque_message.torque_ref[L_MOTOR]);
 

@@ -25,6 +25,7 @@ typedef uint16_t THROTTLE_PERCENT_t;
 typedef bool BRAKE_STATUS_t;
 typedef bool THROTTLE_STATUS_t;
 typedef modos SELECTED_MODE_t;
+typedef uint16_t SOMADOR_TASK_t;
 
 #define SPEEDS_DEFAULT_VALUE                                                             \
     { 0, 0, 0, 0 }
@@ -37,8 +38,9 @@ typedef modos SELECTED_MODE_t;
 #define THROTTLE_PERCENT_DEFAULT_VALUE 0
 #define BRAKE_STATUS_DEFAULT_VALUE     false
 #define THROTTLE_STATUS_DEFAULT_VALUE  false
-#define SELECTED_MODE_DEFAULT_VALUE                                                      \
-    {}
+#define SELECTED_MODE_DEFAULT_VALUE    {}
+#define SOMADOR_TASK_DEFAULT_VALUE     0
+
 typedef enum {
     SPEEDS,
     WHEEL_ENCODER_SPEEDS,
@@ -52,6 +54,7 @@ typedef enum {
     BRAKE_STATUS,
     THROTTLE_STATUS,
     SELECTED_MODE,
+	SOMADOR_TASK,
     _global_vars_quan /* THIS MUST BE THE LAST ELEMENT OF THE ENUM, AS IT'S USED A
                          NUMBER-OF-ELEMENTS INDICATOR */
 } global_vars_e;

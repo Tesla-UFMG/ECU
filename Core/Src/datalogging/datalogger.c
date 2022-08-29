@@ -18,11 +18,9 @@ extern osMessageQueueId_t q_datalog_messageHandle;
 void datalogger(void* argument) {
     UNUSED(argument);
 
-    datalog_message_t message;
 
-    uint16_t vet_tx[4];
 
-    for (;;) {
+   /*for (;;) {
 
 #ifdef DEBUG_ECU
         extern void brkpt();
@@ -52,5 +50,5 @@ void datalogger(void* argument) {
         // quando extrair todos os itens enfileirados e enviar, espera uma certa
         // quantidade de tempo para extrair novamente
         osDelay(DATALOGGER_DELAY);
-    }
+    } */
 }

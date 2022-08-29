@@ -14,6 +14,8 @@
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/global_definitions.h"
 #include "util/util.h"
+#include "CAN/general_can.h"
+#include "CAN/CAN_IDs.h"
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 extern osMutexId_t m_state_parameter_mutexHandle;
@@ -22,6 +24,10 @@ void torque_manager(void* argument) {
     UNUSED(argument);
 
     uint32_t ref_torque[2] = {0, 0};
+
+    uint16_t acessos = get_global_var_value(SOMADOR_TASK);
+
+
     for (;;) {
         // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
         uint32_t tick = osKernelGetTickCount();
@@ -66,7 +72,11 @@ void torque_manager(void* argument) {
                 rampa_torque(ref_torque, NULL);
 
                 // enviar referencia de torque
-                send_ref_torque_message(ref_torque);
+
+                acessos += 1;
+                set_global_var_value(SOMADOR_TASK, acessos);
+
+                general_can_transmit(103, &acessos);
 
                 osDelay(RAMPA_DELAY);
 

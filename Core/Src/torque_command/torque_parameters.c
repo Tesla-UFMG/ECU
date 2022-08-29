@@ -131,8 +131,8 @@ void torque_parameters(void* argument) {
                 update_state_parameters(&torque_message);
 
                 osMessageQueuePut(q_torque_messageHandle, &torque_message, 0, 0U);
-                log_data(ID_SPEED_FR, acessos);
-                log_data(ID_REF_TORQUE_R_MOTOR, torque_message.torque_ref[R_MOTOR]);
+
+                log_data(ID_REF_TORQUE_R_MOTOR, acessos);
                 log_data(ID_REF_TORQUE_L_MOTOR, torque_message.torque_ref[L_MOTOR]);
 
                 break;

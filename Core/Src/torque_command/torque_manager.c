@@ -75,8 +75,9 @@ void torque_manager(void* argument) {
 
                 acessos += 1;
                 set_global_var_value(SOMADOR_TASK, acessos);
+                uint16_t can_message[4]={acessos,0,0,0};
 
-                general_can_transmit(103, &acessos);
+                general_can_transmit(103, can_message);
 
                 osDelay(RAMPA_DELAY);
 

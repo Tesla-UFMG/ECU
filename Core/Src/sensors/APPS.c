@@ -79,15 +79,21 @@ void APPS_read(void* argument) {
 }
 
 uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
-    if (apps_value < 0) {
-        return 0;
-    }
-    if (apps_value >= ref->value[APPS_MATRIX_LENGTH - 1]) {
-        return 1000;
-    }
+	{
+	    if (apps_value < ref->value[APPS_MATRIX_LENGTH - 1])
+	    /* if (apps_value >= ref->value[APPS_MATRIX_LENGTH - 1])*/
+	    {
+	        return 1000;
+	    }
+	    // if (apps_value >= ref->value[APPS_MATRIX_LENGTH - 1])
+	    if (apps_value >= ref->value[0])
+	    // if (apps_value < 0)
+	    {
+	        return 0;
+	    }
     // compara o valor do APPS com as faixas de acionamento para escolher quais parametros
     // utilizar durante o calculo da porcentagem
-    for (int i = 0; i < APPS_MATRIX_LENGTH; i++) {
+    for (int i = APPS_MATRIX_LENGTH - 1; i >= 0; i--) {
         if (apps_value < ref->value[i]) {
             return (uint16_t)(ref->fix_mul[i] * (float)apps_value + ref->fix_add[i]);
         }

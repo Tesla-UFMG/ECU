@@ -57,8 +57,8 @@ void APPS_read(void* argument) {
         // calcula a porcentagem do pedal a partir do APPS1 e APPS2 e faz a media
         apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);
         apps2_throttle_percent = throttle_calc(apps2_value, &apps2_ref);
-        apps_dif = abs(apps1_throttle_percent - apps2_throttle_percent) / 10;
-        throttle_percent       = avg(apps1_throttle_percent, apps2_throttle_percent);
+        apps_dif         = abs(apps1_throttle_percent - apps2_throttle_percent) / 10;
+        throttle_percent = avg(apps1_throttle_percent, apps2_throttle_percent);
 
         set_global_var_value(BRAKE_STATUS, (bse > BRAKE_ACTIVE));
         set_global_var_value(THROTTLE_STATUS, (throttle_percent > 0));
@@ -75,8 +75,8 @@ void APPS_read(void* argument) {
         check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG,
                                       tim_SU_F_errorHandle, SU_F_ERROR_TIMER);
 
-        apps_error=is_there_APPS_error();
-        bse_error=is_there_BSE_error();
+        apps_error       = is_there_APPS_error();
+        bse_error        = is_there_BSE_error();
         uint16_t message = throttle_percent;
         osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);
 
@@ -85,26 +85,13 @@ void APPS_read(void* argument) {
 }
 
 uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
-	    if (apps_value < ref->value[APPS_MATRIX_LENGTH - 1])
-	    /* if (apps_value >= ref->value[APPS_MATRIX_LENGTH - 1])*/
-	    {
-	        return 1000;
-	    }
-	    // if (apps_value >= ref->value[APPS_MATRIX_LENGTH - 1])
-	    if (apps_value >= ref->value[0])
-	    // if (apps_value < 0)
-	    {
-	        return 0;
-	    }
-    // compara o valor do APPS com as faixas de acionamento para escolher quais parametros
-    // utilizar durante o calculo da porcentagem
-    for (int i = APPS_MATRIX_LENGTH - 1; i >= 0; i--) {
-        if (apps_value < ref->value[i]) {
-            return (uint16_t)(ref->fix_mul[i] * (float)apps_value + ref->fix_add[i]);
-        }
+    if (apps_value < ref->value[APPS_MATRIX_LENGTH - 1]) {
+        return 1000;
     }
-
-    return 0;
+    if (apps_value >= ref->value[0]) {
+        return 0;
+    }
+    return (uint16_t)(ref->fix_mul[0] * (float)apps_value + ref->fix_add[0]);
 }
 
 bool is_there_APPS_error() {       // Regulamento: T.4.2 (2021)
@@ -121,7 +108,8 @@ bool is_there_APPS_error() {       // Regulamento: T.4.2 (2021)
 }
 
 bool is_there_BSE_error() {
-    bool is_BSE_error_active = get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
+    bool is_BSE_error_active =
+        get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
     if (is_BSE_error_active) {
         // Regulamento: EV.5.7.2 (2021)
         return (throttle_percent >= APPS_05_PERCENT);

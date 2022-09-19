@@ -32,6 +32,9 @@ static uint16_t bse;
 static uint16_t apps1_throttle_percent = 0;
 static uint16_t apps2_throttle_percent = 0;
 static uint16_t throttle_percent       = 0;
+bool apps_error;
+bool bse_error;
+uint16_t apps_dif;
 
 void APPS_read(void* argument) {
     UNUSED(argument);
@@ -54,6 +57,7 @@ void APPS_read(void* argument) {
         // calcula a porcentagem do pedal a partir do APPS1 e APPS2 e faz a media
         apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);
         apps2_throttle_percent = throttle_calc(apps2_value, &apps2_ref);
+        apps_dif = abs(apps1_throttle_percent - apps2_throttle_percent) / 10;
         throttle_percent       = avg(apps1_throttle_percent, apps2_throttle_percent);
 
         set_global_var_value(BRAKE_STATUS, (bse > BRAKE_ACTIVE));
@@ -71,6 +75,8 @@ void APPS_read(void* argument) {
         check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG,
                                       tim_SU_F_errorHandle, SU_F_ERROR_TIMER);
 
+        apps_error=is_there_APPS_error();
+        bse_error=is_there_BSE_error();
         uint16_t message = throttle_percent;
         osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);
 
@@ -79,7 +85,6 @@ void APPS_read(void* argument) {
 }
 
 uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
-	{
 	    if (apps_value < ref->value[APPS_MATRIX_LENGTH - 1])
 	    /* if (apps_value >= ref->value[APPS_MATRIX_LENGTH - 1])*/
 	    {
@@ -103,10 +108,10 @@ uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
 }
 
 bool is_there_APPS_error() {       // Regulamento: T.4.2 (2021)
-    if (apps2_value > APPS2_MAX    // Se o valor de APPS2 for acima do seu maximo
-        || apps2_value < APPS2_MIN // ou abaixo do seu minimo
-        || apps1_value > APPS1_MAX // Se o valor de APPS1 for acima do seu maximo
-        || apps1_value < APPS1_MIN // ou abaixo do seu minimo
+    if (apps2_value < APPS2_MAX    // Se o valor de APPS2 for acima do seu maximo
+        || apps2_value > APPS2_MIN // ou abaixo do seu minimo
+        || apps1_value < APPS1_MAX // Se o valor de APPS1 for acima do seu maximo
+        || apps1_value > APPS1_MIN // ou abaixo do seu minimo
         // Se os APPS1 e APPS2 discordarem em mais de 10%
         || abs(apps1_throttle_percent - apps2_throttle_percent) / 10
                > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {

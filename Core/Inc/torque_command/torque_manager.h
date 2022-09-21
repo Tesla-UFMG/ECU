@@ -19,6 +19,6 @@ const E_CONTROL_TYPE g_control_type = NO_CONTROL;
 #define INC_TORQUE_INIT    200 // inclinacao 1a parte
 #define TORQUE_INIT_LIMITE 500 // ponto de transicao entre as rampas
 
-#define RAMPA_DELAY 15
+#define RAMPA_DELAY 30
 
 #endif /* INC_TORQUE_MANAGER_H_ */

@@ -85,20 +85,20 @@ void APPS_read(void* argument) {
 }
 
 uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
-    if (apps_value < ref->value[APPS_MATRIX_LENGTH - 1]) {
+    if (apps_value > ref->value[APPS_MATRIX_LENGTH - 1]) {
         return 1000;
     }
-    if (apps_value >= ref->value[0]) {
+    if (apps_value < ref->value[0]) {
         return 0;
     }
     return (uint16_t)(ref->fix_mul[0] * (float)apps_value + ref->fix_add[0]);
 }
 
 bool is_there_APPS_error() {       // Regulamento: T.4.2 (2021)
-    if (apps2_value < APPS2_MAX    // Se o valor de APPS2 for acima do seu maximo
-        || apps2_value > APPS2_MIN // ou abaixo do seu minimo
-        || apps1_value < APPS1_MAX // Se o valor de APPS1 for acima do seu maximo
-        || apps1_value > APPS1_MIN // ou abaixo do seu minimo
+    if (apps2_value > APPS2_MAX    // Se o valor de APPS2 for acima do seu maximo
+        || apps2_value < APPS2_MIN // ou abaixo do seu minimo
+        || apps1_value > APPS1_MAX // Se o valor de APPS1 for acima do seu maximo
+        || apps1_value < APPS1_MIN // ou abaixo do seu minimo
         // Se os APPS1 e APPS2 discordarem em mais de 10%
         || abs(apps1_throttle_percent - apps2_throttle_percent) / 10
                > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {

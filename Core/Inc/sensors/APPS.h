@@ -25,11 +25,11 @@
 #define APPS_MATRIX_LENGTH 2
 // APPS 1
 #define APPS1_REF                                                                        \
-    { 3500, 1900 }
+    { 310, 1730 }
 #define APPS1_FIX_MUL                                                                    \
-    { -0.61 }
+    { 0.662 }
 #define APPS1_FIX_ADD                                                                    \
-    { 2190 }
+    { -165.404 }
 
 /*
 #define APPS1_REF                                                                        \
@@ -42,15 +42,15 @@
     {0, 3895.3, 2120.5, 1747.0, 3582.2, 2180.7, 1811.3, 3570.2, 1882.2, 3779.5, 2563.7,
 2137.5, 2395.6, 2521.3, 2137.5, 2754.2, 1456.9, 1658, 2275.5}
 */
-#define APPS1_MAX 1900
-#define APPS1_MIN 3700
+#define APPS1_MAX 1800
+#define APPS1_MIN 270
 // APPS 2
 #define APPS2_REF                                                                        \
-    { 3200, 250 }
+    { 590, 3580 }
 #define APPS2_FIX_MUL                                                                    \
-    { -0.322 }
+    { 0.321 }
 #define APPS2_FIX_ADD                                                                    \
-    { 1062 }
+    { -148.386 }
 /*
 #define APPS2_REF                                                                        \
     { 3276, 3192, 2990, 2735, 2630, 2445, 2196, 2095, 1858, 1753, 1600, 1400, 1225, 1055,
@@ -62,7 +62,7 @@
     {0, 2386.5, 1154.5, 983.8, 1834.1, 1233, 1044.5, 1761.7, 1101.1, 1648.1, 1357.4, 1221,
 1276.5, 1287.9, 1215.8, 1318.3, 225.2, 196.1, 204 }
 */
-#define APPS2_MAX 200
-#define APPS2_MIN 3400
+#define APPS2_MAX 3650
+#define APPS2_MIN 550
 
 #endif /* INC_THROTTLE_H_ */

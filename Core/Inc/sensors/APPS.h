@@ -25,7 +25,7 @@
 #define APPS_MATRIX_LENGTH 2
 // APPS 1
 #define APPS1_REF                                                                        \
-    { 310, 1730 }
+    { 380, 1730 }
 #define APPS1_FIX_MUL                                                                    \
     { 0.662 }
 #define APPS1_FIX_ADD                                                                    \
@@ -46,7 +46,7 @@
 #define APPS1_MIN 270
 // APPS 2
 #define APPS2_REF                                                                        \
-    { 590, 3580 }
+    { 750, 3580 }
 #define APPS2_FIX_MUL                                                                    \
     { 0.321 }
 #define APPS2_FIX_ADD                                                                    \

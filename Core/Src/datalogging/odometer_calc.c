@@ -21,7 +21,8 @@
 static inline uint32_t calculate_distance(uint32_t speed_avg);
 static void log_distance(uint32_t total_dist, uint32_t partial_dist);
 uint32_t ttd = 0;
-SPEEDS_t spd_dd;
+uint16_t speed_data = 0;
+SPEEDS_t speed_var;
 
 void odometer_calc() {
 
@@ -43,12 +44,19 @@ void odometer_calc() {
         extern void brkpt();
         brkpt();
 #endif
-        //wait_for_rtd();
+        wait_for_rtd();
         // Calculate and log distance traveled
-        spd_dd = get_global_var_value(SPEEDS);
-        FRONT_AVG_SPEED_t front_speed_avg = get_global_var_value(FRONT_AVG_SPEED);
-        front_speed_avg = spd_dd.wheels[0];
-        partial_dist_traveled             = calculate_distance(front_speed_avg);
+        speed_var = get_global_var_value(SPEEDS);
+        speed_data = get_global_var_value(FRONT_AVG_SPEED);
+        if ((speed_var.wheels[FRONT_LEFT])*(speed_var.wheels[FRONT_RIGHT]) == 0)
+        {
+            if (speed_var.wheels[FRONT_LEFT] != 0)
+                   speed_data = speed_var.wheels[FRONT_LEFT];
+            if (speed_var.wheels[FRONT_RIGHT] != 0 )
+                    speed_data = speed_var.wheels[FRONT_RIGHT];
+        }
+
+        partial_dist_traveled             = calculate_distance(speed_data);
         total_dist_traveled += partial_dist_traveled;
         ttd = total_dist_traveled;
         osMessageQueuePutOverwrite(q_odometer_calc_save_messageHandle,

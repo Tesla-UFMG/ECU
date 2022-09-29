@@ -74,8 +74,8 @@ void encoder_speed_calc(void) {
             default:
                 // verifies if any wheel is without an interruption for a long time,
                 // if yes that wheel speed is zeroed
-                 reset_speed_single(&interrupt_message, last_interrupt_messages,
-                                min_count);
+                reset_speed_single(&interrupt_message, last_interrupt_messages,
+                                   min_count);
 
                 // difference between current message and last message timestamp
                 d_tim_count = interrupt_message.tim_count

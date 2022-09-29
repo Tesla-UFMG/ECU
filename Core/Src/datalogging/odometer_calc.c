@@ -25,7 +25,7 @@ void odometer_calc() {
 
     uint32_t partial_dist_traveled = 0;
     odometer_message_t total_dist_traveled;
-    uint16_t speed_data = 0;
+    uint16_t odometer_speed_data = 0;
     SPEEDS_t speed_var;
 
     // Read distance from flash just once
@@ -46,15 +46,15 @@ void odometer_calc() {
         wait_for_rtd();
         // Calculate and log distance traveled
         speed_var  = get_global_var_value(SPEEDS);
-        speed_data = get_global_var_value(FRONT_AVG_SPEED);
+        odometer_speed_data = get_global_var_value(FRONT_AVG_SPEED);
         if ((speed_var.wheels[FRONT_LEFT]) * (speed_var.wheels[FRONT_RIGHT]) == 0) {
             if (speed_var.wheels[FRONT_LEFT] != 0)
-                speed_data = speed_var.wheels[FRONT_LEFT];
+                odometer_speed_data = speed_var.wheels[FRONT_LEFT];
             if (speed_var.wheels[FRONT_RIGHT] != 0)
-                speed_data = speed_var.wheels[FRONT_RIGHT];
+                odometer_speed_data = speed_var.wheels[FRONT_RIGHT];
         }
 
-        partial_dist_traveled = calculate_distance(speed_data);
+        partial_dist_traveled = calculate_distance(odometer_speed_data);
         total_dist_traveled += partial_dist_traveled;
         osMessageQueuePutOverwrite(q_odometer_calc_save_messageHandle,
                                    &total_dist_traveled, 0);

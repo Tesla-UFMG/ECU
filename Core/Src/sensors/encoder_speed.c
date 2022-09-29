@@ -32,10 +32,6 @@ static inline uint32_t get_tim2_freq();
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout(uint32_t speed);
 
-
-uint32_t spd = 0;
-uint32_t  mincnt = 0;
-uint32_t maxcnt = 0;
 static encoder_speeds_message_t speeds_message;
 
 void encoder_speed_calc(void) {
@@ -58,8 +54,6 @@ void encoder_speed_calc(void) {
 
     uint32_t d_tim_count;
     uint32_t speed;
-    mincnt = min_count;
-    maxcnt = max_count;
 
     for (;;) {
 #ifdef DEBUG_ECU
@@ -94,7 +88,6 @@ void encoder_speed_calc(void) {
                 }
 
                 speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
-                spd = speed;
                 // saves the speed only of the wheel which speed was just calculated
                 speeds_message.wheels[interrupt_message.pin] = speed;
                 // store message to use in the next iteration

@@ -68,8 +68,8 @@ void odometer_calc() {
 }
 
 void log_distance(uint32_t total_dist, uint32_t partial_dist) {
-    // log_data(ID_DISTANCE_T_ODOM, (uint16_t)total_dist);
-    // log_data(ID_DISTANCE_P_ODOM, (uint16_t)partial_dist);
+     log_data(ID_DISTANCE_T_ODOM, (uint16_t)total_dist);
+     log_data(ID_DISTANCE_P_ODOM, (uint16_t)partial_dist);
 }
 
 static inline uint32_t calculate_distance(uint32_t speed_avg) {

@@ -45,7 +45,7 @@ void odometer_calc() {
 #endif
         wait_for_rtd();
         // Calculate and log distance traveled
-        speed_var  = get_global_var_value(SPEEDS);
+        speed_var           = get_global_var_value(SPEEDS);
         odometer_speed_data = get_global_var_value(FRONT_AVG_SPEED);
         if ((speed_var.wheels[FRONT_LEFT]) * (speed_var.wheels[FRONT_RIGHT]) == 0) {
             if (speed_var.wheels[FRONT_LEFT] != 0)
@@ -54,8 +54,9 @@ void odometer_calc() {
                 odometer_speed_data = speed_var.wheels[FRONT_RIGHT];
         }
 
-        partial_dist_traveled = calculate_distance(odometer_speed_data);
-        total_dist_traveled += partial_dist_traveled;
+        const uint16_t instant_distant_traveled = calculate_distance(odometer_speed_data);
+        partial_dist_traveled += instant_distant_traveled;
+        total_dist_traveled += instant_distant_traveled;
         osMessageQueuePutOverwrite(q_odometer_calc_save_messageHandle,
                                    &total_dist_traveled, 0);
         log_distance(total_dist_traveled, partial_dist_traveled);
@@ -65,15 +66,15 @@ void odometer_calc() {
 }
 
 void log_distance(uint32_t total_dist, uint32_t partial_dist) {
-    log_data(ID_DISTANCE_T_ODOM, (uint16_t)total_dist);
-    log_data(ID_DISTANCE_P_ODOM, (uint16_t)partial_dist);
+    log_data(ID_DISTANCE_T_ODOM, (uint16_t)cm_to_m(total_dist));
+    log_data(ID_DISTANCE_P_ODOM, (uint16_t)cm_to_m(partial_dist));
 }
 
 static inline uint32_t calculate_distance(uint32_t speed_avg) {
     /*
      * AVG_TIME (ms)
      * speed_avg (10*km/h)
-     * 1/36000 is a correction factor to make distance in meters (m)
+     * 1/360 is a correction factor to make distance in meters (cm)
      */
     return (uint32_t)(((1.0 / 360) * speed_avg) * (CALC_DELAY));
 }

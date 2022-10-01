@@ -124,7 +124,7 @@ void Flash_Read_Data(uint32_t StartSectorAddress, uint32_t* data,
         // Jumps 32 bits
         StartSectorAddress += 4;
 
-        //data++;
+        data++;
 
         if (!(numberofwords--)) {
             break;

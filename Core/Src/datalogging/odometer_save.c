@@ -31,7 +31,7 @@ void odometer_save() {
 
         // Wait the flag to be set so the task runs. The flag is set when RTD state is
         // left
-        //osThreadFlagsWait(ODOMETER_SAVE_FLAG, osFlagsWaitAny, osWaitForever);
+        osThreadFlagsWait(ODOMETER_SAVE_FLAG, osFlagsWaitAny, osWaitForever);
         osMessageQueueGet(q_odometer_calc_save_messageHandle, &total_distance_traveled,
                           NULL, osWaitForever);
 

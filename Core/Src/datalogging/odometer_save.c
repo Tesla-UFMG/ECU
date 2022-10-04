@@ -21,6 +21,7 @@ void odometer_save() {
     uint32_t save_counter                      = 0;
     uint32_t flash_read_data[2]                = {0, 0};
     uint32_t flash_distance[8]                 = {0, 0, 0, 0, 0, 0, 0, 0};
+    log_data(ID_PANEL_DEBUG_1, (uint16_t)save_counter);
 
     for (;;) {
 #ifdef DEBUG_ECU
@@ -49,6 +50,7 @@ void odometer_save() {
                 Flash_Write_Data(ODOMETER_DATA_FLASH_ADDR, flash_distance,
                                  FLASH_WORD_SIZE);
                 save_counter++;
+                log_data(ID_PANEL_DEBUG_1, (uint16_t)save_counter);
             } else {
                 // Set a flag to warn if the saving limit was overcome
                 osEventFlagsSet(e_ECU_control_flagsHandle, FLASH_SAVE_LIMIT_FLAG);

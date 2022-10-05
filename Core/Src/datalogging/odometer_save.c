@@ -37,7 +37,7 @@ void odometer_save() {
 
         // Read distance and number of saves in flash
         Flash_Read_Data(ODOMETER_DATA_FLASH_ADDR, flash_read_data, WORDS_READ_TWO);
-
+        total_distance_traveled = cm_to_m(total_distance_traveled);
         // Check if the distance traveled is enough to save. Fill the data array and save
         // in flash if the maximum save times have not been passed.
         if ((total_distance_traveled - flash_read_data[TOTAL_DISTANCE])

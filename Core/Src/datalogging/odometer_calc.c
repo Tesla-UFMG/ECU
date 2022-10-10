@@ -48,10 +48,12 @@ void odometer_calc() {
         speed_var           = get_global_var_value(SPEEDS);
         odometer_speed_data = get_global_var_value(FRONT_AVG_SPEED);
         if ((speed_var.wheels[FRONT_LEFT]) * (speed_var.wheels[FRONT_RIGHT]) == 0) {
-            if (speed_var.wheels[FRONT_LEFT] != 0)
+            if (speed_var.wheels[FRONT_LEFT] != 0) {
                 odometer_speed_data = speed_var.wheels[FRONT_LEFT];
-            if (speed_var.wheels[FRONT_RIGHT] != 0)
+            }
+            if (speed_var.wheels[FRONT_RIGHT] != 0) {
                 odometer_speed_data = speed_var.wheels[FRONT_RIGHT];
+            }
         }
 
         const uint16_t instant_distant_traveled = calculate_distance(odometer_speed_data);

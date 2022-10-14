@@ -26,7 +26,6 @@ void odometer_calc() {
     uint32_t partial_dist_traveled = 0;
     odometer_message_t total_dist_traveled;
     uint16_t odometer_speed_data = 0;
-    SPEEDS_t speed_var;
 
     // Read distance from flash just once
     Flash_Read_Data(ODOMETER_DATA_FLASH_ADDR, &(total_dist_traveled), WORDS_READ_ONE);
@@ -45,13 +44,14 @@ void odometer_calc() {
 #endif
         wait_for_rtd();
         // Calculate and log distance traveled
-        speed_var           = get_global_var_value(SPEEDS);
-        odometer_speed_data = get_global_var_value(FRONT_AVG_SPEED);
-        if ((speed_var.wheels[FRONT_LEFT]) * (speed_var.wheels[FRONT_RIGHT]) == 0) {
+        const SPEEDS_t speed_var = get_global_var_value(SPEEDS);
+
+        if ((speed_var.wheels[FRONT_LEFT]) * (speed_var.wheels[FRONT_RIGHT]) != 0) {
+            odometer_speed_data = get_global_var_value(FRONT_AVG_SPEED);
+        } else {
             if (speed_var.wheels[FRONT_LEFT] != 0) {
                 odometer_speed_data = speed_var.wheels[FRONT_LEFT];
-            }
-            if (speed_var.wheels[FRONT_RIGHT] != 0) {
+            } else {
                 odometer_speed_data = speed_var.wheels[FRONT_RIGHT];
             }
         }

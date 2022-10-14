@@ -41,7 +41,7 @@ void odometer_save() {
         // Check if the distance traveled is enough to save. Fill the data array and save
         // in flash if the maximum save times have not been passed.
         if ((total_distance_traveled - flash_read_data[TOTAL_DISTANCE])
-            >= MINIMUM_SAVE_DISTANCE) {
+            >= MINIMUM_SAVE_DISTANCE_CM) {
             flash_distance[TOTAL_DISTANCE] = total_distance_traveled;
             flash_distance[FLASH_WEAR]     = (++flash_read_data[FLASH_WEAR]);
 

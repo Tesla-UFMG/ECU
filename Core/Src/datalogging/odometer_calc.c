@@ -46,14 +46,11 @@ void odometer_calc() {
         // Calculate and log distance traveled
         const SPEEDS_t speed_var = get_global_var_value(SPEEDS);
 
-        if ((speed_var.wheels[FRONT_LEFT]) * (speed_var.wheels[FRONT_RIGHT]) != 0) {
-            odometer_speed_data = get_global_var_value(FRONT_AVG_SPEED);
+        if ((speed_var.wheels[FRONT_RIGHT] && speed_var.wheels[FRONT_LEFT]) != 0) {
+            get_global_var(FRONT_AVG_SPEED, &odometer_speed_data);
         } else {
-            if (speed_var.wheels[FRONT_LEFT] != 0) {
-                odometer_speed_data = speed_var.wheels[FRONT_LEFT];
-            } else {
-                odometer_speed_data = speed_var.wheels[FRONT_RIGHT];
-            }
+            odometer_speed_data =
+                speed_var.wheels[FRONT_RIGHT] | speed_var.wheels[FRONT_LEFT];
         }
 
         const uint16_t instant_distant_traveled = calculate_distance(odometer_speed_data);
@@ -67,7 +64,7 @@ void odometer_calc() {
     }
 }
 
-void log_distance(uint32_t total_dist, uint32_t partial_dist) {
+static void log_distance(uint32_t total_dist, uint32_t partial_dist) {
     log_data(ID_DISTANCE_T_ODOM, (uint16_t)cm_to_m(total_dist));
     log_data(ID_DISTANCE_P_ODOM, (uint16_t)cm_to_m(partial_dist));
 }

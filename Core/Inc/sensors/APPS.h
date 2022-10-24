@@ -23,24 +23,25 @@
 // https://docs.google.com/spreadsheets/d/1oN8rV0IG5MuoPPMHFQrklaCpWQLI31Kn/edit?usp=sharing&ouid=111087741893616112745&rtpof=true&sd=true
 
 #define APPS_MATRIX_LENGTH 2
+
 // APPS 1
-#define APPS1_REF                                                                        \
+#define APPS1_DEADZONE                                                                   \
     { 380, 1730 }
-#define APPS1_FIX_MUL                                                                    \
-    { 0.662 }
-#define APPS1_FIX_ADD                                                                    \
-    { -165.404 }
+#define APPS1_ADJUST                                                                     \
+    { 0.662, -165.404 }
 #define APPS1_MAX 1800
 #define APPS1_MIN 200
 
 // APPS 2
-#define APPS2_REF                                                                        \
+#define APPS2_DEADZONE                                                                   \
     { 750, 3580 }
-#define APPS2_FIX_MUL                                                                    \
-    { 0.321 }
-#define APPS2_FIX_ADD                                                                    \
-    { -148.386 }
-#define APPS2_MAX 3650
-#define APPS2_MIN 500
+#define APPS2_ADJUST                                                                     \
+    { 0.321, -148.386 }
+#define APPS2_MIN 3650
+#define APPS2_MAX 500
+
+typedef enum { SLOPE = 0, INTERCEPT } linear_adjust_e;
+
+typedef enum { LOWER = 0, UPPER } deadzone_limits_e;
 
 #endif /* INC_THROTTLE_H_ */

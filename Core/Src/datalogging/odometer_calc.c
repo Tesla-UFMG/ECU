@@ -34,6 +34,7 @@ void odometer_calc() {
     if ((total_dist_traveled == 0x00000000) || (total_dist_traveled == 0xFFFFFFFF)) {
         total_dist_traveled = 0;
     }
+    total_dist_traveled = m_to_cm(total_dist_traveled);
     osMessageQueuePutOverwrite(q_odometer_calc_save_messageHandle, &total_dist_traveled,
                                0);
 
@@ -62,7 +63,6 @@ void odometer_calc() {
         osMessageQueuePutOverwrite(q_odometer_calc_save_messageHandle,
                                    &total_dist_traveled, 0);
         log_distance(total_dist_traveled, partial_dist_traveled);
-
         osDelay(CALC_DELAY);
     }
 }

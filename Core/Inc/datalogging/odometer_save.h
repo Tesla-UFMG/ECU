@@ -18,7 +18,7 @@
 
 #define MAXIMUM_SAVE_TIMES 10
 
-#define MINIMUM_SAVE_DISTANCE_CM 10000
+#define MINIMUM_SAVE_DISTANCE_METERS 100
 
 typedef uint32_t odometer_message_t;
 

@@ -16,8 +16,11 @@
 #include "util/util.h"
 
 typedef struct {
-    uint16_t deadzone_limits[APPS_MATRIX_LENGTH];
-    float adjust_parameters[APPS_MATRIX_LENGTH];
+    uint16_t deadzone_lower_limit;
+    uint16_t deadzone_upper_limit;
+    float adjust_parameters_slope;
+    float adjust_parameters_intercept;
+
 } apps_ref;
 
 static uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref* ref);
@@ -47,8 +50,16 @@ void APPS_read(void* argument) {
         bse         = ADC_DMA_buffer[BRAKE_E];
 
         // valores de referencia e parametros para o calculo da porcentagem
-        const static apps_ref apps1_ref = {APPS1_DEADZONE, APPS1_ADJUST};
-        const static apps_ref apps2_ref = {APPS2_DEADZONE, APPS2_ADJUST};
+        const static apps_ref apps1_ref = {.deadzone_lower_limit = APPS1_LOWER_DEADZONE,
+                                           .deadzone_upper_limit = APPS1_UPPER_DEADZONE,
+                                           .adjust_parameters_slope = APPS1_ADJUST_SLOPE,
+                                           .adjust_parameters_intercept =
+                                               APPS1_ADJUST_INTERCEPT};
+        const static apps_ref apps2_ref = {.deadzone_lower_limit = APPS2_LOWER_DEADZONE,
+                                           .deadzone_upper_limit = APPS2_UPPER_DEADZONE,
+                                           .adjust_parameters_slope = APPS2_ADJUST_SLOPE,
+                                           .adjust_parameters_intercept =
+                                               APPS2_ADJUST_SLOPE};
 
         // calcula a porcentagem do pedal a partir do APPS1 e APPS2 e faz a media
         apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);
@@ -76,14 +87,14 @@ void APPS_read(void* argument) {
 }
 
 static uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
-    if (apps_value > ref->deadzone_limits[UPPER]) {
+    if (apps_value > ref->deadzone_upper_limit) {
         return 1000;
     }
-    if (apps_value < ref->deadzone_limits[LOWER]) {
+    if (apps_value < ref->deadzone_lower_limit) {
         return 0;
     }
-    return (uint16_t)(ref->adjust_parameters[SLOPE] * (float)apps_value
-                      + ref->adjust_parameters[INTERCEPT]);
+    return (uint16_t)(ref->adjust_parameters_slope * (float)apps_value
+                      + ref->adjust_parameters_intercept);
 }
 
 static bool is_there_APPS_error() { // Regulamento: T.4.2 (2021)

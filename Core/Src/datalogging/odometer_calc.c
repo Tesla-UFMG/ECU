@@ -49,8 +49,11 @@ void odometer_calc() {
         if ((speed_var.wheels[FRONT_RIGHT] && speed_var.wheels[FRONT_LEFT]) != 0) {
             get_global_var(FRONT_AVG_SPEED, &odometer_speed_data);
         } else {
-            odometer_speed_data =
-                speed_var.wheels[FRONT_RIGHT] | speed_var.wheels[FRONT_LEFT];
+            if (speed_var.wheels[FRONT_LEFT] == 0) {
+                odometer_speed_data = speed_var.wheels[FRONT_RIGHT];
+            } else {
+                odometer_speed_data = speed_var.wheels[FRONT_LEFT];
+            }
         }
 
         const uint16_t instant_distant_traveled = calculate_distance(odometer_speed_data);

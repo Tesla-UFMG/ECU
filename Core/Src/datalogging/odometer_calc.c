@@ -47,7 +47,7 @@ void odometer_calc() {
         // Calculate and log distance traveled
         const SPEEDS_t speed_var = get_global_var_value(SPEEDS);
 
-        if ((speed_var.wheels[FRONT_RIGHT] && speed_var.wheels[FRONT_LEFT]) != 0) {
+        if (speed_var.wheels[FRONT_RIGHT] != 0 && speed_var.wheels[FRONT_LEFT] != 0) {
             get_global_var(FRONT_AVG_SPEED, &odometer_speed_data);
         } else {
             if (speed_var.wheels[FRONT_LEFT] == 0) {

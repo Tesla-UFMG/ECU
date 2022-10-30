@@ -20,7 +20,6 @@ typedef struct {
     uint16_t deadzone_upper_limit;
     float adjust_parameters_slope;
     float adjust_parameters_intercept;
-
 } apps_ref;
 
 static uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref* ref);

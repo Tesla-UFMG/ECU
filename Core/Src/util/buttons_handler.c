@@ -19,7 +19,6 @@ static buttons_parameters_t buttons[BUTTONS_QUAN];
 
 void button_release_handler(available_buttons_e button) {
     switch (button) {
-
         case B_RTD:
             osThreadFlagsSet(t_RTDHandle, RTD_BTN_PRESSED_FLAG);
             osThreadFlagsSet(t_pilot_resetHandle, RTD_BTN_PRESSED_FLAG);

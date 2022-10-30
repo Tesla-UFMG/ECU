@@ -30,4 +30,14 @@ void wait_for_rtd();
 #define m_to_cm(x) ((x)*100)
 #define UNUSED(x)  ((void)(x))
 
+#ifdef DEBUG_ECU
+#define ECU_ENABLE_BREAKPOINT_DEBUG()                                                    \
+    {                                                                                    \
+        extern void brkpt();                                                             \
+        brkpt();                                                                         \
+    }
+#else
+#define ECU_ENABLE_BREAKPOINT_DEBUG()
+#endif
+
 #endif /* INC_UTIL_H_ */

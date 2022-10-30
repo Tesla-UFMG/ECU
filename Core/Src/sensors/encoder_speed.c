@@ -13,6 +13,7 @@
 #include "string.h"
 #include "util/CMSIS_extra/cmsis_extra.h"
 #include "util/global_instances.h"
+#include "util/util.h"
 
 /*
  * distance = circumference divided by the number of teeth
@@ -56,10 +57,7 @@ void encoder_speed_calc(void) {
     uint32_t speed;
 
     for (;;) {
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // waits until a message arrives or until timeout
         switch (osMessageQueueGet(q_encoder_int_messageHandle, &interrupt_message, NULL,

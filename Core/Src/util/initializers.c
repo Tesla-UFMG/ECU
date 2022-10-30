@@ -57,27 +57,27 @@ void init_CAN() {
 }
 
 void init_modes() {
-    enduro.tor_max          = 2500;
+    enduro.tor_max          = 1000;
     enduro.vel_max          = vel_max_rpm;
     enduro.freio_regen      = frenagem_regenerativa;
     enduro.dif_elt          = 0;
     enduro.traction_control = 0;
     enduro.bat_safe         = 1;
-    enduro.torq_gain        = 25; // ERA 15
+    enduro.torq_gain        = 10; // ERA 15
     enduro.mode             = ENDURO;
     enduro.cor              = VERDE;
 
-    aceleracao.tor_max          = 3500;
+    aceleracao.tor_max          = 1500;
     aceleracao.vel_max          = vel_max_rpm;
     aceleracao.freio_regen      = 0;
     aceleracao.dif_elt          = 0;
     aceleracao.traction_control = 1;
     aceleracao.bat_safe         = 0;
-    aceleracao.torq_gain        = 30;
+    aceleracao.torq_gain        = 15;
     aceleracao.mode             = ACELERACAO;
     aceleracao.cor              = ROXO;
 
-    skidpad.tor_max          = 3000;
+    skidpad.tor_max          = 2000;
     skidpad.vel_max          = vel_max_rpm;
     skidpad.freio_regen      = 0;
     skidpad.dif_elt          = 0;
@@ -87,11 +87,11 @@ void init_modes() {
     skidpad.mode             = SKIDPAD;
     skidpad.cor              = CIANO;
 
-    autox.tor_max          = 3000;
+    autox.tor_max          = 2500;
     autox.vel_max          = vel_max_rpm;
     autox.freio_regen      = 0;
     autox.dif_elt          = 0;
-    autox.traction_control = 1;
+    autox.traction_control = 0;
     autox.bat_safe         = 0;
     autox.torq_gain        = 25;
     autox.mode             = AUTOX;

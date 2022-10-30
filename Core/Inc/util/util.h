@@ -21,12 +21,13 @@ uint16_t concatenate_two_uint8_to_uint16(const uint8_t* data);
 bool is_the_car_stationary();
 void wait_for_rtd();
 
-#define sign(x)   (((x) >= 0) - ((x) < 0))
-#define max(x, y) ((x) > (y) ? (x) : (y))
-#define min(x, y) (((x) < (y)) ? (x) : (y))
-#define abs(x)    ((x) < 0 ? -(x) : (x))
-#define avg(x, y) (((x) + (y)) / 2)
-
-#define UNUSED(x) ((void)(x))
+#define sign(x)    (((x) >= 0) - ((x) < 0))
+#define max(x, y)  ((x) > (y) ? (x) : (y))
+#define min(x, y)  (((x) < (y)) ? (x) : (y))
+#define abs(x)     ((x) < 0 ? -(x) : (x))
+#define avg(x, y)  (((x) + (y)) / 2)
+#define cm_to_m(x) ((x) / 100)
+#define m_to_cm(x) ((x)*100)
+#define UNUSED(x)  ((void)(x))
 
 #endif /* INC_UTIL_H_ */

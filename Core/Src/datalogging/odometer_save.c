@@ -24,10 +24,7 @@ void odometer_save() {
     log_data(ID_PANEL_DEBUG_1, (uint16_t)save_counter);
 
     for (;;) {
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // Wait the flag to be set so the task runs. The flag is set when RTD state is
         // left

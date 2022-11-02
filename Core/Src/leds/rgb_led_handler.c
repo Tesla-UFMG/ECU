@@ -19,6 +19,7 @@
 
 #include "util/global_instances.h"
 #include "util/global_variables.h"
+#include "util/util.h"
 
 void write_rgb_color(rgb_t rgb_gpio);
 void write_debug_color(rgb_t rgb_gpio);
@@ -36,10 +37,7 @@ void rgb_led(void* argument) {
     rgb_led_message_t message;
 
     for (;;) {
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // espera RTD ser setado ou timeout estourar
         switch (

@@ -39,10 +39,7 @@ void APPS_read(void* argument) {
 
     for (;;) {
 
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         apps1_value = ADC_DMA_buffer[APPS1_E];
         apps2_value = ADC_DMA_buffer[APPS2_E];

@@ -19,10 +19,7 @@ void seleciona_modo(void* argument) {
 
     for (;;) {
 
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // espera um semaforo liberado por interrupcao e espera esta autorizado a mudar de
         // modo

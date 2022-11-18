@@ -58,7 +58,7 @@ void APPS_read(void* argument) {
                                            .deadzone_upper_limit = APPS2_UPPER_DEADZONE,
                                            .adjust_parameters_slope = APPS2_ADJUST_SLOPE,
                                            .adjust_parameters_intercept =
-                                               APPS2_ADJUST_SLOPE};
+                                               APPS2_ADJUST_INTERCEPT};
 
         // calcula a porcentagem do pedal a partir do APPS1 e APPS2 e faz a media
         apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);

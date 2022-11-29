@@ -7,6 +7,7 @@
 
 #include "sensors/steering.h"
 
+#include "cmsis_os.h"
 #include "datalogging/datalog_handler.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
@@ -14,52 +15,47 @@
 #include "util/util.h"
 
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
+static int16_t calculate_steering(uint16_t current_read);
+
+// calculation of current angle based on current adc reading, maximum steering wheel angle
+// and from the min and max reading in the calibration using Thales' theorem. The function
+// returns a value between -970 and 1100 with -970 being all the way to the right, 1100
+// being all the way to the left and 0 being the middle
+static int16_t calculate_steering(uint16_t current_read) {
+    static double steering_calc;
+    steering_calc =
+        ((ANG_MAX_STEERING - ANG_MIN_STEERING)
+         * (((double)current_read - MIN_STEERING) / (MAX_STEERING - MIN_STEERING)))
+        + ANG_MIN_STEERING;
+    return (int16_t)steering_calc;
+}
 
 void steering_read(void* argument) {
     UNUSED(argument);
 
-    double volante_cru;
+    uint16_t current_read;
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
+        current_read = ADC_DMA_buffer[STEERING_WHEEL_E];
 
-        double zero_aux = ZERO_VOLANTE;
+        double zero_aux = MIN_STEERING;
 
-        // Se o minimo do volante for menor que 0, o sensor voltara no valor maximo do ADC
-        // se isso acontecer, o valor do ADC voltara para 4095
-        // entao subtrai 4095 do valor lido, dando um valor negativo que pode ser aplicado
-        // na formula o mesmo vale pro zero do volante
-        if (VOLANTE_MIN > VOLANTE_MAX) {
+        // As the sensor does not have a stop, if the steering minimum is lower than the 0
+        // of the ADC, the sensor will return at the maximum value of the ADC (4095) so
+        // 4095 is subtracted from the value read, giving a negative value that can be
+        // applied to the formula
+        if (MIN_STEERING > MAX_STEERING) {
             zero_aux -= 4095;
-            if (volante_cru > VOLANTE_MAX) {
-                volante_cru -= 4095;
+            if (current_read > MAX_STEERING) {
+                current_read -= 4095;
             }
         }
 
-        if (volante_cru < zero_aux) {
-            set_global_var_value(STEERING_WHEEL, 0);
-        } else {
-            set_global_var_value(STEERING_WHEEL,
-                                 (uint16_t)volante_cru * GANHO_VOLANTE - ZERO_VOLANTE);
-        }
+        STEERING_WHEEL_t steering_wheel = calculate_steering(current_read);
+        set_global_var_value(STEERING_WHEEL, steering_wheel);
+        log_data(ID_STEERING_WHEEL, (uint16_t)(steering_wheel + DATALOG_STEERING_OFFSET));
 
-        STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
-
-        log_data(ID_STEERING_WHEEL, steering_wheel);
-
-        // SPAN_ALINHAMENTO eh apenas um span pra ainda considerar o volante no centro
-        // ate uma certa quantidade
-        if (steering_wheel > VOLANTE_ALINHADO + SPAN_ALINHAMENTO) {
-            set_global_var_value(INTERNAL_WHEEL, ESQUERDA);
-        } else if (steering_wheel < VOLANTE_ALINHADO - SPAN_ALINHAMENTO) {
-            set_global_var_value(INTERNAL_WHEEL, DIREITA);
-        } else {
-            set_global_var_value(INTERNAL_WHEEL, CENTRO);
-        }
-
-        osDelay(100);
-
-        //	return (volante);
+        osDelay(STEERING_CALC_DELAY);
     }
 }

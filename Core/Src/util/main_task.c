@@ -17,6 +17,54 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
+void led_color_response(uint32_t flag){
+	switch(flag){
+		//Hard error
+		case INVERTER_BUS_OFF_ERROR_FLAG:
+			 blink_rgb_colors(200, VERMELHO);
+			 blink_rgb_colors(200, AZUL);
+			 blink_rgb_colors(200, BRANCO);
+			 break;
+		case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
+			blink_rgb_colors(200, VERMELHO);
+			blink_rgb_colors(200, AZUL);
+			blink_rgb_colors(200, AMARELO);
+			break;
+		case INVERTER_COMM_ERROR_FLAG:
+			blink_rgb_colors(200, VERMELHO);
+			blink_rgb_colors(200, AZUL);
+			blink_rgb_colors(200, AMARELO);
+			break;
+		case SU_F_ERROR_FLAG:
+			blink_rgb_colors(200, VERMELHO);
+			blink_rgb_colors(200, BRANCO);
+			break;
+		//Soft error
+		case APPS_ERROR_FLAG:
+			blink_rgb_colors(200, AMARELO);
+			blink_rgb_colors(200, VERDE);
+			break;
+		case BSE_ERROR_FLAG:
+			blink_rgb_colors(200, AMARELO);
+			blink_rgb_colors(200, ROXO);
+			break;
+		// Warning
+		case REGEN_WARN_FLAG:
+			blink_rgb_colors(200, BRANCO);
+			blink_rgb_colors(200, VERDE);
+			break;
+		case DYNAMIC_CONTROL_WARN_FLAG:
+			blink_rgb_colors(200, BRANCO);
+			blink_rgb_colors(200, CIANO);
+			break;
+		case FLASH_SAVE_LIMIT_FLAG:
+			blink_rgb_colors(200, BRANCO);
+			blink_rgb_colors(200, ROXO);
+			break;
+	}
+
+}
+
 void main_task(void* argument) {
     UNUSED(argument);
 
@@ -46,6 +94,7 @@ void main_task(void* argument) {
                 isErrorPresent = event_flags & INVERTER_BUS_OFF_ERROR_FLAG;
                 if (isErrorPresent) {
                     exit_RTD();
+                    led_color_response(most_significant_error_flag);
                 } else {
                     // Starts a timer. If the error happens again before the timer expires
                     // the car leaves RTD mode.
@@ -63,6 +112,7 @@ void main_task(void* argument) {
                 isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
                     exit_RTD();
+                    led_color_response(most_significant_error_flag);
                 } else {
                     // Clear the thread flag
                     osThreadFlagsClear(most_significant_error_flag);
@@ -75,7 +125,7 @@ void main_task(void* argument) {
                 // If the event flag contains the error flag ECU led is set to yellow
                 isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
-                    set_rgb_led(AMARELO, NO_CHANGE);
+                	led_color_response(most_significant_error_flag);
                     osDelay(20);
                 } else {
                     // Clear the thread flag and set ECU led to normal

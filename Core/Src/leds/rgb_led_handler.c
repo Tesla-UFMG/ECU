@@ -75,10 +75,6 @@ void blink_rgb(uint32_t delay) {
     osDelay(delay);
     write_rgb_color(get_rgb_color(PRETO));
 }
-void blink_rgb_colors(uint32_t delay, cores_t color) {
-    osDelay(delay);
-    write_rgb_color(get_rgb_color(color));
-}
 
 void write_rgb_color(rgb_t rgb_gpio) {
     HAL_GPIO_WritePin(C_LED_RED_GPIO_Port, C_LED_RED_Pin, rgb_gpio.red);

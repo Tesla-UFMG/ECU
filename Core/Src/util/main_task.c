@@ -16,59 +16,98 @@
 #include "util/global_instances.h"
 #include "util/global_variables.h"
 #include "util/util.h"
+#include "util/global_definitions.h"
+
+/*void set_the_pettern(uint32_t delay, cores_t *pattern ){
+	int lenght = (int)(sizeof(pattern) / sizeof(pattern[0]));
+	for(int i = 0; i<lenght; i++){
+		set_rgb_led(pattern[i], NO_CHANGE);
+		osDelay(delay);
+	}
+}*/
 
 void led_color_response(uint32_t flag){
+
+	uint32_t delay;
+	delay = 500;
+
 	switch(flag){
 		//Hard error
 		case INVERTER_BUS_OFF_ERROR_FLAG:
-			 blink_rgb_colors(200, VERMELHO);
-			 blink_rgb_colors(200, AZUL);
-			 blink_rgb_colors(200, BRANCO);
-			 break;
+			set_rgb_led(VERMELHO, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(AZUL, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(BRANCO, NO_CHANGE);
+			osDelay(delay);
+			break;
 		case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
-			blink_rgb_colors(200, VERMELHO);
-			blink_rgb_colors(200, AZUL);
-			blink_rgb_colors(200, AMARELO);
+			set_rgb_led(VERMELHO, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(AZUL, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(AMARELO, NO_CHANGE);
+			osDelay(delay);
 			break;
 		case INVERTER_COMM_ERROR_FLAG:
-			blink_rgb_colors(200, VERMELHO);
-			blink_rgb_colors(200, AZUL);
-			blink_rgb_colors(200, AMARELO);
+			set_rgb_led(VERMELHO, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(AZUL, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(VERDE, NO_CHANGE);
+			osDelay(delay);
 			break;
 		case SU_F_ERROR_FLAG:
-			blink_rgb_colors(200, VERMELHO);
-			blink_rgb_colors(200, BRANCO);
+			set_rgb_led(VERMELHO, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(BRANCO, NO_CHANGE);
+			osDelay(delay);
 			break;
 		//Soft error
 		case APPS_ERROR_FLAG:
-			blink_rgb_colors(200, AMARELO);
-			blink_rgb_colors(200, VERDE);
+			set_rgb_led(AMARELO, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(VERDE, NO_CHANGE);
+			osDelay(delay);
 			break;
 		case BSE_ERROR_FLAG:
-			blink_rgb_colors(200, AMARELO);
-			blink_rgb_colors(200, ROXO);
+			set_rgb_led(AMARELO, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(ROXO, NO_CHANGE);
+			osDelay(delay);
 			break;
 		// Warning
 		case REGEN_WARN_FLAG:
-			blink_rgb_colors(200, BRANCO);
-			blink_rgb_colors(200, VERDE);
+			set_rgb_led(BRANCO, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(VERDE, NO_CHANGE);
+			osDelay(delay);
 			break;
 		case DYNAMIC_CONTROL_WARN_FLAG:
-			blink_rgb_colors(200, BRANCO);
-			blink_rgb_colors(200, CIANO);
+			set_rgb_led(BRANCO, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(CIANO, NO_CHANGE);
+			osDelay(delay);
 			break;
 		case FLASH_SAVE_LIMIT_FLAG:
-			blink_rgb_colors(200, BRANCO);
-			blink_rgb_colors(200, ROXO);
+			set_rgb_led(BRANCO, NO_CHANGE);
+			osDelay(delay);
+			set_rgb_led(ROXO, NO_CHANGE);
+			osDelay(delay);
 			break;
 	}
 
 }
 
+
 void main_task(void* argument) {
+
     UNUSED(argument);
 
-    for (;;) {
+    uint32_t aux;
+    for (int i = 22; i>=16; i--) {
+
+    	aux = 1<<i;
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
@@ -78,9 +117,9 @@ void main_task(void* argument) {
         osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
                           osWaitForever);
         // Get the most significant thread flag
-        uint32_t most_significant_error_flag = get_most_significant_thread_flag();
+        uint32_t most_significant_error_flag = aux;//get_most_significant_thread_flag();
         // Get the event flag
-        uint32_t event_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
+        uint32_t event_flags = aux;//osEventFlagsGet(e_ECU_control_flagsHandle);
 
         bool isErrorPresent;
         switch (most_significant_error_flag) {

@@ -23,25 +23,30 @@ void set_RTD();
 void RTD(void* argument) {
     UNUSED(argument);
 
-    // seta o led rgb no primeira execucao do codigo
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+    // seta o led rgb na primeira execucao do codigo --- se n tiver erros acontecendo
+    //for (;;){
 
-    for (;;) {
+    	//if(!(ALL_MINOR_ERROR_FLAG | ALL_SEVERE_ERROR_FLAG)){
+    		set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
 
-        // espera receber flag q o botao de RTD foi pressionado
-        osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
+    		for (;;) {
 
-        bool is_RTD_active = get_individual_flag(e_ECU_control_flagsHandle, RTD_FLAG);
+    			// espera receber flag q o botao de RTD foi pressionado
+    			osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 
-        if (!is_RTD_active) {
-            if (can_RTD_be_enabled()) {
-                set_RTD();
-            } else {
-                // envia uma mensagem de alerta caso n seja possivel acionar RTD
-                set_debugleds(DEBUGLED1, BLINK, 2);
-            }
-        }
-    }
+    			bool is_RTD_active = get_individual_flag(e_ECU_control_flagsHandle, RTD_FLAG);
+
+    			if (!is_RTD_active) {
+    				if (can_RTD_be_enabled()) {
+    					set_RTD();
+    				} else {
+    					// envia uma mensagem de alerta caso n seja possivel acionar RTD
+    					set_debugleds(DEBUGLED1, BLINK, 2);
+    				}
+    			}
+    		}
+    	//}
+    //}
 }
 
 void exit_RTD() {

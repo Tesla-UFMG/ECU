@@ -259,6 +259,11 @@ osMessageQueueId_t q_odometer_calc_save_messageHandle;
 const osMessageQueueAttr_t q_odometer_calc_save_message_attributes = {
   .name = "q_odometer_calc_save_message"
 };
+/* Definitions for q_ids_can_inverter */
+osMessageQueueId_t q_ids_can_inverterHandle;
+const osMessageQueueAttr_t q_ids_can_inverter_attributes = {
+  .name = "q_ids_can_inverter"
+};
 /* Definitions for tim_SU_F_error */
 osTimerId_t tim_SU_F_errorHandle;
 const osTimerAttr_t tim_SU_F_error_attributes = {
@@ -446,6 +451,9 @@ int main(void)
 
   /* creation of q_odometer_calc_save_message */
   q_odometer_calc_save_messageHandle = osMessageQueueNew (1, sizeof(odometer_message_t), &q_odometer_calc_save_message_attributes);
+
+  /* creation of q_ids_can_inverter */
+  q_ids_can_inverterHandle = osMessageQueueNew (16, sizeof(uint16_t), &q_ids_can_inverter_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */

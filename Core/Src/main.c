@@ -214,6 +214,13 @@ const osThreadAttr_t t_odometer_save_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_inverter_diff */
+osThreadId_t t_inverter_diffHandle;
+const osThreadAttr_t t_inverter_diff_attributes = {
+  .name = "t_inverter_diff",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_encoder_int_message */
 osMessageQueueId_t q_encoder_int_messageHandle;
 const osMessageQueueAttr_t q_encoder_int_message_attributes = {
@@ -336,6 +343,7 @@ extern void pilot_reset(void *argument);
 extern void buttons_handler(void *argument);
 extern void speed_datalog(void *argument);
 extern void odometer_save(void *argument);
+void inverter_diff(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -522,6 +530,9 @@ int main(void)
 
   /* creation of t_odometer_save */
   t_odometer_saveHandle = osThreadNew(odometer_save, NULL, &t_odometer_save_attributes);
+
+  /* creation of t_inverter_diff */
+  t_inverter_diffHandle = osThreadNew(inverter_diff, NULL, &t_inverter_diff_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -1175,6 +1186,24 @@ __weak void main_task(void *argument)
     osDelay(1);
   }
   /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_inverter_diff */
+/**
+* @brief Function implementing the t_inverter_diff thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_inverter_diff */
+void inverter_diff(void *argument)
+{
+  /* USER CODE BEGIN inverter_diff */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END inverter_diff */
 }
 
 /**

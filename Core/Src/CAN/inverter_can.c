@@ -14,15 +14,18 @@
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
 #include "util/util.h"
+#include "cmsis_os.h"
 
 static FDCAN_HandleTypeDef* can_ptr;
 
-static FDCAN_TxHeaderTypeDef TxHeader;
+static FDCAN_TxHeaderTypeDef TxHeader; // <- Esse no lugar de hfdcan1?
 
 static uint8_t RxData[8];
-static FDCAN_RxHeaderTypeDef RxHeader;
+static FDCAN_RxHeaderTypeDef RxHeader; // <- Esse no lugar de hfdcan1?
 
 static uint8_t inverter_can_status;
+
+extern FDCAN_HandleTypeDef hfdcan1; // <- Ou esse mesmo?
 
 bool is_there_inverter_can_transmit_error();
 
@@ -63,6 +66,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
             /* Reception Error */
             Error_Handler();
         }
+    osMessageQueuePut(q_ids_can_inverterHandle, &hfdcan1, NULL, osWaitForever); //colocar timeout
         osThreadFlagsSet(t_inverter_comm_errorHandle, INVERTER_CAN_ACTIVE);
         uint32_t id = RxHeader.Identifier;
         for (int i = 0; i < 4; ++i) {

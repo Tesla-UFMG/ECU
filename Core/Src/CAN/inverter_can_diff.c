@@ -6,18 +6,20 @@
  */
 
 
-#include "CAN/inverter_can.h"
-
-#include "CAN/CAN_handler.h"
-#include "CAN/inverter_can_data_manager.h"
-#include "leds/debug_leds_handler.h"
-#include "util/error_treatment.h"
-#include "util/global_definitions.h"
-#include "util/global_instances.h"
-#include "util/util.h"
-#include "cmsis_os.h"
 #include "CAN/CAN_IDs.h"
 #include "util/global_variables.h"
+#include "util/global_instances.h"
+
+//#include "CAN/inverter_can.h"
+
+//#include "CAN/CAN_handler.h"
+//#include "CAN/inverter_can_data_manager.h"
+//#include "leds/debug_leds_handler.h"
+//#include "util/error_treatment.h"
+//#include "util/global_definitions.h"
+//#include "util/util.h"
+//#include "cmsis_os.h"
+
 
 
 extern FDCAN_HandleTypeDef hfdcan1;

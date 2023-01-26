@@ -5,6 +5,7 @@
  *      Author: caio
  */
 
+#include "CAN/inverter_can_diff.h"
 
 #include "CAN/CAN_IDs.h"
 #include "util/global_variables.h"

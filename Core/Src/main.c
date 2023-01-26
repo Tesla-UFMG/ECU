@@ -1195,16 +1195,18 @@ __weak void main_task(void *argument)
 * @retval None
 */
 /* USER CODE END Header_inverter_diff */
-void inverter_diff(void *argument)
-{
+
+//void inverter_diff(void *argument)
+//{
   /* USER CODE BEGIN inverter_diff */
   /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
+//  for(;;)
+//  {
+//    osDelay(1);
+//  }
   /* USER CODE END inverter_diff */
-}
+//}
+
 
 /**
   * @brief  Period elapsed callback in non blocking mode

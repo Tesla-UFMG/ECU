@@ -67,7 +67,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
             Error_Handler();
         }
     osMessageQueuePut(q_ids_can_inverterHandle, &hfdcan1, NULL, osWaitForever); //colocar timeout
-        osThreadFlagsSet(t_inverter_comm_errorHandle, INVERTER_CAN_ACTIVE);
+        //osThreadFlagsSet(t_inverter_comm_errorHandle, INVERTER_CAN_ACTIVE);
         uint32_t id = RxHeader.Identifier;
         for (int i = 0; i < 4; ++i) {
             can_vars_inverter_e var_name = inverter_get_var_name_from_id_and_pos(id, i);

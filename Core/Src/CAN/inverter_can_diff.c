@@ -19,7 +19,10 @@
 #include "CAN/CAN_IDs.h"
 #include "util/global_variables.h"
 
+
 extern FDCAN_HandleTypeDef hfdcan1;
+
+static FDCAN_RxHeaderTypeDef RxHeader;
 
 void inverter_diff(void* argument) {
     UNUSED(argument);
@@ -28,11 +31,28 @@ void inverter_diff(void* argument) {
         //ECU_ENABLE_BREAKPOINT_DEBUG();
 
 
-        osMessageQueueGet(q_ids_can_inverterHandle, &hfdcan1, NULL, osWaitForever); //colocar timeout
-        //ideia : task que pega os primeiros elementos a sairem dessa queue até
-        //que receba um id do inversor esquerdo (range 100-103) e do direito (range 200 a 203)
-        //sinal = RxHeader.Identifier;
-        // id inversor esquerdo 0x300 e id inversor direito 0x301;
+    	uint32_t id = RxHeader.Identifier;		// a variável 'id' recebe o identificador da mensagem
+
+    	osMessageQueueGet(q_ids_can_inverterHandle, &hfdcan1, NULL, osWaitForever); // pega a can dos dois inversores da fila de mensagem.
+    																				// colocar timeout.
+
+
+        bool right_inv_received = false;	// bools que indicam se chegou alguma mensagem
+        bool left_inv_received = false;		// de cada inversor (vide estrutura condicional abaixo)
+
+        if (id == ID_RIGHT_INVERTER) {
+        	right_inv_received = true;
+        }
+
+        if (id == ID_LEFT_INVERTER) {
+        	left_inv_received = true;
+        }
+
+        if ( (left_inv_received && right_inv_received) == true){			// se chegar mensagem dos dois inversores, a flag é setada
+		osThreadFlagsSet(t_inverter_comm_errorHandle, INVERTER_CAN_ACTIVE);
+        }
+
+
     }
 }
 

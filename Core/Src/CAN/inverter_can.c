@@ -8,25 +8,22 @@
 #include "CAN/inverter_can.h"
 
 #include "CAN/CAN_handler.h"
-#include "CAN/inverter_can_diff.h"
 #include "CAN/inverter_can_data_manager.h"
 #include "leds/debug_leds_handler.h"
 #include "util/error_treatment.h"
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
 #include "util/util.h"
-#include "cmsis_os.h"
 
 static FDCAN_HandleTypeDef* can_ptr;
 
-static FDCAN_TxHeaderTypeDef TxHeader; // <- Esse no lugar de hfdcan1?
+static FDCAN_TxHeaderTypeDef TxHeader;
 
 static uint8_t RxData[8];
-static FDCAN_RxHeaderTypeDef RxHeader; // <- Esse no lugar de hfdcan1?
+static FDCAN_RxHeaderTypeDef RxHeader;
 
 static uint8_t inverter_can_status;
 
-extern FDCAN_HandleTypeDef hfdcan1; // <- Ou esse mesmo?
 
 bool is_there_inverter_can_transmit_error();
 
@@ -60,17 +57,17 @@ void inverter_can_transmit(uint32_t id, uint16_t* data) {
     osDelay(CAN_DELAY);
 }
 
-// Callback function called when any inverter message is received via CAN
+// Callback function called when both left and right inverters messages are received via CAN
 void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs) {
     if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
         if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
             /* Reception Error */
             Error_Handler();
         }
-    osMessageQueuePut(q_ids_can_inverterHandle, &hfdcan1, 0, osWaitForever); //colocar timeout
-        //osThreadFlagsSet(t_inverter_comm_errorHandle, INVERTER_CAN_ACTIVE);
+
         uint32_t id = RxHeader.Identifier;
-    //inverter_diff();
+        osMessageQueuePut(q_ids_can_inverterHandle, &id, 0, osWaitForever);
+
         for (int i = 0; i < 4; ++i) {
             can_vars_inverter_e var_name = inverter_get_var_name_from_id_and_pos(id, i);
 

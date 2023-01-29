@@ -172,13 +172,8 @@ Mcu.PinsNb=41
 Mcu.ThirdPartyNb=0
 Mcu.UserConstants=
 Mcu.UserName=STM32H743VITx
-<<<<<<< HEAD
 MxCube.Version=6.6.1
 MxDb.Version=DB.6.0.60
-=======
-MxCube.Version=6.5.0
-MxDb.Version=DB.6.0.50
->>>>>>> f7a424f19d2664efe59243152dfb057b028108af
 NVIC.BusFault_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false\:false
 NVIC.DMA1_Stream0_IRQn=true\:5\:0\:false\:false\:true\:true\:false\:true\:true
 NVIC.DebugMonitor_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false\:false

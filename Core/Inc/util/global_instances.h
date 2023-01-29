@@ -31,6 +31,7 @@ extern osThreadId_t t_RTDHandle;
 extern osThreadId_t t_pilot_resetHandle;
 extern osThreadId_t t_inverter_comm_errorHandle;
 extern osThreadId_t t_odometer_saveHandle;
+extern osThreadId_t t_dynamic_controls_choiceHandle;
 
 // EVENT FLAGS
 extern osEventFlagsId_t e_ECU_control_flagsHandle;

@@ -88,12 +88,11 @@ FDCAN2.RxFifo1ElmtsNbr=32
 FDCAN2.TxBuffersNbr=32
 FDCAN2.TxEventsNbr=32
 FDCAN2.TxFifoQueueElmtsNbr=32
-FREERTOS.Events01=e_ECU_control_flags,Dynamic,NULL
 FREERTOS.FootprintOK=true
-FREERTOS.IPParameters=Tasks01,configMINIMAL_STACK_SIZE,FootprintOK,Queues01,configMAX_TASK_NAME_LEN,Mutexes01,configENABLE_FPU,configTOTAL_HEAP_SIZE,configUSE_MALLOC_FAILED_HOOK,configUSE_STATS_FORMATTING_FUNCTIONS,configCHECK_FOR_STACK_OVERFLOW,Timers01,Events01
+FREERTOS.IPParameters=Tasks01,configMINIMAL_STACK_SIZE,Queues01,configMAX_TASK_NAME_LEN,Mutexes01,configENABLE_FPU,configTOTAL_HEAP_SIZE,configUSE_MALLOC_FAILED_HOOK,configUSE_STATS_FORMATTING_FUNCTIONS,configCHECK_FOR_STACK_OVERFLOW,Timers01,FootprintOK
 FREERTOS.Mutexes01=m_state_parameter_mutex,Dynamic,NULL
 FREERTOS.Queues01=q_encoder_int_message,16,encoder_int_message_t,0,Dynamic,NULL,NULL;q_torque_message,16,torque_message_t,0,Dynamic,NULL,NULL;q_ref_torque_message,16,ref_torque_t,0,Dynamic,NULL,NULL;q_datalog_message,128,datalog_message_t,0,Dynamic,NULL,NULL;q_debug_leds_message,16,debug_led_message_t,0,Dynamic,NULL,NULL;q_rgb_led_message,16,rgb_led_message_t,0,Dynamic,NULL,NULL;q_throttle_control,16,uint16_t,0,Dynamic,NULL,NULL;q_encoder_speeds_message,1,encoder_speeds_message_t,0,Dynamic,NULL,NULL;q_odometer_calc_save_message,1,odometer_message_t,0,Dynamic,NULL,NULL
-FREERTOS.Tasks01=t_main_task,24,1024,main_task,As weak,NULL,Dynamic,NULL,NULL;t_torque_parameters,8,1024,torque_parameters,As external,NULL,Dynamic,NULL,NULL;t_datalogger,8,1024,datalogger,As external,NULL,Dynamic,NULL,NULL;t_APPS_read,8,1024,APPS_read,As external,NULL,Dynamic,NULL,NULL;t_steering_read,8,1024,steering_read,As external,NULL,Dynamic,NULL,NULL;t_encoder_speed_calc,8,1024,encoder_speed_calc,As external,NULL,Dynamic,NULL,NULL;t_odometer_calc,8,1024,odometer_calc,As external,NULL,Dynamic,NULL,NULL;t_torque_message,8,1024,torque_message,As external,NULL,Dynamic,NULL,NULL;t_torque_manager,8,1024,torque_manager,As external,NULL,Dynamic,NULL,NULL;t_debug_leds,8,1024,debug_leds,As external,NULL,Dynamic,NULL,NULL;t_rgb_led,8,1024,rgb_led,As external,NULL,Dynamic,NULL,NULL;t_seleciona_modo,8,1024,seleciona_modo,As external,NULL,Dynamic,NULL,NULL;t_RTD,8,1024,RTD,As external,NULL,Dynamic,NULL,NULL;t_throttle_control,8,1024,throttle_control,As external,NULL,Dynamic,NULL,NULL;t_datalog_acquisition,8,1024,datalog_acquisition,As external,NULL,Dynamic,NULL,NULL;t_inverter_comm_error,8,1024,inverter_comm_error,As external,NULL,Dynamic,NULL,NULL;t_inverter_datalog,8,1024,inverter_datalog,As external,NULL,Dynamic,NULL,NULL;t_pilot_reset,8,1024,pilot_reset,As external,NULL,Dynamic,NULL,NULL;t_buttons_handler,8,1024,buttons_handler,As external,NULL,Dynamic,NULL,NULL;t_speed_datalog,8,1024,speed_datalog,As external,NULL,Dynamic,NULL,NULL;t_odometer_save,8,1024,odometer_save,As external,NULL,Dynamic,NULL,NULL
+FREERTOS.Tasks01=t_main_task,24,1024,main_task,As weak,NULL,Dynamic,NULL,NULL;t_torque_parameters,8,1024,torque_parameters,As external,NULL,Dynamic,NULL,NULL;t_datalogger,8,1024,datalogger,As external,NULL,Dynamic,NULL,NULL;t_APPS_read,8,1024,APPS_read,As external,NULL,Dynamic,NULL,NULL;t_steering_read,8,1024,steering_read,As external,NULL,Dynamic,NULL,NULL;t_encoder_speed_calc,8,1024,encoder_speed_calc,As external,NULL,Dynamic,NULL,NULL;t_odometer_calc,8,1024,odometer_calc,As external,NULL,Dynamic,NULL,NULL;t_torque_message,8,1024,torque_message,As external,NULL,Dynamic,NULL,NULL;t_torque_manager,8,1024,torque_manager,As external,NULL,Dynamic,NULL,NULL;t_debug_leds,8,1024,debug_leds,As external,NULL,Dynamic,NULL,NULL;t_rgb_led,8,1024,rgb_led,As external,NULL,Dynamic,NULL,NULL;t_seleciona_modo,8,1024,seleciona_modo,As external,NULL,Dynamic,NULL,NULL;t_RTD,8,1024,RTD,As external,NULL,Dynamic,NULL,NULL;t_throttle_control,8,1024,throttle_control,As external,NULL,Dynamic,NULL,NULL;t_datalog_acquisition,8,1024,datalog_acquisition,As external,NULL,Dynamic,NULL,NULL;t_inverter_comm_error,8,1024,inverter_comm_error,As external,NULL,Dynamic,NULL,NULL;t_inverter_datalog,8,1024,inverter_datalog,As external,NULL,Dynamic,NULL,NULL;t_pilot_reset,8,1024,pilot_reset,As external,NULL,Dynamic,NULL,NULL;t_buttons_handler,8,1024,buttons_handler,As external,NULL,Dynamic,NULL,NULL;t_speed_datalog,8,1024,speed_datalog,As external,NULL,Dynamic,NULL,NULL;t_odometer_save,8,1024,odometer_save,As external,NULL,Dynamic,NULL,NULL;t_dynamic_controls_choice,8,1024,dynamic_controls_choice,As external,NULL,Dynamic,NULL,NULL
 FREERTOS.Timers01=tim_SU_F_error,errors_with_timer_callback,osTimerOnce,As external,SU_F_ERROR_FLAG,Dynamic,NULL;tim_APPS_error,errors_with_timer_callback,osTimerOnce,As external,APPS_ERROR_FLAG,Dynamic,NULL;tim_inverter_BUS_OFF_error,inverter_BUS_OFF_error_callback,osTimerOnce,As external,NULL,Dynamic,NULL;tim_inverter_ready,inverter_ready_callback,osTimerOnce,As external,NULL,Dynamic,NULL;tim_inverter_can_transmit_error,errors_with_timer_callback,osTimerOnce,As external,INVERTER_CAN_TRANSMIT_ERROR_FLAG,Dynamic,NULL
 FREERTOS.configCHECK_FOR_STACK_OVERFLOW=2
 FREERTOS.configENABLE_FPU=1
@@ -172,8 +171,13 @@ Mcu.PinsNb=41
 Mcu.ThirdPartyNb=0
 Mcu.UserConstants=
 Mcu.UserName=STM32H743VITx
+<<<<<<< HEAD
 MxCube.Version=6.6.1
 MxDb.Version=DB.6.0.60
+=======
+MxCube.Version=6.5.0
+MxDb.Version=DB.6.0.50
+>>>>>>> f7a424f19d2664efe59243152dfb057b028108af
 NVIC.BusFault_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false\:false
 NVIC.DMA1_Stream0_IRQn=true\:5\:0\:false\:false\:true\:true\:false\:true\:true
 NVIC.DebugMonitor_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false\:false

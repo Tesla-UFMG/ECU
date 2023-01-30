@@ -25,23 +25,20 @@ void inverter_diff(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        uint32_t id;	//pq foi inicializada com esse valor?
         const bool left_inv_received;
         const bool right_inv_received;
         const bool left_inv_error;
         const bool right_inv_error;
         uint8_t inv_error_type;
 
-        //while(timer aleatorio){  <- COLOCO ESSE WHILE AQ?
 
-        	id = RxHeader.Identifier;
 
-        	osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever);
+        osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever);
 
-        	left_inv_received = (id  >= 100 && id <= 103);
-        	right_inv_received = (id  >= 200 && id <= 203);
+        left_inv_received = (id  >= 100 && id <= 103);
+        right_inv_received = (id  >= 200 && id <= 203);
 
-        }
+
 
         left_inv_error = (!left_inv_received);
         right_inv_error = (!right_inv_received);
@@ -65,6 +62,11 @@ void inverter_diff(void* argument) {
         	default:
         		osThreadFlagsSet(t_inverter_comm_errorHandle, INVERTER_CAN_ACTIVE);
 
+
+        //FALTA UTILIZAR O TASK inverter_comm_error, usando o timer
+        //USAR O case osFlagsErrorTimeout E O default DELE
+
         }
-    }
+	}
 }
+

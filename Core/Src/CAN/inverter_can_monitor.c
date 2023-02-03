@@ -14,6 +14,14 @@
 
 void set_inverter_communication_error();
 void precharge_monitor();
+void left_inv_error_callback();
+void right_inv_error_callback();
+void inverter_can_diff(uint32_t id);
+
+static bool left_inv_received = 0;
+static bool right_inv_received = 0;
+static FDCAN_RxHeaderTypeDef RxHeader;
+
 
 void inverter_comm_error(void* argument) {
     UNUSED(argument);
@@ -21,18 +29,18 @@ void inverter_comm_error(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        switch (osThreadFlagsWait(INVERTER_CAN_ACTIVE, osFlagsWaitAny,
-                                  INVERTER_NO_MESSAGE_ERROR_TIME)) {
+        uint32_t id = RxHeader.Identifier; //iniciei com esse valor pois está dando o erro " 'id' undeclared "
 
-            // when the task has been called due to timeout it means the ECU is not
-            // receiving messages from the inverter
-            case osFlagsErrorTimeout: set_inverter_communication_error(); break;
+        switch (osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever)) {
 
-            // when the task has been called by the thread flag it means the ECU is
-            // communicating with the inverter
             default:
-                clear_error(INVERTER_COMM_ERROR_FLAG);
-                precharge_monitor();
+                clear_error(INVERTER_COMM_ERROR_FLAG); //manter?
+                precharge_monitor();				   //manter?
+
+            	// differentiates CAN signals from both inverters
+            	// and indicates if those are ready
+            	inverter_can_diff(id);
+
                 break;
         }
     }
@@ -46,6 +54,43 @@ void set_inverter_communication_error() {
     // stop the timer that sets the flag
     osTimerStop(tim_inverter_readyHandle);
 }
+
+void inverter_can_diff(uint32_t id){
+	// redundancy for setting the flags
+	if (id  >= 100 && id <= 103)	{
+		left_inv_received = 1;
+	}
+	if (id  >= 200 && id <= 203)	{
+		right_inv_received = 1;
+	}
+
+	// indicates whether the car is ready
+	if	((!LEFT_INVERTER_CAN_ERROR) && (!RIGHT_INVERTER_CAN_ERROR) &&
+	   (right_inv_received == 1) && (left_inv_received == 1))	{
+		// set the flag indicating the inverter is ready
+		osEventFlagsSet(e_ECU_control_flagsHandle, INVERTER_READY);
+		// set the flag indicating the inverter CAN is active
+		osThreadFlagsSet(t_inverter_comm_errorHandle, INVERTER_CAN_ACTIVE);
+		// stop the timer that sets both flags
+		osTimerStop(tim_left_inv_errorHandle);
+		osTimerStop(tim_right_inv_errorHandle);
+	}
+}
+
+void left_inv_error_callback()	{
+		// alert the main_task that the error is present
+	    issue_error(LEFT_INVERTER_CAN_ERROR, /*should_set_control_event_flag=*/true);
+	    // reset the flag that indicates if the inverter is ready
+	    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
+}
+
+void right_inv_error_callback()	{
+	// alert the main_task that the error is present
+		    issue_error(RIGHT_INVERTER_CAN_ERROR, /*should_set_control_event_flag=*/true);
+		    // reset the flag that indicates if the inverter is ready
+		    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
+}
+
 
 void precharge_monitor() {
     // start the timer only when the flag is reseted and the timer is not alredy

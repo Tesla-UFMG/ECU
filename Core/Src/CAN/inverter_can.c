@@ -36,6 +36,8 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
                                      uint32_t /*ErrorStatusITs*/);
     initialize_CAN(can_ptr, CAN_inverter_receive_callback, CAN_inverter_error_callback,
                    &TxHeader);
+    osTimerStart(tim_left_inv_errorHandle, LEFT_INV_ERROR_TIME);
+    osTimerStart(tim_right_inv_errorHandle, RIGHT_INV_ERROR_TIME);
 }
 
 bool is_there_inverter_can_transmit_error() {

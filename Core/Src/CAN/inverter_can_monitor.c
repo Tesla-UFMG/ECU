@@ -20,6 +20,8 @@ void inverter_can_diff(uint32_t id);
 
 static bool left_inv_received = 0;
 static bool right_inv_received = 0;
+static bool is_left_inv_active = 0;
+static bool is_right_inv_active = 0;
 static FDCAN_RxHeaderTypeDef RxHeader;
 
 
@@ -65,8 +67,8 @@ void inverter_can_diff(uint32_t id){
 	}
 
 	// indicates whether the car is ready
-	if	((!LEFT_INVERTER_CAN_ERROR) && (!RIGHT_INVERTER_CAN_ERROR) &&
-	   (right_inv_received == 1) && (left_inv_received == 1))	{
+	if	(is_left_inv_active && is_right_inv_active &&
+	    (right_inv_received == 1) && (left_inv_received == 1))	{
 		// set the flag indicating the inverter is ready
 		osEventFlagsSet(e_ECU_control_flagsHandle, INVERTER_READY);
 		// set the flag indicating the inverter CAN is active
@@ -78,17 +80,20 @@ void inverter_can_diff(uint32_t id){
 }
 
 void left_inv_error_callback()	{
-		// alert the main_task that the error is present
-	    issue_error(LEFT_INVERTER_CAN_ERROR, /*should_set_control_event_flag=*/true);
-	    // reset the flag that indicates if the inverter is ready
-	    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
+	 // alert the main_task that the error is present
+	 issue_error(LEFT_INVERTER_CAN_ERROR_FLAG, /*should_set_control_event_flag=*/true);
+	 // reset the flag that indicates if the inverter is ready
+	 osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
+	 is_left_inv_active = (!get_individual_flag(e_ECU_control_flagsHandle, LEFT_INVERTER_CAN_ERROR_FLAG));
 }
 
 void right_inv_error_callback()	{
-	// alert the main_task that the error is present
-		    issue_error(RIGHT_INVERTER_CAN_ERROR, /*should_set_control_event_flag=*/true);
-		    // reset the flag that indicates if the inverter is ready
-		    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
+	 // alert the main_task that the error is present
+	 issue_error(RIGHT_INVERTER_CAN_ERROR_FLAG, /*should_set_control_event_flag=*/true);
+	 // reset the flag that indicates if the inverter is ready
+	 osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
+	 is_right_inv_active = (!get_individual_flag(e_ECU_control_flagsHandle, RIGHT_INVERTER_CAN_ERROR_FLAG));
+
 }
 
 

@@ -214,13 +214,13 @@ const osThreadAttr_t t_odometer_save_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_inverter_diff  //É realmente necessária essa task? se não, lembrar de apagar no .ioc tbm
+/* Definitions for t_inverter_diff */
 osThreadId_t t_inverter_diffHandle;
 const osThreadAttr_t t_inverter_diff_attributes = {
   .name = "t_inverter_diff",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
-}; */
+};
 /* Definitions for q_encoder_int_message */
 osMessageQueueId_t q_encoder_int_messageHandle;
 const osMessageQueueAttr_t q_encoder_int_message_attributes = {
@@ -441,10 +441,10 @@ int main(void)
   tim_inverter_can_transmit_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, (void*) INVERTER_CAN_TRANSMIT_ERROR_FLAG, &tim_inverter_can_transmit_error_attributes);
 
   /* creation of tim_left_inv_error */
-  tim_left_inv_errorHandle = osTimerNew(left_inv_error_callback, osTimerPeriodic, (void*) LEFT_INVERTER_CAN_ERROR, &tim_left_inv_error_attributes);
+  tim_left_inv_errorHandle = osTimerNew(left_inv_error_callback, osTimerPeriodic, (void*) LEFT_INVERTER_CAN_ERROR_FLAG, &tim_left_inv_error_attributes);
 
   /* creation of tim_right_inv_error */
-  tim_right_inv_errorHandle = osTimerNew(right_inv_error_callback, osTimerPeriodic, (void*) RIGHT_INVERTER_CAN_ERROR, &tim_right_inv_error_attributes);
+  tim_right_inv_errorHandle = osTimerNew(right_inv_error_callback, osTimerPeriodic, (void*) RIGHT_INVERTER_CAN_ERROR_FLAG, &tim_right_inv_error_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -549,8 +549,8 @@ int main(void)
   /* creation of t_odometer_save */
   t_odometer_saveHandle = osThreadNew(odometer_save, NULL, &t_odometer_save_attributes);
 
-  /* creation of t_inverter_diff
-  t_inverter_diffHandle = osThreadNew(inverter_diff, NULL, &t_inverter_diff_attributes);*/
+  /* creation of t_inverter_diff */
+  t_inverter_diffHandle = osThreadNew(inverter_diff, NULL, &t_inverter_diff_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -1206,6 +1206,23 @@ __weak void main_task(void *argument)
   /* USER CODE END 5 */
 }
 
+/* USER CODE BEGIN Header_inverter_diff */
+/**
+* @brief Function implementing the t_inverter_diff thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_inverter_diff */
+void inverter_diff(void *argument)
+{
+  /* USER CODE BEGIN inverter_diff */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END inverter_diff */
+}
 
 /**
   * @brief  Period elapsed callback in non blocking mode

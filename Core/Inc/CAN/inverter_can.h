@@ -14,8 +14,7 @@ void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref);
 void inverter_can_transmit(uint32_t id, uint16_t* data);
 
 #define INVERTER_CAN_TRANSMIT_ERROR_TIMER 200
-#define LEFT_INV_ERROR_TIME (100 / portTICK_PERIOD_MS)
-#define RIGHT_INV_ERROR_TIME (100 / portTICK_PERIOD_MS)
+#define INV_COMM_ERROR_TIME (100 / portTICK_PERIOD_MS)
 #define BUS_OFF_ERROR_TIME (2000 / portTICK_PERIOD_MS)
 
 #endif /* INC_INVERTER_CAN_H_ */

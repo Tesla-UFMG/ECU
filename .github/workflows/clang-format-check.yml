@@ -25,4 +25,4 @@ jobs:
       with:
         clang-format-version: '13'
         check-path: 'Core'
-        exclude-regex: '(freertos|main.c|stm32h7xx_)'
+        exclude-regex: '(freertos|main.c|main.h|stm32h7xx|syscalls.c|sysmem.c|FreeRTOSConfig.h)'

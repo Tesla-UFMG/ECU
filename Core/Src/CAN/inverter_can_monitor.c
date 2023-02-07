@@ -59,7 +59,7 @@ void inverter_can_diff(uint32_t id){
 	if	(!get_individual_flag(e_ECU_control_flagsHandle, LEFT_INVERTER_COMM_ERROR_FLAG)
 	        && !get_individual_flag(e_ECU_control_flagsHandle,
 	                               RIGHT_INVERTER_COMM_ERROR_FLAG))	{
-		precharge_monitor(); //precarrega
+		precharge_monitor();
 	}
 }
 

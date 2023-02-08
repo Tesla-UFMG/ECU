@@ -1,4 +1,5 @@
 # Action from: https://github.com/marketplace/actions/clang-format-check
+# Placed in repository by Felipe Telles (felipe.melo.telles@gmail.com)
 
 name: clang-format
 
@@ -27,4 +28,5 @@ jobs:
       with:
         clang-format-version: '15'
         check-path: 'Core'
+        # In the following line all files exceptions should be defined
         exclude-regex: '(freertos|main.c|main.h|stm32h7xx|syscalls.c|sysmem.c|FreeRTOSConfig.h)'

@@ -1,3 +1,5 @@
+# Action from: https://github.com/marketplace/actions/clang-format-check
+
 name: clang-format Check
 
 # Controls when the workflow will run
@@ -23,6 +25,6 @@ jobs:
     - name: Run clang-format style check.
       uses: jidicula/clang-format-action@v4.10.2
       with:
-        clang-format-version: '13'
+        clang-format-version: '11'
         check-path: 'Core'
         exclude-regex: '(freertos|main.c|main.h|stm32h7xx|syscalls.c|sysmem.c|FreeRTOSConfig.h)'

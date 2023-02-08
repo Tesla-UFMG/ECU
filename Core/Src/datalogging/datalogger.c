@@ -11,10 +11,9 @@
 #include "cmsis_os.h"
 #include "util/global_definitions.h"
 
-volatile uint16_t datalog_data_holder[CAN_ID_QUAN];
+volatile uint16_t datalog_data_holder[CAN_GENERAL_ID_QUAN];
 
 extern osMessageQueueId_t q_datalog_messageHandle;
-
 
 void datalogger(void* argument) {
     UNUSED(argument);
@@ -44,19 +43,11 @@ void datalogger(void* argument) {
             for (uint16_t word = 0; word < 4; word++) {
                 internal_id = get_internal_id_from_pos_and_word(struct_pos, word);
                 // if internal id does not exist
-                if (internal_id == -1) {
-                    vet_tx[word] = 0;
-                } else {
-                    vet_tx[word] = datalog_data_holder[internal_id];
-                }
+                vet_tx[word] = (internal_id != -1) ? datalog_data_holder[internal_id] : 0;
             }
-            // transmit data via CAN
             external_id = get_external_id_from_struct_pos(struct_pos);
             general_can_transmit(external_id, vet_tx);
         }
-
-        // when extracting all queued items and sending, wait a certain amount of time to
-        // extract again
         osDelay(DATALOGGER_DELAY);
     }
 }

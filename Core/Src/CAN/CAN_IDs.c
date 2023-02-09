@@ -5,8 +5,6 @@
 
 static CAN_var_inf CAN_ID_map[CAN_GENERAL_ID_QUAN];
 
-// TODO(renanmoreira): talvez aumentar capacidade se precisar de mais ids de debug
-
 static datalog_send_t datalog_send_struct[QUANT_RESERVED_ID];
 
 static datalog_send_t aux_datalog_struct;
@@ -28,18 +26,22 @@ static void initialize_CAN_var_inf() {
 #undef CAN_GENERAL_LIST_DATA
 }
 
-int compare_function(const void* value1, const void* value2) {
+static int compare_function(const void* value1, const void* value2) {
     // Sort by ID
-    if (((CAN_var_inf*)value1)->id < ((CAN_var_inf*)value2)->id)
+    if (((CAN_var_inf*)value1)->id < ((CAN_var_inf*)value2)->id) {
         return -1;
-    else if (((CAN_var_inf*)value1)->id > ((CAN_var_inf*)value2)->id)
+    }
+    if (((CAN_var_inf*)value1)->id > ((CAN_var_inf*)value2)->id) {
         return +1;
+    }
 
     // Sort by position if ID is the same
-    else if (((CAN_var_inf*)value1)->pos < ((CAN_var_inf*)value2)->pos)
+    if (((CAN_var_inf*)value1)->pos < ((CAN_var_inf*)value2)->pos) {
         return -1;
-    else if (((CAN_var_inf*)value1)->pos > ((CAN_var_inf*)value2)->pos)
+    }
+    if (((CAN_var_inf*)value1)->pos > ((CAN_var_inf*)value2)->pos) {
         return +1;
+    }
 
     // ID and pos are the same
     return 0;
@@ -66,9 +68,10 @@ void initialize_CAN_IDs_struct() {
 static void populate_datalog_send_struct() {
     uint16_t j = 0;
     uint16_t i = 0;
-
-    for (j = 0; j < (uint16_t)quant_of_ext_id; j++) {
-        memset(aux_datalog_struct.pos, -1, sizeof(CAN_var_inf));
+    for (j = 0; j < quant_of_ext_id; j++) {
+        for (uint16_t k = 0; k < 4; k++) {
+            aux_datalog_struct.pos[k] = -1;
+        }
         do {
             aux_datalog_struct.external_ID            = CAN_ID_map[i].id;
             aux_datalog_struct.pos[CAN_ID_map[i].pos] = CAN_ID_map[i].var;

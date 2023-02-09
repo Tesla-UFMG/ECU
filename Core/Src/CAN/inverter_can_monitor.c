@@ -18,6 +18,12 @@ void left_inv_error_callback();
 void right_inv_error_callback();
 void inverter_can_diff(uint32_t id);
 
+//variaveis provisórias para teste do arduino
+//inicializadas com valor '2' para ver se passaram pela lógica de diferenciação
+uint8_t left_inv_sent = 2;
+uint8_t right_inv_sent = 2;
+uint8_t both_invs_sent = 2;
+
 
 
 
@@ -25,10 +31,12 @@ void inverter_can_diff(uint32_t id);
 void inverter_comm_error(void* argument) {
     UNUSED(argument);
 
+
+    uint32_t id;
+
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        uint32_t id; //na minha cabeça não faz sentido não colocar o rx header aqui, mas vamos fazer o teste pra ver se dá certo
 
         switch (osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever)) {
 
@@ -49,16 +57,22 @@ void inverter_can_diff(uint32_t id){
 	if (id  >= 100 && id <= 103)	{
 		osTimerStart(tim_left_inv_errorHandle, INV_COMM_ERROR_TIME);
 		clear_error(LEFT_INVERTER_COMM_ERROR_FLAG);
+		//teste arduino
+		left_inv_sent = 1;
 	}
 	if (id  >= 200 && id <= 203)	{
 		osTimerStart(tim_right_inv_errorHandle, INV_COMM_ERROR_TIME);
 		clear_error(RIGHT_INVERTER_COMM_ERROR_FLAG);
+		//teste arduino
+		right_inv_sent = 1;
 	}
 
 	// Calls the precharge_monitor() if there is no error flags
 	if	(!get_individual_flag(e_ECU_control_flagsHandle, LEFT_INVERTER_COMM_ERROR_FLAG)
 	        && !get_individual_flag(e_ECU_control_flagsHandle,
 	                               RIGHT_INVERTER_COMM_ERROR_FLAG))	{
+		//teste arduino
+		both_invs_sent = 1;
 		precharge_monitor();
 	}
 }
@@ -70,6 +84,9 @@ void left_inv_error_callback()	{
 	    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
 
 	    osTimerStop(tim_inverter_readyHandle);
+	    //teste
+	    left_inv_sent = 0;
+	    both_invs_sent = 0;
 }
 
 void right_inv_error_callback()	{
@@ -79,6 +96,9 @@ void right_inv_error_callback()	{
 	    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
 
 	    osTimerStop(tim_inverter_readyHandle);
+	    //teste
+	    right_inv_sent = 0;
+	    both_invs_sent = 0;
 
 }
 

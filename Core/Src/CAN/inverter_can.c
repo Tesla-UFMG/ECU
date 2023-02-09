@@ -24,6 +24,9 @@ static FDCAN_RxHeaderTypeDef RxHeader;
 
 static uint8_t inverter_can_status;
 
+// variável p/ visualizar dados no teste do arduino
+static uint16_t position[4] = {0, 0, 0, 0};
+
 
 bool is_there_inverter_can_transmit_error();
 
@@ -75,6 +78,8 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
             if ((int)var_name != -1) {
                 uint16_t data = concatenate_two_uint8_to_uint16(RxData + i * 2);
                 inverter_store_value(var_name, data);
+                // visualizando infos da mensagem no teste do arduino
+                position[i] = data;
             }
         }
 

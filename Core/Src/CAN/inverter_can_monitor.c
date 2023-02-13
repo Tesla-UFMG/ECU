@@ -23,7 +23,9 @@ void inverter_can_diff(uint32_t id);
 uint8_t left_inv_sent = 2;
 uint8_t right_inv_sent = 2;
 uint8_t both_invs_sent = 2;
-bool problema_comunicacao;
+
+//variavel de teste
+bool problema_comunicacao = true;
 
 
 
@@ -37,7 +39,7 @@ void inverter_comm_error(void* argument) {
 
 
     for (;;) {
-        ECU_ENABLE_BREAKPOINT_DEBUG();
+        //ECU_ENABLE_BREAKPOINT_DEBUG();
 
         uint32_t id;
         //bool problema_comunicacao = false;
@@ -57,6 +59,7 @@ void inverter_comm_error(void* argument) {
         switch (osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever)) {
 
                     case osOK:
+                    	problema_comunicacao = false;
                     	inverter_can_diff(id);
                         break;
                     case osErrorTimeout:

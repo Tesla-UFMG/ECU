@@ -472,7 +472,7 @@ int main(void)
   q_odometer_calc_save_messageHandle = osMessageQueueNew (1, sizeof(odometer_message_t), &q_odometer_calc_save_message_attributes);
 
   /* creation of q_ids_can_inverter */
-  q_ids_can_inverterHandle = osMessageQueueNew (16, sizeof(uint16_t), &q_ids_can_inverter_attributes);
+  q_ids_can_inverterHandle = osMessageQueueNew (32, sizeof(uint32_t), &q_ids_can_inverter_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */

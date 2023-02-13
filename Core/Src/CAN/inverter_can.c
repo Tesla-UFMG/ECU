@@ -27,6 +27,10 @@ static uint8_t inverter_can_status;
 // variável p/ visualizar dados no teste do arduino
 static uint16_t position[4] = {0, 0, 0, 0};
 
+//verificando se o osMessageQueuePut roda
+osStatus_t retorno;
+uint8_t teste;
+
 
 bool is_there_inverter_can_transmit_error();
 
@@ -71,6 +75,21 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 
         uint32_t id = RxHeader.Identifier;
         osMessageQueuePut(q_ids_can_inverterHandle, &id, 0, osWaitForever);
+
+        // vendo se a osMessage roda
+
+
+        retorno = osMessageQueuePut(q_ids_can_inverterHandle, &id, 0, 500);
+
+        if (retorno == osOK)
+        	teste = 1;
+        else if (retorno == osErrorTimeout)
+        	teste = 2;
+        else if (retorno == osErrorResource)
+        	teste = 3;
+        else if (retorno == osErrorParameter)
+        	teste = 4;
+        //fim do "vendo se roda"
 
         for (int i = 0; i < 4; ++i) {
             can_vars_inverter_e var_name = inverter_get_var_name_from_id_and_pos(id, i);

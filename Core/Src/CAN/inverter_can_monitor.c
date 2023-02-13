@@ -23,6 +23,8 @@ void inverter_can_diff(uint32_t id);
 uint8_t left_inv_sent = 2;
 uint8_t right_inv_sent = 2;
 uint8_t both_invs_sent = 2;
+bool problema_comunicacao;
+
 
 
 
@@ -32,21 +34,36 @@ void inverter_comm_error(void* argument) {
     UNUSED(argument);
 
 
-    uint32_t id;
+
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
+        uint32_t id;
+        //bool problema_comunicacao = false;
+
+
+        /*switch (osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever)) {
+
+                    default:
+                    	// differentiates CAN signals from both inverters
+                    	// and indicates if those are ready
+                    	inverter_can_diff(id);
+
+                        break;
+                }*/
+
 
         switch (osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever)) {
 
-            default:
-            	// differentiates CAN signals from both inverters
-            	// and indicates if those are ready
-            	inverter_can_diff(id);
+                    case osOK:
+                    	inverter_can_diff(id);
+                        break;
+                    case osErrorTimeout:
+                        problema_comunicacao = true;
+                        break;
 
-                break;
-        }
+                }
     }
 }
 

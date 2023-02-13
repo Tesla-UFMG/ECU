@@ -23,10 +23,7 @@ void set_RTD();
 void RTD(void* argument) {
     UNUSED(argument);
 
-    // seta o led rgb na primeira execucao do codigo --- se n tiver erros acontecendo
-    //for (;;){
-
-    	//if(!(ALL_MINOR_ERROR_FLAG | ALL_SEVERE_ERROR_FLAG)){
+    // seta o led rgb na primeira execucao do codigo
     		set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
 
     		for (;;) {
@@ -45,8 +42,6 @@ void RTD(void* argument) {
     				}
     			}
     		}
-    	//}
-    //}
 }
 
 void exit_RTD() {

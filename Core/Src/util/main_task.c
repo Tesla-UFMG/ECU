@@ -21,15 +21,15 @@
 void set_the_pattern(uint32_t delay, cores_t *pattern){
 	int lenght = pattern[0]; //header
 	for(int i = 1; i<=lenght; i++){
-		set_rgb_led(pattern[i], NO_CHANGE);
+		set_rgb_led(pattern[i], BLINK500);
 		osDelay(delay);
 
 	}
-
 }
-cores_t pattern[4]={};
+
 void led_color_response(uint32_t flag){
 
+	cores_t pattern[4]={};
 	uint32_t delay;
 	delay = 500;
 

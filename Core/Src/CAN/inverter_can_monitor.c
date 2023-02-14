@@ -7,86 +7,76 @@
 
 #include "CAN/inverter_can_monitor.h"
 
+#include "CAN/inverter_can.h"
 #include "util/error_treatment.h"
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
 #include "util/util.h"
-#include "CAN/inverter_can.h"
 
 void precharge_monitor();
 void left_inv_error_callback();
 void right_inv_error_callback();
 void inverter_can_diff(uint32_t id);
 
-
-
 void inverter_comm_error(void* argument) {
     UNUSED(argument);
 
-
-
-
     for (;;) {
+
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
         uint32_t id;
 
         switch (osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever)) {
 
-                    case osOK:
-                    	inverter_can_diff(id);
-                        break;
-                    default:
-                        break;
-
-                }
+            case osOK: inverter_can_diff(id); break;
+            default: break;
+        }
     }
 }
 
-void inverter_can_diff(uint32_t id){
+void inverter_can_diff(uint32_t id) {
 
-	// Restart the timer and clear the error if any message on each inverter
-	// gets received
-	if (id  >= 100 && id <= 103)	{
-		osTimerStart(tim_left_inv_errorHandle, INV_COMM_ERROR_TIME);
-		clear_error(LEFT_INVERTER_COMM_ERROR_FLAG);
-	}
-	if (id  >= 200 && id <= 203)	{
-		osTimerStart(tim_right_inv_errorHandle, INV_COMM_ERROR_TIME);
-		clear_error(RIGHT_INVERTER_COMM_ERROR_FLAG);
-	}
+    // Restart the timer and clear the error if any message on each inverter
+    // gets received
+    if (id >= 100 && id <= 103) {
+        osTimerStart(tim_left_inv_errorHandle, INV_COMM_ERROR_TIME);
+        clear_error(LEFT_INVERTER_COMM_ERROR_FLAG);
+    }
+    if (id >= 200 && id <= 203) {
+        osTimerStart(tim_right_inv_errorHandle, INV_COMM_ERROR_TIME);
+        clear_error(RIGHT_INVERTER_COMM_ERROR_FLAG);
+    }
 
-	// Calls the precharge_monitor() if there is no error flags
-	if	(!get_individual_flag(e_ECU_control_flagsHandle, LEFT_INVERTER_COMM_ERROR_FLAG)
-	        && !get_individual_flag(e_ECU_control_flagsHandle,
-	                               RIGHT_INVERTER_COMM_ERROR_FLAG))	{
-		precharge_monitor();
-	}
+    // Calls the precharge_monitor() if there is no error flags
+    if (!get_individual_flag(e_ECU_control_flagsHandle, LEFT_INVERTER_COMM_ERROR_FLAG)
+        && !get_individual_flag(e_ECU_control_flagsHandle,
+                                RIGHT_INVERTER_COMM_ERROR_FLAG)) {
+        precharge_monitor();
+    }
 }
 
 // Callback function set if ECU does not receive any message from the left inverter
 // for 500ms
-void left_inv_error_callback()	{
+void left_inv_error_callback() {
 
-		issue_error(LEFT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
+    issue_error(LEFT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
 
-	    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
+    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
 
-	    osTimerStop(tim_inverter_readyHandle);
+    osTimerStop(tim_inverter_readyHandle);
 }
 
 // Callback function set if ECU does not receive any message from the right inverter
 // for 500ms
-void right_inv_error_callback()	{
+void right_inv_error_callback() {
 
-		issue_error(RIGHT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
+    issue_error(RIGHT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
 
-	    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
+    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
 
-	    osTimerStop(tim_inverter_readyHandle);
-
+    osTimerStop(tim_inverter_readyHandle);
 }
-
 
 void precharge_monitor() {
     // start the timer only when the flag is reseted and the timer is not alredy

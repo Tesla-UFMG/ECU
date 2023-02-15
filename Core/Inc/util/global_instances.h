@@ -25,8 +25,6 @@ extern osMessageQueueId_t q_encoder_speeds_messageHandle;
 extern osMessageQueueId_t q_odometer_calc_save_messageHandle;
 extern osMessageQueueId_t q_ids_can_inverterHandle;
 
-
-
 // TASKS
 extern osThreadId_t t_main_taskHandle;
 extern osThreadId_t t_seleciona_modoHandle;

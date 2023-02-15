@@ -31,13 +31,13 @@ void inverter_comm_error(void* argument) {
 
         uint32_t id;
 
-        switch (osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever)) {
+        if (osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever) == osOk) {
 
-                    case osOK:
-                    	inverter_can_diff(id);
-                        break;
-                    default:
-                        break;
+
+                   	inverter_can_diff(id);
+
+
+
 
                 }
     }

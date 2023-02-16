@@ -4,7 +4,7 @@
  *  Created on: Jun 3, 2020
  *      Author: renanmoreira
  */
-
+#include <string.h>
 #include "util/main_task.h"
 
 #include "cmsis_os.h"
@@ -18,16 +18,49 @@
 #include "util/util.h"
 #include "util/global_definitions.h"
 
+
 void set_the_pattern(uint32_t delay, cores_t *pattern){
-	int lenght = pattern[0]; //header
-	for(int i = 1; i<=lenght; i++){
+	for(int i = 0; i<=2; i++){
 		set_rgb_led(pattern[i], BLINK500);
 		osDelay(delay);
 
 	}
 }
+#define pattern_table(c1, c2, c3) ((cores_t[]){c1, c2, c3})
 
 void led_color_response(uint32_t flag){
+
+    cores_t pattern[3] = {};
+    uint32_t delay = 500;
+
+    switch(flag) {
+        // Hard error
+        case INVERTER_BUS_OFF_ERROR_FLAG:
+            memcpy(pattern, pattern_table(VERMELHO, AZUL, BRANCO), sizeof(pattern));
+            break;
+        case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
+            memcpy(pattern, pattern_table(VERMELHO, AZUL, AMARELO), sizeof(pattern));
+            break;
+        case INVERTER_COMM_ERROR_FLAG:
+            memcpy(pattern, pattern_table(VERMELHO, AZUL, VERDE), sizeof(pattern));
+            break;
+        case SU_F_ERROR_FLAG:
+            memcpy(pattern, pattern_table(VERMELHO, BRANCO, BRANCO), sizeof(pattern));
+            break;
+        // Soft error
+        case APPS_ERROR_FLAG:
+            memcpy(pattern, pattern_table(AMARELO, VERDE, BRANCO), sizeof(pattern));
+            break;
+        case BSE_ERROR_FLAG:
+            memcpy(pattern, pattern_table(AMARELO, BRANCO, ROXO), sizeof(pattern));
+            break;
+    }
+    set_the_pattern(delay, pattern);
+}
+
+
+
+/*void led_color_response(uint32_t flag){
 
 	cores_t pattern[4]={};
 	uint32_t delay;
@@ -36,50 +69,40 @@ void led_color_response(uint32_t flag){
 	switch(flag){
 		//Hard error
 		case INVERTER_BUS_OFF_ERROR_FLAG:
-			pattern[0]= 3; //the first position is a header to flag the right number of colors to be used in the pattern
-			pattern[1]=VERMELHO;
-			pattern[2]= AZUL;
-			pattern[3]= BRANCO;
-		case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
-			pattern[0]= 3;
-			pattern[1]=VERMELHO;
-			pattern[2]= AZUL;
-			pattern[3]= AMARELO;
-		case INVERTER_COMM_ERROR_FLAG:
-			pattern[0]= 3;
-			pattern[1]=VERMELHO;
-			pattern[2]= AZUL;
-			pattern[3]= VERDE;
-		case SU_F_ERROR_FLAG:
-			pattern[0]= 2;
-			pattern[1]=VERMELHO;
+			pattern[0]= VERMELHO;
+			pattern[1]= AZUL;
 			pattern[2]= BRANCO;
+			break;
+		case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
+			pattern[0]= VERMELHO;
+			pattern[1]= AZUL;
+			pattern[2]= AMARELO;
+			break;
+		case INVERTER_COMM_ERROR_FLAG:
+			pattern[0]= VERMELHO;
+			pattern[1]= AZUL;
+			pattern[2]= VERDE;
+			break;
+		case SU_F_ERROR_FLAG:
+			pattern[0]= VERMELHO;
+			pattern[1]= BRANCO;
+			pattern[2]= BRANCO;
+			break;
 		//Soft error
 		case APPS_ERROR_FLAG:
-			pattern[0]= 2;
-			pattern[1]=AMARELO;
-			pattern[2]= VERDE;
+			pattern[0]= AMARELO;
+			pattern[1]= VERDE;
+			pattern[2]= BRANCO;
+			break;
 		case BSE_ERROR_FLAG:
-			pattern[0]= 2;
-			pattern[1]=AMARELO;
+			pattern[0]= AMARELO;
+			pattern[1]= BRANCO;
 			pattern[2]= ROXO;
-		// Warning
-		case REGEN_WARN_FLAG:
-			pattern[0]= 2;
-			pattern[1]=BRANCO;
-			pattern[2]= VERDE;
-		case DYNAMIC_CONTROL_WARN_FLAG:
-			pattern[0]= 2;
-			pattern[1]=BRANCO;
-			pattern[2]=CIANO;
-		case FLASH_SAVE_LIMIT_FLAG:
-			pattern[0]= 2;
-			pattern[1]=BRANCO;
-			pattern[2]= ROXO;
+			break;
 	}
 	set_the_pattern(delay, pattern);
 
-}
+}*/
 
 
 void main_task(void* argument) {

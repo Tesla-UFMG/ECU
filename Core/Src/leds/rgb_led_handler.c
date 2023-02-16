@@ -26,8 +26,6 @@ void write_debug_color(rgb_t rgb_gpio);
 rgb_t get_rgb_color(cores_t color);
 void blink_rgb(uint32_t delay);
 
-int RGB_BLINK_DELAY = 200;
-
 osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control) {
     rgb_led_message_t message = {color, control};
     return osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
@@ -59,15 +57,22 @@ void rgb_led(void* argument) {
                             osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL,
                                               osWaitForever);
                             if (message.control == BLINK200) {
-                            	RGB_BLINK_DELAY = 200;
-                            	break;
-                            }
-                            if (message.control == BLINK500) {
-                                RGB_BLINK_DELAY = 500;
                                 break;
                             }
                         }
                         break;
+                    case BLINK500:
+                    	for (;;) {
+                    	    write_rgb_color(get_rgb_color(message.color));
+                    	    osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL,
+                    	    				  osWaitForever);
+                    	    blink_rgb(500);
+                    	    if (message.control != BLINK200) {
+                    	    	break;
+                    	    }
+                    	    break;
+                    	}
+
                     default:
                         write_rgb_color(get_rgb_color(message.color));
                         blink_rgb(RGB_BLINK_DELAY);

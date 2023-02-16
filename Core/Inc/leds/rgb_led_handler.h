@@ -13,7 +13,7 @@
 #include "stdint.h"
 #include "util/global_definitions.h"
 
-
+#define RGB_BLINK_DELAY 200
 
 #define RGB_BLACK                                                                        \
     (rgb_t) {                                                                              \

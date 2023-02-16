@@ -16,15 +16,16 @@
 #include "util/util.h"
 
 typedef struct {
-    uint16_t value[APPS_MATRIX_LENGTH];
-    float fix_mul[APPS_MATRIX_LENGTH];
-    float fix_add[APPS_MATRIX_LENGTH];
+    uint16_t deadzone_lower_limit;
+    uint16_t deadzone_upper_limit;
+    float adjust_parameters_slope;
+    float adjust_parameters_intercept;
 } apps_ref;
 
-uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref* ref);
-bool is_there_APPS_error();
-bool is_there_BSE_error();
-bool is_there_SU_F_error();
+static uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref* ref);
+static bool is_there_APPS_error();
+static bool is_there_BSE_error();
+static bool is_there_SU_F_error();
 
 static uint16_t apps1_value;
 static uint16_t apps2_value;
@@ -38,18 +39,23 @@ void APPS_read(void* argument) {
 
     for (;;) {
 
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         apps1_value = ADC_DMA_buffer[APPS1_E];
         apps2_value = ADC_DMA_buffer[APPS2_E];
         bse         = ADC_DMA_buffer[BRAKE_E];
 
         // valores de referencia e parametros para o calculo da porcentagem
-        const static apps_ref apps1_ref = {APPS1_REF, APPS1_FIX_MUL, APPS1_FIX_ADD};
-        const static apps_ref apps2_ref = {APPS2_REF, APPS2_FIX_MUL, APPS2_FIX_ADD};
+        const static apps_ref apps1_ref = {.deadzone_lower_limit = APPS1_LOWER_DEADZONE,
+                                           .deadzone_upper_limit = APPS1_UPPER_DEADZONE,
+                                           .adjust_parameters_slope = APPS1_ADJUST_SLOPE,
+                                           .adjust_parameters_intercept =
+                                               APPS1_ADJUST_INTERCEPT};
+        const static apps_ref apps2_ref = {.deadzone_lower_limit = APPS2_LOWER_DEADZONE,
+                                           .deadzone_upper_limit = APPS2_UPPER_DEADZONE,
+                                           .adjust_parameters_slope = APPS2_ADJUST_SLOPE,
+                                           .adjust_parameters_intercept =
+                                               APPS2_ADJUST_INTERCEPT};
 
         // calcula a porcentagem do pedal a partir do APPS1 e APPS2 e faz a media
         apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);
@@ -76,29 +82,22 @@ void APPS_read(void* argument) {
     }
 }
 
-uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
-    if (apps_value < 0) {
-        return 0;
-    }
-    if (apps_value >= ref->value[APPS_MATRIX_LENGTH - 1]) {
+static uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
+    if (apps_value > ref->deadzone_upper_limit) {
         return 1000;
     }
-    // compara o valor do APPS com as faixas de acionamento para escolher quais parametros
-    // utilizar durante o calculo da porcentagem
-    for (int i = 0; i < APPS_MATRIX_LENGTH; i++) {
-        if (apps_value < ref->value[i]) {
-            return (uint16_t)(ref->fix_mul[i] * (float)apps_value + ref->fix_add[i]);
-        }
+    if (apps_value < ref->deadzone_lower_limit) {
+        return 0;
     }
-
-    return 0;
+    return (uint16_t)(ref->adjust_parameters_slope * (float)apps_value
+                      + ref->adjust_parameters_intercept);
 }
 
-bool is_there_APPS_error() {       // Regulamento: T.4.2 (2021)
-    if (apps2_value > APPS2_MAX    // Se o valor de APPS2 for acima do seu maximo
-        || apps2_value < APPS2_MIN // ou abaixo do seu minimo
-        || apps1_value > APPS1_MAX // Se o valor de APPS1 for acima do seu maximo
-        || apps1_value < APPS1_MIN // ou abaixo do seu minimo
+static bool is_there_APPS_error() { // Regulamento: T.4.2 (2021)
+    if (apps2_value > APPS2_MAX     // Se o valor de APPS2 for acima do seu maximo
+        || apps2_value < APPS2_MIN  // ou abaixo do seu minimo
+        || apps1_value > APPS1_MAX  // Se o valor de APPS1 for acima do seu maximo
+        || apps1_value < APPS1_MIN  // ou abaixo do seu minimo
         // Se os APPS1 e APPS2 discordarem em mais de 10%
         || abs(apps1_throttle_percent - apps2_throttle_percent) / 10
                > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {
@@ -107,8 +106,9 @@ bool is_there_APPS_error() {       // Regulamento: T.4.2 (2021)
     return false;
 }
 
-bool is_there_BSE_error() {
-    bool is_BSE_error_active = get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
+static bool is_there_BSE_error() {
+    const bool is_BSE_error_active =
+        get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
     if (is_BSE_error_active) {
         // Regulamento: EV.5.7.2 (2021)
         return (throttle_percent >= APPS_05_PERCENT);
@@ -117,6 +117,6 @@ bool is_there_BSE_error() {
     return (throttle_percent > APPS_25_PERCENT && bse > BRAKE_ACTIVE);
 }
 
-bool is_there_SU_F_error() {
+static bool is_there_SU_F_error() {
     return (bse > SU_F_ERROR);
 }

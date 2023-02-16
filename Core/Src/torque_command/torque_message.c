@@ -9,16 +9,14 @@
 
 #include "CAN/CAN_IDs.h"
 #include "CAN/inverter_can.h"
+#include "util/util.h"
 
 void torque_message(void* argument) {
     UNUSED(argument);
 
     torque_message_t message;
     for (;;) {
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // espera indefinidamente ate alguma mensagem de torque$ chegar
         osMessageQueueGet(q_torque_messageHandle, &message, NULL, osWaitForever);

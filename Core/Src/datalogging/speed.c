@@ -31,10 +31,8 @@ void speed_datalog(void* argument) {
     UNUSED(argument);
 
     for (;;) {
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
+
         SPEEDS_t speed;
 
         // Timeout to keep getting inverter speeds even if wheels encoder are stopped.

@@ -20,10 +20,7 @@ void steering_read(void* argument) {
 
     double volante_cru;
     for (;;) {
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
 

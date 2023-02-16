@@ -21,12 +21,10 @@ void odometer_save() {
     uint32_t save_counter                      = 0;
     uint32_t flash_read_data[2]                = {0, 0};
     uint32_t flash_distance[8]                 = {0, 0, 0, 0, 0, 0, 0, 0};
+    log_data(ID_PANEL_DEBUG_1, (uint16_t)save_counter);
 
     for (;;) {
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // Wait the flag to be set so the task runs. The flag is set when RTD state is
         // left
@@ -36,11 +34,11 @@ void odometer_save() {
 
         // Read distance and number of saves in flash
         Flash_Read_Data(ODOMETER_DATA_FLASH_ADDR, flash_read_data, WORDS_READ_TWO);
-
+        total_distance_traveled = cm_to_m(total_distance_traveled);
         // Check if the distance traveled is enough to save. Fill the data array and save
         // in flash if the maximum save times have not been passed.
         if ((total_distance_traveled - flash_read_data[TOTAL_DISTANCE])
-            >= MINIMUM_SAVE_DISTANCE) {
+            >= MINIMUM_SAVE_DISTANCE_METERS) {
             flash_distance[TOTAL_DISTANCE] = total_distance_traveled;
             flash_distance[FLASH_WEAR]     = (++flash_read_data[FLASH_WEAR]);
 
@@ -49,6 +47,7 @@ void odometer_save() {
                 Flash_Write_Data(ODOMETER_DATA_FLASH_ADDR, flash_distance,
                                  FLASH_WORD_SIZE);
                 save_counter++;
+                log_data(ID_PANEL_DEBUG_1, (uint16_t)save_counter);
             } else {
                 // Set a flag to warn if the saving limit was overcome
                 osEventFlagsSet(e_ECU_control_flagsHandle, FLASH_SAVE_LIMIT_FLAG);

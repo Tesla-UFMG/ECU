@@ -27,10 +27,7 @@ void torque_manager(void* argument) {
         // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
         uint32_t tick = osKernelGetTickCount();
 
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         void rampa_torque(uint32_t * ref_torque, const double* ref_torque_decrease);
         void send_ref_torque_message(const uint32_t* ref_torque);

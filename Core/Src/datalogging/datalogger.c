@@ -10,6 +10,7 @@
 #include "CAN/general_can.h"
 #include "cmsis_os.h"
 #include "util/global_definitions.h"
+#include "util/util.h"
 
 volatile uint16_t datalog_data_holder[CAN_ID_QUAN];
 
@@ -24,10 +25,7 @@ void datalogger(void* argument) {
 
     for (;;) {
 
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // enquanto conseguir extrair item da fila de mensagens
         while (osMessageQueueGet(q_datalog_messageHandle, &message, 0, 0) == osOK) {

@@ -10,6 +10,7 @@
 #include "cmsis_os.h"
 #include "util/global_definitions.h"
 #include "util/global_variables.h"
+#include "util/util.h"
 
 extern osMessageQueueId_t q_debug_leds_messageHandle;
 
@@ -24,10 +25,7 @@ void debug_leds(void* argument) {
     debug_led_message_t message;
 
     for (;;) {
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // espera ate alguma mensagem chegar
         osMessageQueueGet(q_debug_leds_messageHandle, &message, NULL, osWaitForever);

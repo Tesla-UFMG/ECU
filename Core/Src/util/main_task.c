@@ -22,10 +22,7 @@ void main_task(void* argument) {
 
     for (;;) {
 
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         wait_for_rtd();
 

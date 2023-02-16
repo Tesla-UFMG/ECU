@@ -19,10 +19,7 @@ void inverter_comm_error(void* argument) {
     UNUSED(argument);
 
     for (;;) {
-#ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-#endif
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         switch (osThreadFlagsWait(INVERTER_CAN_ACTIVE_THREAD_FLAG, osFlagsWaitAny,
                                   INVERTER_NO_MESSAGE_ERROR_TIME)) {

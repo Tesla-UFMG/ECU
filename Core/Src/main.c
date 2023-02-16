@@ -433,10 +433,10 @@ int main(void)
   tim_inverter_can_transmit_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, (void*) INVERTER_CAN_TRANSMIT_ERROR_FLAG, &tim_inverter_can_transmit_error_attributes);
 
   /* creation of tim_left_inv_error */
-  tim_left_inv_errorHandle = osTimerNew(left_inv_error_callback, osTimerPeriodic, (void*) LEFT_INVERTER_CAN_ERROR_FLAG, &tim_left_inv_error_attributes);
+  tim_left_inv_errorHandle = osTimerNew(left_inv_error_callback, osTimerPeriodic, (void*) LEFT_INVERTER_COMM_ERROR_FLAG, &tim_left_inv_error_attributes);
 
   /* creation of tim_right_inv_error */
-  tim_right_inv_errorHandle = osTimerNew(right_inv_error_callback, osTimerPeriodic, (void*) RIGHT_INVERTER_CAN_ERROR_FLAG, &tim_right_inv_error_attributes);
+  tim_right_inv_errorHandle = osTimerNew(right_inv_error_callback, osTimerPeriodic, (void*) RIGHT_INVERTER_COMM_ERROR_FLAG, &tim_right_inv_error_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -471,7 +471,7 @@ int main(void)
   q_odometer_calc_save_messageHandle = osMessageQueueNew (1, sizeof(odometer_message_t), &q_odometer_calc_save_message_attributes);
 
   /* creation of q_ids_can_inverter */
-  q_ids_can_inverterHandle = osMessageQueueNew (16, sizeof(uint16_t), &q_ids_can_inverter_attributes);
+  q_ids_can_inverterHandle = osMessageQueueNew (32, sizeof(uint32_t), &q_ids_can_inverter_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */

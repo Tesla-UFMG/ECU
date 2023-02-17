@@ -56,15 +56,18 @@ void inverter_can_transmit(uint32_t id, uint16_t* data) {
     osDelay(CAN_DELAY);
 }
 
-// Callback function called when any inverter message is received via CAN
+// Callback function called when both left and right inverters messages are received via
+// CAN
 void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs) {
     if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
         if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
             /* Reception Error */
             Error_Handler();
         }
-        osThreadFlagsSet(t_inverter_comm_errorHandle, INVERTER_CAN_ACTIVE_THREAD_FLAG);
+
         uint32_t id = RxHeader.Identifier;
+        osMessageQueuePut(q_ids_can_inverterHandle, &id, 0, 0);
+
         for (int i = 0; i < 4; ++i) {
             can_vars_inverter_e var_name = inverter_get_var_name_from_id_and_pos(id, i);
 

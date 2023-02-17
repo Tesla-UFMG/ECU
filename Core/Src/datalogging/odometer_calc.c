@@ -40,7 +40,7 @@ void odometer_calc() {
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
-        
+
         wait_for_rtd();
         // Calculate and log distance traveled
         const SPEEDS_t speed_var = get_global_var_value(SPEEDS);

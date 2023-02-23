@@ -4,6 +4,7 @@
  *  Created on: Jun 3, 2020
  *      Author: renanmoreira
  */
+#include <string.h>
 #include "util/main_task.h"
 
 #include "cmsis_os.h"
@@ -31,35 +32,26 @@ void led_color_response(uint32_t flag){
     switch(flag) {
         // Hard error
         case INVERTER_BUS_OFF_ERROR_FLAG:
-        	my_memcpy(pattern, pattern_table(VERMELHO, AZUL, BRANCO), sizeof(pattern));
+            memcpy(pattern, pattern_table(VERMELHO, AZUL, BRANCO), sizeof(pattern));
             break;
         case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
-        	my_memcpy(pattern, pattern_table(VERMELHO, AZUL, AMARELO), sizeof(pattern));
+            memcpy(pattern, pattern_table(VERMELHO, AZUL, AMARELO), sizeof(pattern));
             break;
         case INVERTER_COMM_ERROR_FLAG:
-        	my_memcpy(pattern, pattern_table(VERMELHO, AZUL, VERDE), sizeof(pattern));
+            memcpy(pattern, pattern_table(VERMELHO, AZUL, VERDE), sizeof(pattern));
             break;
         case SU_F_ERROR_FLAG:
-            my_memcpy(pattern, pattern_table(VERMELHO, BRANCO, BRANCO), sizeof(pattern));
+            memcpy(pattern, pattern_table(VERMELHO, BRANCO, BRANCO), sizeof(pattern));
             break;
         // Soft error
         case APPS_ERROR_FLAG:
-            my_memcpy(pattern, pattern_table(AMARELO, VERDE, BRANCO), sizeof(pattern));
+            memcpy(pattern, pattern_table(AMARELO, VERDE, BRANCO), sizeof(pattern));
             break;
         case BSE_ERROR_FLAG:
-            my_memcpy(pattern, pattern_table(AMARELO, BRANCO, ROXO), sizeof(pattern));
+            memcpy(pattern, pattern_table(AMARELO, BRANCO, ROXO), sizeof(pattern));
             break;
     }
     set_the_pattern(pattern);
-}
-
-void* my_memcpy(void* dest, const void* src, size_t n) {
-    char* cdest = dest;
-    const char* csrc = src;
-    for (size_t i = 0; i < n; i++) {
-        cdest[i] = csrc[i];
-    }
-    return dest;
 }
 
 void main_task(void* argument) {

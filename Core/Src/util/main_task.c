@@ -19,19 +19,15 @@
 #include "util/global_definitions.h"
 
 
-void set_the_pattern(uint32_t delay, cores_t *pattern){
-	for(int i = 0; i<=2; i++){
-		set_rgb_led(pattern[i], BLINK500);
-		osDelay(delay);
-
-	}
+void set_the_pattern(cores_t *pattern){
+		set_rgb_led(PRETO,FIXED, NULL);
+		set_rgb_led(PRETO,BLINK500,pattern);
 }
 #define pattern_table(c1, c2, c3) ((cores_t[]){c1, c2, c3})
 
 void led_color_response(uint32_t flag){
 
     cores_t pattern[3] = {};
-    uint32_t delay = 500;
 
     switch(flag) {
         // Hard error
@@ -55,55 +51,8 @@ void led_color_response(uint32_t flag){
             memcpy(pattern, pattern_table(AMARELO, BRANCO, ROXO), sizeof(pattern));
             break;
     }
-    set_the_pattern(delay, pattern);
+    set_the_pattern(pattern);
 }
-
-
-
-/*void led_color_response(uint32_t flag){
-
-	cores_t pattern[4]={};
-	uint32_t delay;
-	delay = 500;
-
-	switch(flag){
-		//Hard error
-		case INVERTER_BUS_OFF_ERROR_FLAG:
-			pattern[0]= VERMELHO;
-			pattern[1]= AZUL;
-			pattern[2]= BRANCO;
-			break;
-		case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
-			pattern[0]= VERMELHO;
-			pattern[1]= AZUL;
-			pattern[2]= AMARELO;
-			break;
-		case INVERTER_COMM_ERROR_FLAG:
-			pattern[0]= VERMELHO;
-			pattern[1]= AZUL;
-			pattern[2]= VERDE;
-			break;
-		case SU_F_ERROR_FLAG:
-			pattern[0]= VERMELHO;
-			pattern[1]= BRANCO;
-			pattern[2]= BRANCO;
-			break;
-		//Soft error
-		case APPS_ERROR_FLAG:
-			pattern[0]= AMARELO;
-			pattern[1]= VERDE;
-			pattern[2]= BRANCO;
-			break;
-		case BSE_ERROR_FLAG:
-			pattern[0]= AMARELO;
-			pattern[1]= BRANCO;
-			pattern[2]= ROXO;
-			break;
-	}
-	set_the_pattern(delay, pattern);
-
-}*/
-
 
 void main_task(void* argument) {
 
@@ -173,7 +122,7 @@ void main_task(void* argument) {
                 } else {
                     // Clear the thread flag and set ECU led to normal
                     osThreadFlagsClear(most_significant_error_flag);
-                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);
+                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE, NULL);
                 }
                 break;
 

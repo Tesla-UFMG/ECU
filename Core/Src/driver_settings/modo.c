@@ -39,7 +39,7 @@ void seleciona_modo(void* argument) {
                 default: set_global_var_value(SELECTED_MODE, erro); break;
             }
 
-            set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+            set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200,NULL);
         }
         // todo: dataloggar modos
     }

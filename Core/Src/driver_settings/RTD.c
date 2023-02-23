@@ -27,7 +27,7 @@ void RTD(void* argument) {
     //for (;;){
 
     	//if(!(ALL_MINOR_ERROR_FLAG | ALL_SEVERE_ERROR_FLAG)){
-    		set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+    		set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200,NULL);
 
     		for (;;) {
 
@@ -107,7 +107,7 @@ bool can_RTD_be_enabled() {
 void set_RTD() {
     // Seta flag de RTD
     osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED, NULL);
     aciona_sirene();
 }
 

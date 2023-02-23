@@ -53,6 +53,7 @@ typedef enum { FIXED, BLINK200, NO_CHANGE, BLINK500 } control_rgb_led_e;
 typedef struct {
     cores_t color;
     control_rgb_led_e control;
+    cores_t *pattern;
 } rgb_led_message_t;
 
 typedef struct {
@@ -61,6 +62,6 @@ typedef struct {
     GPIO_PinState blue;
 } rgb_t;
 
-osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control);
+osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control, cores_t *pattern);
 
 #endif /* INC_RGB_LED_H_ */

@@ -4,7 +4,7 @@
  *  Created on: Jun 3, 2020
  *      Author: renanmoreira
  */
-#include <string.h>
+//#include <string.h>
 #include "util/main_task.h"
 
 #include "cmsis_os.h"
@@ -23,6 +23,16 @@ void set_the_pattern(cores_t *pattern){
 		set_rgb_led(PRETO,FIXED, NULL);
 		set_rgb_led(PRETO,BLINK500,pattern);
 }
+
+void myMemCpy(void *dest, void *src, size_t n)
+{
+char *csrc = (char *)src;
+char *cdest = (char *)dest;
+
+for (int i=0; i<n; i++)
+    cdest[i] = csrc[i];
+}
+
 #define pattern_table(c1, c2, c3) ((cores_t[]){c1, c2, c3})
 
 void led_color_response(uint32_t flag){
@@ -32,23 +42,23 @@ void led_color_response(uint32_t flag){
     switch(flag) {
         // Hard error
         case INVERTER_BUS_OFF_ERROR_FLAG:
-            memcpy(pattern, pattern_table(VERMELHO, AZUL, BRANCO), sizeof(pattern));
+        	myMemCpy(pattern, pattern_table(VERMELHO, AZUL, BRANCO), sizeof(pattern));
             break;
         case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
-            memcpy(pattern, pattern_table(VERMELHO, AZUL, AMARELO), sizeof(pattern));
+        	myMemCpy(pattern, pattern_table(VERMELHO, AZUL, AMARELO), sizeof(pattern));
             break;
         case INVERTER_COMM_ERROR_FLAG:
-            memcpy(pattern, pattern_table(VERMELHO, AZUL, VERDE), sizeof(pattern));
+        	myMemCpy(pattern, pattern_table(VERMELHO, AZUL, VERDE), sizeof(pattern));
             break;
         case SU_F_ERROR_FLAG:
-            memcpy(pattern, pattern_table(VERMELHO, BRANCO, BRANCO), sizeof(pattern));
+        	myMemCpy(pattern, pattern_table(VERMELHO, BRANCO, BRANCO), sizeof(pattern));
             break;
         // Soft error
         case APPS_ERROR_FLAG:
-            memcpy(pattern, pattern_table(AMARELO, VERDE, BRANCO), sizeof(pattern));
+        	myMemCpy(pattern, pattern_table(AMARELO, VERDE, BRANCO), sizeof(pattern));
             break;
         case BSE_ERROR_FLAG:
-            memcpy(pattern, pattern_table(AMARELO, BRANCO, ROXO), sizeof(pattern));
+        	myMemCpy(pattern, pattern_table(AMARELO, BRANCO, ROXO), sizeof(pattern));
             break;
     }
     set_the_pattern(pattern);

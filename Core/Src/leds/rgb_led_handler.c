@@ -76,8 +76,8 @@ void rgb_led(void* argument) {
                     				if (message.control != BLINK500) {
                     					break;
                     				}
-                    				break;
                     			}
+                    			break;
                     		}
                         }
                         break;

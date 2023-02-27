@@ -61,7 +61,7 @@ void left_inv_error_callback() {
 
     issue_error(LEFT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
 
-    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
+    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG);
 
     osTimerStop(tim_inverter_readyHandle);
 }
@@ -72,7 +72,7 @@ void right_inv_error_callback() {
 
     issue_error(RIGHT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
 
-    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY);
+    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG);
 
     osTimerStop(tim_inverter_readyHandle);
 }

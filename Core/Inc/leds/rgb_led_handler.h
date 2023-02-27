@@ -13,47 +13,32 @@
 #include "stdint.h"
 #include "util/global_definitions.h"
 
-#define RGB_BLINK_DELAY 200
+#define RGB_BLINK_DELAY    200
+#define RGB_BLINK500_DELAY 500
 
 #define RGB_BLACK                                                                        \
-    (rgb_t) {                                                                              \
-        0, 0, 0                                                                          \
-    }
+    (rgb_t) { 0, 0, 0 }
 #define RGB_RED                                                                          \
-    (rgb_t) {                                                                              \
-        1, 0, 0                                                                          \
-    }
+    (rgb_t) { 1, 0, 0 }
 #define RGB_GREEN                                                                        \
-    (rgb_t) {                                                                              \
-        0, 1, 0                                                                          \
-    }
+    (rgb_t) { 0, 1, 0 }
 #define RGB_BLUE                                                                         \
-    (rgb_t) {                                                                              \
-        0, 0, 1                                                                          \
-    }
+    (rgb_t) { 0, 0, 1 }
 #define RGB_YELLOW                                                                       \
-    (rgb_t) {                                                                              \
-        1, 1, 0                                                                          \
-    }
+    (rgb_t) { 1, 1, 0 }
 #define RGB_PURBLE                                                                       \
-    (rgb_t) {                                                                              \
-        1, 0, 1                                                                          \
-    }
+    (rgb_t) { 1, 0, 1 }
 #define RGB_CYAN                                                                         \
-    (rgb_t) {                                                                              \
-        0, 1, 1                                                                          \
-    }
+    (rgb_t) { 0, 1, 1 }
 #define RGB_WHITE                                                                        \
-    (rgb_t) {                                                                              \
-        1, 1, 1                                                                          \
-    }
+    (rgb_t) { 1, 1, 1 }
 
 typedef enum { FIXED, BLINK200, NO_CHANGE, BLINK500 } control_rgb_led_e;
 
 typedef struct {
-    cores_t color;
+    cores_t* pattern;
     control_rgb_led_e control;
-    cores_t *pattern;
+    uint8_t sizeOfPattern;
 } rgb_led_message_t;
 
 typedef struct {
@@ -62,6 +47,7 @@ typedef struct {
     GPIO_PinState blue;
 } rgb_t;
 
-osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control, cores_t *pattern);
+osStatus_t set_rgb_led(cores_t* pattern, control_rgb_led_e control,
+                       uint8_t sizeOfPattern);
 
 #endif /* INC_RGB_LED_H_ */

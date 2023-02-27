@@ -43,7 +43,7 @@ typedef struct // struct de modo
     int torq_gain; // ganho de torque, aconselhavel q seja proporcional ao torque maximo (
                    // de 0 a 40)
     race_mode_t mode; // 1 enduro, 2 aceleracao, 3 skidpad, 4 autox
-    cores_t cor;
+    cores_t cor[1];
 } modos;
 
 #define R_MOTOR 0

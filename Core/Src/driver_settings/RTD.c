@@ -24,37 +24,32 @@ void RTD(void* argument) {
     UNUSED(argument);
 
     // seta o led rgb na primeira execucao do codigo --- se n tiver erros acontecendo
-    //for (;;){
+    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200, 1);
 
-    	//if(!(ALL_MINOR_ERROR_FLAG | ALL_SEVERE_ERROR_FLAG)){
-    		set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200,NULL);
+    for (;;) {
 
-    		for (;;) {
+        // espera receber flag q o botao de RTD foi pressionado
+        osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
 
-    			// espera receber flag q o botao de RTD foi pressionado
-    			osThreadFlagsWait(RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
+        bool is_RTD_active = get_individual_flag(e_ECU_control_flagsHandle, RTD_FLAG);
 
-    			bool is_RTD_active = get_individual_flag(e_ECU_control_flagsHandle, RTD_FLAG);
-
-    			if (!is_RTD_active) {
-    				if (can_RTD_be_enabled()) {
-    					set_RTD();
-    				} else {
-    					// envia uma mensagem de alerta caso n seja possivel acionar RTD
-    					set_debugleds(DEBUGLED1, BLINK, 2);
-    				}
-    			}
-    		}
-    	//}
-    //}
+        if (!is_RTD_active) {
+            if (can_RTD_be_enabled()) {
+                set_RTD();
+            } else {
+                // envia uma mensagem de alerta caso n seja possivel acionar RTD
+                set_debugleds(DEBUGLED1, BLINK, 2);
+            }
+        }
+    }
 }
 
 void exit_RTD() {
     // seta modo_selecionado como erro
     set_global_var_value(SELECTED_MODE, erro);
     set_global_var_value(RACE_MODE, ERRO);
-    //set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
-    // limpa flag de RTD
+    // set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+    //  limpa flag de RTD
     osEventFlagsClear(e_ECU_control_flagsHandle, RTD_FLAG);
     osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_FLAG);
 }
@@ -96,7 +91,8 @@ bool can_RTD_be_enabled() {
     RACE_MODE_t race_mode                = get_global_var_value(RACE_MODE);
     // flag that indicates when the inverter precharge time has passed and the inverter is
     // ready
-    bool is_inverter_ready = get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY);
+    bool is_inverter_ready =
+        get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY);
     if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
         && is_inverter_ready) {
         return true;

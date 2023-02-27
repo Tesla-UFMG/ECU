@@ -11,6 +11,7 @@
 #include "CAN/general_can.h"
 #include "CAN/inverter_can.h"
 #include "cmsis_os.h"
+#include "dynamic_controls/initializer_controls.h"
 #include "main.h"
 #include "stm32h7xx.h"
 #include "stm32h7xx_hal.h"
@@ -18,7 +19,6 @@
 #include "util/constants.h"
 #include "util/global_definitions.h"
 #include "util/global_variables.h"
-#include "dynamic_controls/initializer_controls.h"
 
 // inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs
 //  mantendo a prioridade maxima de ISRs
@@ -65,7 +65,7 @@ void init_modes() {
     enduro.bat_safe         = 1;
     enduro.torq_gain        = 10; // ERA 15
     enduro.mode             = ENDURO;
-    enduro.cor              = VERDE;
+    enduro.cor[0]           = VERDE;
 
     aceleracao.tor_max          = 1500;
     aceleracao.vel_max          = vel_max_rpm;
@@ -75,7 +75,7 @@ void init_modes() {
     aceleracao.bat_safe         = 0;
     aceleracao.torq_gain        = 15;
     aceleracao.mode             = ACELERACAO;
-    aceleracao.cor              = ROXO;
+    aceleracao.cor[0]           = ROXO;
 
     skidpad.tor_max          = 2000;
     skidpad.vel_max          = vel_max_rpm;
@@ -85,7 +85,7 @@ void init_modes() {
     skidpad.bat_safe         = 0;
     skidpad.torq_gain        = 20;
     skidpad.mode             = SKIDPAD;
-    skidpad.cor              = CIANO;
+    skidpad.cor[0]           = CIANO;
 
     autox.tor_max          = 2500;
     autox.vel_max          = vel_max_rpm;
@@ -95,7 +95,7 @@ void init_modes() {
     autox.bat_safe         = 0;
     autox.torq_gain        = 25;
     autox.mode             = AUTOX;
-    autox.cor              = AZUL;
+    autox.cor[0]           = AZUL;
 
     erro.tor_max          = 0;
     erro.vel_max          = 0;
@@ -105,7 +105,7 @@ void init_modes() {
     erro.bat_safe         = 0;
     erro.torq_gain        = 0;
     erro.mode             = ERRO;
-    erro.cor              = VERMELHO;
+    erro.cor[0]           = VERMELHO;
 
     set_global_var_value(SELECTED_MODE, enduro); // inicializa no modo enduro
 }
@@ -126,10 +126,10 @@ void deInit_all_peripherals() {
 
 void init_ECU() {
     /* ### - 2 - Start calibration ############################################ */
-    if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
-        {
-            ;
-        }
+    if (HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED)
+        != HAL_OK) {
+        ;
+    }
     HAL_TIM_Base_Start(&htim2);
     init_ADC_DMA(&hadc1);
     init_CAN();

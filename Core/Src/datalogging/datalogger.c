@@ -39,7 +39,7 @@ void datalogger(void* argument) {
         }
 
         // does the for using the size of the structure
-        for (uint16_t struct_pos = 1; struct_pos < get_amount_ext_id(); struct_pos++) {
+        for (uint16_t struct_pos = 0; struct_pos < get_amount_ext_id(); struct_pos++) {
             for (uint16_t word = 0; word < 4; word++) {
                 internal_id = get_internal_id_from_pos_and_word(struct_pos, word);
                 // if internal id does not exist

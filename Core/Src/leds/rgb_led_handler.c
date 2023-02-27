@@ -56,18 +56,21 @@ void rgb_led(void* argument) {
                 switch (message.control) {
                     case FIXED:
                         for (;;) {
+                            const uint32_t message_count =
+                                osMessageQueueGetCount(q_rgb_led_messageHandle);
                             for (int i = 0; i < message.sizeOfPattern; ++i) {
                                 write_rgb_color(get_rgb_color(message.pattern[i]));
                                 blink_rgb(RGB_BLINK500_DELAY);
                             }
-                            osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL,
-                                              osWaitForever);
+                            if (message_count > 0) {
+                                osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL,
+                                                  osWaitForever);
+                            }
                             if (message.control == BLINK200) {
                                 break;
                             }
-                            uint32_t message_count =
-                                osMessageQueueGetCount(q_rgb_led_messageHandle);
                         }
+                        break;
                     default:
                         for (int i = 0; i < message.sizeOfPattern; ++i) {
                             write_rgb_color(get_rgb_color(message.pattern[i]));

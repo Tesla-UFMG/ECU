@@ -30,7 +30,6 @@ void led_color_response(uint32_t flag) {
             break;
         }
         case INVERTER_CAN_TRANSMIT_ERROR_FLAG: break;
-        case INVERTER_COMM_ERROR_FLAG: break;
         case SU_F_ERROR_FLAG: break;
         // Soft error
         case APPS_ERROR_FLAG: break;

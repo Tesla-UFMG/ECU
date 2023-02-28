@@ -33,6 +33,7 @@ static global_variable_message_queue_data_t queues_info[_global_vars_quan];
  * (THROTTLE_PERCENT_t)THROTTLE_PERCENT_DEFAULT_VALUE;
  * osMessageQueuePut(THROTTLE_PERCENT_info->id, &THROTTLE_PERCENT_msg, 0, 0);
  */
+
 #define INSTANTIATE_GLOBAL_VAR_QUEUE(var_name)                                           \
     /* get a pointer to the queue_data struct intance at position var_name*/             \
     global_variable_message_queue_data_t* var_name##_info = queues_info + (var_name);    \

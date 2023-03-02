@@ -5,17 +5,12 @@
  *      Author: caius
  */
 
-//#include "sensors/sensor_data_processing.h"
+#include "sensors/sensor_data_processing.h"
 
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/global_variables.h"
 #include "util/global_definitions.h"
 
-// calcular a média móvel e enviá-la para as validações cruzadas
-
-#define APPS_BUFFER_SIZE 100
-#define STEERING_WHEEL_BUFFER_SIZE 100
-#define SPEED_BUFFER_SIZE 100
 
 static uint16_t apps1 = ADC_DMA_buffer[APPS1_E];
 static uint16_t apps2 = ADC_DMA_buffer[APPS2_E];
@@ -62,10 +57,6 @@ void APPS_mov_average(uint16_t* apps1_movave, uint16_t* apps2_movave) {
 }
 
 void steering_wheel_mov_average(uint16_t* steering_wheel_movave) {
-//  fazer um vetor e calcular media movel
-//	a partir dele. comece colocando um valor de
-//	[800] e testa empiricamente. teste visualizar a curva
-//	comparando os dados crus e a média móvel
 
 	uint16_t steering_wheel_buffer[STEERING_WHEEL_BUFFER_SIZE];
 	uint8_t buffer_index = 0;
@@ -73,30 +64,23 @@ void steering_wheel_mov_average(uint16_t* steering_wheel_movave) {
 
 	steering_wheel_movave = 0;
 
-	// circular buffer for calculating the moving average of APPS signals
 
 	for(;;){
-		// Put the steering wheel value read by ADC into each buffer position
+
 		steering_wheel_buffer[buffer_index] = steering_wheel;
 
-		// circular buffer logic
 		buffer_index = (buffer_index + 1) % STEERING_WHEEL_BUFFER_SIZE;
 
-		// Calculates the moving average based on a mutable value
-		// It requires empirical tests for choosing that value
 		for(uint8_t i = 0; i < STEERING_WHEEL_BUFFER_SIZE; i++){
 			steering_wheel_buffer_sum += steering_wheel_buffer[i];
 		}
+
 		steering_wheel_movave = steering_wheel_buffer_sum / STEERING_WHEEL_BUFFER_SIZE;
 	}
 
 }
 
 void speed_mov_average(uint16_t* speed_movave) {
-//  fazer um vetor e calcular media movel
-//	a partir dele. comece colocando um valor de
-//	[800] e testa empiricamente. teste visualizar a curva
-//	comparando os dados crus e a média móvel
 
 	uint16_t speed_buffer[SPEED_BUFFER_SIZE];
 	uint8_t buffer_index = 0;
@@ -104,17 +88,12 @@ void speed_mov_average(uint16_t* speed_movave) {
 
 	speed_movave = 0;
 
-	// circular buffer for calculating the moving average of APPS signals
-
 	for(;;){
-		// Put the steering wheel value read by ADC into each buffer position
+
 		speed_buffer[buffer_index] = speed;
 
-		// circular buffer logic
 		buffer_index = (buffer_index + 1) % SPEED_BUFFER_SIZE;
 
-		// Calculates the moving average based on a mutable value
-		// It requires empirical tests for choosing that value
 		for(uint8_t i = 0; i < SPEED_BUFFER_SIZE; i++){
 			speed_buffer_sum += speed_buffer[i];
 		}

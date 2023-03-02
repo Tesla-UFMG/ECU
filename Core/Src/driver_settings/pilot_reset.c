@@ -22,18 +22,18 @@ void pilot_reset(void* argument) {
         // the combination of buttons to be pressed in the following order: mode, rtd,
         // mode again, but this time with the brake pressed and with no throttle input.
         // After that the system will be reseted
-        osThreadFlagsClear(MODE_BTN_PRESSED_FLAG);
-        osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
+        osThreadFlagsClear(MODE_BTN_PRESSED_THREAD_FLAG);
+        osThreadFlagsWait(MODE_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
         osDelay(100);
 
-        osThreadFlagsClear(RTD_BTN_PRESSED_FLAG);
+        osThreadFlagsClear(RTD_BTN_PRESSED_THREAD_FLAG);
         thread_flag_status[RTD_BUTTON] = osThreadFlagsWait(
-            RTD_BTN_PRESSED_FLAG, osFlagsWaitAny, RESET_BUTTONS_TIMEOUT);
+            RTD_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, RESET_BUTTONS_TIMEOUT);
         osDelay(100);
 
-        osThreadFlagsClear(MODE_BTN_PRESSED_FLAG);
+        osThreadFlagsClear(MODE_BTN_PRESSED_THREAD_FLAG);
         thread_flag_status[MODE_BUTTON] = osThreadFlagsWait(
-            MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, RESET_BUTTONS_TIMEOUT);
+            MODE_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, RESET_BUTTONS_TIMEOUT);
 
         if (thread_flag_status[RTD_BUTTON] == osFlagsErrorTimeout
             || thread_flag_status[MODE_BUTTON] == osFlagsErrorTimeout) {

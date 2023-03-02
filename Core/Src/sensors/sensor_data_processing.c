@@ -14,10 +14,10 @@
 
 static uint16_t apps1 = ADC_DMA_buffer[APPS1_E];
 static uint16_t apps2 = ADC_DMA_buffer[APPS2_E];
-static STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
+//static STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
 static uint16_t speed = (get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);
-
-
+//static int16_t IMU_yaw = (int16_t)general_get_value(gyroscope_y);
+static int16_t IMU_accel = (int16_t)general_get_value(accelerometer_z);
 
 void APPS_mov_average(uint16_t* apps1_movave, uint16_t* apps2_movave) {
 //  fazer um vetor e calcular media movel
@@ -56,29 +56,29 @@ void APPS_mov_average(uint16_t* apps1_movave, uint16_t* apps2_movave) {
 
 }
 
-void steering_wheel_mov_average(uint16_t* steering_wheel_movave) {
-
-	uint16_t steering_wheel_buffer[STEERING_WHEEL_BUFFER_SIZE];
-	uint8_t buffer_index = 0;
-	uint32_t steering_wheel_buffer_sum = 0;
-
-	steering_wheel_movave = 0;
-
-
-	for(;;){
-
-		steering_wheel_buffer[buffer_index] = steering_wheel;
-
-		buffer_index = (buffer_index + 1) % STEERING_WHEEL_BUFFER_SIZE;
-
-		for(uint8_t i = 0; i < STEERING_WHEEL_BUFFER_SIZE; i++){
-			steering_wheel_buffer_sum += steering_wheel_buffer[i];
-		}
-
-		steering_wheel_movave = steering_wheel_buffer_sum / STEERING_WHEEL_BUFFER_SIZE;
-	}
-
-}
+//void steering_wheel_mov_average(uint16_t* steering_wheel_movave) {
+//
+//	uint16_t steering_wheel_buffer[STEERING_WHEEL_BUFFER_SIZE];
+//	uint8_t buffer_index = 0;
+//	uint32_t steering_wheel_buffer_sum = 0;
+//
+//	steering_wheel_movave = 0;
+//
+//
+//	for(;;){
+//
+//		steering_wheel_buffer[buffer_index] = steering_wheel;
+//
+//		buffer_index = (buffer_index + 1) % STEERING_WHEEL_BUFFER_SIZE;
+//
+//		for(uint8_t i = 0; i < STEERING_WHEEL_BUFFER_SIZE; i++){
+//			steering_wheel_buffer_sum += steering_wheel_buffer[i];
+//		}
+//
+//		steering_wheel_movave = steering_wheel_buffer_sum / STEERING_WHEEL_BUFFER_SIZE;
+//	}
+//
+//}
 
 void speed_mov_average(uint16_t* speed_movave) {
 
@@ -102,6 +102,47 @@ void speed_mov_average(uint16_t* speed_movave) {
 
 }
 
+//void IMU_yaw_mov_average(uint16_t* imu_yaw_movave) {
+//
+//	uint16_t imu_yaw_buffer[IMU_BUFFER_SIZE];
+//	uint8_t buffer_index = 0;
+//	uint32_t imu_yaw_buffer_sum = 0;
+//
+//	imu_yaw_movave = 0;
+//
+//	for(;;){
+//
+//		imu_yaw_buffer[buffer_index] = IMU_yaw;
+//
+//		buffer_index = (buffer_index + 1) % IMU_BUFFER_SIZE;
+//
+//		for(uint8_t i = 0; i < IMU_BUFFER_SIZE; i++){
+//			imu_yaw_buffer_sum += imu_yaw_buffer[i];
+//		}
+//		imu_yaw_movave = imu_yaw_buffer_sum / IMU_BUFFER_SIZE;
+//	}
+//
+//}
 
+void IMU_accel_mov_average(uint16_t* imu_accel_movave) {
 
+	uint16_t imu_accel_buffer[IMU_BUFFER_SIZE];
+	uint8_t buffer_index = 0;
+	uint32_t imu_accel_buffer_sum = 0;
+
+	imu_accel_movave = 0;
+
+	for(;;){
+
+		imu_accel_buffer[buffer_index] = IMU_accel;
+
+		buffer_index = (buffer_index + 1) % IMU_BUFFER_SIZE;
+
+		for(uint8_t i = 0; i < IMU_BUFFER_SIZE; i++){
+			imu_accel_buffer_sum += imu_accel_buffer[i];
+		}
+		imu_accel_movave = imu_accel_buffer_sum / IMU_BUFFER_SIZE;
+	}
+
+}
 

@@ -7,51 +7,122 @@
 
 //#include "sensors/sensor_data_processing.h"
 
+#include "util/CMSIS_extra/global_variables_handler.h"
+#include "util/global_variables.h"
+#include "util/global_definitions.h"
+
 // calcular a média móvel e enviá-la para as validações cruzadas
 
-extern uint16_t apps1_value;
-extern uint16_t apps2_value;
+#define APPS_BUFFER_SIZE 100
+#define STEERING_WHEEL_BUFFER_SIZE 100
+#define SPEED_BUFFER_SIZE 100
 
-void APPS_moving_average() {
-    //tempo pra média: 2s
+static uint16_t apps1 = ADC_DMA_buffer[APPS1_E];
+static uint16_t apps2 = ADC_DMA_buffer[APPS2_E];
+static STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
+static uint16_t speed = (get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);
+
+
+
+void APPS_mov_average(uint16_t* apps1_movave, uint16_t* apps2_movave) {
+//  fazer um vetor e calcular media movel
+//	a partir dele. comece colocando um valor de
+//	[800] e testa empiricamente. teste visualizar a curva
+//	comparando os dados crus e a média móvel
+
+	uint16_t apps1_buffer[APPS_BUFFER_SIZE];
+	uint16_t apps2_buffer[APPS_BUFFER_SIZE];
+	uint8_t buffer_index = 0;
+	uint32_t apps1_buffer_sum = 0;
+	uint32_t apps2_buffer_sum = 0;
+
+	apps1_movave = 0;
+	apps2_movave = 0;
+
+	// circular buffer for calculating the moving average of APPS signals
+
+	for(;;){
+		// Put the APPS value read by ADC into each buffer position
+		apps1_buffer[buffer_index] = apps1;
+		apps2_buffer[buffer_index] = apps2;
+
+		// circular buffer logic
+		buffer_index = (buffer_index + 1) % APPS_BUFFER_SIZE;
+
+		// Calculates the moving average based on a mutable value
+		// It requires empirical tests for choosing that value
+		for(uint8_t i = 0; i < APPS_BUFFER_SIZE; i++){
+			apps1_buffer_sum += apps1_buffer[i];
+			apps2_buffer_sum += apps2_buffer[i];
+		}
+		apps1_movave = apps1_buffer_sum / APPS_BUFFER_SIZE;
+		apps2_movave = apps2_buffer_sum / APPS_BUFFER_SIZE;
+	}
+
 }
 
-void PID_init(PID_t* pid, uint8_t reset, double Kp, double Ti, double Td,
-              double max_output, double min_output, double sample_period) {
-    pid->Kp            = Kp;
-    pid->Ti            = Ti;
-    pid->Td            = Td;
-    pid->max_output    = max_output;
-    pid->min_output    = min_output;
-    pid->sample_period = sample_period;
-    PID_recalculate_constants(pid);
+void steering_wheel_mov_average(uint16_t* steering_wheel_movave) {
+//  fazer um vetor e calcular media movel
+//	a partir dele. comece colocando um valor de
+//	[800] e testa empiricamente. teste visualizar a curva
+//	comparando os dados crus e a média móvel
 
-    pid->output = 0;
-    /* Verifica se precisa de reset */
-    if (reset) {
-        /* Reseta os estados, sempre de tamanho 2 */
-        memset(pid->error_state, 0, 2U * sizeof(double)); // NOLINT
-        memset(pid->input_state, 0, 2U * sizeof(double)); // NOLINT
-    }
+	uint16_t steering_wheel_buffer[STEERING_WHEEL_BUFFER_SIZE];
+	uint8_t buffer_index = 0;
+	uint32_t steering_wheel_buffer_sum = 0;
+
+	steering_wheel_movave = 0;
+
+	// circular buffer for calculating the moving average of APPS signals
+
+	for(;;){
+		// Put the steering wheel value read by ADC into each buffer position
+		steering_wheel_buffer[buffer_index] = steering_wheel;
+
+		// circular buffer logic
+		buffer_index = (buffer_index + 1) % STEERING_WHEEL_BUFFER_SIZE;
+
+		// Calculates the moving average based on a mutable value
+		// It requires empirical tests for choosing that value
+		for(uint8_t i = 0; i < STEERING_WHEEL_BUFFER_SIZE; i++){
+			steering_wheel_buffer_sum += steering_wheel_buffer[i];
+		}
+		steering_wheel_movave = steering_wheel_buffer_sum / STEERING_WHEEL_BUFFER_SIZE;
+	}
+
 }
 
-void PID_set_setpoint(PID_t* pid, double Setpoint) {
-    pid->Setpoint = Setpoint;
+void speed_mov_average(uint16_t* speed_movave) {
+//  fazer um vetor e calcular media movel
+//	a partir dele. comece colocando um valor de
+//	[800] e testa empiricamente. teste visualizar a curva
+//	comparando os dados crus e a média móvel
+
+	uint16_t speed_buffer[SPEED_BUFFER_SIZE];
+	uint8_t buffer_index = 0;
+	uint32_t speed_buffer_sum = 0;
+
+	speed_movave = 0;
+
+	// circular buffer for calculating the moving average of APPS signals
+
+	for(;;){
+		// Put the steering wheel value read by ADC into each buffer position
+		speed_buffer[buffer_index] = speed;
+
+		// circular buffer logic
+		buffer_index = (buffer_index + 1) % SPEED_BUFFER_SIZE;
+
+		// Calculates the moving average based on a mutable value
+		// It requires empirical tests for choosing that value
+		for(uint8_t i = 0; i < SPEED_BUFFER_SIZE; i++){
+			speed_buffer_sum += speed_buffer[i];
+		}
+		speed_movave = speed_buffer_sum / SPEED_BUFFER_SIZE;
+	}
+
 }
 
-void PID_set_parameters(PID_t* pid, double Kp, double Ti, double Td) {
-    pid->Kp = Kp;
-    pid->Ti = Ti;
-    pid->Td = Td;
-    PID_recalculate_constants(pid);
-}
 
-void PID_set_limits(PID_t* pid, double max_output, double min_output) {
-    pid->max_output = max_output;
-    pid->min_output = min_output;
-}
 
-void PID_set_sample_period(PID_t* pid, double sample_period) {
-    pid->sample_period = sample_period;
-    PID_recalculate_constants(pid);
-}
+

@@ -20,18 +20,21 @@ static buttons_parameters_t buttons[BUTTONS_QUAN];
 void button_release_handler(available_buttons_e button) {
     switch (button) {
         case B_RTD:
-            osThreadFlagsSet(t_RTDHandle, RTD_BTN_PRESSED_FLAG);
-            osThreadFlagsSet(t_pilot_resetHandle, RTD_BTN_PRESSED_FLAG);
+            osThreadFlagsSet(t_RTDHandle, RTD_BTN_PRESSED_THREAD_FLAG);
+            osThreadFlagsSet(t_pilot_resetHandle, RTD_BTN_PRESSED_THREAD_FLAG);
             break;
 
         case B_MODE:;
             RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
             set_global_var_value(RACE_MODE, race_mode + 1);
-            osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_FLAG);
-            osThreadFlagsSet(t_pilot_resetHandle, MODE_BTN_PRESSED_FLAG);
+            osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_THREAD_FLAG);
+            osThreadFlagsSet(t_pilot_resetHandle, MODE_BTN_PRESSED_THREAD_FLAG);
             break;
 
-        case B_DYNAMICS_CONTROLS:; break;
+        case B_DYNAMICS_CONTROLS:
+            osThreadFlagsSet(t_dynamic_controls_choiceHandle,
+                             DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_THREAD_FLAG);
+            break;
 
         default: break;
     }

@@ -21,6 +21,8 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
+osStatus_t resultado;
+
 void write_rgb_color(rgb_t rgb_gpio);
 void write_debug_color(rgb_t rgb_gpio);
 rgb_t get_rgb_color(cores_t color);
@@ -29,13 +31,15 @@ void blink_rgb(uint32_t delay);
 osStatus_t set_rgb_led(cores_t* pattern, control_rgb_led_e control,
                        uint8_t sizeOfPattern) {
     rgb_led_message_t message = {pattern, control, sizeOfPattern};
-    return osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
+    resultado = osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
 }
 
 void write_pattern(rgb_led_message_t message) {
     for (int i = 0; i < message.sizeOfPattern; ++i) {
         write_rgb_color(get_rgb_color(message.pattern[i]));
-        blink_rgb(RGB_BLINK500_DELAY);
+        if (message.sizeOfPattern > 1) {
+            blink_rgb(RGB_BLINK500_DELAY);
+        }
     }
 }
 
@@ -45,7 +49,7 @@ void rgb_led(void* argument) {
     rgb_led_message_t message;
 
     for (;;) {
-        ECU_ENABLE_BREAKPOINT_DEBUG();
+       // ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // espera RTD ser setado ou timeout estourar
         switch (
@@ -58,16 +62,17 @@ void rgb_led(void* argument) {
                 switch (message.control) {
                     case FIXED:
                         for (;;) {
-                            const uint32_t message_count =
-                                osMessageQueueGetCount(q_rgb_led_messageHandle);
+//                            const uint32_t message_count =
+//                                osMessageQueueGetCount(q_rgb_led_messageHandle);
                             write_pattern(message);
-                            if (message_count > 0) {
+                            //if (message_count > 0) {
                                 osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL,
                                                   osWaitForever);
-                                if (message.control == BLINK200 || message.control == NO_CHANGE) {
+                                if (message.control == BLINK200
+                                    || message.control == NO_CHANGE) {
                                     break;
                                 }
-                            }
+                           // }
                         }
                         break;
                     default: write_pattern(message); break;

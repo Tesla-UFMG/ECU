@@ -45,16 +45,17 @@ void main_task(void* argument) {
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        wait_for_rtd();
+        //wait_for_rtd();
 
         // Wait for any error
-        osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
-                          osWaitForever);
+        //osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
+        //                 osWaitForever);
         // Get the most significant thread flag
-        uint32_t most_significant_error_flag = get_most_significant_thread_flag();
+        uint32_t most_significant_error_flag; //= get_most_significant_thread_flag();
         // Get the event flag
-        uint32_t event_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
-
+        uint32_t event_flags; //osEventFlagsGet(e_ECU_control_flagsHandle);
+        most_significant_error_flag = INVERTER_BUS_OFF_ERROR_FLAG;
+        event_flags = INVERTER_BUS_OFF_ERROR_FLAG;
         bool isErrorPresent;
         switch (most_significant_error_flag) {
 

@@ -23,10 +23,9 @@ void seleciona_modo(void* argument) {
 
         // espera um semaforo liberado por interrupcao e espera esta autorizado a mudar de
         // modo
-        osThreadFlagsWait(MODE_BTN_PRESSED_FLAG, osFlagsWaitAny, osWaitForever);
+        osThreadFlagsWait(MODE_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
-        bool is_RTD_active = get_individual_flag(e_ECU_control_flagsHandle, RTD_FLAG);
-        if (!is_RTD_active) {
+        if (!is_RTD_active()) {
             if (get_global_var_value(RACE_MODE) > AUTOX) {
                 set_global_var_value(RACE_MODE, ENDURO);
             }
@@ -40,6 +39,7 @@ void seleciona_modo(void* argument) {
             }
 
             set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+            osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_THREAD_FLAG);
         }
         // todo: dataloggar modos
     }

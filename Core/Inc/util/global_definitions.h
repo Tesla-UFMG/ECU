@@ -101,14 +101,16 @@ typedef enum {
 
 #define APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE 10
 
-// General Flags
-#define RTD_FLAG                   (1 << 1)
-#define RTD_BTN_PRESSED_FLAG       (1 << 2)
-#define MODE_BTN_PRESSED_FLAG      (1 << 3)
-#define GENERAL_BUS_OFF_ERROR_FLAG (1 << 4)
-#define INVERTER_CAN_ACTIVE        (1 << 5)
-#define INVERTER_READY             (1 << 6)
-#define ODOMETER_SAVE_FLAG         (1 << 7)
+// Thread Flags
+#define RTD_BTN_PRESSED_THREAD_FLAG                     (1 << 0)
+#define MODE_BTN_PRESSED_THREAD_FLAG                    (1 << 1)
+#define DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_THREAD_FLAG (1 << 2)
+#define RTD_THREAD_FLAG                                 (1 << 3)
+#define GENERAL_BUS_OFF_ERROR_THREAD_FLAG               (1 << 4)
+#define INVERTER_CAN_ACTIVE_THREAD_FLAG                 (1 << 5)
+#define INVERTER_READY_THREAD_FLAG                      (1 << 6)
+#define ODOMETER_SAVE_THREAD_FLAG                       (1 << 7)
+#define DYNAMIC_CONTROL_THREAD_FLAG                     (1 << 8)
 
 // Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG           (1 << 10)
@@ -121,15 +123,16 @@ typedef enum {
 
 // Hard error flags (RTD disable)
 #define INVERTER_CAN_TRANSMIT_ERROR_FLAG (1 << 19)
-#define INVERTER_COMM_ERROR_FLAG         (1 << 20)
-#define SU_F_ERROR_FLAG                  (1 << 21)
-#define INVERTER_BUS_OFF_ERROR_FLAG      (1 << 22)
+#define SU_F_ERROR_FLAG                  (1 << 20)
+#define INVERTER_BUS_OFF_ERROR_FLAG      (1 << 21)
+#define LEFT_INVERTER_COMM_ERROR_FLAG    (1 << 22)
+#define RIGHT_INVERTER_COMM_ERROR_FLAG   (1 << 23)
 
 #define ALL_WARN_FLAG        (REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG)
 #define ALL_MINOR_ERROR_FLAG (APPS_ERROR_FLAG | BSE_ERROR_FLAG)
 #define ALL_SEVERE_ERROR_FLAG                                                            \
-    (INVERTER_COMM_ERROR_FLAG | INVERTER_CAN_TRANSMIT_ERROR_FLAG | SU_F_ERROR_FLAG       \
-     | INVERTER_BUS_OFF_ERROR_FLAG)
+    (LEFT_INVERTER_COMM_ERROR_FLAG | RIGHT_INVERTER_COMM_ERROR_FLAG                      \
+     | INVERTER_CAN_TRANSMIT_ERROR_FLAG | SU_F_ERROR_FLAG | INVERTER_BUS_OFF_ERROR_FLAG)
 #define ALL_ERRORS_FLAG (ALL_SEVERE_ERROR_FLAG | ALL_MINOR_ERROR_FLAG)
 
 #define ALL_THROTTLE_ERROR_FLAG (APPS_ERROR_FLAG | BSE_ERROR_FLAG)

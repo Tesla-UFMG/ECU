@@ -10,6 +10,6 @@
 
 #define BUFFER_SIZE 100
 
-void moving_average(uint16_t* movave, uint16_t data);
+void moving_average(uint16_t* mov_ave, uint16_t data);
 
 #endif /* INC_SENSORS_SENSOR_DATA_PROCESSING_H_ */

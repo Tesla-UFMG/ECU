@@ -5,8 +5,7 @@
  *      Author: caius
  */
 
-//steps : cross validation functions with boolean return
-//monitoring task
+
 #include "security_architecture.h"
 
 #include "global_variables_handler.h"
@@ -15,18 +14,36 @@
 #include "util/global_variables.h"
 #include "util/global_definitions.h"
 
+// Center of gravity speed used in dynamic controls functions
+static uint16_t raw_speed_data = (uint16_t)get_global_var_value(REAR_AVG_SPEED);
+
+static uint16_t raw_IMU_long_accel_data = (int16_t)general_get_value(accelerometer_y);
 
 static uint16_t speed_filtered;
 static int16_t IMU_long_accel_filtered;
 static bool bse_active = get_global_var_value(BRAKE_STATUS);
 
-static uint16_t raw_speed_data = (uint16_t)get_global_var_value(REAR_AVG_SPEED);
-static uint16_t raw_IMU_long_accel_data = (int16_t)general_get_value(accelerometer_y);
+void cross_validation(void* argument) {
+    UNUSED(argument);
+
+    for (;;) {
+        ECU_ENABLE_BREAKPOINT_DEBUG();
+
+        is_imu_bse_ok();
+        is_imu_speed_ok();
+        if(is_imu_bse_ok && is_imu_speed_ok){
+//        	enable torque vectoring if disabled
+        }
+        else{
+//        	prevent enabling torque vectoring if disabled
+//			disable torque vectoring if enabled
+        }
+
+    }
+}
 
 
-void init_moving_average(){ //colocar essa e a init_cross_val dentro da initializer_controls.c
-//	moving_average(&apps1_filtered /*, apps1 nao filtrado*/);
-//	moving_average(&apps2_filtered /*, apps2 nao filtrado*/);
+void init_moving_average(){
 	moving_average(&IMU_long_accel_filtered, raw_IMU_long_accel_data);
 	moving_average(&speed_filtered, raw_speed_data);
 }

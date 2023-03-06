@@ -11,7 +11,6 @@
 #include "dynamic_controls/lateral_control.h"
 #include "dynamic_controls/longitudinal_control.h"
 #include "util/global_definitions.h"
-#include "security_architecture.h"
 
 void init_controls() {
 
@@ -19,6 +18,4 @@ void init_controls() {
     init_lateral_control();
     // Longitudinal Control
     init_longitudinal_control();
-    // Moving average
-    init_moving_average();
 }

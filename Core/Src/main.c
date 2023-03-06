@@ -217,9 +217,16 @@ const osThreadAttr_t t_odometer_save_attributes = {
 /* Definitions for t_dynamic_controls_choice */
 osThreadId_t t_dynamic_controls_choiceHandle;
 const osThreadAttr_t t_dynamic_controls_choice_attributes = {
-    .name       = "t_dynamic_controls_choice",
-    .stack_size = 1024 * 4,
-    .priority   = (osPriority_t)osPriorityLow,
+  .name = "t_dynamic_controls_choice",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for t_cross_validation */
+osThreadId_t t_cross_validationHandle;
+const osThreadAttr_t t_cross_validation_attributes = {
+  .name = "t_cross_validation",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for q_encoder_int_message */
 osMessageQueueId_t q_encoder_int_messageHandle;
@@ -354,6 +361,7 @@ extern void buttons_handler(void *argument);
 extern void speed_datalog(void *argument);
 extern void odometer_save(void *argument);
 extern void dynamic_controls_choice(void *argument);
+extern void cross_validation(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -551,6 +559,9 @@ int main(void)
 
   /* creation of t_dynamic_controls_choice */
   t_dynamic_controls_choiceHandle = osThreadNew(dynamic_controls_choice, NULL, &t_dynamic_controls_choice_attributes);
+
+  /* creation of t_cross_validation */
+  t_cross_validationHandle = osThreadNew(cross_validation, NULL, &t_cross_validation_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

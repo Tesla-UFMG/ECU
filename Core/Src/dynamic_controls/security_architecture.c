@@ -29,24 +29,17 @@ void cross_validation(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        is_imu_bse_ok();
-        is_imu_speed_ok();
-        if(is_imu_bse_ok && is_imu_speed_ok){
-//        	enable torque vectoring if disabled
-        }
-        else{
-//        	prevent enabling torque vectoring if disabled
-//			disable torque vectoring if enabled
-        }
+        moving_average(&IMU_long_accel_filtered, raw_IMU_long_accel_data);
+        moving_average(&speed_filtered, raw_speed_data);
+
+        if(!is_imu_bse_ok() || !is_imu_speed_ok())
+        	osEventFlagsSet(e_ECU_control_flagsHandle, CROSS_VALIDATION_FLAG);
+        else
+        	osEventFlagsClear(e_ECU_control_flagsHandle, CROSS_VALIDATION_FLAG);
 
     }
 }
 
-
-void init_moving_average(){
-	moving_average(&IMU_long_accel_filtered, raw_IMU_long_accel_data);
-	moving_average(&speed_filtered, raw_speed_data);
-}
 
 uint8_t is_imu_bse_ok(){
 	if(bse_active && (IMU_long_accel_filtered > IMU_MAX_LONG_ACCEL_THRESHOLD))

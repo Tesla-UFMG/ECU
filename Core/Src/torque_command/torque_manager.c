@@ -35,8 +35,10 @@ void torque_manager(void* argument) {
 
         const bool is_DYNAMIC_CONTROL_active =
             get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_THREAD_FLAG);
+        const bool is_CROSS_VALIDATION_ok =
+        	get_individual_flag(e_ECU_control_flagsHandle, CROSS_VALIDATION_FLAG); // COLOCA UM TIMER Q SETA ESSA FLAG
 
-        select_dynamic_control(is_DYNAMIC_CONTROL_active);
+        select_dynamic_control(is_DYNAMIC_CONTROL_active, is_CROSS_VALIDATION_ok);
 
         // todo (João Pedro): add new "case's" when the integration of controls is
         // implemented
@@ -116,9 +118,9 @@ void send_ref_torque_message(const uint32_t* ref_torque) {
     osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
 }
 
-void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
+void select_dynamic_control(bool is_DYNAMIC_CONTROL_active, bool is_CROSS_VALIDATION_ok) {
     // todo (João Pedro): add new "if's" when the integration of controls is implemented
-    if (is_DYNAMIC_CONTROL_active) {
+    if (is_DYNAMIC_CONTROL_active && is_CROSS_VALIDATION_ok) {
         if (get_global_var_value(SELECTED_MODE).dif_elt == 1
             && get_global_var_value(SELECTED_MODE).traction_control == 0) {
             g_control_type = LATERAL;

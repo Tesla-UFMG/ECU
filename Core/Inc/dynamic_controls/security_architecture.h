@@ -13,7 +13,6 @@
 #define SPEED_MIN_THRESHOLD 1
 #define IMU_MAX_LONG_ACCEL_THRESHOLD 1
 
-void init_moving_average();
 uint8_t is_imu_bse_ok();
 uint8_t is_imu_speed_ok();
 

@@ -75,25 +75,25 @@ typedef enum {
 } CAN_general_list_e;
 
 typedef struct {
-    CAN_general_list_e var;
     uint16_t id;
-    uint8_t pos;
+    uint8_t message_to_send;
 } CAN_var_inf;
 
 typedef struct {
     uint16_t external_ID;
-    int16_t pos[4];
+    CAN_general_list_e message_to_send[4];
 } datalog_send_t;
 
 #define QUANT_RESERVED_ID 50
+#define WORDS_PER_ID      4
 
 // INVERTER
 #define ID_RIGHT_INVERTER 0x301
 #define ID_LEFT_INVERTER  0x300
 #define ID_COMM_FLAG      0x302 // flag de comunicacao ecu-inv ok
 
-uint16_t get_amount_ext_id();
-void initialize_CAN_IDs_struct();
+uint16_t get_amount_ext_id(void);
+void initialize_CAN_IDs_struct(void);
 int16_t get_internal_id_from_pos_and_word(uint16_t pos_struct, uint16_t pos_word);
 uint16_t get_external_id_from_struct_pos(uint16_t struct_pos);
 

@@ -31,12 +31,12 @@ void torque_manager(void* argument) {
 
         void rampa_torque(uint32_t * ref_torque, const double* ref_torque_decrease);
         void send_ref_torque_message(const uint32_t* ref_torque);
-        void select_dynamic_control(bool is_DYNAMIC_CONTROL_active);
+        void select_dynamic_control(bool is_DYNAMIC_CONTROL_active, bool is_there_CROSS_VALIDATION_error);
 
         const bool is_DYNAMIC_CONTROL_active =
             get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_THREAD_FLAG);
         const bool is_there_CROSS_VALIDATION_error =
-        	get_individual_flag(e_ECU_control_flagsHandle, CROSS_VALIDATION_ERROR_FLAG); // COLOCA UM TIMER Q SETA ESSA FLAG
+        	get_individual_flag(e_ECU_control_flagsHandle, CROSS_VALIDATION_ERROR_THREAD_FLAG); // COLOCA UM TIMER Q SETA ESSA FLAG
 
         select_dynamic_control(is_DYNAMIC_CONTROL_active, is_there_CROSS_VALIDATION_error);
 

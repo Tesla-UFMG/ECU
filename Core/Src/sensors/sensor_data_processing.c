@@ -7,6 +7,8 @@
 
 #include "sensors/sensor_data_processing.h"
 
+#include "stdint.h"
+
 
 
 // Calculate moving average for data logged from any sensor using a circular buffer

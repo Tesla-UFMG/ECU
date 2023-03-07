@@ -8,6 +8,7 @@
 #ifndef INC_SENSORS_SENSOR_DATA_PROCESSING_H_
 #define INC_SENSORS_SENSOR_DATA_PROCESSING_H_
 
+#include "stdint.h"
 #define BUFFER_SIZE 100
 
 void moving_average(uint16_t* mov_ave, uint16_t data);

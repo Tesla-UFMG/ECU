@@ -111,12 +111,12 @@ typedef enum {
 #define INVERTER_READY_THREAD_FLAG                      (1 << 6)
 #define ODOMETER_SAVE_THREAD_FLAG                       (1 << 7)
 #define DYNAMIC_CONTROL_THREAD_FLAG                     (1 << 8)
+#define CROSS_VALIDATION_ERROR_THREAD_FLAG	  (1 << 9)
 
 // Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG           (1 << 10)
 #define DYNAMIC_CONTROL_WARN_FLAG (1 << 11)
 #define FLASH_SAVE_LIMIT_FLAG     (1 << 12)
-#define CROSS_VALIDATION_FLAG	  (1 << 13)
 // Soft error flags (RTD keeps on, torque ref to inverter is set to 0)
 
 #define BSE_ERROR_FLAG  (1 << 16) // Regulamento: EV.5.7 (2021)

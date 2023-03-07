@@ -313,6 +313,11 @@ osTimerId_t tim_right_inv_errorHandle;
 const osTimerAttr_t tim_right_inv_error_attributes = {
   .name = "tim_right_inv_error"
 };
+/* Definitions for tim_cross_validation_error */
+osTimerId_t tim_cross_validation_errorHandle;
+const osTimerAttr_t tim_cross_validation_error_attributes = {
+  .name = "tim_cross_validation_error"
+};
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
@@ -367,6 +372,7 @@ extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
 extern void left_inv_error_callback(void *argument);
 extern void right_inv_error_callback(void *argument);
+extern void cross_validation_error_callback(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -453,6 +459,9 @@ int main(void)
 
   /* creation of tim_right_inv_error */
   tim_right_inv_errorHandle = osTimerNew(right_inv_error_callback, osTimerPeriodic, (void*) RIGHT_INVERTER_COMM_ERROR_FLAG, &tim_right_inv_error_attributes);
+
+  /* creation of tim_cross_validation_error */
+  tim_cross_validation_errorHandle = osTimerNew(cross_validation_error_callback, osTimerPeriodic, (void*) CROSS_VALIDATION_ERROR_THREAD_FLAG, &tim_cross_validation_error_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */

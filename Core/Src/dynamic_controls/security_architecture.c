@@ -29,14 +29,19 @@ void cross_validation(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
+        osThreadFlagsWait();
+
+        // TODO(caius): fazer uma média mais genérica usando struct e um serviço pro buffer circular
         moving_average(&IMU_long_accel_filtered, raw_IMU_long_accel_data);
         moving_average(&speed_filtered, raw_speed_data);
 
-        if(!is_imu_bse_ok() || !is_imu_speed_ok())
-        	osEventFlagsSet(e_ECU_control_flagsHandle, CROSS_VALIDATION_FLAG);
-        else
-        	osEventFlagsClear(e_ECU_control_flagsHandle, CROSS_VALIDATION_FLAG);
-
+        if(!is_imu_bse_ok() || !is_imu_speed_ok()){
+        	osTimerStart(tim_cross_validation_errorHandle, CROSS_VALIDATION_ERROR_TIME);
+        }
+        else{
+        	osTimerStop(tim_cross_validation_errorHandle);
+        	osEventFlagsClear(e_ECU_control_flagsHandle, CROSS_VALIDATION_ERROR_THREAD_FLAG);
+        }
     }
 }
 
@@ -51,6 +56,10 @@ uint8_t is_imu_speed_ok(){
 	if((speed < SPEED_MIN_THRESHOLD) && (IMU_long_accel_filtered > IMU_MAX_LONG_ACCEL_THRESHOLD))
 		return 0;
 	return 1;
+}
+
+void cross_validation_error_callback(){
+	osEventFlagsSet(e_ECU_control_flagsHandle, CROSS_VALIDATION_ERROR_FLAG);
 }
 
 

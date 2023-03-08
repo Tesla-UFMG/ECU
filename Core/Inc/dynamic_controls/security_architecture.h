@@ -9,6 +9,9 @@
 #define INC_DYNAMIC_CONTROLS_SECURITY_ARCHITECTURE_H_
 
 // TODO(caius): add the threshold values and the timer time
+
+#include "stdint.h"
+
 #define IMU_LONG_ACCEL_THRESHOLD 1
 #define SPEED_MIN_THRESHOLD 1
 #define IMU_MAX_LONG_ACCEL_THRESHOLD 1

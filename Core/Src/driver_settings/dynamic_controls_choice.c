@@ -11,6 +11,7 @@
 #include "util/global_instances.h"
 #include "util/global_variables.h"
 #include "util/util.h"
+#include "cmsis_os2.h"
 
 void dynamic_controls_choice(void* argument) {
     UNUSED(argument);

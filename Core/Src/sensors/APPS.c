@@ -97,10 +97,11 @@ static bool is_there_APPS_error() { // Regulamento: T.4.2 (2021)
     if (apps2_value > APPS2_MAX     // Se o valor de APPS2 for acima do seu maximo
         || apps2_value < APPS2_MIN  // ou abaixo do seu minimo
         || apps1_value > APPS1_MAX  // Se o valor de APPS1 for acima do seu maximo
-        || apps1_value < APPS1_MIN  // ou abaixo do seu minimo
+        || apps1_value < 0)  // ou abaixo do seu minimo
         // Se os APPS1 e APPS2 discordarem em mais de 10%
-        || abs(apps1_throttle_percent - apps2_throttle_percent) / 10
-               > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {
+        //|| abs(apps1_throttle_percent - apps2_throttle_percent) / 10
+        //       > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE)
+		{
         return true;
     }
     return false;

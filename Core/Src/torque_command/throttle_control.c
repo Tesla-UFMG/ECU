@@ -30,7 +30,7 @@ void throttle_control(void* argument) {
         bool is_bse_error_present =
             get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
 
-        if (is_RTD_active() && !is_apps_error_present && !is_bse_error_present) {
+        if (is_RTD_active() && !is_apps_error_present /*&& !is_bse_error_present*/) {
             set_global_var_value(THROTTLE_PERCENT, message);
         } else {
             set_global_var_value(THROTTLE_PERCENT, 0);

@@ -17,7 +17,7 @@
 
 static uint16_t speed_filtered;
 static int16_t IMU_longit_accel_filtered;
-static bool bse_active = get_global_var_value(BRAKE_STATUS);
+static bool bse_active;
 
 void cross_validation(void* argument) {
     UNUSED(argument);
@@ -29,6 +29,7 @@ void cross_validation(void* argument) {
 
         int16_t raw_IMU_longit_accel_data = (int16_t)general_get_value(accelerometer_y);
         uint16_t raw_speed_data = get_global_var_value(REAR_AVG_SPEED);
+        bool bse_active = get_global_var_value(BRAKE_STATUS);
 
         // TODO(caius): fazer uma média mais genérica usando struct e um serviço pro buffer circular
         moving_average(&IMU_longit_accel_filtered, raw_IMU_longit_accel_data);

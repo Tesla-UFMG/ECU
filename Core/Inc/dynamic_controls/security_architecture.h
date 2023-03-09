@@ -12,13 +12,13 @@
 
 #include "stdint.h"
 
-#define IMU_LONG_ACCEL_THRESHOLD 1
-#define SPEED_MIN_THRESHOLD 1
-#define IMU_MAX_LONGIT_ACCEL_THRESHOLD 1
+#define IMU_NULL_ACCEL_MARGIN_ERROR 1
+#define NULL_SPEED_MARGIN_ERROR 1
 
 #define CROSS_VALIDATION_ERROR_TIME 1
 
-uint8_t is_imu_bse_ok();
-uint8_t is_imu_speed_ok();
+uint8_t is_there_imu_bse_error();
+uint8_t is_there_imu_speed_error();
+void cross_validation_error_callback();
 
 #endif /* INC_DYNAMIC_CONTROLS_SECURITY_ARCHITECTURE_H_ */

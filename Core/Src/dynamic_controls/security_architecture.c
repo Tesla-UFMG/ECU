@@ -5,19 +5,17 @@
  *      Author: caius
  */
 
-
 #include "dynamic_controls/security_architecture.h"
 
-#include "sensors/sensor_data_processing.h"
 #include "CAN/general_can_data_manager.h"
 #include "cmsis_os2.h"
+#include "sensors/sensor_data_processing.h"
 #include "util/util.h"
 #include "util/global_instances.h"
 
-
-static uint16_t speed_filtered;
-static int16_t IMU_longit_accel_filtered;
-static bool bse_active;
+static REAR_AVG_SPEED_t speed_mov_avg;
+static IMU_ACCEL_t IMU_long_accel_mov_avg;
+static BRAKE_STATUS_t bse_active;
 
 void cross_validation(void* argument) {
     UNUSED(argument);
@@ -27,15 +25,14 @@ void cross_validation(void* argument) {
 
         osThreadFlagsWait(DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
-        int16_t raw_IMU_longit_accel_data = (int16_t)general_get_value(accelerometer_y);
-        uint16_t raw_speed_data = get_global_var_value(REAR_AVG_SPEED);
-        bool bse_active = get_global_var_value(BRAKE_STATUS);
+        IMU_ACCEL_t IMU_long_accel_data = (int16_t)general_get_value(accelerometer_z);
+        REAR_AVG_SPEED_t speed_data = get_global_var_value(REAR_AVG_SPEED);
+        bse_active = get_global_var_value(BRAKE_STATUS);
 
-        // TODO(caius): fazer uma média mais genérica usando struct e um serviço pro buffer circular
-        moving_average(&IMU_longit_accel_filtered, raw_IMU_longit_accel_data);
-        moving_average(&speed_filtered, raw_speed_data);
+        moving_average(&IMU_long_accel_mov_avg, IMU_long_accel_data);
+        moving_average(&speed_mov_avg, speed_data);
 
-        if(!is_imu_bse_ok() || !is_imu_speed_ok()){
+        if(is_there_imu_bse_error() || is_there_imu_speed_error()){
         	osTimerStart(tim_cross_validation_errorHandle, CROSS_VALIDATION_ERROR_TIME);
         }
         else{
@@ -46,20 +43,18 @@ void cross_validation(void* argument) {
 }
 
 
-uint8_t is_imu_bse_ok(){
-	if(bse_active && (IMU_longit_accel_filtered > IMU_MAX_LONGIT_ACCEL_THRESHOLD))
-		return 0;
-	return 1;
+uint8_t is_there_imu_bse_error(){
+	if(bse_active && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR))
+		return 1;
+	return 0;
 }
 
-uint8_t is_imu_speed_ok(){
-	if((speed_filtered < SPEED_MIN_THRESHOLD) && (IMU_longit_accel_filtered > IMU_MAX_LONGIT_ACCEL_THRESHOLD))
-		return 0;
-	return 1;
+uint8_t is_there_imu_speed_error(){
+	if((speed_mov_avg < NULL_SPEED_MARGIN_ERROR) && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR))
+		return 1;
+	return 0;
 }
 
 void cross_validation_error_callback(){
 	osEventFlagsSet(e_ECU_control_flagsHandle, CROSS_VALIDATION_ERROR_THREAD_FLAG);
 }
-
-

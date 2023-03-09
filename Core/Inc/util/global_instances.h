@@ -33,6 +33,7 @@ extern osThreadId_t t_pilot_resetHandle;
 extern osThreadId_t t_inverter_comm_errorHandle;
 extern osThreadId_t t_odometer_saveHandle;
 extern osThreadId_t t_dynamic_controls_choiceHandle;
+extern osThreadId_t t_cross_validationHandle;
 
 // EVENT FLAGS
 extern osEventFlagsId_t e_ECU_control_flagsHandle;
@@ -45,11 +46,11 @@ extern osMutexId_t m_state_parameter_mutexHandle;
 // TIMERS
 extern osTimerId_t tim_SU_F_errorHandle;
 extern osTimerId_t tim_APPS_errorHandle;
-;
 extern osTimerId_t tim_inverter_BUS_OFF_errorHandle;
 extern osTimerId_t tim_inverter_readyHandle;
 extern osTimerId_t tim_inverter_can_transmit_errorHandle;
 extern osTimerId_t tim_left_inv_errorHandle;
 extern osTimerId_t tim_right_inv_errorHandle;
+extern osTimerId_t tim_cross_validation_errorHandle;
 
 #endif /* INC_GLOBAL_INSTANCES_H_ */

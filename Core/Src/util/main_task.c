@@ -18,22 +18,49 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-#define ERROR_COLORS_PATTERN_SIZE 3
+#define HARD_ERROR_COLORS_PATTERN_SIZE 3
+#define SOFT_ERROR_COLORS_PATTERN_SIZE 2
 
 void led_color_response(uint32_t flag) {
 
     switch (flag) {
-        // Hard error
-        case INVERTER_BUS_OFF_ERROR_FLAG: {
-            cores_t pattern[ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, AMARELO};
-            set_rgb_led(pattern, BLINK500, ERROR_COLORS_PATTERN_SIZE);
+        // Soft error
+        case BSE_ERROR_FLAG: {
+            cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {AMARELO, ROXO};
+            set_rgb_led(pattern, FIXED, SOFT_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
-        case INVERTER_CAN_TRANSMIT_ERROR_FLAG: break;
-        case SU_F_ERROR_FLAG: break;
-        // Soft error
-        case APPS_ERROR_FLAG: break;
-        case BSE_ERROR_FLAG: break;
+        case APPS_ERROR_FLAG: {
+            cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {AMARELO, VERDE};
+            set_rgb_led(pattern, FIXED, SOFT_ERROR_COLORS_PATTERN_SIZE);
+            break;
+        }
+        // Hard error
+        case INVERTER_CAN_TRANSMIT_ERROR_FLAG: {
+            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, AMARELO};
+            set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
+            break;
+        }
+        case SU_F_ERROR_FLAG: {
+            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, BRANCO, PRETO};
+            set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
+            break;
+        }
+        case INVERTER_BUS_OFF_ERROR_FLAG: {
+            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, VERDE};
+            set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
+            break;
+        }
+        case LEFT_INVERTER_COMM_ERROR_FLAG: {
+            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, ROXO};
+            set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
+            break;
+        }
+        case RIGHT_INVERTER_COMM_ERROR_FLAG: {
+            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, CIANO};
+            set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
+            break;
+        }
     }
 }
 
@@ -45,17 +72,18 @@ void main_task(void* argument) {
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        //wait_for_rtd();
+        // wait_for_rtd();
 
         // Wait for any error
-        //osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
+        // osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
         //                 osWaitForever);
         // Get the most significant thread flag
-        uint32_t most_significant_error_flag; //= get_most_significant_thread_flag();
+        uint32_t most_significant_error_flag =
+            /*INVERTER_BUS_OFF_ERROR_FLAG; */ get_most_significant_thread_flag();
         // Get the event flag
-        uint32_t event_flags; //osEventFlagsGet(e_ECU_control_flagsHandle);
-        most_significant_error_flag = INVERTER_BUS_OFF_ERROR_FLAG;
-        event_flags = INVERTER_BUS_OFF_ERROR_FLAG;
+        uint32_t event_flags =
+            /*INVERTER_BUS_OFF_ERROR_FLAG; */ osEventFlagsGet(e_ECU_control_flagsHandle);
+
         bool isErrorPresent;
         switch (most_significant_error_flag) {
 

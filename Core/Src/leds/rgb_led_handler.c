@@ -28,9 +28,21 @@ void blink_rgb(uint32_t delay);
 
 osStatus_t set_rgb_led(cores_t* pattern, control_rgb_led_e control,
                        uint8_t sizeOfPattern) {
-    rgb_led_message_t message = {pattern, control, sizeOfPattern};
+    rgb_led_message_t message;
+    message.control = control;
+    message.sizeOfPattern = sizeOfPattern;
+    //config(sizeOfPattern, pattern, &message);
+    message.pattern[0] = pattern[0];
+    message.pattern[1] = sizeOfPattern>1 ? pattern[1]: 0;
+    message.pattern[2] = sizeOfPattern>2 ? pattern[2]: 0;
     return osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
 }
+
+/*void config(int size, cores_t* pattern, rgb_led_message_t *message){
+	for (int i = 0; i<3; i++){
+		message->pattern[i]= size>i ? pattern[i]: 0;
+	}
+}*/
 
 void rgb_led(void* argument) {
     UNUSED(argument);
@@ -46,42 +58,22 @@ void rgb_led(void* argument) {
 
             // caso timeout estore vai piscar o led, indicando que ta fora do RTD
             case osErrorTimeout:
-                for (int i = 0; i < message.sizeOfPattern; ++i) {
-                    write_rgb_color(get_rgb_color(message.pattern[i]));
-                    blink_rgb(RGB_BLINK_DELAY);
-                }
+            	write_pattern(message, RGB_BLINK_DELAY);
                 break;
 
             default:
                 switch (message.control) {
                     case FIXED:
-                        for (;;) {
                             if(message.sizeOfPattern > 1) {
-                            	for(;;){
-                            		for (int i = 0; i < message.sizeOfPattern; ++i) {
-                            			write_rgb_color(get_rgb_color(message.pattern[i]));
-                            			blink_rgb(RGB_BLINK500_DELAY);
-                            		}
-                            		if (osMessageQueueGetCount(q_rgb_led_messageHandle) > 0) {
-                            		    break;
-                            		}
-                            	}
-                            	break;
+                            	while(osMessageQueueGetCount(q_rgb_led_messageHandle) > 0){
+                            		write_pattern(message, RGB_BLINK500_DELAY);
+                            	}break;
                             }
                             write_rgb_color(get_rgb_color(message.pattern[0]));
-                            osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL,
-                                                  osWaitForever);
-                            if (message.control == BLINK200) {
-                                break;
-                            }
-                        }
-                        break;
+                            messageWait(q_rgb_led_messageHandle);
+                            break;
                     default:
-                        for (int i = 0; i < message.sizeOfPattern; ++i) {
-                            write_rgb_color(get_rgb_color(message.pattern[i]));
-                            blink_rgb(RGB_BLINK_DELAY);
-                        }
-                        break;
+                    	write_pattern(message, RGB_BLINK_DELAY);break;
                 }
                 break;
         }
@@ -91,6 +83,21 @@ void rgb_led(void* argument) {
 void blink_rgb(uint32_t delay) {
     osDelay(delay);
     write_rgb_color(get_rgb_color(PRETO));
+}
+
+void write_pattern(rgb_led_message_t message, int delay){
+	for (int i = 0; i < message.sizeOfPattern; ++i) {
+		write_rgb_color(get_rgb_color(message.pattern[i]));
+		blink_rgb(delay);
+	}
+}
+
+void messageWait(osMessageQueueId_t q_rgb_led_messageHandle){
+	for(;;){
+		if(osMessageQueueGetCount(q_rgb_led_messageHandle) > 0){
+			break;
+		}
+	}
 }
 
 void write_rgb_color(rgb_t rgb_gpio) {

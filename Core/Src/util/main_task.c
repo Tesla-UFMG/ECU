@@ -52,14 +52,14 @@ void led_color_response(uint32_t flag) {
             break;
         }
         case LEFT_INVERTER_COMM_ERROR_FLAG: {
-               cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, ROXO};
-               set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
-               break;
+        	cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, ROXO};
+        	set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
+        	break;
         }
         case RIGHT_INVERTER_COMM_ERROR_FLAG: {
-               cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, CIANO};
-               set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
-               break;
+        	cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, CIANO};
+        	set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
+        	break;
         }
 
     }
@@ -79,9 +79,9 @@ void main_task(void* argument) {
         osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
                           osWaitForever);
         // Get the most significant thread flag
-        uint32_t most_significant_error_flag = get_most_significant_thread_flag();
+        uint32_t most_significant_error_flag = /*INVERTER_BUS_OFF_ERROR_FLAG; */get_most_significant_thread_flag();
         // Get the event flag
-        uint32_t event_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
+        uint32_t event_flags = /*INVERTER_BUS_OFF_ERROR_FLAG; */osEventFlagsGet(e_ECU_control_flagsHandle);
 
         bool isErrorPresent;
         switch (most_significant_error_flag) {

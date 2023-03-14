@@ -35,7 +35,6 @@ void main_task(void* argument) {
         uint32_t event_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
 
         bool isErrorPresent;
-
         switch (most_significant_error_flag) {
 
                 // BUSOFF error is treated when it happens more than once in a short

@@ -28,6 +28,7 @@ void inverter_comm_error(void* argument) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
         uint32_t id;
+
         if (osMessageQueueGet(q_ids_can_inverterHandle, &id, NULL, osWaitForever)
             == osOK) {
 

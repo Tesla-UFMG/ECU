@@ -100,8 +100,7 @@ static bool is_there_APPS_error() { // Regulamento: T.4.2 (2021)
         || apps1_value < APPS1_MIN  // ou abaixo do seu minimo
         // Se os APPS1 e APPS2 discordarem em mais de 10%
         || abs(apps1_throttle_percent - apps2_throttle_percent) / 10
-               > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE)
-		{
+               > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {
         return true;
     }
     return false;

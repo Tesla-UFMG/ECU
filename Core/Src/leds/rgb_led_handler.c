@@ -40,7 +40,7 @@ osStatus_t set_rgb_led(cores_t* pattern, control_rgb_led_e control,
     return osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
 }
 
-/*void config(int size, cores_t* pattern, rgb_led_message_t *message){
+/*void config(uint8_t size, cores_t* pattern, rgb_led_message_t *message){
         for (int i = 0; i<3; i++){
                 message->pattern[i]= size>i ? pattern[i]: 0;
         }
@@ -65,8 +65,11 @@ void rgb_led(void* argument) {
                 switch (message.control) {
                     case FIXED:
                         if (message.sizeOfPattern > 1) {
-                            while (osMessageQueueGetCount(q_rgb_led_messageHandle) > 0) {
+                            for (;;) {
                                 write_pattern(message, RGB_BLINK500_DELAY);
+                                if (osMessageQueueGetCount(q_rgb_led_messageHandle) > 0) {
+                                    break;
+                                }
                             }
                             break;
                         }

@@ -214,6 +214,13 @@ const osThreadAttr_t t_odometer_save_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_dynamic_controls_choice */
+osThreadId_t t_dynamic_controls_choiceHandle;
+const osThreadAttr_t t_dynamic_controls_choice_attributes = {
+    .name       = "t_dynamic_controls_choice",
+    .stack_size = 1024 * 4,
+    .priority   = (osPriority_t)osPriorityLow,
+};
 /* Definitions for q_encoder_int_message */
 osMessageQueueId_t q_encoder_int_messageHandle;
 const osMessageQueueAttr_t q_encoder_int_message_attributes = {
@@ -259,6 +266,11 @@ osMessageQueueId_t q_odometer_calc_save_messageHandle;
 const osMessageQueueAttr_t q_odometer_calc_save_message_attributes = {
   .name = "q_odometer_calc_save_message"
 };
+/* Definitions for q_ids_can_inverter */
+osMessageQueueId_t q_ids_can_inverterHandle;
+const osMessageQueueAttr_t q_ids_can_inverter_attributes = {
+  .name = "q_ids_can_inverter"
+};
 /* Definitions for tim_SU_F_error */
 osTimerId_t tim_SU_F_errorHandle;
 const osTimerAttr_t tim_SU_F_error_attributes = {
@@ -283,6 +295,16 @@ const osTimerAttr_t tim_inverter_ready_attributes = {
 osTimerId_t tim_inverter_can_transmit_errorHandle;
 const osTimerAttr_t tim_inverter_can_transmit_error_attributes = {
   .name = "tim_inverter_can_transmit_error"
+};
+/* Definitions for tim_left_inv_error */
+osTimerId_t tim_left_inv_errorHandle;
+const osTimerAttr_t tim_left_inv_error_attributes = {
+  .name = "tim_left_inv_error"
+};
+/* Definitions for tim_right_inv_error */
+osTimerId_t tim_right_inv_errorHandle;
+const osTimerAttr_t tim_right_inv_error_attributes = {
+  .name = "tim_right_inv_error"
 };
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
@@ -331,9 +353,12 @@ extern void pilot_reset(void *argument);
 extern void buttons_handler(void *argument);
 extern void speed_datalog(void *argument);
 extern void odometer_save(void *argument);
+extern void dynamic_controls_choice(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
+extern void left_inv_error_callback(void *argument);
+extern void right_inv_error_callback(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -415,6 +440,12 @@ int main(void)
   /* creation of tim_inverter_can_transmit_error */
   tim_inverter_can_transmit_errorHandle = osTimerNew(errors_with_timer_callback, osTimerOnce, (void*) INVERTER_CAN_TRANSMIT_ERROR_FLAG, &tim_inverter_can_transmit_error_attributes);
 
+  /* creation of tim_left_inv_error */
+  tim_left_inv_errorHandle = osTimerNew(left_inv_error_callback, osTimerPeriodic, (void*) LEFT_INVERTER_COMM_ERROR_FLAG, &tim_left_inv_error_attributes);
+
+  /* creation of tim_right_inv_error */
+  tim_right_inv_errorHandle = osTimerNew(right_inv_error_callback, osTimerPeriodic, (void*) RIGHT_INVERTER_COMM_ERROR_FLAG, &tim_right_inv_error_attributes);
+
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
@@ -446,6 +477,9 @@ int main(void)
 
   /* creation of q_odometer_calc_save_message */
   q_odometer_calc_save_messageHandle = osMessageQueueNew (1, sizeof(odometer_message_t), &q_odometer_calc_save_message_attributes);
+
+  /* creation of q_ids_can_inverter */
+  q_ids_can_inverterHandle = osMessageQueueNew (32, sizeof(uint32_t), &q_ids_can_inverter_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -514,6 +548,9 @@ int main(void)
 
   /* creation of t_odometer_save */
   t_odometer_saveHandle = osThreadNew(odometer_save, NULL, &t_odometer_save_attributes);
+
+  /* creation of t_dynamic_controls_choice */
+  t_dynamic_controls_choiceHandle = osThreadNew(dynamic_controls_choice, NULL, &t_dynamic_controls_choice_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

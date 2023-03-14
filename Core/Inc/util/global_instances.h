@@ -23,6 +23,7 @@ extern osMessageQueueId_t q_rgb_led_messageHandle;
 extern osMessageQueueId_t q_throttle_controlHandle;
 extern osMessageQueueId_t q_encoder_speeds_messageHandle;
 extern osMessageQueueId_t q_odometer_calc_save_messageHandle;
+extern osMessageQueueId_t q_ids_can_inverterHandle;
 
 // TASKS
 extern osThreadId_t t_main_taskHandle;
@@ -31,6 +32,7 @@ extern osThreadId_t t_RTDHandle;
 extern osThreadId_t t_pilot_resetHandle;
 extern osThreadId_t t_inverter_comm_errorHandle;
 extern osThreadId_t t_odometer_saveHandle;
+extern osThreadId_t t_dynamic_controls_choiceHandle;
 
 // EVENT FLAGS
 extern osEventFlagsId_t e_ECU_control_flagsHandle;
@@ -47,5 +49,7 @@ extern osTimerId_t tim_APPS_errorHandle;
 extern osTimerId_t tim_inverter_BUS_OFF_errorHandle;
 extern osTimerId_t tim_inverter_readyHandle;
 extern osTimerId_t tim_inverter_can_transmit_errorHandle;
+extern osTimerId_t tim_left_inv_errorHandle;
+extern osTimerId_t tim_right_inv_errorHandle;
 
 #endif /* INC_GLOBAL_INSTANCES_H_ */

@@ -39,6 +39,7 @@ typedef modos SELECTED_MODE_t;
 #define THROTTLE_STATUS_DEFAULT_VALUE  false
 #define SELECTED_MODE_DEFAULT_VALUE                                                      \
     {}
+
 typedef enum {
     SPEEDS,
     WHEEL_ENCODER_SPEEDS,

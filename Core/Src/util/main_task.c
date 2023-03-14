@@ -4,7 +4,7 @@
  *  Created on: Jun 3, 2020
  *      Author: renanmoreira
  */
-// #include <string.h>
+
 #include "util/main_task.h"
 
 #include "cmsis_os.h"
@@ -70,6 +70,11 @@ void main_task(void* argument) {
     UNUSED(argument);
 
     for (;;) {
+    	//for (int i = 0; i <=28; i++) {
+    		//volatile int aux = (i<=7) ? 16 : 19;
+    		//volatile uint32_t tempError = 1<<aux;
+    		//volatile uint32_t noError = 1<<1;
+
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
@@ -79,11 +84,11 @@ void main_task(void* argument) {
         osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
                           osWaitForever);
         // Get the most significant thread flag
-        uint32_t most_significant_error_flag = /*INVERTER_BUS_OFF_ERROR_FLAG; */get_most_significant_thread_flag();
+        uint32_t most_significant_error_flag = /*(7<i && i<=14) ? noError : tempError */get_most_significant_thread_flag();
         // Get the event flag
-        uint32_t event_flags = /*INVERTER_BUS_OFF_ERROR_FLAG; */osEventFlagsGet(e_ECU_control_flagsHandle);
+        uint32_t event_flags = /*(7<i && i<=14) ? noError : tempError */ osEventFlagsGet(e_ECU_control_flagsHandle);
 
-        bool isErrorPresent;
+        volatile bool isErrorPresent;
         switch (most_significant_error_flag) {
 
                 // BUSOFF error is treated when it happens more than once in a short
@@ -139,4 +144,6 @@ void main_task(void* argument) {
             default: osDelay(100); break;
         }
     }
+    //}
+
 }

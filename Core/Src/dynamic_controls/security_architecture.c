@@ -29,8 +29,8 @@ void cross_validation(void* argument) {
         REAR_AVG_SPEED_t speed_data = get_global_var_value(REAR_AVG_SPEED);
         bse_active = get_global_var_value(BRAKE_STATUS);
 
-        moving_average(&IMU_long_accel_mov_avg, IMU_long_accel_data);
-        moving_average(&speed_mov_avg, speed_data);
+        moving_average(&IMU_long_accel_mov_avg, &IMU_long_accel_data);
+        moving_average(&speed_mov_avg, &speed_data);
 
         if(is_there_imu_bse_error() || is_there_imu_speed_error()){
         	osTimerStart(tim_cross_validation_errorHandle, CROSS_VALIDATION_ERROR_TIME);
@@ -46,13 +46,13 @@ void cross_validation(void* argument) {
 uint8_t is_there_imu_bse_error(){
 	if(bse_active && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR))
 		return 1;
-	return 0;
+	else return 0;
 }
 
 uint8_t is_there_imu_speed_error(){
 	if((speed_mov_avg < NULL_SPEED_MARGIN_ERROR) && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR))
 		return 1;
-	return 0;
+	else return 0;
 }
 
 void cross_validation_error_callback(){

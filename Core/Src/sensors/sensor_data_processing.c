@@ -11,16 +11,16 @@
 // TODO(caius): Generalize moving average service implementing this sketch, allowing different types. Implement a general circular buffer as well
 // It calculates moving average for data logged from any sensor using a circular buffer
 
-void moving_average(float* mov_avg, float data) {
+static uint8_t buffer_index = 0;
+static float buffer_sum = 0;
+static float mov_avg_buffer[BUFFER_SIZE] = {0.0};
 
-	uint8_t buffer_index = 0;
-	float mov_avg_buffer[BUFFER_SIZE];
-	float buffer_sum = 0;
+void moving_average(float* mov_avg, float* data) {
 
-	mov_avg = 0;
+	*mov_avg = 0;
 
 	// Put the signal value read by sensor into each buffer position
-	mov_avg_buffer[buffer_index] = data;
+	mov_avg_buffer[buffer_index] = *data;
 
 	// circular buffer logic
 	buffer_index = (buffer_index + 1) % BUFFER_SIZE;

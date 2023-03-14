@@ -34,7 +34,15 @@ void cross_validation(void* argument) {
 
         if(is_there_imu_bse_error() || is_there_imu_speed_error()){
         	osTimerStart(tim_cross_validation_errorHandle, CROSS_VALIDATION_ERROR_TIME);
+
+        	if(is_there_imu_bse_error()){
+        		osEventFlagsSet(e_ECU_control_flagsHandle, IMU_BSE_ERROR_THREAD_FLAG);
+        	}
+        	if(is_there_imu_speed_error()){
+        		osEventFlagsSet(e_ECU_control_flagsHandle, IMU_SPEED_ERROR_THREAD_FLAG);
+        	}
         }
+
         else{
         	osTimerStop(tim_cross_validation_errorHandle);
         	osEventFlagsClear(e_ECU_control_flagsHandle, CROSS_VALIDATION_ERROR_THREAD_FLAG);
@@ -43,16 +51,16 @@ void cross_validation(void* argument) {
 }
 
 
-uint8_t is_there_imu_bse_error(){
+bool is_there_imu_bse_error(){
 	if(bse_active && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR))
-		return 1;
-	else return 0;
+		return true;
+	else return false;
 }
 
-uint8_t is_there_imu_speed_error(){
+bool is_there_imu_speed_error(){
 	if((speed_mov_avg < NULL_SPEED_MARGIN_ERROR) && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR))
-		return 1;
-	else return 0;
+		return true;
+	else return false;
 }
 
 void cross_validation_error_callback(){

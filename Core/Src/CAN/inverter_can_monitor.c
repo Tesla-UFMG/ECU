@@ -21,6 +21,10 @@ void inverter_can_diff(uint32_t id);
 void inverter_comm_error(void* argument) {
     UNUSED(argument);
 
+    // Sets inverter communication error flags at first execution
+    osEventFlagsSet(e_ECU_control_flagsHandle, LEFT_INVERTER_COMM_ERROR_FLAG);
+    osEventFlagsSet(e_ECU_control_flagsHandle, RIGHT_INVERTER_COMM_ERROR_FLAG);
+
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
@@ -38,11 +42,11 @@ void inverter_can_diff(uint32_t id) {
 
     // Restart the timer and clear the error if any message on each inverter
     // gets received
-    if (id >= 100 && id <= 103) {
+    if (id >= LEFT_INV_SMALLEST_ID && id <= LEFT_INV_BIGGEST_ID) {
         osTimerStart(tim_left_inv_errorHandle, INV_COMM_ERROR_TIME);
         // clear_error(LEFT_INVERTER_COMM_ERROR_FLAG);
     }
-    if (id >= 200 && id <= 203) {
+    if (id >= RIGHT_INV_SMALLEST_ID && id <= RIGHT_INV_BIGGEST_ID) {
         osTimerStart(tim_right_inv_errorHandle, INV_COMM_ERROR_TIME);
         // clear_error(RIGHT_INVERTER_COMM_ERROR_FLAG);
     }

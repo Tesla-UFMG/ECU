@@ -13,12 +13,14 @@
 #include "stdint.h"
 #include "util/global_definitions.h"
 
-#define RGB_TIMEOUT    200
+#define RGB_TIMEOUT 200
 #define RGB_BLINK_200_DELAY 200
 #define RGB_BLINK_1000_DELAY 1000
 #define ONE_COLOR_PATTERN_POS 0
-#define HARD_ERROR_COLORS_PATTERN_SIZE 3
+#define ONE_COLOR_PATTERN_SIZE 1
 #define SOFT_ERROR_COLORS_PATTERN_SIZE 2
+#define HARD_ERROR_COLORS_PATTERN_SIZE 3
+
 
 #define RGB_BLACK                                                                        \
     (rgb_t) { 0, 0, 0 }

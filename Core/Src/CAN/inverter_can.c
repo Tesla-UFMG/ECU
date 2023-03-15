@@ -50,9 +50,9 @@ bool is_there_inverter_can_transmit_error() {
 // Function used to send a message via can
 void inverter_can_transmit(uint32_t id, uint16_t* data) {
     inverter_can_status = can_transmit(can_ptr, &TxHeader, id, data);
-    // check_for_errors_with_timeout(
-    // is_there_inverter_can_transmit_error, INVERTER_CAN_TRANSMIT_ERROR_FLAG,
-    // tim_inverter_can_transmit_errorHandle, INVERTER_CAN_TRANSMIT_ERROR_TIMER);
+    check_for_errors_with_timeout(
+        is_there_inverter_can_transmit_error, INVERTER_CAN_TRANSMIT_ERROR_FLAG,
+        tim_inverter_can_transmit_errorHandle, INVERTER_CAN_TRANSMIT_ERROR_TIMER);
     osDelay(CAN_DELAY);
 }
 
@@ -89,8 +89,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 void CAN_inverter_error_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t ErrorStatusITs) {
     if (ErrorStatusITs | FDCAN_IT_BUS_OFF) {
         // Issue the error so main_task.c treats it
-        // issue_error(INVERTER_BUS_OFF_ERROR_FLAG,
-        // /*should_set_control_event_flag=*/false);
+        issue_error(INVERTER_BUS_OFF_ERROR_FLAG, /*should_set_control_event_flag=*/false);
         // Clean the INIT CAN bit to start receiving messages again
         CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
     }

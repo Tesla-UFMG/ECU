@@ -45,12 +45,11 @@ void RTD(void* argument) {
 
 void exit_RTD() {
     // seta modo_selecionado como erro
-    // set_global_var_value(SELECTED_MODE, erro);
-    // set_RTD();
-    // set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+    set_global_var_value(SELECTED_MODE, erro);
+    set_global_var_value(RACE_MODE, ERRO);
     //  limpa flag de RTD
     osEventFlagsClear(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
-    // osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
+    osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
 }
 
 /*
@@ -102,7 +101,7 @@ bool can_RTD_be_enabled() {
 void set_RTD() {
     // Seta flag de RTD
     osEventFlagsSet(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED, 1);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED, ONE_COLOR_PATTERN_SIZE);
     aciona_sirene();
 }
 

@@ -65,7 +65,6 @@ void main_task(void* argument) {
 
     UNUSED(argument);
 
-    set_RTD();
     for (;;) {
 
         ECU_ENABLE_BREAKPOINT_DEBUG();

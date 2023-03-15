@@ -34,9 +34,6 @@ static uint16_t apps1_throttle_percent = 0;
 static uint16_t apps2_throttle_percent = 0;
 static uint16_t throttle_percent       = 0;
 
-int i = 0;
-int j = 0;
-
 void APPS_read(void* argument) {
     UNUSED(argument);
 
@@ -71,31 +68,16 @@ void APPS_read(void* argument) {
         log_data(ID_BRAKE, get_global_var_value(BRAKE_STATUS));
 
         // verifica a plausabilidade do APPS e BSE e plausabilidade dos APPSs
-        // check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);
-        // check_for_errors_with_timeout(is_there_APPS_error, APPS_ERROR_FLAG,
-        //                              tim_APPS_errorHandle, APPS_ERROR_TIMER);
+        check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);
+        check_for_errors_with_timeout(is_there_APPS_error, APPS_ERROR_FLAG,
+                                      tim_APPS_errorHandle, APPS_ERROR_TIMER);
         // verifica se a placa de freio esta enviando sinal de curto
-        // check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG,
-        //                             tim_SU_F_errorHandle, SU_F_ERROR_TIMER);
-        // if (i< 200)
-        // issue_error(APPS_ERROR_FLAG, /*Should_set_control_event_flag=*/true);
+        check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG,
+                                      tim_SU_F_errorHandle, SU_F_ERROR_TIMER);
 
         uint16_t message = throttle_percent;
         osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);
-        ++i;
-        ++j;
-        if (i > 500 && i < 800)
-            issue_error(APPS_ERROR_FLAG, /*Should_set_control_event_flag=*/true);
-        else
-            clear_error(APPS_ERROR_FLAG);
-        if (j > 1000 && j < 1050) {
-            issue_error(LEFT_INVERTER_COMM_ERROR_FLAG, true);
-        }
 
-        if (i > 1500) {
-            set_global_var_value(RACE_MODE, ENDURO);
-            osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_THREAD_FLAG);
-        }
         osDelay(THROTTLE_DELAY);
     }
 }

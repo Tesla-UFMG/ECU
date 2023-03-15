@@ -24,7 +24,8 @@ void RTD(void* argument) {
     UNUSED(argument);
 
     // seta o led rgb na primeira execucao do codigo --- se n tiver erros acontecendo
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200, 1);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200,
+                ONE_COLOR_PATTERN_SIZE);
 
     for (;;) {
 
@@ -44,12 +45,12 @@ void RTD(void* argument) {
 
 void exit_RTD() {
     // seta modo_selecionado como erro
-    set_global_var_value(SELECTED_MODE, erro);
-    set_global_var_value(RACE_MODE, ERRO);
+    // set_global_var_value(SELECTED_MODE, erro);
+    // set_RTD();
     // set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
     //  limpa flag de RTD
     osEventFlagsClear(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
-    osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
+    // osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
 }
 
 /*

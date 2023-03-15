@@ -13,8 +13,12 @@
 #include "stdint.h"
 #include "util/global_definitions.h"
 
-#define RGB_BLINK_DELAY    200
-#define RGB_BLINK500_DELAY 500
+#define RGB_TIMEOUT    200
+#define RGB_BLINK_200_DELAY 200
+#define RGB_BLINK_1000_DELAY 1000
+#define ONE_COLOR_PATTERN_POS 0
+#define HARD_ERROR_COLORS_PATTERN_SIZE 3
+#define SOFT_ERROR_COLORS_PATTERN_SIZE 2
 
 #define RGB_BLACK                                                                        \
     (rgb_t) { 0, 0, 0 }
@@ -33,7 +37,7 @@
 #define RGB_WHITE                                                                        \
     (rgb_t) { 1, 1, 1 }
 
-typedef enum { FIXED, BLINK200, NO_CHANGE} control_rgb_led_e;
+typedef enum { FIXED, BLINK200} control_rgb_led_e;
 
 typedef struct {
     cores_t pattern[3];

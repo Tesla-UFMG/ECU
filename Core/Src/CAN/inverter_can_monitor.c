@@ -40,11 +40,11 @@ void inverter_can_diff(uint32_t id) {
     // gets received
     if (id >= 100 && id <= 103) {
         osTimerStart(tim_left_inv_errorHandle, INV_COMM_ERROR_TIME);
-        clear_error(LEFT_INVERTER_COMM_ERROR_FLAG);
+        // clear_error(LEFT_INVERTER_COMM_ERROR_FLAG);
     }
     if (id >= 200 && id <= 203) {
         osTimerStart(tim_right_inv_errorHandle, INV_COMM_ERROR_TIME);
-        clear_error(RIGHT_INVERTER_COMM_ERROR_FLAG);
+        // clear_error(RIGHT_INVERTER_COMM_ERROR_FLAG);
     }
 
     // Calls the precharge_monitor() if there is no error flags
@@ -59,7 +59,7 @@ void inverter_can_diff(uint32_t id) {
 // for 500ms
 void left_inv_error_callback() {
 
-    issue_error(LEFT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
+    // issue_error(LEFT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
 
     osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG);
 
@@ -70,7 +70,8 @@ void left_inv_error_callback() {
 // for 500ms
 void right_inv_error_callback() {
 
-    issue_error(RIGHT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
+    // issue_error(RIGHT_INVERTER_COMM_ERROR_FLAG,
+    // /*should_set_control_event_flag=*/true);
 
     osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG);
 
@@ -92,7 +93,7 @@ void precharge_monitor() {
 // if no more errors are present the event flag will be cleared
 void inverter_BUS_OFF_error_callback(void* argument) {
     UNUSED(argument);
-    clear_error(INVERTER_BUS_OFF_ERROR_FLAG);
+    // clear_error(INVERTER_BUS_OFF_ERROR_FLAG);
 }
 
 // the flag wil be setted after the precharge time has passed

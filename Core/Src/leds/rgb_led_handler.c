@@ -21,30 +21,23 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-osStatus_t resultado;
-
 void write_rgb_color(rgb_t rgb_gpio);
 void write_debug_color(rgb_t rgb_gpio);
-rgb_t get_rgb_color(cores_t color);
+void write_pattern(rgb_led_message_t message, int delay);
+void messageWait(osMessageQueueId_t q_rgb_led_messageHandle);
 void blink_rgb(uint32_t delay);
+rgb_t get_rgb_color(cores_t color);
 
 osStatus_t set_rgb_led(cores_t* pattern, control_rgb_led_e control,
                        uint8_t sizeOfPattern) {
     rgb_led_message_t message;
     message.control       = control;
     message.sizeOfPattern = sizeOfPattern;
-    // config(sizeOfPattern, pattern, &message);
-    message.pattern[0] = pattern[0];
-    message.pattern[1] = sizeOfPattern > 1 ? pattern[1] : 0;
-    message.pattern[2] = sizeOfPattern > 2 ? pattern[2] : 0;
+    message.pattern[0]    = pattern[0];
+    message.pattern[1]    = sizeOfPattern > 1 ? pattern[1] : 0;
+    message.pattern[2]    = sizeOfPattern > 2 ? pattern[2] : 0;
     return osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
 }
-
-/*void config(uint8_t size, cores_t* pattern, rgb_led_message_t *message){
-        for (int i = 0; i<3; i++){
-                message->pattern[i]= size>i ? pattern[i]: 0;
-        }
-}*/
 
 void rgb_led(void* argument) {
     UNUSED(argument);
@@ -55,28 +48,29 @@ void rgb_led(void* argument) {
         // ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // espera RTD ser setado ou timeout estourar
-        switch (
-            osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, RGB_BLINK_DELAY)) {
+        switch (osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, RGB_TIMEOUT)) {
 
             // caso timeout estore vai piscar o led, indicando que ta fora do RTD
-            case osErrorTimeout: write_pattern(message, RGB_BLINK_DELAY); break;
+            case osErrorTimeout: write_pattern(message, RGB_BLINK_200_DELAY); break;
 
             default:
                 switch (message.control) {
                     case FIXED:
                         if (message.sizeOfPattern > 1) {
                             for (;;) {
-                                write_pattern(message, RGB_BLINK500_DELAY);
+                                write_pattern(message, RGB_BLINK_1000_DELAY);
                                 if (osMessageQueueGetCount(q_rgb_led_messageHandle) > 0) {
                                     break;
                                 }
                             }
                             break;
                         }
-                        write_rgb_color(get_rgb_color(message.pattern[0]));
+                        write_rgb_color(
+                            get_rgb_color(message.pattern[ONE_COLOR_PATTERN_POS]));
                         messageWait(q_rgb_led_messageHandle);
                         break;
-                    default: write_pattern(message, RGB_BLINK_DELAY); break;
+
+                    default: write_pattern(message, RGB_BLINK_200_DELAY); break;
                 }
                 break;
         }
@@ -95,9 +89,9 @@ void write_pattern(rgb_led_message_t message, int delay) {
     }
 }
 
-void messageWait(osMessageQueueId_t q_rgb_led_messageHandle) {
+void messageWait(osMessageQueueId_t q_id) {
     for (;;) {
-        if (osMessageQueueGetCount(q_rgb_led_messageHandle) > 0) {
+        if (osMessageQueueGetCount(q_id) > 0) {
             break;
         }
     }

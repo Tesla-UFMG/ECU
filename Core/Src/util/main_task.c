@@ -18,21 +18,18 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-#define HARD_ERROR_COLORS_PATTERN_SIZE 3
-#define SOFT_ERROR_COLORS_PATTERN_SIZE 2
-
 void led_color_response(uint32_t flag) {
 
     switch (flag) {
         // Soft error
         case BSE_ERROR_FLAG: {
             cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {AMARELO, ROXO};
-            set_rgb_led(pattern, FIXED, SOFT_ERROR_COLORS_PATTERN_SIZE);
+            set_rgb_led(pattern, BLINK200, SOFT_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case APPS_ERROR_FLAG: {
-            cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {AMARELO, VERDE};
-            set_rgb_led(pattern, FIXED, SOFT_ERROR_COLORS_PATTERN_SIZE);
+            cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {AMARELO, AZUL};
+            set_rgb_led(pattern, BLINK200, SOFT_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         // Hard error
@@ -68,27 +65,22 @@ void main_task(void* argument) {
 
     UNUSED(argument);
 
+    set_RTD();
     for (;;) {
-        // for (int i = 0; i <=28; i++) {
-        // volatile int aux = (i<=7) ? 16 : 19;
-        // volatile uint32_t tempError = 1<<aux;
-        // volatile uint32_t noError = 1<<1;
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        // wait_for_rtd();
+        wait_for_rtd();
 
         // Wait for any error
-        // osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
-        //                 osWaitForever);
+        osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
+                          osWaitForever);
         // Get the most significant thread flag
-        uint32_t most_significant_error_flag =
-            /*(7<i && i<=14) ? noError : tempError */ get_most_significant_thread_flag();
+        uint32_t most_significant_error_flag = get_most_significant_thread_flag();
         // Get the event flag
-        uint32_t event_flags = /*(7<i && i<=14) ? noError : tempError */ osEventFlagsGet(
-            e_ECU_control_flagsHandle);
+        uint32_t event_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
 
-        volatile bool isErrorPresent;
+        bool isErrorPresent;
         switch (most_significant_error_flag) {
 
                 // BUSOFF error is treated when it happens more than once in a short
@@ -118,8 +110,8 @@ void main_task(void* argument) {
                 // If the event flag contains the error flag the car leaves RTD mode.
                 isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
-                    exit_RTD();
                     led_color_response(most_significant_error_flag);
+                    exit_RTD();
                 } else {
                     // Clear the thread flag
                     osThreadFlagsClear(most_significant_error_flag);
@@ -137,12 +129,12 @@ void main_task(void* argument) {
                 } else {
                     // Clear the thread flag and set ECU led to normal
                     osThreadFlagsClear(most_significant_error_flag);
-                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE, 1);
+                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200,
+                                ONE_COLOR_PATTERN_SIZE);
                 }
                 break;
 
             default: osDelay(100); break;
         }
     }
-    //}
 }

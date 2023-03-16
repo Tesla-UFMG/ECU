@@ -52,7 +52,7 @@ typedef struct {
     GPIO_PinState blue;
 } rgb_t;
 
-osStatus_t set_rgb_led(cores_t* pattern, control_rgb_led_e control,
+osStatus_t set_rgb_led(const cores_t* pattern, control_rgb_led_e control,
                        uint8_t sizeOfPattern);
 
 #endif /* INC_RGB_LED_H_ */

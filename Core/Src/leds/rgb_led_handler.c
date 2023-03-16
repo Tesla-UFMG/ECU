@@ -24,7 +24,7 @@
 void write_rgb_color(rgb_t rgb_gpio);
 void write_debug_color(rgb_t rgb_gpio);
 void write_pattern(rgb_led_message_t message, int delay);
-void messageWait(osMessageQueueId_t q_rgb_led_messageHandle);
+void messageWait(osMessageQueueId_t q_id);
 void blink_rgb(uint32_t delay);
 rgb_t get_rgb_color(cores_t color);
 

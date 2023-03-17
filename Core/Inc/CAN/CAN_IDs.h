@@ -46,35 +46,38 @@
 #define ID_TEMPERATURE2_R       24
 #define ID_TEMPERATURE1_L       25
 #define ID_TEMPERATURE2_L       26
-#define ID_STATUS_DATALOG       27
-#define ID_CURRENT_FLAG         28
-#define ID_PANEL_DEBUG_1        29
-#define ID_PANEL_DEBUG_2        30
-#define ID_PANEL_DEBUG_3        31
-#define ID_PANEL_DEBUG_4        32
-#define ID_REGEN_BRAKE_STATE    33
-#define ID_SPEED_L_MOTOR        34
-#define ID_SPEED_R_MOTOR        35
-#define ID_POWER_L_MOTOR        36
-#define ID_POWER_R_MOTOR        37
-#define ID_ENERGY_L_MOTOR       38
-#define ID_ENERGY_R_MOTOR       39
-#define ID_OVERLOAD_L_MOTOR     40
-#define ID_OVERLOAD_R_MOTOR     41
-#define ID_LOST_MSG_L_MOTOR     42
-#define ID_LOST_MSG_R_MOTOR     43
-#define ID_BUS_OFF_L_MOTOR      44
-#define ID_BUS_OFF_R_MOTOR      45
-#define ID_CAN_STATE_L_MOTOR    46
-#define ID_CAN_STATE_R_MOTOR    47
-#define ID_INV_STATE_L_MOTOR    48
-#define ID_INV_STATE_R_MOTOR    49
-#define ID_FAILURE_L_MOTOR      50
-#define ID_FAILURE_R_MOTOR      51
-#define ID_ALARM_L_MOTOR        52
-#define ID_ALARM_R_MOTOR        53
+#define ID_IMU_BSE_ERROR        27
+#define ID_STATUS_DATALOG       28
+#define ID_IMU_SPEED_ERROR      29
+#define ID_CURRENT_FLAG         30
+#define ID_PANEL_DEBUG_1        31
+#define ID_PANEL_DEBUG_2        32
+#define ID_PANEL_DEBUG_3        33
+#define ID_PANEL_DEBUG_4        34
+#define ID_REGEN_BRAKE_STATE    35
+#define ID_SPEED_L_MOTOR        36
+#define ID_SPEED_R_MOTOR        37
+#define ID_POWER_L_MOTOR        38
+#define ID_POWER_R_MOTOR        39
+#define ID_ENERGY_L_MOTOR       40
+#define ID_ENERGY_R_MOTOR       41
+#define ID_OVERLOAD_L_MOTOR     42
+#define ID_OVERLOAD_R_MOTOR     43
+#define ID_LOST_MSG_L_MOTOR     44
+#define ID_LOST_MSG_R_MOTOR     45
+#define ID_BUS_OFF_L_MOTOR      46
+#define ID_BUS_OFF_R_MOTOR      47
+#define ID_CAN_STATE_L_MOTOR    48
+#define ID_CAN_STATE_R_MOTOR    49
+#define ID_INV_STATE_L_MOTOR    50
+#define ID_INV_STATE_R_MOTOR    51
+#define ID_FAILURE_L_MOTOR      52
+#define ID_FAILURE_R_MOTOR      53
+#define ID_ALARM_L_MOTOR        54
+#define ID_ALARM_R_MOTOR        55
 
-#define CAN_ID_QUAN 54
+
+#define CAN_ID_QUAN 56
 
 typedef struct {
     uint16_t id;
@@ -141,8 +144,12 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
     { 107, 2 }
 #define INTERNAL_ID_TEMPERATURE2_L                                                       \
     { 107, 3 }
+#define INTERNAL_ID_IMU_BSE_ERROR													     \
+	{ 108, 0 }
 #define INTERNAL_ID_STATUS_DATALOG                                                       \
     { 108, 1 }
+#define INTERNAL_ID_IMU_SPEED_ERROR													     \
+	{ 108, 2 }
 #define INTERNAL_ID_CURRENT_FLAG                                                         \
     { 108, 3 }
 #define INTERNAL_ID_PANEL_DEBUG_1                                                        \

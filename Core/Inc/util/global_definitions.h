@@ -112,8 +112,6 @@ typedef enum {
 #define ODOMETER_SAVE_THREAD_FLAG                       (1 << 7)
 #define DYNAMIC_CONTROL_THREAD_FLAG                     (1 << 8)
 #define CROSS_VALIDATION_THREAD_FLAG	  				(1 << 9)
-#define IMU_BSE_ERROR_THREAD_FLAG						(1 << 10)
-#define IMU_SPEED_ERROR_THREAD_FLAG						(1 << 11)
 
 // Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG           (1 << 12)

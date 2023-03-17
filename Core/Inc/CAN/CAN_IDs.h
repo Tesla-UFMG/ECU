@@ -76,7 +76,6 @@
 #define ID_ALARM_L_MOTOR        54
 #define ID_ALARM_R_MOTOR        55
 
-
 #define CAN_ID_QUAN 56
 
 typedef struct {
@@ -144,12 +143,12 @@ extern CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
     { 107, 2 }
 #define INTERNAL_ID_TEMPERATURE2_L                                                       \
     { 107, 3 }
-#define INTERNAL_ID_IMU_BSE_ERROR													     \
-	{ 108, 0 }
+#define INTERNAL_ID_IMU_BSE_ERROR                                                        \
+    { 108, 0 }
 #define INTERNAL_ID_STATUS_DATALOG                                                       \
     { 108, 1 }
-#define INTERNAL_ID_IMU_SPEED_ERROR													     \
-	{ 108, 2 }
+#define INTERNAL_ID_IMU_SPEED_ERROR                                                      \
+    { 108, 2 }
 #define INTERNAL_ID_CURRENT_FLAG                                                         \
     { 108, 3 }
 #define INTERNAL_ID_PANEL_DEBUG_1                                                        \

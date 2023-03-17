@@ -36,7 +36,7 @@ void torque_manager(void* argument) {
         const bool is_DYNAMIC_CONTROL_active =
             get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_THREAD_FLAG);
         const bool is_there_CROSS_VALIDATION_error =
-        	get_individual_flag(e_ECU_control_flagsHandle, CROSS_VALIDATION_ERROR_THREAD_FLAG); // COLOCA UM TIMER Q SETA ESSA FLAG
+        	get_individual_flag(e_ECU_control_flagsHandle, CROSS_VALIDATION_THREAD_FLAG); // COLOCA UM TIMER Q SETA ESSA FLAG
 
         select_dynamic_control(is_DYNAMIC_CONTROL_active, is_there_CROSS_VALIDATION_error);
 

@@ -8,7 +8,6 @@
 #include "dynamic_controls/security_architecture.h"
 
 #include "CAN/general_can_data_manager.h"
-#include "cmsis_os2.h"
 #include "sensors/sensor_data_processing.h"
 #include "util/util.h"
 #include "util/global_instances.h"
@@ -23,7 +22,7 @@ void cross_validation(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        osThreadFlagsWait(DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
+        osThreadFlagsWait(DYNAMIC_CONTROL_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
         IMU_ACCEL_t IMU_long_accel_data = (int16_t)general_get_value(accelerometer_z);
         REAR_AVG_SPEED_t speed_data = get_global_var_value(REAR_AVG_SPEED);
@@ -45,7 +44,7 @@ void cross_validation(void* argument) {
 
         else{
         	osTimerStop(tim_cross_validation_errorHandle);
-        	osEventFlagsClear(e_ECU_control_flagsHandle, CROSS_VALIDATION_ERROR_THREAD_FLAG);
+        	osEventFlagsClear(e_ECU_control_flagsHandle, CROSS_VALIDATION_THREAD_FLAG);
         }
     }
 }
@@ -64,5 +63,5 @@ bool is_there_imu_speed_error(){
 }
 
 void cross_validation_error_callback(){
-	osEventFlagsSet(e_ECU_control_flagsHandle, CROSS_VALIDATION_ERROR_THREAD_FLAG);
+	osEventFlagsSet(e_ECU_control_flagsHandle, CROSS_VALIDATION_THREAD_FLAG);
 }

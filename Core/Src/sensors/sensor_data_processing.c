@@ -13,9 +13,9 @@
 
 static uint8_t buffer_index              = 0;
 static float buffer_sum                  = 0;
-static float mov_avg_buffer[BUFFER_SIZE] = {0.0};
+static float mov_avg_buffer[BUFFER_SIZE] = {0};
 
-void moving_average(float* mov_avg, float* data) {
+void moving_average(float* mov_avg, float const* data) {
 
     *mov_avg = 0;
 
@@ -34,6 +34,7 @@ void moving_average(float* mov_avg, float* data) {
 
     // Avoid variable type overflow
     buffer_sum = 0;
-    if (buffer_index == 256)
+    if (buffer_index == 255){
         buffer_index = 0;
+    }
 }

@@ -8,10 +8,10 @@
 #include "dynamic_controls/security_architecture.h"
 
 #include "CAN/general_can_data_manager.h"
+#include "datalogging/datalog_handler.h"
 #include "sensors/sensor_data_processing.h"
 #include "util/global_instances.h"
 #include "util/util.h"
-#include "datalogging/datalog_handler.h"
 
 static REAR_AVG_SPEED_t speed_mov_avg;
 static IMU_ACCEL_t IMU_long_accel_mov_avg;
@@ -40,14 +40,12 @@ void cross_validation(void* argument) {
 
             if (is_there_imu_bse_error()) {
                 imu_bse_error_status = 1;
-            }
-            else{
+            } else {
                 imu_bse_error_status = 0;
             }
             if (is_there_imu_speed_error()) {
                 imu_speed_error_status = 1;
-            }
-            else{
+            } else {
                 imu_speed_error_status = 0;
             }
         }
@@ -61,19 +59,18 @@ void cross_validation(void* argument) {
 }
 
 bool is_there_imu_bse_error() {
-    if (bse_active && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR)){
+    if (bse_active && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR)) {
         return true;
     }
-        return false;
+    return false;
 }
 
 bool is_there_imu_speed_error() {
     if ((speed_mov_avg < NULL_SPEED_MARGIN_ERROR)
-        && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR)){
+        && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR)) {
         return true;
     }
-        return false;
-
+    return false;
 }
 
 void cross_validation_error_callback() {

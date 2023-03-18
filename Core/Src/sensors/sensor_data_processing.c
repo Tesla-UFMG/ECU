@@ -34,7 +34,7 @@ void moving_average(float* mov_avg, float const* data) {
 
     // Avoid variable type overflow
     buffer_sum = 0;
-    if (buffer_index == 255){
+    if (buffer_index == 255) {
         buffer_index = 0;
     }
 }

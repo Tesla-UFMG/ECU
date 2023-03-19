@@ -109,8 +109,8 @@ void main_task(void* argument) {
                 // If the event flag contains the error flag the car leaves RTD mode.
                 isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
-                    led_color_response(most_significant_error_flag);
                     exit_RTD();
+                    led_color_response(most_significant_error_flag);
                 } else {
                     // Clear the thread flag
                     osThreadFlagsClear(most_significant_error_flag);

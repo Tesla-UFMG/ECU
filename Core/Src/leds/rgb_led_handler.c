@@ -45,7 +45,7 @@ void rgb_led(void* argument) {
     rgb_led_message_t message;
 
     for (;;) {
-        // ECU_ENABLE_BREAKPOINT_DEBUG();
+        ECU_ENABLE_BREAKPOINT_DEBUG();
 
         // espera RTD ser setado ou timeout estourar
         switch (osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, RGB_TIMEOUT)) {

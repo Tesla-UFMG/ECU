@@ -34,6 +34,7 @@ void dynamic_controls_choice(void* argument) {
         if (!is_DYNAMIC_CONTROL_active) {
             osEventFlagsSet(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_THREAD_FLAG);
             osThreadFlagsSet(t_cross_validationHandle, DYNAMIC_CONTROL_THREAD_FLAG);
+            osEventFlagsClear(e_ECU_control_flagsHandle, CROSS_VALIDATION_THREAD_FLAG);
         } else {
             osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_THREAD_FLAG);
             osThreadFlagsClear(DYNAMIC_CONTROL_THREAD_FLAG);

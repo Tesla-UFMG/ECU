@@ -7,9 +7,8 @@
 
 #include "sensors/sensor_data_processing.h"
 
-// TODO(caius): Generalize moving average service implementing this sketch, allowing
-// different types. Implement a general circular buffer as well It calculates moving
-// average for data logged from any sensor using a circular buffer
+// TODO(caius): It generalizes moving average service implementing this sketch, allowing
+// different types. It implements a general circular buffer as well.
 
 static uint8_t buffer_index              = 0;
 static float buffer_sum                  = 0;
@@ -17,16 +16,11 @@ static float mov_avg_buffer[BUFFER_SIZE] = {0};
 
 void moving_average(float* mov_avg, float const* data) {
 
-    *mov_avg = 0;
-
-    // Put the signal value read by sensor into each buffer position
+    *mov_avg                     = 0;
     mov_avg_buffer[buffer_index] = *data;
+    buffer_index                 = (buffer_index + 1) % BUFFER_SIZE;
 
-    // circular buffer logic
-    buffer_index = (buffer_index + 1) % BUFFER_SIZE;
-
-    // Calculate the moving average based on a mutable value
-    // It requires empirical tests for choosing that value
+    // TODO(caius): It requires empirical tests for choosing that value
     for (uint8_t i = 0; i < BUFFER_SIZE; i++) {
         buffer_sum += mov_avg_buffer[i];
     }

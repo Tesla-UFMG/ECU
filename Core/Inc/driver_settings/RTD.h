@@ -8,7 +8,8 @@
 #ifndef INC_RTD_H_
 #define INC_RTD_H_
 
-#define tempo_sirene 1000
+// FSAE Rules: EV.10.5.2.a (2023)
+#define RTDS_TIME_MS 1000
 
 void exit_RTD();
 

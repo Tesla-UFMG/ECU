@@ -46,12 +46,12 @@ void APPS_read(void* argument) {
         bse         = ADC_DMA_buffer[BRAKE_E];
 
         // valores de referencia e parametros para o calculo da porcentagem
-        const static apps_ref apps1_ref = {.deadzone_lower_limit = APPS1_LOWER_DEADZONE,
+        static const apps_ref apps1_ref = {.deadzone_lower_limit = APPS1_LOWER_DEADZONE,
                                            .deadzone_upper_limit = APPS1_UPPER_DEADZONE,
                                            .adjust_parameters_slope = APPS1_ADJUST_SLOPE,
                                            .adjust_parameters_intercept =
                                                APPS1_ADJUST_INTERCEPT};
-        const static apps_ref apps2_ref = {.deadzone_lower_limit = APPS2_LOWER_DEADZONE,
+        static const apps_ref apps2_ref = {.deadzone_lower_limit = APPS2_LOWER_DEADZONE,
                                            .deadzone_upper_limit = APPS2_UPPER_DEADZONE,
                                            .adjust_parameters_slope = APPS2_ADJUST_SLOPE,
                                            .adjust_parameters_intercept =

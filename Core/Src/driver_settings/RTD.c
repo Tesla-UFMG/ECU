@@ -90,7 +90,7 @@ bool can_RTD_be_enabled() {
     // flag that indicates when the inverter precharge time has passed and the inverter is
     // ready
     bool is_inverter_ready =
-        get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG);
+        get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
     if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
         && is_inverter_ready) {
         return true;

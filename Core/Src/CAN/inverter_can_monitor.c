@@ -65,7 +65,7 @@ void left_inv_error_callback() {
 
     issue_error(LEFT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
 
-    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG);
+    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
 
     osTimerStop(tim_inverter_readyHandle);
 }
@@ -76,7 +76,7 @@ void right_inv_error_callback() {
 
     issue_error(RIGHT_INVERTER_COMM_ERROR_FLAG, /*should_set_control_event_flag=*/true);
 
-    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG);
+    osEventFlagsClear(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
 
     osTimerStop(tim_inverter_readyHandle);
 }
@@ -84,7 +84,7 @@ void right_inv_error_callback() {
 void precharge_monitor() {
     // start the timer only when the flag is reseted and the timer is not alredy
     // running to avoid restarting the timer
-    if (!get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG)) {
+    if (!get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG)) {
         if (!osTimerIsRunning(tim_inverter_readyHandle)) {
             // timer to set a flag to indicate when the inverter is ready after the
             // precharge period
@@ -102,5 +102,5 @@ void inverter_BUS_OFF_error_callback(void* argument) {
 // the flag wil be setted after the precharge time has passed
 void inverter_ready_callback(void* argument) {
     UNUSED(argument);
-    osEventFlagsSet(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG);
+    osEventFlagsSet(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
 }

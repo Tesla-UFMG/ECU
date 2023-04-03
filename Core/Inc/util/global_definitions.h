@@ -109,7 +109,7 @@ typedef enum {
 #define ODOMETER_SAVE_THREAD_FLAG                       (1 << 3)
 
 // ** ECU_control_flags **
-// Bellow are flags that are part of the ECU_control_flags, a 32 bit variable, they can be
+// Below are flags that are part of the ECU_control_flags, a 32 bit variable, they can be
 // used in all tasks and for datalogging. They are divided in four groups, general flags
 // (0 to 9), warning flags (10 to 15), soft errors flags (16 to 18) and hard errors flags
 // (19 to 32).

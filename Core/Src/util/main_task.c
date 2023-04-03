@@ -23,38 +23,38 @@ void led_color_response(uint32_t flag) {
     switch (flag) {
         // Soft error
         case BSE_ERROR_FLAG: {
-            cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {AMARELO, ROXO};
+            cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {YELLOW, PURPLE};
             set_rgb_led(pattern, BLINK200, SOFT_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case APPS_ERROR_FLAG: {
-            cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {AMARELO, AZUL};
+            cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {YELLOW, BLUE};
             set_rgb_led(pattern, BLINK200, SOFT_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         // Hard error
         case INVERTER_CAN_TRANSMIT_ERROR_FLAG: {
-            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, AMARELO};
+            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, YELLOW};
             set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case SU_F_ERROR_FLAG: {
-            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, BRANCO, PRETO};
+            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, WHITE, BLACK};
             set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case INVERTER_BUS_OFF_ERROR_FLAG: {
-            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, VERDE};
+            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, GREEN};
             set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case LEFT_INVERTER_COMM_ERROR_FLAG: {
-            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, ROXO};
+            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, PURPLE};
             set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case RIGHT_INVERTER_COMM_ERROR_FLAG: {
-            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {VERMELHO, AZUL, CIANO};
+            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, CYAN};
             set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
             break;
         }

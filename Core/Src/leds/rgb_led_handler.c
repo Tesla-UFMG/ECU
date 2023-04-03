@@ -1,16 +1,4 @@
 /*
- * leds.c
- *  Cores:
- *      Preto: -
- *      Vermelho:   Erro
- *      Verde:      Enduro
- *      Azul:       Autox
- *      Amarelo:    Erro leve (APPS ou BSE Plausability)
- *      Roxo:       Aceleracao
- *      Ciano:      Skidpad
- *      Branco:     Aviso (REGEN ou Controle dinamicos)
- *
- *
  *  Created on: May 12, 2021
  *      Author: Felipe Telles
  */
@@ -21,11 +9,11 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-void write_rgb_color(rgb_t rgb_gpio);
-void write_debug_color(rgb_t rgb_gpio);
-void write_pattern(rgb_led_message_t message, int delay);
-void messageWait(osMessageQueueId_t q_id);
-void blink_rgb(uint32_t delay);
+static void write_rgb_color(rgb_t rgb_gpio);
+// static void write_debug_color(rgb_t rgb_gpio);
+static void write_pattern(rgb_led_message_t message, int delay);
+static int is_zero_messages_available(osMessageQueueId_t q_id);
+static void blink_rgb(uint32_t delay);
 rgb_t get_rgb_color(cores_t color);
 
 osStatus_t set_rgb_led(const cores_t* pattern, control_rgb_led_e control,
@@ -47,30 +35,30 @@ void rgb_led(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        // espera RTD ser setado ou timeout estourar
+        // wait until the RTD is set or to timeout overflow
+
         switch (osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, RGB_TIMEOUT)) {
 
-            // caso timeout estore vai piscar o led, indicando que ta fora do RTD
+            // if the timeout overflows the led will blink to show the car its not in RTD
             case osErrorTimeout: write_pattern(message, RGB_BLINK_200_DELAY); break;
 
             default:
-                switch (message.control) {
-                    case FIXED:
-                        if (message.sizeOfPattern > 1) {
-                            for (;;) {
-                                write_pattern(message, RGB_BLINK_1000_DELAY);
-                                if (osMessageQueueGetCount(q_rgb_led_messageHandle) > 0) {
-                                    break;
-                                }
-                            }
-                            break;
+                if (message.control == FIXED) {
+                    if (message.sizeOfPattern > 1) {
+                        while (!is_zero_messages_available(q_rgb_led_messageHandle)) {
+                            write_pattern(message, RGB_BLINK_1000_DELAY);
                         }
-                        write_rgb_color(
-                            get_rgb_color(message.pattern[ONE_COLOR_PATTERN_POS]));
-                        messageWait(q_rgb_led_messageHandle);
                         break;
+                    }
+                    write_rgb_color(
+                        get_rgb_color(message.pattern[ONE_COLOR_PATTERN_POS]));
+                    while (!is_zero_messages_available(q_rgb_led_messageHandle)) {
+                        osDelay(RGB_BLINK_200_DELAY);
+                    }
+                }
 
-                    default: write_pattern(message, RGB_BLINK_200_DELAY); break;
+                else {
+                    write_pattern(message, RGB_BLINK_200_DELAY);
                 }
                 break;
         }
@@ -79,7 +67,7 @@ void rgb_led(void* argument) {
 
 void blink_rgb(uint32_t delay) {
     osDelay(delay);
-    write_rgb_color(get_rgb_color(PRETO));
+    write_rgb_color(get_rgb_color(BLACK));
 }
 
 void write_pattern(rgb_led_message_t message, int delay) {
@@ -89,37 +77,33 @@ void write_pattern(rgb_led_message_t message, int delay) {
     }
 }
 
-void messageWait(osMessageQueueId_t q_id) {
-    for (;;) {
-        if (osMessageQueueGetCount(q_id) > 0) {
-            break;
-        }
-    }
+int is_zero_messages_available(osMessageQueueId_t q_id) {
+    return osMessageQueueGetCount(q_rgb_led_messageHandle);
 }
 
 void write_rgb_color(rgb_t rgb_gpio) {
     HAL_GPIO_WritePin(C_LED_RED_GPIO_Port, C_LED_RED_Pin, rgb_gpio.red);
     HAL_GPIO_WritePin(C_LED_GREEN_GPIO_Port, C_LED_GREEN_Pin, rgb_gpio.green);
     HAL_GPIO_WritePin(C_LED_BLUE_GPIO_Port, C_LED_BLUE_Pin, rgb_gpio.blue);
-    // write_debug_color(rgb_gpio); //apenas para debug
+    // write_debug_color(rgb_gpio); //only for debug
 }
-
+/*
 void write_debug_color(rgb_t rgb_gpio) {
     HAL_GPIO_WritePin(C_LED_DEBUG1_GPIO_Port, C_LED_DEBUG1_Pin, !rgb_gpio.red);
     HAL_GPIO_WritePin(C_LED_DEBUG2_GPIO_Port, C_LED_DEBUG2_Pin, !rgb_gpio.green);
     HAL_GPIO_WritePin(C_LED_DEBUG3_GPIO_Port, C_LED_DEBUG3_Pin, !rgb_gpio.blue);
-}
+}*/
 
 rgb_t get_rgb_color(cores_t color) {
     switch (color) {
-        case PRETO: return RGB_BLACK;
-        case VERMELHO: return RGB_RED;
-        case VERDE: return RGB_GREEN;
-        case AZUL: return RGB_BLUE;
-        case AMARELO: return RGB_YELLOW;
-        case ROXO: return RGB_PURBLE;
-        case CIANO: return RGB_CYAN;
-        case BRANCO:
+        case BLACK: return RGB_BLACK;
+        case RED: return RGB_RED;
+        case GREEN: return RGB_GREEN;
+        case BLUE: return RGB_BLUE;
+        case YELLOW: return RGB_YELLOW;
+        case PURPLE: return RGB_PURBLE;
+        case CYAN: return RGB_CYAN;
+        case WHITE:
         default: return RGB_WHITE;
     }
 }

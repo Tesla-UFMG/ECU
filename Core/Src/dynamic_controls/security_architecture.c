@@ -46,8 +46,8 @@ void cross_validation(void* argument) {
             osTimerStop(tim_cross_validation_errorHandle);
         }
         cross_validation_status_datalog();
+        osDelay(CROSS_VALIDATION_DELAY);
     }
-    osDelay(CROSS_VALIDATION_DELAY);
 }
 
 bool is_there_imu_bse_error() {
@@ -66,7 +66,7 @@ bool is_there_imu_speed_error() {
 }
 
 void cross_validation_error_callback() {
-    osEventFlagsSet(e_ECU_control_flagsHandle, CROSS_VALIDATION_THREAD_FLAG);
+    osEventFlagsSet(e_ECU_control_flagsHandle, CROSS_VALIDATION_FLAG);
 }
 
 void cross_validation_status_datalog() {

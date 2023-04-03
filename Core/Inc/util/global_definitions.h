@@ -110,7 +110,7 @@ typedef enum {
 #define INVERTER_CAN_ACTIVE_THREAD_FLAG                 (1 << 5)
 #define INVERTER_READY_THREAD_FLAG                      (1 << 6)
 #define ODOMETER_SAVE_THREAD_FLAG                       (1 << 7)
-#define DYNAMIC_CONTROL_THREAD_FLAG                     (1 << 8)
+#define DYNAMIC_CONTROL_FLAG                     		(1 << 8)
 #define CROSS_VALIDATION_THREAD_FLAG                    (1 << 9)
 
 // Warning flags	(No actions necessary)

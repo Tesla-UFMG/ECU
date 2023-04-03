@@ -1197,6 +1197,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE END Header_main_task */
 __weak void main_task(void *argument)
 {
+  UNUSED(argument);
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
   for(;;)

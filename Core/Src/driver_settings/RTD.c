@@ -16,7 +16,7 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-void aciona_sirene();
+void activate_RTDS();
 bool can_RTD_be_enabled();
 void set_RTD();
 
@@ -48,7 +48,7 @@ void exit_RTD() {
     set_global_var_value(RACE_MODE, ERRO);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
     // limpa flag de RTD
-    osEventFlagsClear(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
+    osEventFlagsClear(e_ECU_control_flagsHandle, RTD_FLAG);
     osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
 }
 
@@ -99,14 +99,14 @@ bool can_RTD_be_enabled() {
 }
 
 void set_RTD() {
-    // Seta flag de RTD
-    osEventFlagsSet(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
+    osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
-    aciona_sirene();
+    activate_RTDS();
 }
 
-void aciona_sirene() {
+// Ready to drive sound. As defined by FSAE Rules: EV.10.5 (2023)
+void activate_RTDS() {
     HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
-    osDelay(tempo_sirene);
+    osDelay(RTDS_TIME_MS);
     HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
 }

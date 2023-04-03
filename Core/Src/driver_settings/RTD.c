@@ -16,9 +16,9 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-void activate_RTDS();
-bool can_RTD_be_enabled();
-void set_RTD();
+static void activate_RTDS();
+static bool can_RTD_be_enabled();
+static void set_RTD();
 
 void RTD(void* argument) {
     UNUSED(argument);
@@ -80,7 +80,7 @@ void exit_RTD() {
  * activation after a timer which is started when the inverter sends its first message.
  *      TODO: Allow RTD activation from the status check of the AIRs.
  */
-bool can_RTD_be_enabled() {
+static bool can_RTD_be_enabled() {
     // obtem todas as flags e filtra apenas flags de erros severos, ignorando as outras
     uint32_t error_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
     error_flags &= ALL_SEVERE_ERROR_FLAG;
@@ -98,14 +98,14 @@ bool can_RTD_be_enabled() {
     return false;
 }
 
-void set_RTD() {
+static void set_RTD() {
     osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
     activate_RTDS();
 }
 
 // Ready to drive sound. As defined by FSAE Rules: EV.10.5 (2023)
-void activate_RTDS() {
+static void activate_RTDS() {
     HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
     osDelay(RTDS_TIME_MS);
     HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);

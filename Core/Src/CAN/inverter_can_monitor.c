@@ -13,10 +13,8 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
-void precharge_monitor();
-void left_inv_error_callback();
-void right_inv_error_callback();
-void inverter_can_diff(uint32_t id);
+static void precharge_monitor();
+static void inverter_can_diff(uint32_t id);
 
 void inverter_comm_error(void* argument) {
     UNUSED(argument);
@@ -38,7 +36,7 @@ void inverter_comm_error(void* argument) {
     }
 }
 
-void inverter_can_diff(uint32_t id) {
+static void inverter_can_diff(uint32_t id) {
 
     // Restart the timer and clear the error if any message on each inverter
     // gets received
@@ -81,7 +79,7 @@ void right_inv_error_callback() {
     osTimerStop(tim_inverter_readyHandle);
 }
 
-void precharge_monitor() {
+static void precharge_monitor() {
     // start the timer only when the flag is reseted and the timer is not alredy
     // running to avoid restarting the timer
     if (!get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG)) {

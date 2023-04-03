@@ -119,7 +119,7 @@ typedef enum {
 #define GENERAL_BUS_OFF_ERROR_FLAG (1 << 1)
 #define INVERTER_READY_FLAG        (1 << 2)
 #define DYNAMIC_CONTROL_FLAG       (1 << 3)
-#define CROSS_VALIDATION_FLAG  	   (1 << 4)
+#define CROSS_VALIDATION_FLAG      (1 << 4)
 
 // Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG           (1 << 10)

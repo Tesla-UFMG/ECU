@@ -28,7 +28,9 @@ typedef bool THROTTLE_STATUS_t;
 typedef modos SELECTED_MODE_t;
 
 #define SPEEDS_DEFAULT_VALUE                                                             \
-    { 0, 0, 0, 0 }
+    {                                                                                    \
+        { 0, 0, 0, 0 }                                                                   \
+    }
 #define FRONT_AVG_SPEED_DEFAULT_VALUE  0
 #define REAR_AVG_SPEED_DEFAULT_VALUE   0
 #define STEERING_WHEEL_DEFAULT_VALUE   0

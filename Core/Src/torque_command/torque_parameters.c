@@ -110,7 +110,7 @@ void torque_parameters(void* argument) {
 
         bool disable;
         // disable will only be FALSE when RTD_FLAG is setted
-        disable = !get_individual_flag(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
+        disable = !is_RTD_active();
 
         switch (osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0,
                                   TORQUE_PARAMETERS_DELAY)) {

@@ -23,9 +23,9 @@ general_can_vars_e general_get_var_name_from_id_and_pos(uint32_t id, int pos) {
 #define ENTRY(a, b, c)                                                                   \
     if (id == (b) && pos == (c))                                                         \
         return a;                                                                        \
-    else
-    // NOLINTNEXTLINE
-    VARIABLES_GENERAL_CAN_RX_IDS;
+    else {                                                                               \
+        VARIABLES_GENERAL_CAN_RX_IDS;                                                    \
+    }
 #undef ENTRY
     return -1;
 }

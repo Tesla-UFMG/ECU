@@ -217,16 +217,9 @@ const osThreadAttr_t t_odometer_save_attributes = {
 /* Definitions for t_dynamic_controls_choice */
 osThreadId_t t_dynamic_controls_choiceHandle;
 const osThreadAttr_t t_dynamic_controls_choice_attributes = {
-  .name = "t_dynamic_controls_choice",
-  .stack_size = 1024 * 4,
-  .priority = (osPriority_t) osPriorityLow,
-};
-/* Definitions for t_cross_validation */
-osThreadId_t t_cross_validationHandle;
-const osThreadAttr_t t_cross_validation_attributes = {
-  .name = "t_cross_validation",
-  .stack_size = 1024 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+    .name       = "t_dynamic_controls_choice",
+    .stack_size = 1024 * 4,
+    .priority   = (osPriority_t)osPriorityLow,
 };
 /* Definitions for q_encoder_int_message */
 osMessageQueueId_t q_encoder_int_messageHandle;
@@ -313,11 +306,6 @@ osTimerId_t tim_right_inv_errorHandle;
 const osTimerAttr_t tim_right_inv_error_attributes = {
   .name = "tim_right_inv_error"
 };
-/* Definitions for tim_cross_validation_error */
-osTimerId_t tim_cross_validation_errorHandle;
-const osTimerAttr_t tim_cross_validation_error_attributes = {
-  .name = "tim_cross_validation_error"
-};
 /* Definitions for m_state_parameter_mutex */
 osMutexId_t m_state_parameter_mutexHandle;
 const osMutexAttr_t m_state_parameter_mutex_attributes = {
@@ -366,13 +354,11 @@ extern void buttons_handler(void *argument);
 extern void speed_datalog(void *argument);
 extern void odometer_save(void *argument);
 extern void dynamic_controls_choice(void *argument);
-extern void cross_validation(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
 extern void left_inv_error_callback(void *argument);
 extern void right_inv_error_callback(void *argument);
-extern void cross_validation_error_callback(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -459,9 +445,6 @@ int main(void)
 
   /* creation of tim_right_inv_error */
   tim_right_inv_errorHandle = osTimerNew(right_inv_error_callback, osTimerPeriodic, (void*) RIGHT_INVERTER_COMM_ERROR_FLAG, &tim_right_inv_error_attributes);
-
-  /* creation of tim_cross_validation_error */
-  tim_cross_validation_errorHandle = osTimerNew(cross_validation_error_callback, osTimerPeriodic, (void*) CROSS_VALIDATION_THREAD_FLAG, &tim_cross_validation_error_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -568,9 +551,6 @@ int main(void)
 
   /* creation of t_dynamic_controls_choice */
   t_dynamic_controls_choiceHandle = osThreadNew(dynamic_controls_choice, NULL, &t_dynamic_controls_choice_attributes);
-
-  /* creation of t_cross_validation */
-  t_cross_validationHandle = osThreadNew(cross_validation, NULL, &t_cross_validation_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -1217,6 +1197,7 @@ static void MX_GPIO_Init(void)
 /* USER CODE END Header_main_task */
 __weak void main_task(void *argument)
 {
+  UNUSED(argument);
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
   for(;;)

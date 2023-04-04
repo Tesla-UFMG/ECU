@@ -30,7 +30,6 @@ void dynamic_controls_choice(void* argument) {
         }
         const bool is_DYNAMIC_CONTROL_active =
             get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
-        get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
         if (!is_DYNAMIC_CONTROL_active) {
             osEventFlagsSet(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);

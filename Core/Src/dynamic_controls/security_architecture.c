@@ -26,8 +26,6 @@ void cross_validation(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        osThreadFlagsWait(DYNAMIC_CONTROL_FLAG, osFlagsNoClear, osWaitForever);
-
         float IMU_long_accel_data = (float)general_get_value(accelerometer_z);
         float speed_data          = (float)get_global_var_value(REAR_AVG_SPEED);
         bse_active                = get_global_var_value(BRAKE_STATUS);

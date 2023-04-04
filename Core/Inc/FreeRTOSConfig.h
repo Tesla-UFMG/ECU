@@ -44,6 +44,7 @@
  *----------------------------------------------------------*/
 
 /* USER CODE BEGIN Includes */
+#include "hook_handlers.h"
 /* Section where include file can be added */
 /* USER CODE END Includes */
 

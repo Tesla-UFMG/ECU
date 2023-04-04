@@ -4,6 +4,8 @@
  *  Created on: Feb 1, 2021
  *      Author: renanmoreira
  */
+#include "hook_handlers.h"
+
 #include "cmsis_os.h"
 #include "stm32h7xx.h"
 #include "util/util.h"

@@ -12,7 +12,7 @@
 static void write_rgb_color(rgb_t rgb_gpio);
 // static void write_debug_color(rgb_t rgb_gpio);
 static void write_pattern(rgb_led_message_t message, int delay);
-static int is_zero_messages_available(osMessageQueueId_t q_id);
+static int are_messages_available(osMessageQueueId_t q_id);
 static void blink_rgb(uint32_t delay);
 rgb_t get_rgb_color(cores_t color);
 
@@ -45,14 +45,14 @@ void rgb_led(void* argument) {
             default:
                 if (message.control == FIXED) {
                     if (message.sizeOfPattern > 1) {
-                        while (!is_zero_messages_available(q_rgb_led_messageHandle)) {
+                        while (!are_messages_available(q_rgb_led_messageHandle)) {
                             write_pattern(message, RGB_BLINK_1000_DELAY);
                         }
                         break;
                     }
                     write_rgb_color(
                         get_rgb_color(message.pattern[ONE_COLOR_PATTERN_POS]));
-                    while (!is_zero_messages_available(q_rgb_led_messageHandle)) {
+                    while (!are_messages_available(q_rgb_led_messageHandle)) {
                         osDelay(RGB_BLINK_200_DELAY);
                     }
                 }
@@ -77,7 +77,7 @@ void write_pattern(rgb_led_message_t message, int delay) {
     }
 }
 
-int is_zero_messages_available(osMessageQueueId_t q_id) {
+int are_messages_available(osMessageQueueId_t q_id) {
     return osMessageQueueGetCount(q_rgb_led_messageHandle);
 }
 

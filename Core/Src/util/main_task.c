@@ -23,38 +23,38 @@ void led_color_response(uint32_t flag) {
     switch (flag) {
         // Soft error
         case BSE_ERROR_FLAG: {
-            cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {YELLOW, PURPLE};
+        	colors_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {YELLOW, PURPLE};
             set_rgb_led(pattern, BLINK200, SOFT_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case APPS_ERROR_FLAG: {
-            cores_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {YELLOW, BLUE};
+        	colors_t pattern[SOFT_ERROR_COLORS_PATTERN_SIZE] = {YELLOW, BLUE};
             set_rgb_led(pattern, BLINK200, SOFT_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         // Hard error
         case INVERTER_CAN_TRANSMIT_ERROR_FLAG: {
-            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, YELLOW};
+        	colors_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, YELLOW};
             set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case SU_F_ERROR_FLAG: {
-            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, WHITE, BLACK};
+        	colors_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, WHITE, BLACK};
             set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case INVERTER_BUS_OFF_ERROR_FLAG: {
-            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, GREEN};
+        	colors_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, GREEN};
             set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case LEFT_INVERTER_COMM_ERROR_FLAG: {
-            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, PURPLE};
+        	colors_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, PURPLE};
             set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
         case RIGHT_INVERTER_COMM_ERROR_FLAG: {
-            cores_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, CYAN};
+        	colors_t pattern[HARD_ERROR_COLORS_PATTERN_SIZE] = {RED, BLUE, CYAN};
             set_rgb_led(pattern, FIXED, HARD_ERROR_COLORS_PATTERN_SIZE);
             break;
         }
@@ -128,7 +128,7 @@ void main_task(void* argument) {
                 } else {
                     // Clear the thread flag and set ECU led to normal
                     osThreadFlagsClear(most_significant_error_flag);
-                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200,
+                    set_rgb_led(get_global_var_value(SELECTED_MODE).rgbColor, BLINK200,
                                 ONE_COLOR_PATTERN_SIZE);
                 }
                 break;

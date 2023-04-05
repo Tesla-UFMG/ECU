@@ -37,7 +37,7 @@ void seleciona_modo(void* argument) {
                 case AUTOX: set_global_var_value(SELECTED_MODE, autox); break;
                 default: set_global_var_value(SELECTED_MODE, erro); break;
             }
-            set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200,
+            set_rgb_led(get_global_var_value(SELECTED_MODE).rgbColor, BLINK200,
                         ONE_COLOR_PATTERN_SIZE);
             osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_THREAD_FLAG);
         }

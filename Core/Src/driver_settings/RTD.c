@@ -24,7 +24,7 @@ void RTD(void* argument) {
     UNUSED(argument);
 
     // seta o led rgb na primeira execucao do codigo --- se n tiver erros acontecendo
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200,
+    set_rgb_led(get_global_var_value(SELECTED_MODE).rgbColor, BLINK200,
                 ONE_COLOR_PATTERN_SIZE);
 
     for (;;) {
@@ -101,7 +101,7 @@ bool can_RTD_be_enabled() {
 void set_RTD() {
     // Seta flag de RTD
     osEventFlagsSet(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED, ONE_COLOR_PATTERN_SIZE);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).rgbColor, FIXED, ONE_COLOR_PATTERN_SIZE);
     aciona_sirene();
 }
 

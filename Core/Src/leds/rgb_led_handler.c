@@ -14,9 +14,9 @@ static void write_rgb_color(rgb_t rgb_gpio);
 static void write_pattern(rgb_led_message_t message, int delay);
 static int are_messages_available(osMessageQueueId_t q_id);
 static void blink_rgb(uint32_t delay);
-rgb_t get_rgb_color(cores_t color);
+rgb_t get_rgb_color(colors_t color);
 
-osStatus_t set_rgb_led(const cores_t* pattern, control_rgb_led_e control,
+osStatus_t set_rgb_led(const colors_t* pattern, control_rgb_led_e control,
                        uint8_t sizeOfPattern) {
     rgb_led_message_t message;
     message.control       = control;
@@ -57,7 +57,7 @@ void rgb_led(void* argument) {
                     }
                 }
 
-                else {
+                else if (message.control == BLINK200) {
                     write_pattern(message, RGB_BLINK_200_DELAY);
                 }
                 break;
@@ -94,7 +94,7 @@ void write_debug_color(rgb_t rgb_gpio) {
     HAL_GPIO_WritePin(C_LED_DEBUG3_GPIO_Port, C_LED_DEBUG3_Pin, !rgb_gpio.blue);
 }*/
 
-rgb_t get_rgb_color(cores_t color) {
+rgb_t get_rgb_color(colors_t color) {
     switch (color) {
         case BLACK: return RGB_BLACK;
         case RED: return RGB_RED;

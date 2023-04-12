@@ -65,7 +65,7 @@ void init_modes() {
     enduro.bat_safe         = 1;
     enduro.torq_gain        = 10; // ERA 15
     enduro.mode             = ENDURO;
-    enduro.rgbColor[0]           = GREEN;
+    enduro.rgbColor[0]      = GREEN;
 
     aceleracao.tor_max          = 1500;
     aceleracao.vel_max          = vel_max_rpm;
@@ -75,7 +75,7 @@ void init_modes() {
     aceleracao.bat_safe         = 0;
     aceleracao.torq_gain        = 15;
     aceleracao.mode             = ACELERACAO;
-    aceleracao.rgbColor[0]           = PURPLE;
+    aceleracao.rgbColor[0]      = PURPLE;
 
     skidpad.tor_max          = 2000;
     skidpad.vel_max          = vel_max_rpm;
@@ -85,7 +85,7 @@ void init_modes() {
     skidpad.bat_safe         = 0;
     skidpad.torq_gain        = 20;
     skidpad.mode             = SKIDPAD;
-    skidpad.rgbColor[0]           = CYAN;
+    skidpad.rgbColor[0]      = CYAN;
 
     autox.tor_max          = 2500;
     autox.vel_max          = vel_max_rpm;
@@ -95,7 +95,7 @@ void init_modes() {
     autox.bat_safe         = 0;
     autox.torq_gain        = 25;
     autox.mode             = AUTOX;
-    autox.rgbColor[0]           = BLUE;
+    autox.rgbColor[0]      = BLUE;
 
     erro.tor_max          = 0;
     erro.vel_max          = 0;
@@ -105,7 +105,7 @@ void init_modes() {
     erro.bat_safe         = 0;
     erro.torq_gain        = 0;
     erro.mode             = ERRO;
-    erro.rgbColor[0]           = RED;
+    erro.rgbColor[0]      = RED;
 
     set_global_var_value(SELECTED_MODE, enduro); // inicializa no modo enduro
 }

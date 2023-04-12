@@ -12,7 +12,7 @@
 static void write_rgb_color(rgb_t rgb_gpio);
 // static void write_debug_color(rgb_t rgb_gpio);
 static void write_pattern(rgb_led_message_t message, int delay);
-static int are_messages_available(osMessageQueueId_t q_id);
+static uint32_t are_messages_available(osMessageQueueId_t q_id);
 static void blink_rgb(uint32_t delay);
 rgb_t get_rgb_color(colors_t color);
 
@@ -77,7 +77,7 @@ void write_pattern(rgb_led_message_t message, int delay) {
     }
 }
 
-int are_messages_available(osMessageQueueId_t q_id) {
+uint32_t are_messages_available(osMessageQueueId_t q_id) {
     return osMessageQueueGetCount(q_id);
 }
 

@@ -7,6 +7,8 @@
 
 #include "dynamic_controls/PID.h"
 
+#include "string.h"
+
 void PID_recalculate_constants(PID_t* pid) {
     pid->C0 = -pid->Kp;
     pid->C1 = pid->Kp + pid->Kp * pid->sample_period / pid->Ti;

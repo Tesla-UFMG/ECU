@@ -39,7 +39,7 @@ void seleciona_modo(void* argument) {
             }
             set_rgb_led(get_global_var_value(SELECTED_MODE).rgbColor, BLINK200,
                         ONE_COLOR_PATTERN_SIZE);
-            osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_THREAD_FLAG);
+            osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
         }
         // todo: dataloggar modos
     }

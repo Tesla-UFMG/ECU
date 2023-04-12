@@ -16,8 +16,8 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-void aciona_sirene();
-bool can_RTD_be_enabled();
+static void activate_RTDS();
+static bool can_RTD_be_enabled();
 static void set_RTD();
 
 void RTD(void* argument) {
@@ -48,7 +48,7 @@ void exit_RTD() {
     set_global_var_value(SELECTED_MODE, erro);
     set_global_var_value(RACE_MODE, ERRO);
     //  limpa flag de RTD
-    osEventFlagsClear(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
+    osEventFlagsClear(e_ECU_control_flagsHandle, RTD_FLAG);
     osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
 }
 
@@ -80,7 +80,7 @@ void exit_RTD() {
  * activation after a timer which is started when the inverter sends its first message.
  *      TODO: Allow RTD activation from the status check of the AIRs.
  */
-bool can_RTD_be_enabled() {
+static bool can_RTD_be_enabled() {
     // obtem todas as flags e filtra apenas flags de erros severos, ignorando as outras
     uint32_t error_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
     error_flags &= ALL_SEVERE_ERROR_FLAG;
@@ -90,7 +90,7 @@ bool can_RTD_be_enabled() {
     // flag that indicates when the inverter precharge time has passed and the inverter is
     // ready
     bool is_inverter_ready =
-        get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_THREAD_FLAG);
+        get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
     if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
         && is_inverter_ready) {
         return true;
@@ -99,15 +99,15 @@ bool can_RTD_be_enabled() {
 }
 
 static void set_RTD() {
-    // Seta flag de RTD
-    osEventFlagsSet(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
+    osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
     set_rgb_led(get_global_var_value(SELECTED_MODE).rgbColor, FIXED,
                 ONE_COLOR_PATTERN_SIZE);
-    aciona_sirene();
+    activate_RTDS();
 }
 
-void aciona_sirene() {
+// Ready to drive sound. As defined by FSAE Rules: EV.10.5 (2023)
+static void activate_RTDS() {
     HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
-    osDelay(tempo_sirene);
+    osDelay(RTDS_TIME_MS);
     HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_RESET);
 }

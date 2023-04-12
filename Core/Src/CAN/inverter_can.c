@@ -15,24 +15,21 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
+static void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* /*hfdcan*/,
+                                          uint32_t /*RxFifo0ITs*/);
+static void CAN_inverter_error_callback(FDCAN_HandleTypeDef* /*hfdcan*/,
+                                        uint32_t /*ErrorStatusITs*/);
+static bool is_there_inverter_can_transmit_error();
+
 static FDCAN_HandleTypeDef* can_ptr;
-
 static FDCAN_TxHeaderTypeDef TxHeader;
-
-static uint8_t RxData[8];
 static FDCAN_RxHeaderTypeDef RxHeader;
 
 static uint8_t inverter_can_status;
 
-bool is_there_inverter_can_transmit_error();
-
 // Initialize the inverter CAN. Called in initializer.c
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
     can_ptr = can_ref;
-    void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* /*hfdcan*/,
-                                       uint32_t /*RxFifo0ITs*/);
-    void CAN_inverter_error_callback(FDCAN_HandleTypeDef* /*hfdcan*/,
-                                     uint32_t /*ErrorStatusITs*/);
     initialize_CAN(can_ptr, CAN_inverter_receive_callback, CAN_inverter_error_callback,
                    &TxHeader);
 }
@@ -58,9 +55,12 @@ void inverter_can_transmit(uint32_t id, uint16_t* data) {
 
 // Callback function called when both left and right inverters messages are received via
 // CAN
-void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs) {
+static void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan,
+                                          uint32_t RxFifo0ITs) {
+    uint8_t rx_data[8];
     if ((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET) {
-        if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
+        if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, rx_data)
+            != HAL_OK) {
             /* Reception Error */
             Error_Handler();
         }
@@ -72,7 +72,7 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
             can_vars_inverter_e var_name = inverter_get_var_name_from_id_and_pos(id, i);
 
             if ((int)var_name != -1) {
-                uint16_t data = concatenate_two_uint8_to_uint16(RxData + i * 2);
+                uint16_t data = concatenate_two_uint8_to_uint16(rx_data + i * 2);
                 inverter_store_value(var_name, data);
             }
         }
@@ -86,7 +86,8 @@ void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0
 }
 
 // Callback called when there is a BUSOFF CAN error
-void CAN_inverter_error_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t ErrorStatusITs) {
+static void CAN_inverter_error_callback(FDCAN_HandleTypeDef* hfdcan,
+                                        uint32_t ErrorStatusITs) {
     if (ErrorStatusITs | FDCAN_IT_BUS_OFF) {
         // Issue the error so main_task.c treats it
         issue_error(INVERTER_BUS_OFF_ERROR_FLAG, /*should_set_control_event_flag=*/false);

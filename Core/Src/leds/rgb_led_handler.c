@@ -78,7 +78,7 @@ void write_pattern(rgb_led_message_t message, int delay) {
 }
 
 int are_messages_available(osMessageQueueId_t q_id) {
-    return osMessageQueueGetCount(q_rgb_led_messageHandle);
+    return osMessageQueueGetCount(q_id);
 }
 
 void write_rgb_color(rgb_t rgb_gpio) {

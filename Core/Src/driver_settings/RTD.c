@@ -18,7 +18,7 @@
 
 void aciona_sirene();
 bool can_RTD_be_enabled();
-void set_RTD();
+static void set_RTD();
 
 void RTD(void* argument) {
     UNUSED(argument);
@@ -98,10 +98,11 @@ bool can_RTD_be_enabled() {
     return false;
 }
 
-void set_RTD() {
+static void set_RTD() {
     // Seta flag de RTD
     osEventFlagsSet(e_ECU_control_flagsHandle, RTD_THREAD_FLAG);
-    set_rgb_led(get_global_var_value(SELECTED_MODE).rgbColor, FIXED, ONE_COLOR_PATTERN_SIZE);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).rgbColor, FIXED,
+                ONE_COLOR_PATTERN_SIZE);
     aciona_sirene();
 }
 

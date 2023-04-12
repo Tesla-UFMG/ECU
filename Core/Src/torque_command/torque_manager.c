@@ -34,7 +34,7 @@ void torque_manager(void* argument) {
         void select_dynamic_control(bool is_DYNAMIC_CONTROL_active);
 
         const bool is_DYNAMIC_CONTROL_active =
-            get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_THREAD_FLAG);
+            get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
         select_dynamic_control(is_DYNAMIC_CONTROL_active);
 

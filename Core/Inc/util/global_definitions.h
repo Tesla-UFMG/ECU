@@ -101,16 +101,24 @@ typedef enum {
 
 #define APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE 10
 
-// Thread Flags
+// Thread Flags (Flags that are not in the ECU_control_flags and are only for
+// communication between two tasks)
 #define RTD_BTN_PRESSED_THREAD_FLAG                     (1 << 0)
 #define MODE_BTN_PRESSED_THREAD_FLAG                    (1 << 1)
 #define DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_THREAD_FLAG (1 << 2)
-#define RTD_THREAD_FLAG                                 (1 << 3)
-#define GENERAL_BUS_OFF_ERROR_THREAD_FLAG               (1 << 4)
-#define INVERTER_CAN_ACTIVE_THREAD_FLAG                 (1 << 5)
-#define INVERTER_READY_THREAD_FLAG                      (1 << 6)
-#define ODOMETER_SAVE_THREAD_FLAG                       (1 << 7)
-#define DYNAMIC_CONTROL_THREAD_FLAG                     (1 << 8)
+#define ODOMETER_SAVE_THREAD_FLAG                       (1 << 3)
+
+// ** ECU_control_flags **
+// Below are flags that are part of the ECU_control_flags, a 32 bit variable, they can be
+// used in all tasks and for datalogging. They are divided in four groups, general flags
+// (0 to 9), warning flags (10 to 15), soft errors flags (16 to 18) and hard errors flags
+// (19 to 32).
+
+// General flags
+#define RTD_FLAG                   (1 << 0)
+#define GENERAL_BUS_OFF_ERROR_FLAG (1 << 1)
+#define INVERTER_READY_FLAG        (1 << 2)
+#define DYNAMIC_CONTROL_FLAG       (1 << 3)
 
 // Warning flags	(No actions necessary)
 #define REGEN_WARN_FLAG           (1 << 10)
@@ -118,8 +126,8 @@ typedef enum {
 #define FLASH_SAVE_LIMIT_FLAG     (1 << 12)
 // Soft error flags (RTD keeps on, torque ref to inverter is set to 0)
 
-#define BSE_ERROR_FLAG  (1 << 16) // Regulamento: EV.5.7 (2021)
-#define APPS_ERROR_FLAG (1 << 17) // Regulamento: T.4.2 (2021)
+#define BSE_ERROR_FLAG  (1 << 16) // FSAE Rules: EV.5.7 (2021)
+#define APPS_ERROR_FLAG (1 << 17) // FSAE Rules: T.4.2 (2021)
 
 // Hard error flags (RTD disable)
 #define INVERTER_CAN_TRANSMIT_ERROR_FLAG (1 << 19)

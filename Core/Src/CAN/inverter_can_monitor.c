@@ -80,7 +80,7 @@ void right_inv_error_callback() {
 }
 
 static void precharge_monitor() {
-    // start the timer only when the flag is reseted and the timer is not alredy
+    // start the timer only when the flag is reseted and the timer is not already
     // running to avoid restarting the timer
     if (!get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG)) {
         if (!osTimerIsRunning(tim_inverter_readyHandle)) {

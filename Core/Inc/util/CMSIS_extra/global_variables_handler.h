@@ -19,6 +19,7 @@ typedef uint16_t FRONT_AVG_SPEED_t;
 typedef uint16_t REAR_AVG_SPEED_t;
 typedef uint16_t STEERING_WHEEL_t;
 typedef uint16_t GYRO_YAW_t;
+typedef int16_t IMU_ACCEL_t;
 typedef uint8_t INTERNAL_WHEEL_t;
 typedef race_mode_t RACE_MODE_t;
 typedef uint16_t THROTTLE_PERCENT_t;
@@ -34,6 +35,7 @@ typedef modos SELECTED_MODE_t;
 #define REAR_AVG_SPEED_DEFAULT_VALUE   0
 #define STEERING_WHEEL_DEFAULT_VALUE   0
 #define GYRO_YAW_DEFAULT_VALUE         0
+#define IMU_ACCEL_DEFAULT_VALUE        0
 #define INTERNAL_WHEEL_DEFAULT_VALUE   0
 #define RACE_MODE_DEFAULT_VALUE        ENDURO
 #define THROTTLE_PERCENT_DEFAULT_VALUE 0
@@ -49,6 +51,7 @@ typedef enum {
     REAR_AVG_SPEED,
     STEERING_WHEEL,
     GYRO_YAW,
+    IMU_ACCEL,
     INTERNAL_WHEEL,
     RACE_MODE,
     THROTTLE_PERCENT,

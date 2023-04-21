@@ -10,7 +10,7 @@
 
 #include "stdint.h"
 
-// Nome variavel, id da mensagem, posicao na mensagem
+// Variable name, message id, position in the message
 #define VARIABLES_INVERTER_CAN_RX                                                        \
     ENTRY(speed_m_l, 0x100, 0)                                                           \
     ENTRY(torque_m_l, 0x100, 1)                                                          \

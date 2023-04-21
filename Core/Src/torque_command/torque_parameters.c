@@ -27,7 +27,7 @@ void update_state(bool disable) {
     if (disable == true) {
         vehicle_state = S_DISABLE_E;
     } else if ((get_global_var_value(THROTTLE_PERCENT) < 100)
-               && (frenagem_regenerativa == true)
+               && (REGENERATIVE_BRAKING == true)
                && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
         vehicle_state = S_BRAKE_E;
     } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {

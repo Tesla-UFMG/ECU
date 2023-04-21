@@ -14,12 +14,12 @@
 
 #define ID_RIGHT_INVERTER 0x301
 #define ID_LEFT_INVERTER  0x300
-#define ID_COMM_FLAG      0x302 // flag de comunicacao ecu-inv ok
+#define ID_COMM_FLAG      0x302 // ecu communicaition flag - inv ok
 
 //----------
 // DATALOGGER
-// LEGENDA:  LABEL    	    	 INTERNAL_ID
-// 0 E RESERVADO PARA LACUNAS NO PACOTE
+// SUBTITLE:  LABEL    	    	 INTERNAL_ID
+// 0 is exclusive for package gaps
 #define ID_ECU_TIMER            1
 #define ID_STEERING_WHEEL       2
 #define ID_THROTTLE             3

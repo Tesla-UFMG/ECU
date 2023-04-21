@@ -58,8 +58,8 @@ void init_CAN() {
 
 void init_modes() {
     enduro.tor_max          = 1000;
-    enduro.vel_max          = vel_max_rpm;
-    enduro.freio_regen      = frenagem_regenerativa;
+    enduro.vel_max          = VEL_MAX_RPM;
+    enduro.freio_regen      = REGENERATIVE_BRAKING;
     enduro.dif_elt          = 0;
     enduro.traction_control = 0;
     enduro.bat_safe         = 1;
@@ -68,7 +68,7 @@ void init_modes() {
     enduro.rgbColor[0]      = GREEN;
 
     aceleracao.tor_max          = 1500;
-    aceleracao.vel_max          = vel_max_rpm;
+    aceleracao.vel_max          = VEL_MAX_RPM;
     aceleracao.freio_regen      = 0;
     aceleracao.dif_elt          = 0;
     aceleracao.traction_control = 1;
@@ -78,7 +78,7 @@ void init_modes() {
     aceleracao.rgbColor[0]      = PURPLE;
 
     skidpad.tor_max          = 2000;
-    skidpad.vel_max          = vel_max_rpm;
+    skidpad.vel_max          = VEL_MAX_RPM;
     skidpad.freio_regen      = 0;
     skidpad.dif_elt          = 0;
     skidpad.traction_control = 0;
@@ -88,7 +88,7 @@ void init_modes() {
     skidpad.rgbColor[0]      = CYAN;
 
     autox.tor_max          = 2500;
-    autox.vel_max          = vel_max_rpm;
+    autox.vel_max          = VEL_MAX_RPM;
     autox.freio_regen      = 0;
     autox.dif_elt          = 0;
     autox.traction_control = 0;

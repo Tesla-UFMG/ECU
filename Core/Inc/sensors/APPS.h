@@ -11,15 +11,15 @@
 #include "stdint.h"
 
 #define THROTTLE_DELAY   25
-#define BRAKE_ACTIVE     1200 // valor enviado pela SU-F: 2000
-#define SU_F_ERROR       3000 // valor enviado pela SU-F: 3500
+#define BRAKE_ACTIVE     1200 // value sent by SU-F: 2000
+#define SU_F_ERROR       3000 // value sent by SU-F: 3500
 #define APPS_25_PERCENT  250
 #define APPS_05_PERCENT  50
-#define SU_F_ERROR_TIMER (100 - THROTTLE_DELAY) // Regulamento: T.4.3.3 (2022)
-#define APPS_ERROR_TIMER (100 - THROTTLE_DELAY) // Regulamento: T.4.2.5 (2022)
+#define SU_F_ERROR_TIMER (100 - THROTTLE_DELAY) // Regulation: T.4.3.3 (2022)
+#define APPS_ERROR_TIMER (100 - THROTTLE_DELAY) // Regulation: T.4.2.5 (2022)
 
-// Valores abaixo obtidos durante a calibracao do APPS
-// Explicacoes e mais detalhes disponiveis na planilha:
+// Values ​​below obtained during APPS calibration
+// Explanation and more details available in the worksheet:
 // https://docs.google.com/spreadsheets/d/1oN8rV0IG5MuoPPMHFQrklaCpWQLI31Kn/edit?usp=sharing&ouid=111087741893616112745&rtpof=true&sd=true
 
 #define APPS_MATRIX_LENGTH 2

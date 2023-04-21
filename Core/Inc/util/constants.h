@@ -8,26 +8,26 @@
 #ifndef INC_CONSTANTS_H_
 #define INC_CONSTANTS_H_
 
-#define num_amostras_filtro   10   // Amostra media movel acelerador
-#define TORQUE_MAX            3000 // em decimos de percentagem do torque nom
-#define vel_max_rpm           9000
-#define vetorizacao_torque    0
-#define frenagem_regenerativa 0
-#define REG_BRAKING_TORQUE    750
-#define modo_aceleracao       0
-#define modo_enduro           0
-#define zona_morta_acelerador 10
-#define TORQUE_GAIN           1
-#define ZERO_VOLANTE          662.9894
-#define GANHO_VOLANTE         0.9722419
-#define VOLANTE_ALINHADO      1030
-#define SPAN_ALINHAMENTO      70
-#define VOLANTE_MAX           3189
-#define VOLANTE_MIN           700
-#define GAIN_ARRANC           1.1
-#define INC_VELOC             50
-#define DIREITA               0
-#define ESQUERDA              1
-#define CENTRO                2
+#define NUM_SAMPLE_FILTER    10   // Accelerator moving average sample
+#define TORQUE_MAX           3000 // Value in tenths of a percentage of the nominal torque
+#define VEL_MAX_RPM          9000
+#define TORQUE_VECTORING     0
+#define REGENERATIVE_BRAKING 0
+#define REG_BRAKING_TORQUE   750
+#define ACCELERATION_MODE    0
+#define ENDURO_MODE          0
+#define THROTTLE_DEAD_ZONE   10
+#define TORQUE_GAIN          1
+#define STEERING_ZERO        662.9894
+#define STEERING_GAIN        0.9722419
+#define ALIGNED_STEERING     1030
+#define SPAN_ALIGNED         70
+#define STEERING_MAX         3189
+#define STEERING_MIN         700
+#define GAIN_ARRANC          1.1
+#define INC_VELOC            50
+#define RIGHT                0
+#define LEFT                 1
+#define CENTER               2
 
 #endif /* INC_CONSTANTS_H_ */

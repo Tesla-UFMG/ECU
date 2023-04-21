@@ -22,7 +22,7 @@ void torque_manager(void* argument) {
     UNUSED(argument);
 
     uint32_t ref_torque[2] = {0, 0};
-    uint32_t b = 0;
+
 
     for (;;) {
         // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)

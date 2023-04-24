@@ -22,7 +22,7 @@ extern osMessageQueueId_t q_ref_torque_messageHandle;
 volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
 volatile vehicle_state_e vehicle_state;
-
+bool teste_velocidade = false;
 void update_state(bool disable) {
     if (disable == true) {
         vehicle_state = S_DISABLE_E;
@@ -30,6 +30,8 @@ void update_state(bool disable) {
                && (frenagem_regenerativa == true)
                && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
         vehicle_state = S_BRAKE_E;
+        teste_velocidade = true; //teste pra ver se ta entrando
+
     } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {
         vehicle_state = S_ACCELERATE_E;
     } else {

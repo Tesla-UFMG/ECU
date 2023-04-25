@@ -10,7 +10,7 @@
 
 #define num_amostras_filtro   10   // Amostra media movel acelerador
 #define TORQUE_MAX            3000 // em decimos de percentagem do torque nom
-#define vel_max_rpm           9000
+#define vel_max_rpm           1000
 #define vetorizacao_torque    0
 #define frenagem_regenerativa 1
 #define REG_BRAKING_TORQUE    10

@@ -21,8 +21,8 @@ void seleciona_modo(void* argument) {
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        // espera um semaforo liberado por interrupcao e espera esta autorizado a mudar de
-        // modo
+        // waits for a semaphore released by interrupt and waits is authorized to change
+        // mode
         osThreadFlagsWait(MODE_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
         if (!is_RTD_active()) {
@@ -32,15 +32,17 @@ void seleciona_modo(void* argument) {
 
             switch (get_global_var_value(RACE_MODE)) {
                 case ENDURO: set_global_var_value(SELECTED_MODE, enduro); break;
-                case ACELERACAO: set_global_var_value(SELECTED_MODE, aceleracao); break;
+                case ACCELERATION:
+                    set_global_var_value(SELECTED_MODE, acceleration);
+                    break;
                 case SKIDPAD: set_global_var_value(SELECTED_MODE, skidpad); break;
                 case AUTOX: set_global_var_value(SELECTED_MODE, autox); break;
-                default: set_global_var_value(SELECTED_MODE, erro); break;
+                default: set_global_var_value(SELECTED_MODE, error); break;
             }
             set_rgb_led(get_global_var_value(SELECTED_MODE).rgbColor, BLINK200,
                         ONE_COLOR_PATTERN_SIZE);
             osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
         }
-        // todo: dataloggar modos
+        // todo: dataloggar modes
     }
 }

@@ -24,20 +24,20 @@ static FDCAN_HandleTypeDef* can_ptr;
 static FDCAN_TxHeaderTypeDef TxHeader;
 static FDCAN_RxHeaderTypeDef RxHeader;
 
-// funcao que inicializa a can geral, chamada em initializer.c
+// function that initializes the general channel, called in initializer.c
 void initialize_general_CAN(FDCAN_HandleTypeDef* can_ref) {
     can_ptr = can_ref;
     initialize_CAN(can_ptr, CAN_general_receive_callback, CAN_general_error_callback,
                    &TxHeader);
 }
 
-// funcao usada para transmitir alguma mensagem
+// function used to transmit some message
 void general_can_transmit(uint32_t id, uint16_t* data) {
     can_transmit(can_ptr, &TxHeader, id, data);
     osDelay(CAN_DELAY);
 }
 
-// funcao de callback, chamada quando chega qualquer mensagem, de qualquer ID
+// callback function, called when any message arrives, of any ID
 void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0ITs) {
     uint8_t rx_data[8];
 

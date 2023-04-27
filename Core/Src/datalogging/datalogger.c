@@ -27,7 +27,7 @@ void datalogger(void* argument) {
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        // enquanto conseguir extrair item da fila de mensagens
+        // as long as you can extract item from the message queue
         while (osMessageQueueGet(q_datalog_messageHandle, &message, 0, 0) == osOK) {
             datalog_data_holder[message.id] = message.data;
         }
@@ -38,17 +38,17 @@ void datalogger(void* argument) {
         for (uint16_t id = ECU_CAN_INITIAL_ID; id < WRITE_ITERATION_LIMIT; id++) {
             for (uint16_t pos = 0; pos < 4; pos++) {
                 uint16_t internal_index = get_internal_from_id_pos(id, pos);
-                // caso passe por uma combinacao de id e posicao inexistente, internal
-                // sera 0. a posicao 0 e sempre vazia para preencher lacunas
+                // if it passes a non-existent id and position combination, internal will
+                // be 0. position 0 is always empty to fill in gaps
                 vet_tx[pos] = datalog_data_holder[internal_index];
             }
             CAN_ID_t can_id = get_CAN_ID_from_internal(get_internal_from_id_pos(id, 0));
-            // transmite a mensagem
+            // convey the message
             general_can_transmit(can_id.id, vet_tx);
         }
 
-        // quando extrair todos os itens enfileirados e enviar, espera uma certa
-        // quantidade de tempo para extrair novamente
+        // when extracting all queued items and submitting, it waits a certain amount of
+        // time to extract again
         osDelay(DATALOGGER_DELAY);
     }
 }

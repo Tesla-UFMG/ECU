@@ -59,7 +59,7 @@ void update_state_parameters(torque_message_t* torque_message) {
             break;
         case S_BRAKE_E:
             set_bit8(&torque_message->parameters, P_ENABLE, true);
-            set_bit8(&torque_message->parameters, P_BRAKE, selected_mode.freio_regen);
+            set_bit8(&torque_message->parameters, P_BRAKE, selected_mode.brake_regen);
             set_bit8(&torque_message->parameters, P_RUNSTOP, true);
             torque_message->torque_ref[R_MOTOR]     = 0;
             torque_message->torque_ref[L_MOTOR]     = 0;
@@ -149,10 +149,10 @@ void torque_parameters(void* argument) {
  */
 void update_regen_state(vehicle_state_e vehicle_state) {
     if (vehicle_state == S_BRAKE_E) {
-        // se frenagem ativa, seta flag de aviso
+        // if braking active, warning flag arrow
         osEventFlagsSet(e_ECU_control_flagsHandle, REGEN_WARN_FLAG);
     } else {
-        // se frenagem ativa, limpa flag de aviso
+        // if braking active, clear warning flag
         osEventFlagsClear(e_ECU_control_flagsHandle, REGEN_WARN_FLAG);
     }
 }

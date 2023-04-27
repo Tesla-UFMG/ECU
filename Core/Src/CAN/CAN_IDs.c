@@ -7,7 +7,7 @@
 #include "CAN/CAN_IDs.h"
 
 CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
-// TODO(renanmoreira): talvez aumentar capacidade se precisar de mais ids de debug
+// TODO(renanmoreira): maybe increase capacity if need more debug ids
 uint16_t
     CAN_ID_POS_INTERNAL_ID_MAP[(ECU_CAN_LAST_POPULATED_ID - ECU_CAN_INITIAL_ID + 1) * 4
                                + 8];
@@ -24,7 +24,7 @@ uint16_t get_internal_from_id_pos(uint16_t id, uint16_t pos) {
     return CAN_ID_POS_INTERNAL_ID_MAP[convert_id_pos_to_index(id, pos)];
 }
 
-// PRIMEIRA POSICAO DA MENSAGEM CAN N PODE ESTAR VAZIA
+// FIRST POSITION OF MESSAGE CAN N MUST BE EMPTY
 
 void initialize_CAN_IDs() {
     CAN_ID_map[ID_ECU_TIMER]            = (CAN_ID_t)INTERNAL_ID_ECU_TIMER;
@@ -81,12 +81,12 @@ void initialize_CAN_IDs() {
     CAN_ID_map[ID_ALARM_L_MOTOR]        = (CAN_ID_t)INTERNAL_ID_ALARM_L_MOTOR;
     CAN_ID_map[ID_ALARM_R_MOTOR]        = (CAN_ID_t)INTERNAL_ID_ALARM_R_MOTOR;
 
-    // define um identificador unico a cada conjunto id & pos. Mapeia esse identificador
-    // em outro vetor, para facil acesso posterior no datalog.
+    // defines a unique identifier for each id & pos set. Maps this identifier
+    // to another vector, for easy access later in the datalog.
     for (uint16_t i = 0; i < CAN_ID_QUAN; i++) {
         CAN_ID_t* current_ID = CAN_ID_map + i;
         uint16_t unique_index;
-        // ids fora de range, de debug
+        // out-of-range debug ids
         if (current_ID->id > ECU_CAN_LAST_POPULATED_ID) {
             unique_index = convert_id_pos_to_index(
                 ECU_CAN_LAST_POPULATED_ID + 1 + current_ID->id - ECU_CAN_FIRST_DEBUG_ID,

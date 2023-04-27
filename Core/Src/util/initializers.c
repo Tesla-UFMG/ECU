@@ -20,8 +20,8 @@
 #include "util/global_definitions.h"
 #include "util/global_variables.h"
 
-// inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs
-//  mantendo a prioridade maxima de ISRs
+// initialize priority of ISRs to allow RTOS API call from within ISRs maintaining maximum
+// priority of ISRs
 void init_NVIC_priorities() {
     NVIC_SetPriority(S_VEL1_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
     NVIC_SetPriority(S_VEL2_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
@@ -36,7 +36,8 @@ void init_ADC_DMA(ADC_HandleTypeDef* hadc) {
 extern uint8_t error_count;
 colors_t led_conf;
 
-uint8_t error_count  = 0; // conta erros, quantas vezes o programa caiu no error handler
+uint8_t error_count =
+    0; // counts errors, how many times the program fell into the error handler
 uint16_t debug_milis = 0, debug_milis_ant = 0;
 
 extern FDCAN_HandleTypeDef hfdcan1;
@@ -48,8 +49,8 @@ extern I2C_HandleTypeDef hi2c3;
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
 
-// inicializar a CAN, chamada na main.c. Outra funcao que inicializa o periferico da CAN
-// na main.c
+// initialize CAN, called in main.c. Another function that initializes the CAN peripheral
+// in main.c
 void init_CAN() {
     initialize_inverter_CAN(&hfdcan1);
     initialize_general_CAN(&hfdcan2);
@@ -59,27 +60,27 @@ void init_CAN() {
 void init_modes() {
     enduro.tor_max          = 1000;
     enduro.vel_max          = VEL_MAX_RPM;
-    enduro.freio_regen      = REGENERATIVE_BRAKING;
+    enduro.brake_regen      = REGENERATIVE_BRAKING;
     enduro.dif_elt          = 0;
     enduro.traction_control = 0;
     enduro.bat_safe         = 1;
-    enduro.torq_gain        = 10; // ERA 15
+    enduro.torq_gain        = 10; // WAS 15
     enduro.mode             = ENDURO;
     enduro.rgbColor[0]      = GREEN;
 
-    aceleracao.tor_max          = 1500;
-    aceleracao.vel_max          = VEL_MAX_RPM;
-    aceleracao.freio_regen      = 0;
-    aceleracao.dif_elt          = 0;
-    aceleracao.traction_control = 1;
-    aceleracao.bat_safe         = 0;
-    aceleracao.torq_gain        = 15;
-    aceleracao.mode             = ACELERACAO;
-    aceleracao.rgbColor[0]      = PURPLE;
+    acceleration.tor_max          = 1500;
+    acceleration.vel_max          = VEL_MAX_RPM;
+    acceleration.brake_regen      = 0;
+    acceleration.dif_elt          = 0;
+    acceleration.traction_control = 1;
+    acceleration.bat_safe         = 0;
+    acceleration.torq_gain        = 15;
+    acceleration.mode             = ACCELERATION;
+    acceleration.rgbColor[0]      = PURPLE;
 
     skidpad.tor_max          = 2000;
     skidpad.vel_max          = VEL_MAX_RPM;
-    skidpad.freio_regen      = 0;
+    skidpad.brake_regen      = 0;
     skidpad.dif_elt          = 0;
     skidpad.traction_control = 0;
     skidpad.bat_safe         = 0;
@@ -89,7 +90,7 @@ void init_modes() {
 
     autox.tor_max          = 2500;
     autox.vel_max          = VEL_MAX_RPM;
-    autox.freio_regen      = 0;
+    autox.brake_regen      = 0;
     autox.dif_elt          = 0;
     autox.traction_control = 0;
     autox.bat_safe         = 0;
@@ -97,17 +98,17 @@ void init_modes() {
     autox.mode             = AUTOX;
     autox.rgbColor[0]      = BLUE;
 
-    erro.tor_max          = 0;
-    erro.vel_max          = 0;
-    erro.freio_regen      = 0;
-    erro.dif_elt          = 0;
-    erro.traction_control = 0;
-    erro.bat_safe         = 0;
-    erro.torq_gain        = 0;
-    erro.mode             = ERRO;
-    erro.rgbColor[0]      = RED;
+    error.tor_max          = 0;
+    error.vel_max          = 0;
+    error.brake_regen      = 0;
+    error.dif_elt          = 0;
+    error.traction_control = 0;
+    error.bat_safe         = 0;
+    error.torq_gain        = 0;
+    error.mode             = ERRO;
+    error.rgbColor[0]      = RED;
 
-    set_global_var_value(SELECTED_MODE, enduro); // inicializa no modo enduro
+    set_global_var_value(SELECTED_MODE, enduro); // boots in enduro mode
 }
 
 void deInit_all_peripherals() {

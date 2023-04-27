@@ -14,37 +14,37 @@
 #define DEBUG_ECU 1
 
 #define WHEEL_ENCODERS_AVAILABLE 2
-// pinos do sensores de velocidade
+// speed sensor pins
 typedef enum { FRONT_RIGHT = 0, FRONT_LEFT, REAR_RIGHT, REAR_LEFT } speed_pin_e;
 
-// cores do LED da ECU
+// ECUs LEDs colors
 typedef enum { BLACK = 0, RED, GREEN, BLUE, YELLOW, PURPLE, CYAN, WHITE } colors_t;
 
 typedef enum modos_desempenho {
     ERRO = 0,
     ENDURO,
-    ACELERACAO,
+    ACCELERATION,
     SKIDPAD,
     AUTOX
 } race_mode_t;
 
-typedef struct // struct de modo
+typedef struct // mode struct
 {
-    int tor_max;      // torque maximo (de 0 a 4000)
-    int vel_max;      // velocidade maxima (de 0 a 9000)
-    bool freio_regen; // frenagem regenerativa (1 para ativada, 0 para desativada)
-    bool dif_elt;     // diferencial eletronico (1 ativo, 0 desat)
+    int tor_max;      // maximum torque (from 0 to 4000)
+    int vel_max;      // maximum velocity (from 0 to 9000)
+    bool brake_regen; // regenerative braking(1 for enable, 0 for desable)
+    bool dif_elt;     // eletronic differential (1 able, 0 desable)
 
     // bool arranc_control;
 
-    bool traction_control; // controle de tracao (1 ativo, 0 desat)
-    bool bat_safe; // reducao de consumo de bateria se em niveis criticos (1 ativo, 0
-                   // desat)
-    int torq_gain; // ganho de torque, aconselhavel q seja proporcional ao torque maximo (
-                   // de 0 a 40)
-    race_mode_t mode; // 1 enduro, 2 aceleracao, 3 skidpad, 4 autox
+    bool traction_control; // traction control (1 able, 0 desable)
+    bool bat_safe; // battery consumption reduction if at critical levels (1 able, 0
+                   // desable)
+    int torq_gain; // torque gain, should be proportional to the maximum torque (from 0 to
+                   // 40)
+    race_mode_t mode; // 1 enduro, 2 acceleration, 3 skidpad, 4 autox
     colors_t rgbColor[1];
-} modos;
+} modes;
 
 #define R_MOTOR 0
 #define L_MOTOR 1
@@ -145,9 +145,9 @@ typedef enum {
 
 #define ALL_THROTTLE_ERROR_FLAG (APPS_ERROR_FLAG | BSE_ERROR_FLAG)
 
-// FUNCOES
+// FUNCTIONS
 
-// seta o bit na posicao pos do byte como state
+// set the bit in the post position of the byte as state bit
 __attribute__((always_inline)) inline void set_bit(uint32_t* byte, uint8_t pos,
                                                    uint8_t state) {
     *byte ^= (-(!!((unsigned long)state)) ^ *byte) & (1UL << pos);

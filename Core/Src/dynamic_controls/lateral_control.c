@@ -40,7 +40,7 @@ lateral_result_t lateral_control() {
 
     int16_t gyro_yaw = (int16_t)general_get_value(gyroscope_y);
 
-    // velocidade em m/s
+    // speed in m/s
     cg_speed = ((double)get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);
     // steering
     steering_adjusted = calc_steering(steering_wheel, internal_wheel);
@@ -48,15 +48,16 @@ lateral_result_t lateral_control() {
     gyro_adjusted = calc_gyro(gyro_yaw);
     desired_yaw   = cg_speed * steering_adjusted / (WHEELBASE + KU * cg_speed * cg_speed);
     max_yaw       = sign(steering_adjusted) * FRICTION_COEFFICIENT * GRAVITY / cg_speed;
-    // max desired yaw (setpoint), o menor valor, em modulo
+    // max desired yaw (setpoint), lowest value in module
     setpoint = fabs(desired_yaw) > fabs(max_yaw) ? max_yaw : desired_yaw;
     // PID
     PID_set_setpoint(&pid_lateral, setpoint);
     pid_result = PID_compute(&pid_lateral, gyro_adjusted);
-    // variavel de retorno
 
-    // se o sinal for positivo, a reducao sera na roda direita caso contrario, sera na
-    // roda esquerda
+    // return variable
+
+    // if the sign is positive, the reduction will be on the right wheel otherwise, it
+    // will be on the left wheel
     if (pid_result > 0) {
         ref_torque_result.torque_decrease[R_MOTOR] = fabs(pid_result);
     } else {
@@ -66,14 +67,14 @@ lateral_result_t lateral_control() {
     return ref_torque_result;
 }
 
-// TODO(renanmoreira): verificar os calculos quando tivermos os valores reais de gyro e
-// steering
+// TODO(renanmoreira): check the calculations when we have the real values ​​of gyro
+// and steering
 
 double calc_gyro(uint16_t gyro_yaw) {
-    // ajusta o valor do yaw para aquele usado no pid
+    // sets the yaw value to the one used in the pid
     double gyro_adjusted;
-    // na primeira metade, virando a direita (valor positivo) e na segunda, a esquerda
-    // (negativo)
+    // in the first half, turning to the right (positive value) and in the second, to the
+    // left (negative value)
     if (gyro_yaw < HALF_GYRO) {
         gyro_adjusted = (double)gyro_yaw / ADJUST_GYRO_R;
     } else {
@@ -83,7 +84,7 @@ double calc_gyro(uint16_t gyro_yaw) {
     return gyro_adjusted;
 }
 
-// TODO(Luiza): verificar valor do steering
+// TODO(Luiza): check steering value
 float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel) {
     float steering_adjusted;
     if (internal_wheel == RIGHT) {

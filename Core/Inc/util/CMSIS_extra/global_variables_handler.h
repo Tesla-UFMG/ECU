@@ -24,7 +24,7 @@ typedef race_mode_t RACE_MODE_t;
 typedef uint16_t THROTTLE_PERCENT_t;
 typedef bool BRAKE_STATUS_t;
 typedef bool THROTTLE_STATUS_t;
-typedef modos SELECTED_MODE_t;
+typedef modes SELECTED_MODE_t;
 
 #define SPEEDS_DEFAULT_VALUE                                                             \
     {                                                                                    \

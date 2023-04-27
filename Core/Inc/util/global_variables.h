@@ -10,18 +10,18 @@
 
 #include "global_definitions.h"
 
-// buffer atualizado pelo DMA com dados de leitura do ADC
+// buffer updated by DMA with data read from ADC
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
-// variavel de controle para desabilitar referencia de torque
+// control variable to disable torque reference
 extern volatile uint8_t g_should_disable_engines;
 
-// variavel que guarda parametros do estado atual do veiculo
+// variable that stores parameters of the current state of the vehicle
 extern volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
-extern modos aceleracao, skidpad, autox, enduro, reverse, erro;
+extern modes acceleration, skidpad, autox, enduro, reverse, error;
 
-// guarda o estado atual do veiculo (acelera, neutro, freia)
+// store the current state of the vehicle (accelerate, neutral, brake)
 extern volatile vehicle_state_e vehicle_state;
 
 #endif /* INC_GLOBAL_VARIABLES_H_ */

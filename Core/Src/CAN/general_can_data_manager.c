@@ -7,6 +7,7 @@
 #include "CAN/general_can_data_manager.h"
 
 #include "CAN/CAN_IDs.h"
+#include "util/util.h"
 
 static uint32_t general_data_can[NUM_STATES_GENERAL];
 
@@ -18,8 +19,11 @@ uint16_t general_get_value(general_can_vars_e var_name) {
     return general_data_can[var_name];
 }
 
-// NOLINTNEXTLINE
 general_can_vars_e general_get_var_name_from_id_and_pos(uint32_t id, int pos) {
+    // Unused because compiler may think this is unused and throw a warning as it does not
+    // implement X-MACRO
+    UNUSED(id);
+    UNUSED(pos);
 #define ENTRY(a, b, c)                                                                   \
     if (id == (b) && pos == (c))                                                         \
         return a;                                                                        \

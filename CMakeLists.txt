@@ -105,57 +105,25 @@ set(ST_CONFIGURATION_SOURCES
     Core/Src/system_stm32h7xx.c
 )
 
-# Add the rest of the files. Any new file should be added here
+# The correct way to get the sources is placing the path to each file, 
+# but this is a repo used by a lot of users, which the minority will use 
+# CMake integration, so to avoid having to update this file in every pull
+# let's grab all files from the Src folder
+FILE(GLOB ALL_USER_FILES
+    Core/Src/*/*.c
+    Core/Src/*/*/*.c
+)
+
+# Add the rest of the files.
 target_sources(${EXE_NAME} PRIVATE
     "${ST_CONFIGURATION_SOURCES}"
-
+    
     Core/Startup/startup_stm32h743vitx.s
-
+    
     Core/Src/main.c
     Core/Src/stm32h7xx_it.c
-    
-    Core/Src/CAN/CAN_handler.c
-    Core/Src/CAN/CAN_IDs.c
-    Core/Src/CAN/general_can_data_manager.c
-    Core/Src/CAN/general_can.c
-    Core/Src/CAN/inverter_can_data_manager.c
-    Core/Src/CAN/inverter_can_monitor.c
-    Core/Src/CAN/inverter_can.c
-    Core/Src/datalogging/datalog_acquisition.c
-    Core/Src/datalogging/datalog_handler.c
-    Core/Src/datalogging/datalogger.c
-    Core/Src/datalogging/inverter_datalog.c
-    Core/Src/datalogging/odometer_calc.c
-    Core/Src/datalogging/odometer_save.c
-    Core/Src/datalogging/speed.c
-    Core/Src/driver_settings/dynamic_controls_choice.c
-    Core/Src/driver_settings/modo.c
-    Core/Src/driver_settings/pilot_reset.c
-    Core/Src/driver_settings/RTD.c
-    Core/Src/dynamic_controls/initializer_controls.c
-    Core/Src/dynamic_controls/lateral_control.c
-    Core/Src/dynamic_controls/longitudinal_control.c
-    Core/Src/dynamic_controls/PID.c
-    Core/Src/leds/debug_leds_handler.c
-    Core/Src/leds/rgb_led_handler.c
-    Core/Src/sensors/APPS.c
-    Core/Src/sensors/encoder_speed.c
-    Core/Src/sensors/steering.c
-    Core/Src/torque_command/throttle_control.c
-    Core/Src/torque_command/torque_manager.c
-    Core/Src/torque_command/torque_message.c
-    Core/Src/torque_command/torque_parameters.c
 
-    Core/Src/util/CMSIS_extra/cmsis_extra.c
-    Core/Src/util/CMSIS_extra/global_variables_handler.c
-    Core/Src/util/buttons_handler.c
-    Core/Src/util/error_treatment.c
-    Core/Src/util/external_interrupt_handler.c
-    Core/Src/util/flash_sector_h7.c
-    Core/Src/util/global_variables.c
-    Core/Src/util/initializers.c
-    Core/Src/util/main_task.c
-    Core/Src/util/util.c
+    "${ALL_USER_FILES}"
 )
 
 target_include_directories(${EXE_NAME} PRIVATE

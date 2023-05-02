@@ -13,9 +13,12 @@
 #include "util/constants.h"
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
+#include "CAN/inverter_can_data_manager.h"
+#include "datalogging/inverter_datalog.h"
 #include "util/util.h"
 
 void update_regen_state(vehicle_state_e vehicle_state);
+static uint16_t calculate_inverter_cc_current ();
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 
@@ -23,6 +26,10 @@ volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
 volatile vehicle_state_e vehicle_state;
 bool teste_velocidade = false;
+bool regenerating = false;
+uint16_t regenerative_cc_current = 0;
+
+
 void update_state(bool disable) {
     if (disable == true) {
         vehicle_state = S_DISABLE_E;
@@ -134,6 +141,15 @@ void torque_parameters(void* argument) {
 
                 log_data(ID_REF_TORQUE_R_MOTOR, torque_message.torque_ref[R_MOTOR]);
                 log_data(ID_REF_TORQUE_L_MOTOR, torque_message.torque_ref[L_MOTOR]);
+                regenerative_cc_current = calculate_inverter_cc_current();
+                if ((int)inverter_get_value(current_m_l) < 0)
+                {
+                	regenerating = true;
+                }
+                else
+                {
+                	regenerating = false;
+                }
 
                 break;
             case osErrorTimeout:
@@ -160,4 +176,12 @@ void update_regen_state(vehicle_state_e vehicle_state) {
         // se frenagem ativa, limpa flag de aviso
         osEventFlagsClear(e_ECU_control_flagsHandle, REGEN_WARN_FLAG);
     }
+}
+
+static uint16_t calculate_inverter_cc_current ()
+{
+	uint16_t left_motor_power = inverter_get_value(power_m_l);
+	uint16_t right_motor_power = inverter_get_value(power_m_r);
+
+	return (uint16_t)(((left_motor_power + right_motor_power)*INVERTER_EFFICIENCY)/(ACCUMULATOR_VOLTAGE));
 }

@@ -67,6 +67,8 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
+    # NOTE (Felipe): Autobuild is disabled because we have two build system in the project,
+    # so forcing to use make here
     - name: Build Project
       run: make -j2
 

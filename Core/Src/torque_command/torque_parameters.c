@@ -26,6 +26,7 @@ bool teste_velocidade = false;
 void update_state(bool disable) {
     if (disable == true) {
         vehicle_state = S_DISABLE_E;
+        teste_velocidade = false;
     } else if ((get_global_var_value(THROTTLE_PERCENT) < 100)
                && (frenagem_regenerativa == true)
                && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
@@ -34,8 +35,10 @@ void update_state(bool disable) {
 
     } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {
         vehicle_state = S_ACCELERATE_E;
+        teste_velocidade = false;
     } else {
         vehicle_state = S_NEUTER_E;
+        teste_velocidade = false;
     }
 
     update_regen_state(vehicle_state);

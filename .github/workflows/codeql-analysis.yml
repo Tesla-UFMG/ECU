@@ -68,7 +68,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-      cmake -B build -DCMAKE_BUILD_TYPE=Develop -DCMAKE_TOOLCHAIN_FILE=/Toolchain.cmake -G Ninja
+      cmake -B build -DCMAKE_TOOLCHAIN_FILE=Toolchain.cmake -G Ninja
       cmake --build build/ -- ECU.elf
 
     - name: Perform CodeQL Analysis

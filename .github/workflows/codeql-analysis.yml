@@ -67,9 +67,8 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    - run: |
-      cmake -B build -DCMAKE_TOOLCHAIN_FILE=Toolchain.cmake -G Ninja
-      cmake --build build/ -- ECU.elf
+    - name: Build Project
+      run: make -j2
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2

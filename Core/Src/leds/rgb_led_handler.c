@@ -16,14 +16,14 @@ static uint32_t are_messages_available(osMessageQueueId_t q_id);
 static void blink_rgb(uint32_t delay);
 rgb_t get_rgb_color(colors_t color);
 
-osStatus_t set_rgb_led(const colors_t* pattern, control_rgb_led_e control,
-                       uint8_t sizeOfPattern) {
+osStatus_t set_rgb_led(const colors_t* pattern, uint8_t size_of_pattern,
+                       control_rgb_led_e control) {
     rgb_led_message_t message;
-    message.control       = control;
-    message.sizeOfPattern = sizeOfPattern;
-    message.pattern[0]    = pattern[0];
-    message.pattern[1]    = sizeOfPattern > 1 ? pattern[1] : 0;
-    message.pattern[2]    = sizeOfPattern > 2 ? pattern[2] : 0;
+    message.control         = control;
+    message.size_of_pattern = size_of_pattern;
+    message.pattern[0]      = pattern[0];
+    message.pattern[1]      = size_of_pattern > 1 ? pattern[1] : 0;
+    message.pattern[2]      = size_of_pattern > 2 ? pattern[2] : 0;
     return osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
 }
 
@@ -44,7 +44,7 @@ void rgb_led(void* argument) {
 
             default:
                 if (message.control == FIXED) {
-                    if (message.sizeOfPattern > 1) {
+                    if (message.size_of_pattern > 1) {
                         while (!are_messages_available(q_rgb_led_messageHandle)) {
                             write_pattern(message, RGB_BLINK_1000_DELAY);
                         }
@@ -71,7 +71,7 @@ void blink_rgb(uint32_t delay) {
 }
 
 void write_pattern(rgb_led_message_t message, int delay) {
-    for (int i = 0; i < message.sizeOfPattern; ++i) {
+    for (int i = 0; i < message.size_of_pattern; ++i) {
         write_rgb_color(get_rgb_color(message.pattern[i]));
         blink_rgb(delay);
     }

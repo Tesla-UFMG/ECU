@@ -19,7 +19,7 @@
 typedef enum { ON, OFF, TOGGLE, BLINK, FASTBLINK } ControlDebugLED_e;
 
 typedef struct {
-    uint16_t lednumber;
+    uint16_t led_number;
     ControlDebugLED_e control;
     uint8_t amount;
 } debug_led_message_t;

@@ -8,12 +8,11 @@
 #include "leds/debug_leds_handler.h"
 
 #include "cmsis_os.h"
+#include "util/CMSIS_extra/cmsis_extra.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/global_definitions.h"
 #include "util/global_variables.h"
 #include "util/util.h"
-#include "util/CMSIS_extra/cmsis_extra.h"
-#include "util/CMSIS_extra/global_variables_handler.h"
-
 
 extern osMessageQueueId_t q_debug_leds_messageHandle;
 

@@ -33,6 +33,7 @@ static uint16_t bse;
 static uint16_t apps1_throttle_percent = 0;
 static uint16_t apps2_throttle_percent = 0;
 static uint16_t throttle_percent       = 0;
+uint16_t avg_apps = 0;
 
 void APPS_read(void* argument) {
     UNUSED(argument);
@@ -61,7 +62,7 @@ void APPS_read(void* argument) {
         apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);
         apps2_throttle_percent = throttle_calc(apps2_value, &apps2_ref);
         throttle_percent       = avg(apps1_throttle_percent, apps2_throttle_percent);
-
+        avg_apps = throttle_percent;
         set_global_var_value(BRAKE_STATUS, (bse > BRAKE_ACTIVE));
         set_global_var_value(THROTTLE_STATUS, (throttle_percent > 0));
 

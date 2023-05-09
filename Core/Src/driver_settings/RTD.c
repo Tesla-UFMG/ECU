@@ -29,7 +29,7 @@ void RTD(void* argument) {
     for (;;) {
 
         // espera receber flag q o botao de RTD foi pressionado
-        osThreadFlagsWait(RTD_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
+        //osThreadFlagsWait(RTD_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
         if (!is_RTD_active()) {
             if (can_RTD_be_enabled()) {

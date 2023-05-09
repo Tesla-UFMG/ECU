@@ -51,8 +51,8 @@ static void inverter_can_diff(uint32_t id) {
 
     // Calls the precharge_monitor() if there is no error flags
     if (!get_individual_flag(e_ECU_control_flagsHandle, LEFT_INVERTER_COMM_ERROR_FLAG)
-        && !get_individual_flag(e_ECU_control_flagsHandle,
-                                RIGHT_INVERTER_COMM_ERROR_FLAG)) {
+        /*&& !get_individual_flag(e_ECU_control_flagsHandle,
+                                RIGHT_INVERTER_COMM_ERROR_FLAG)*/) {
         precharge_monitor();
     }
 }
@@ -78,6 +78,7 @@ void right_inv_error_callback() {
 
     osTimerStop(tim_inverter_readyHandle);
 }
+
 
 static void precharge_monitor() {
     // start the timer only when the flag is reseted and the timer is not alredy

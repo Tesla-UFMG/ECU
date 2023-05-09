@@ -26,7 +26,7 @@ void seleciona_modo(void* argument) {
         osThreadFlagsWait(MODE_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
         if (!is_RTD_active()) {
-            if (get_global_var_value(RACE_MODE) > AUTOX) {
+            if (get_global_var_value(RACE_MODE) > ENDURO) {
                 set_global_var_value(RACE_MODE, ENDURO);
             }
 

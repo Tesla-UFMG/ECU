@@ -39,6 +39,7 @@ void RTD(void* argument) {
                 set_debugleds(DEBUGLED1, BLINK, 2);
             }
         }
+        osDelay(100);
     }
 }
 

@@ -51,8 +51,8 @@ static void inverter_can_diff(uint32_t id) {
 
     // Calls the precharge_monitor() if there is no error flags
     if (!get_individual_flag(e_ECU_control_flagsHandle, LEFT_INVERTER_COMM_ERROR_FLAG)
-        /*&& !get_individual_flag(e_ECU_control_flagsHandle,
-                                RIGHT_INVERTER_COMM_ERROR_FLAG)*/) {
+        && !get_individual_flag(e_ECU_control_flagsHandle,
+                                RIGHT_INVERTER_COMM_ERROR_FLAG)) {
         precharge_monitor();
     }
 }

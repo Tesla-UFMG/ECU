@@ -63,7 +63,7 @@ void init_modes() {
     enduro.dif_elt          = 0;
     enduro.traction_control = 0;
     enduro.bat_safe         = 1;
-    enduro.torq_gain        = 15; // ERA 15
+    enduro.torq_gain        = 10; // ERA 15
     enduro.mode             = ENDURO;
     enduro.cor              = VERDE;
 

@@ -23,9 +23,9 @@ can_vars_inverter_e inverter_get_var_name_from_id_and_pos(uint32_t id, int pos) 
 #define ENTRY(a, b, c)                                                                   \
     if (id == (b) && pos == (c))                                                         \
         return a;                                                                        \
-    else {                                                                               \
-        VARIABLES_INVERTER_CAN_RX;                                                       \
-    }
+    else
+    // NOLINTNEXTLINE
+    VARIABLES_INVERTER_CAN_RX;
 #undef ENTRY
     return -1;
 }

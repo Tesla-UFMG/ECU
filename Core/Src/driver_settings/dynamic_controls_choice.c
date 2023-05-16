@@ -28,12 +28,13 @@ void dynamic_controls_choice(void* argument) {
         if (is_RTD_active()) {
             continue;
         }
-        const bool is_DYNAMIC_CONTROL_active =
+        const bool is_dynamic_control_active =
             get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
-        if (!is_DYNAMIC_CONTROL_active) {
+        if (!is_dynamic_control_active) {
             osEventFlagsSet(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
-            osEventFlagsClear(e_ECU_control_flagsHandle, CROSS_VALIDATION_FLAG);
+            osEventFlagsClear(e_ECU_control_flagsHandle,
+                              CROSS_VALIDATION_ERROR_WARN_FLAG);
         } else {
             osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
         }

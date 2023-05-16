@@ -7,28 +7,19 @@
 
 #include "sensors/sensor_data_processing.h"
 
-// TODO(caius): It generalizes moving average service implementing this sketch, allowing
-// different types. It implements a general circular buffer as well.
+float get_add_moving_average(moving_average_t* moving_average, float const data) {
+    float buffer_sum                              = 0;
+    moving_average->buffer[moving_average->index] = data;
 
-static uint8_t buffer_index              = 0;
-static float buffer_sum                  = 0;
-static float mov_avg_buffer[BUFFER_SIZE] = {0};
-
-void moving_average(float* mov_avg, float const* data) {
-
-    *mov_avg                     = 0;
-    mov_avg_buffer[buffer_index] = *data;
-    buffer_index                 = (buffer_index + 1) % BUFFER_SIZE;
-
-    // TODO(caius): It requires empirical tests for choosing that value
-    for (uint8_t i = 0; i < BUFFER_SIZE; i++) {
-        buffer_sum += mov_avg_buffer[i];
+    if (++moving_average->index == moving_average->size) {
+        moving_average->index              = 0;
+        moving_average->max_points_reached = true;
     }
-    *mov_avg = buffer_sum / (float)BUFFER_SIZE;
+    const uint8_t current_size =
+        moving_average->max_points_reached ? moving_average->size : moving_average->index;
 
-    // Avoid variable type overflow
-    buffer_sum = 0;
-    if (buffer_index == 255) {
-        buffer_index = 0;
+    for (uint8_t i = 0; i < current_size; ++i) {
+        buffer_sum += moving_average->buffer[i];
     }
+    return (buffer_sum / current_size);
 }

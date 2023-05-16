@@ -28,7 +28,7 @@ typedef enum modos_desempenho {
     AUTOX
 } race_mode_t;
 
-typedef struct // struct de modo
+typedef struct        // struct de modo
 {
     int tor_max;      // torque maximo (de 0 a 4000)
     int vel_max;      // velocidade maxima (de 0 a 9000)
@@ -119,12 +119,12 @@ typedef enum {
 #define GENERAL_BUS_OFF_ERROR_FLAG (1 << 1)
 #define INVERTER_READY_FLAG        (1 << 2)
 #define DYNAMIC_CONTROL_FLAG       (1 << 3)
-#define CROSS_VALIDATION_FLAG      (1 << 4)
 
 // Warning flags	(No actions necessary)
-#define REGEN_WARN_FLAG           (1 << 10)
-#define DYNAMIC_CONTROL_WARN_FLAG (1 << 11)
-#define FLASH_SAVE_LIMIT_FLAG     (1 << 12)
+#define REGEN_WARN_FLAG                  (1 << 10)
+#define DYNAMIC_CONTROL_WARN_FLAG        (1 << 11)
+#define FLASH_SAVE_LIMIT_FLAG            (1 << 12)
+#define CROSS_VALIDATION_ERROR_WARN_FLAG (1 << 13)
 // Soft error flags (RTD keeps on, torque ref to inverter is set to 0)
 
 #define BSE_ERROR_FLAG  (1 << 16) // FSAE Rules: EV.5.7 (2021)

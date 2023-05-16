@@ -13,9 +13,12 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
-static float speed_mov_avg;
-static float IMU_long_accel_mov_avg;
+static moving_average_t speed_mov_avg;
+static moving_average_t IMU_long_accel_mov_avg;
 static BRAKE_STATUS_t bse_active;
+
+static float speed_mov_ave_value; // fazer pros 4 sensores
+static float IMU_long_accel_mov_ave_value;
 
 static bool imu_bse_error_status;
 static bool imu_speed_error_status;
@@ -30,13 +33,14 @@ void cross_validation(void* argument) {
         float speed_data          = (float)get_global_var_value(REAR_AVG_SPEED);
         bse_active                = get_global_var_value(BRAKE_STATUS);
 
-        moving_average(&IMU_long_accel_mov_avg, &IMU_long_accel_data);
-        moving_average(&speed_mov_avg, &speed_data);
+        IMU_long_accel_mov_ave_value =
+            get_add_moving_average(&IMU_long_accel_mov_avg, IMU_long_accel_data);
+        speed_mov_ave_value = get_add_moving_average(&speed_mov_avg, speed_data);
 
         imu_bse_error_status   = is_there_imu_bse_error();
         imu_speed_error_status = is_there_imu_speed_error();
 
-        if (is_there_imu_bse_error() || is_there_imu_speed_error()) {
+        if (imu_bse_error_status || imu_speed_error_status) {
             osTimerStart(tim_cross_validation_errorHandle, CROSS_VALIDATION_ERROR_TIME);
         }
 
@@ -49,22 +53,22 @@ void cross_validation(void* argument) {
 }
 
 bool is_there_imu_bse_error() {
-    if (bse_active && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR)) {
+    if (bse_active && (IMU_long_accel_mov_ave_value > IMU_NULL_ACCEL_MARGIN_ERROR)) {
         return true;
     }
     return false;
 }
 
 bool is_there_imu_speed_error() {
-    if ((speed_mov_avg < NULL_SPEED_MARGIN_ERROR)
-        && (IMU_long_accel_mov_avg > IMU_NULL_ACCEL_MARGIN_ERROR)) {
+    if ((speed_mov_ave_value < NULL_SPEED_MARGIN_ERROR)
+        && (IMU_long_accel_mov_ave_value > IMU_NULL_ACCEL_MARGIN_ERROR)) {
         return true;
     }
     return false;
 }
 
 void cross_validation_error_callback() {
-    osEventFlagsSet(e_ECU_control_flagsHandle, CROSS_VALIDATION_FLAG);
+    osEventFlagsSet(e_ECU_control_flagsHandle, CROSS_VALIDATION_ERROR_WARN_FLAG);
 }
 
 void cross_validation_status_datalog() {

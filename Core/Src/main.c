@@ -461,7 +461,7 @@ int main(void)
   tim_right_inv_errorHandle = osTimerNew(right_inv_error_callback, osTimerPeriodic, (void*) RIGHT_INVERTER_COMM_ERROR_FLAG, &tim_right_inv_error_attributes);
 
   /* creation of tim_cross_validation_error */
-  tim_cross_validation_errorHandle = osTimerNew(cross_validation_error_callback, osTimerPeriodic, (void*) CROSS_VALIDATION_FLAG, &tim_cross_validation_error_attributes);
+  tim_cross_validation_errorHandle = osTimerNew(cross_validation_error_callback, osTimerPeriodic, (void*) CROSS_VALIDATION_ERROR_WARN_FLAG, &tim_cross_validation_error_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */

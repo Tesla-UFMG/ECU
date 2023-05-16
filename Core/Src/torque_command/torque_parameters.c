@@ -28,6 +28,9 @@ volatile vehicle_state_e vehicle_state;
 bool teste_velocidade = false;
 bool regenerating = false;
 uint16_t regenerative_cc_current = 0;
+uint16_t avg_rot_rear = 0;
+int regen_cc = 0;
+int regen_cc2 = 0;
 
 
 void update_state(bool disable) {
@@ -38,6 +41,7 @@ void update_state(bool disable) {
                && (frenagem_regenerativa == true)
                && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
         vehicle_state = S_BRAKE_E;
+    	//vehicle_state = S_NEUTER_E;
         teste_velocidade = true; //teste pra ver se ta entrando
 
     } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {
@@ -123,7 +127,7 @@ void torque_parameters(void* argument) {
         bool disable;
         // disable will only be FALSE when RTD_FLAG is setted
         disable = !is_RTD_active();
-
+        avg_rot_rear = get_global_var_value(REAR_AVG_SPEED);
         switch (osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0,
                                   TORQUE_PARAMETERS_DELAY)) {
 
@@ -142,6 +146,8 @@ void torque_parameters(void* argument) {
                 log_data(ID_REF_TORQUE_R_MOTOR, torque_message.torque_ref[R_MOTOR]);
                 log_data(ID_REF_TORQUE_L_MOTOR, torque_message.torque_ref[L_MOTOR]);
                 regenerative_cc_current = calculate_inverter_cc_current();
+                regen_cc = (int)inverter_get_value(current_m_l);
+                regen_cc2 = (int)inverter_get_value(current_m_r);
                 if ((int)inverter_get_value(current_m_l) < 0)
                 {
                 	regenerating = true;

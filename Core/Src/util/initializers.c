@@ -53,7 +53,7 @@ extern TIM_HandleTypeDef htim2;
 void init_CAN() {
     initialize_inverter_CAN(&hfdcan1);
     initialize_general_CAN(&hfdcan2);
-    initialize_CAN_IDs();
+    initialize_CAN_IDs_struct();
 }
 
 void init_modes() {

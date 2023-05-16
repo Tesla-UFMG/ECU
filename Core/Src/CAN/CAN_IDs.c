@@ -1,99 +1,97 @@
-/*
- * CAN_IDs.c
- *
- *  Created on: Dec 9, 2020
- *      Author: renanmoreira
- */
 #include "CAN/CAN_IDs.h"
 
-CAN_ID_t CAN_ID_map[CAN_ID_QUAN];
-// TODO(renanmoreira): talvez aumentar capacidade se precisar de mais ids de debug
-uint16_t
-    CAN_ID_POS_INTERNAL_ID_MAP[(ECU_CAN_LAST_POPULATED_ID - ECU_CAN_INITIAL_ID + 1) * 4
-                               + 8];
+#include <stdio.h>
+#include <string.h>
 
-uint16_t convert_id_pos_to_index(uint16_t id, uint16_t pos) {
-    return (id - ECU_CAN_INITIAL_ID) * 4 + pos;
+static CAN_var_inf CAN_ID_map[CAN_GENERAL_ID_QUAN];
+
+static datalog_send_t datalog_send_struct[QUANT_RESERVED_ID];
+
+static datalog_send_t aux_datalog_struct;
+
+static uint16_t quant_of_ext_id;
+
+static void populate_datalog_send_struct(void);
+static void initialize_CAN_var_inf(void);
+static int compare_CAN_var_info(const void* value1, const void* value2);
+static void sort_struct(void);
+
+static void initialize_CAN_var_inf() {
+    // does the mapping of the ids in a structure that will be sorted
+#define CAN_GENERAL_LIST_DATA(var_name, msg_id, msg_wrd)                                 \
+    CAN_ID_map[var_name].id              = msg_id;                                       \
+    CAN_ID_map[var_name].message_to_send = msg_wrd;
+    VARIABLES_GENERAL_CAN_TX
+#undef CAN_GENERAL_LIST_DATA
 }
 
-CAN_ID_t get_CAN_ID_from_internal(uint16_t internal) {
-    return CAN_ID_map[internal];
-}
-
-uint16_t get_internal_from_id_pos(uint16_t id, uint16_t pos) {
-    return CAN_ID_POS_INTERNAL_ID_MAP[convert_id_pos_to_index(id, pos)];
-}
-
-// PRIMEIRA POSICAO DA MENSAGEM CAN N PODE ESTAR VAZIA
-
-void initialize_CAN_IDs() {
-    CAN_ID_map[ID_ECU_TIMER]            = (CAN_ID_t)INTERNAL_ID_ECU_TIMER;
-    CAN_ID_map[ID_STEERING_WHEEL]       = (CAN_ID_t)INTERNAL_ID_STEERING_WHEEL;
-    CAN_ID_map[ID_THROTTLE]             = (CAN_ID_t)INTERNAL_ID_THROTTLE;
-    CAN_ID_map[ID_BRAKE]                = (CAN_ID_t)INTERNAL_ID_BRAKE;
-    CAN_ID_map[ID_MODE]                 = (CAN_ID_t)INTERNAL_ID_MODE;
-    CAN_ID_map[ID_DISTANCE_P_ODOM]      = (CAN_ID_t)INTERNAL_ID_DISTANCE_P_ODOM;
-    CAN_ID_map[ID_DISTANCE_T_ODOM]      = (CAN_ID_t)INTERNAL_ID_DISTANCE_T_ODOM;
-    CAN_ID_map[ID_TORQUE_R_MOTOR]       = (CAN_ID_t)INTERNAL_ID_TORQUE_R_MOTOR;
-    CAN_ID_map[ID_TORQUE_L_MOTOR]       = (CAN_ID_t)INTERNAL_ID_TORQUE_L_MOTOR;
-    CAN_ID_map[ID_REF_TORQUE_R_MOTOR]   = (CAN_ID_t)INTERNAL_ID_REF_TORQUE_R_MOTOR;
-    CAN_ID_map[ID_REF_TORQUE_L_MOTOR]   = (CAN_ID_t)INTERNAL_ID_REF_TORQUE_L_MOTOR;
-    CAN_ID_map[ID_REF_SPEED_R]          = (CAN_ID_t)INTERNAL_ID_REF_SPEED_R_MOTOR;
-    CAN_ID_map[ID_REF_SPEED_L]          = (CAN_ID_t)INTERNAL_ID_REF_SPEED_L_MOTOR;
-    CAN_ID_map[ID_CONTROL_EVENT_FLAG_1] = (CAN_ID_t)INTERNAL_ID_CONTROL_EVENT_FLAG_1;
-    CAN_ID_map[ID_CONTROL_EVENT_FLAG_2] = (CAN_ID_t)INTERNAL_ID_CONTROL_EVENT_FLAG_2;
-    CAN_ID_map[ID_SPEED_FL]             = (CAN_ID_t)INTERNAL_ID_SPEED_FL;
-    CAN_ID_map[ID_SPEED_FR]             = (CAN_ID_t)INTERNAL_ID_SPEED_FR;
-    CAN_ID_map[ID_SPEED_RR]             = (CAN_ID_t)INTERNAL_ID_SPEED_RR;
-    CAN_ID_map[ID_SPEED_RL]             = (CAN_ID_t)INTERNAL_ID_SPEED_RL;
-    CAN_ID_map[ID_TORQUE_GAIN]          = (CAN_ID_t)INTERNAL_ID_TORQUE_GAIN;
-    CAN_ID_map[ID_CURRENT_R_MOTOR]      = (CAN_ID_t)INTERNAL_ID_CURRENT_R_MOTOR;
-    CAN_ID_map[ID_CURRENT_L_MOTOR]      = (CAN_ID_t)INTERNAL_ID_CURRENT_L_MOTOR;
-    CAN_ID_map[ID_TEMPERATURE1_R]       = (CAN_ID_t)INTERNAL_ID_TEMPERATURE1_R;
-    CAN_ID_map[ID_TEMPERATURE2_R]       = (CAN_ID_t)INTERNAL_ID_TEMPERATURE2_R;
-    CAN_ID_map[ID_TEMPERATURE1_L]       = (CAN_ID_t)INTERNAL_ID_TEMPERATURE1_L;
-    CAN_ID_map[ID_TEMPERATURE2_L]       = (CAN_ID_t)INTERNAL_ID_TEMPERATURE2_L;
-    CAN_ID_map[ID_STATUS_DATALOG]       = (CAN_ID_t)INTERNAL_ID_STATUS_DATALOG;
-    CAN_ID_map[ID_CURRENT_FLAG]         = (CAN_ID_t)INTERNAL_ID_CURRENT_FLAG;
-    CAN_ID_map[ID_PANEL_DEBUG_1]        = (CAN_ID_t)INTERNAL_ID_PANEL_DEBUG_1;
-    CAN_ID_map[ID_PANEL_DEBUG_2]        = (CAN_ID_t)INTERNAL_ID_PANEL_DEBUG_2;
-    CAN_ID_map[ID_PANEL_DEBUG_3]        = (CAN_ID_t)INTERNAL_ID_PANEL_DEBUG_3;
-    CAN_ID_map[ID_PANEL_DEBUG_4]        = (CAN_ID_t)INTERNAL_ID_PANEL_DEBUG_4;
-    CAN_ID_map[ID_REGEN_BRAKE_STATE]    = (CAN_ID_t)INTERNAL_ID_REGEN_BRAKE_STATE;
-    CAN_ID_map[ID_SPEED_L_MOTOR]        = (CAN_ID_t)INTERNAL_ID_SPEED_L_MOTOR;
-    CAN_ID_map[ID_SPEED_R_MOTOR]        = (CAN_ID_t)INTERNAL_ID_SPEED_R_MOTOR;
-    CAN_ID_map[ID_POWER_L_MOTOR]        = (CAN_ID_t)INTERNAL_ID_POWER_L_MOTOR;
-    CAN_ID_map[ID_POWER_R_MOTOR]        = (CAN_ID_t)INTERNAL_ID_POWER_R_MOTOR;
-    CAN_ID_map[ID_ENERGY_L_MOTOR]       = (CAN_ID_t)INTERNAL_ID_ENERGY_L_MOTOR;
-    CAN_ID_map[ID_ENERGY_R_MOTOR]       = (CAN_ID_t)INTERNAL_ID_ENERGY_R_MOTOR;
-    CAN_ID_map[ID_OVERLOAD_L_MOTOR]     = (CAN_ID_t)INTERNAL_ID_OVERLOAD_L_MOTOR;
-    CAN_ID_map[ID_OVERLOAD_R_MOTOR]     = (CAN_ID_t)INTERNAL_ID_OVERLOAD_R_MOTOR;
-    CAN_ID_map[ID_LOST_MSG_L_MOTOR]     = (CAN_ID_t)INTERNAL_ID_LOST_MSG_L_MOTOR;
-    CAN_ID_map[ID_LOST_MSG_R_MOTOR]     = (CAN_ID_t)INTERNAL_ID_LOST_MSG_R_MOTOR;
-    CAN_ID_map[ID_BUS_OFF_L_MOTOR]      = (CAN_ID_t)INTERNAL_ID_BUS_OFF_L_MOTOR;
-    CAN_ID_map[ID_BUS_OFF_R_MOTOR]      = (CAN_ID_t)INTERNAL_ID_BUS_OFF_R_MOTOR;
-    CAN_ID_map[ID_CAN_STATE_L_MOTOR]    = (CAN_ID_t)INTERNAL_ID_CAN_STATE_L_MOTOR;
-    CAN_ID_map[ID_CAN_STATE_R_MOTOR]    = (CAN_ID_t)INTERNAL_ID_CAN_STATE_R_MOTOR;
-    CAN_ID_map[ID_INV_STATE_L_MOTOR]    = (CAN_ID_t)INTERNAL_ID_INV_STATE_L_MOTOR;
-    CAN_ID_map[ID_INV_STATE_R_MOTOR]    = (CAN_ID_t)INTERNAL_ID_INV_STATE_R_MOTOR;
-    CAN_ID_map[ID_FAILURE_L_MOTOR]      = (CAN_ID_t)INTERNAL_ID_FAILURE_L_MOTOR;
-    CAN_ID_map[ID_FAILURE_R_MOTOR]      = (CAN_ID_t)INTERNAL_ID_FAILURE_R_MOTOR;
-    CAN_ID_map[ID_ALARM_L_MOTOR]        = (CAN_ID_t)INTERNAL_ID_ALARM_L_MOTOR;
-    CAN_ID_map[ID_ALARM_R_MOTOR]        = (CAN_ID_t)INTERNAL_ID_ALARM_R_MOTOR;
-
-    // define um identificador unico a cada conjunto id & pos. Mapeia esse identificador
-    // em outro vetor, para facil acesso posterior no datalog.
-    for (uint16_t i = 0; i < CAN_ID_QUAN; i++) {
-        CAN_ID_t* current_ID = CAN_ID_map + i;
-        uint16_t unique_index;
-        // ids fora de range, de debug
-        if (current_ID->id > ECU_CAN_LAST_POPULATED_ID) {
-            unique_index = convert_id_pos_to_index(
-                ECU_CAN_LAST_POPULATED_ID + 1 + current_ID->id - ECU_CAN_FIRST_DEBUG_ID,
-                current_ID->pos);
-        } else {
-            unique_index = convert_id_pos_to_index(current_ID->id, current_ID->pos);
-        }
-        CAN_ID_POS_INTERNAL_ID_MAP[unique_index] = i;
+static int compare_CAN_var_info(const void* value1, const void* value2) {
+    // Sort by ID
+    const uint16_t first_id  = ((CAN_var_inf*)value1)->id;
+    const uint16_t second_id = ((CAN_var_inf*)value2)->id;
+    if (first_id < second_id) {
+        return -1;
     }
+    if (first_id > second_id) {
+        return 1;
+    }
+
+    // Sort by position if ID is the same
+    const uint16_t first_pos  = ((CAN_var_inf*)value1)->message_to_send;
+    const uint16_t second_pos = ((CAN_var_inf*)value2)->message_to_send;
+    if (first_pos < second_pos) {
+        return -1;
+    }
+    if (first_pos > second_pos) {
+        return 1;
+    }
+
+    // ID and pos are the same
+    return 0;
+}
+
+// Mapped structure ordering function
+static void sort_struct() {
+    qsort(CAN_ID_map, CAN_GENERAL_ID_QUAN, sizeof(CAN_var_inf), compare_CAN_var_info);
+}
+
+void initialize_CAN_IDs_struct() {
+    initialize_CAN_var_inf();
+    sort_struct();
+    // gets the amount of external id
+    quant_of_ext_id = 1;
+    for (uint16_t i = 0; i < (uint16_t)CAN_GENERAL_ID_QUAN - 1; i++) {
+        if (CAN_ID_map[i].id != CAN_ID_map[i + 1].id) {
+            quant_of_ext_id++;
+        }
+    }
+    populate_datalog_send_struct();
+}
+
+static void populate_datalog_send_struct() {
+    uint16_t j = 0;
+    uint16_t i = 0;
+    for (j = 0; j < quant_of_ext_id; j++) {
+        for (uint16_t k = 0; k < WORDS_PER_ID; k++) {
+            aux_datalog_struct.message_to_send[k] = -1;
+        }
+        do {
+            aux_datalog_struct.external_ID = CAN_ID_map[i].id;
+            aux_datalog_struct.message_to_send[CAN_ID_map[i].message_to_send] = i;
+            i++;
+        } while (aux_datalog_struct.external_ID == CAN_ID_map[i].id);
+        datalog_send_struct[j] = aux_datalog_struct;
+    }
+}
+
+int16_t get_internal_id_from_pos_and_word(uint16_t pos_struct, uint16_t pos_word) {
+    return datalog_send_struct[pos_struct].message_to_send[pos_word];
+}
+
+uint16_t get_external_id_from_struct_pos(uint16_t struct_pos) {
+    return datalog_send_struct[struct_pos].external_ID;
+}
+
+uint16_t get_amount_ext_id() {
+    return quant_of_ext_id;
 }

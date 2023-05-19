@@ -16,40 +16,70 @@
 #include "CAN/inverter_can_data_manager.h"
 #include "datalogging/inverter_datalog.h"
 #include "util/util.h"
+#include "stdio.h"
 
 void update_regen_state(vehicle_state_e vehicle_state);
 static uint16_t calculate_inverter_cc_current ();
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
+extern UART_HandleTypeDef hlpuart1;
 
 volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
 volatile vehicle_state_e vehicle_state;
-bool teste_velocidade = false;
+bool speed_condition = false;
 bool regenerating = false;
 uint16_t regenerative_cc_current = 0;
 uint16_t avg_rot_rear = 0;
-int regen_cc = 0;
-int regen_cc2 = 0;
+int regen_cc_left = 0;
+int regen_cc_right = 0;
 
+int digit_counter (uint16_t number)
+{
+    int counter = 0;
+    if (number == 0)
+        return 1;
+    while (number != 0)
+    {
+        number /= 10;
+        counter++;
+    }
+    // printf("contdor parcial %d\n", contador);
+    return counter;
+}
+
+int two_complement_transform(uint16_t number)
+{
+	int bits_size = 16;
+	int max_pos_value = (1 << (bits_size-1)) -1;
+
+	if (number & (1<<(bits_size -1)))
+	{
+		int absolute_value = (~number+1)&max_pos_value;
+		return absolute_value;
+	}
+	else
+	{
+		return number;
+	}
+}
 
 void update_state(bool disable) {
     if (disable == true) {
         vehicle_state = S_DISABLE_E;
-        teste_velocidade = false;
+        speed_condition = false;
     } else if ((get_global_var_value(THROTTLE_PERCENT) < 100)
                && (frenagem_regenerativa == true)
                && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
         vehicle_state = S_BRAKE_E;
-    	//vehicle_state = S_NEUTER_E;
-        teste_velocidade = true; //teste pra ver se ta entrando
+        speed_condition = true; //teste pra ver se ta entrando
 
     } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {
         vehicle_state = S_ACCELERATE_E;
-        teste_velocidade = false;
+        speed_condition = false;
     } else {
         vehicle_state = S_NEUTER_E;
-        teste_velocidade = false;
+        speed_condition = false;
     }
 
     update_regen_state(vehicle_state);
@@ -116,6 +146,7 @@ void torque_parameters(void* argument) {
     ref_torque_t ref_torque_message;
     // complete message to be sent to inverter
     torque_message_t torque_message = {.parameters = 0};
+    char buffer [22] = {0};
 
     for (;;) {
 
@@ -146,9 +177,23 @@ void torque_parameters(void* argument) {
                 log_data(ID_REF_TORQUE_R_MOTOR, torque_message.torque_ref[R_MOTOR]);
                 log_data(ID_REF_TORQUE_L_MOTOR, torque_message.torque_ref[L_MOTOR]);
                 regenerative_cc_current = calculate_inverter_cc_current();
-                regen_cc = (int)inverter_get_value(current_m_l);
-                regen_cc2 = (int)inverter_get_value(current_m_r);
-                if ((int)inverter_get_value(current_m_l) < 0)
+
+                uint16_t int_left_motor_rpm = /*inverter_get_value(speed_m_l)*/ 10;
+                uint16_t int_right_motor_rpm = /*inverter_get_value(speed_m_r)*/ 2000;
+                uint16_t int_left_motor_torque = /*inverter_get_value(torque_m_l)*/ 300;
+                uint16_t int_right_motor_torque = /*inverter_get_value(torque_m_r)*/ 4000;
+                int cont1 = digit_counter(int_left_motor_rpm);
+                int cont2 = digit_counter(int_right_motor_rpm);
+                int cont3 = digit_counter(int_left_motor_torque);
+                int cont4 = digit_counter(int_right_motor_torque);
+                int total_cont = cont1 + cont2 + cont3 + cont4;
+                snprintf(buffer, (total_cont +5), "%u,%u,%u,%u\n", int_left_motor_rpm, int_right_motor_rpm, int_left_motor_torque, int_right_motor_torque);
+                HAL_UART_Transmit(&hlpuart1, (uint8_t *)buffer, (total_cont+5), 500);
+
+
+                regen_cc_left = -two_complement_transform(inverter_get_value(current_m_l));
+                regen_cc_right = -two_complement_transform(inverter_get_value(current_m_r));
+                if ((regen_cc_left < 0) && (regen_cc_right < 0))
                 {
                 	regenerating = true;
                 }

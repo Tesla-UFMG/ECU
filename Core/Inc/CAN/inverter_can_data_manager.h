@@ -42,10 +42,11 @@
     ENTRY(alarm_m_r, 0x203, 2)
 
 typedef enum {
+    INVALID_VARIABLE_INVERTER = -1,
 #define ENTRY(a, b, c) a,
     VARIABLES_INVERTER_CAN_RX
 #undef ENTRY
-        NUM_STATES_INVERTER
+        NUM_VARIABLES_INVERTER
 } can_vars_inverter_e;
 
 void inverter_store_value(can_vars_inverter_e var_name, uint16_t inverter_value);

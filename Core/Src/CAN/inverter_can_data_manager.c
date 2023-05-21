@@ -25,7 +25,9 @@ can_vars_inverter_e inverter_get_var_name_from_id_and_pos(uint32_t id, int pos) 
     if (id == (b) && pos == (c)) {                                                       \
         return a;                                                                        \
     } else
-    VARIABLES_INVERTER_CAN_RX;
+    VARIABLES_INVERTER_CAN_RX
 #undef ENTRY
+    {
+    }
     return INVALID_VARIABLE_INVERTER;
 }

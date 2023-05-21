@@ -1,8 +1,8 @@
 /*
  * leds.c
  *
- *  Created on: May 12, 2021
- *      Author: Felipe Telles
+ *  Created on: May 21, 2023
+ *      Author: Samuel Dantas
  */
 
 #include "leds/debug_leds_handler.h"

@@ -1,6 +1,6 @@
 /*
- *  Created on: May 12, 2021
- *      Author: Felipe Telles
+ *  Created on: May 21, 2023
+ *      Author: Samuel Dantas
  */
 
 #include "leds/rgb_led_handler.h"

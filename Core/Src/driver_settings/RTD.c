@@ -25,7 +25,7 @@ void RTD(void* argument) {
 
     // set the rgb led on the first execution of the code
     set_rgb_led(get_global_var_value(SELECTED_MODE).rgb_colors, ONE_COLOR_PATTERN_SIZE,
-                FIXED);
+                BLINK200);
 
     for (;;) {
 
@@ -44,6 +44,7 @@ void RTD(void* argument) {
 }
 
 void exit_RTD() {
+    // set the mode_selected as error
     set_global_var_value(SELECTED_MODE, erro);
     set_global_var_value(RACE_MODE, ERRO);
     // clear RTD flag

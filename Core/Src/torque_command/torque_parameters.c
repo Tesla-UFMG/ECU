@@ -15,7 +15,7 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
-void update_regen_state(vehicle_state_e vehicle_state);
+void update_regen_state(void);
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 
@@ -36,7 +36,7 @@ void update_state(bool disable) {
         vehicle_state = S_NEUTER_E;
     }
 
-    update_regen_state(vehicle_state);
+    update_regen_state();
 }
 
 void update_state_parameters(torque_message_t* torque_message) {
@@ -145,9 +145,8 @@ void torque_parameters(void* argument) {
 /**
  * @brief Set regenerative braking warning flag
  *
- * @param vehicle_state
  */
-void update_regen_state(vehicle_state_e vehicle_state) {
+void update_regen_state(void) {
     if (vehicle_state == S_BRAKE_E) {
         // se frenagem ativa, seta flag de aviso
         osEventFlagsSet(e_ECU_control_flagsHandle, REGEN_WARN_FLAG);

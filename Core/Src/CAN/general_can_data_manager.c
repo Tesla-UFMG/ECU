@@ -19,6 +19,7 @@ uint16_t general_get_value(general_can_vars_e var_name) {
     return general_data_can[var_name];
 }
 
+// NOLINTNEXTLINE
 general_can_vars_e general_get_var_name_from_id_and_pos(uint32_t id, int pos) {
 #define ENTRY(a, b, c)                                                                   \
     if (id == (b) && pos == (c)) {                                                       \

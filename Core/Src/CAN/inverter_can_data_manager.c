@@ -19,6 +19,7 @@ uint16_t inverter_get_value(can_vars_inverter_e var_name) {
     return dataInverter[var_name];
 }
 
+// NOLINTNEXTLINE
 can_vars_inverter_e inverter_get_var_name_from_id_and_pos(uint32_t id, int pos) {
 #define ENTRY(a, b, c)                                                                   \
     if (id == (b) && pos == (c)) {                                                       \

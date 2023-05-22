@@ -33,6 +33,8 @@ uint16_t regenerative_cc_current = 0;
 uint16_t avg_rot_rear = 0;
 int regen_cc_left = 0;
 int regen_cc_right = 0;
+uint16_t torque_left = 0;
+uint16_t torque_right = 0;
 
 int digit_counter (uint16_t number)
 {
@@ -48,14 +50,14 @@ int digit_counter (uint16_t number)
     return counter;
 }
 
-int two_complement_transform(uint16_t number)
+uint16_t two_complement_transform(uint16_t number)
 {
-	int bits_size = 16;
-	int max_pos_value = (1 << (bits_size-1)) -1;
+	uint16_t bits_size = 16;
+	uint16_t max_pos_value = (1 << (bits_size-1)) -1;
 
 	if (number & (1<<(bits_size -1)))
 	{
-		int absolute_value = (~number+1)&max_pos_value;
+		uint16_t absolute_value = (~number+1)&max_pos_value;
 		return absolute_value;
 	}
 	else
@@ -187,13 +189,15 @@ void torque_parameters(void* argument) {
                 int cont3 = digit_counter(int_left_motor_torque);
                 int cont4 = digit_counter(int_right_motor_torque);
                 int total_cont = cont1 + cont2 + cont3 + cont4;
+                torque_left = two_complement_transform(inverter_get_value(torque_m_l));
+                torque_right = two_complement_transform(inverter_get_value(torque_m_r));
                 snprintf(buffer, (total_cont +5), "%u,%u,%u,%u-", int_left_motor_rpm, int_right_motor_rpm, int_left_motor_torque, int_right_motor_torque);
                 HAL_UART_Transmit(&hlpuart1, (uint8_t *)buffer, (total_cont+5), 500);
                 //osDelay(200);
 
-                regen_cc_left = -two_complement_transform(inverter_get_value(current_m_l));
-                regen_cc_right = -two_complement_transform(inverter_get_value(current_m_r));
-                if ((regen_cc_left < 0) && (regen_cc_right < 0))
+                //regen_cc_left = -two_complement_transform(inverter_get_value(current_m_l));
+                //regen_cc_right = -two_complement_transform(inverter_get_value(current_m_r));
+                if ((inverter_get_value(current_m_l) & (1<<(15))&& (inverter_get_value(current_m_r) & (1<<15))))
                 {
                 	regenerating = true;
                 }

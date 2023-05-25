@@ -13,11 +13,18 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
-static moving_average_t speed_mov_avg;
+static moving_average_t speedFL_mov_avg;
+static moving_average_t speedFR_mov_avg;
+static moving_average_t speedRL_mov_avg;
+static moving_average_t speedRR_mov_avg;
 static moving_average_t IMU_long_accel_mov_avg;
+
 static BRAKE_STATUS_t bse_active;
 
-static float speed_mov_ave_value; // fazer pros 4 sensores
+static float speedFL_mov_ave_value;
+static float speedFR_mov_ave_value;
+static float speedRL_mov_ave_value;
+static float speedRR_mov_ave_value;
 static float IMU_long_accel_mov_ave_value;
 
 static bool imu_bse_error_status;
@@ -30,12 +37,23 @@ void cross_validation(void* argument) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
         float IMU_long_accel_data = (float)general_get_value(accelerometer_z);
-        float speed_data          = (float)get_global_var_value(REAR_AVG_SPEED);
-        bse_active                = get_global_var_value(BRAKE_STATUS);
+
+        SPEEDS_t speed_var = get_global_var_value(SPEEDS);
+
+        float speedFL_data = (float)speed_var.wheels[FRONT_LEFT];
+        float speedFR_data = (float)speed_var.wheels[FRONT_RIGHT];
+        float speedRL_data = (float)speed_var.wheels[REAR_LEFT];
+        float speedRR_data = (float)speed_var.wheels[REAR_RIGHT];
+
+        bse_active = get_global_var_value(BRAKE_STATUS);
 
         IMU_long_accel_mov_ave_value =
             get_add_moving_average(&IMU_long_accel_mov_avg, IMU_long_accel_data);
-        speed_mov_ave_value = get_add_moving_average(&speed_mov_avg, speed_data);
+
+        speedFL_mov_ave_value = get_add_moving_average(&speedFL_mov_avg, speedFL_data);
+        speedFR_mov_ave_value = get_add_moving_average(&speedFR_mov_avg, speedFR_data);
+        speedRL_mov_ave_value = get_add_moving_average(&speedRL_mov_avg, speedRL_data);
+        speedRR_mov_ave_value = get_add_moving_average(&speedRR_mov_avg, speedRR_data);
 
         imu_bse_error_status   = is_there_imu_bse_error();
         imu_speed_error_status = is_there_imu_speed_error();
@@ -60,7 +78,10 @@ bool is_there_imu_bse_error() {
 }
 
 bool is_there_imu_speed_error() {
-    if ((speed_mov_ave_value < NULL_SPEED_MARGIN_ERROR)
+    if (((speedFR_mov_ave_value < NULL_SPEED_MARGIN_ERROR)
+         || (speedFL_mov_ave_value < NULL_SPEED_MARGIN_ERROR)
+         || (speedRL_mov_ave_value < NULL_SPEED_MARGIN_ERROR)
+         || (speedRR_mov_ave_value < NULL_SPEED_MARGIN_ERROR))
         && (IMU_long_accel_mov_ave_value > IMU_NULL_ACCEL_MARGIN_ERROR)) {
         return true;
     }

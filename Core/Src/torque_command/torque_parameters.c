@@ -13,55 +13,51 @@
 #include "util/constants.h"
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
-#include "CAN/inverter_can_data_manager.h"
-#include "datalogging/inverter_datalog.h"
 #include "util/util.h"
-#include "stdio.h"
 
 void update_regen_state(vehicle_state_e vehicle_state);
-static uint16_t calculate_inverter_cc_current ();
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
-extern UART_HandleTypeDef hlpuart1;
+//extern UART_HandleTypeDef hlpuart1;
 
 volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
 volatile vehicle_state_e vehicle_state;
 
 // Regen brake tests variables
-uint16_t regenerative_cc_current = 0;
-bool speed_condition = false;
-bool regenerating = false;
+//uint16_t regenerative_cc_current = 0;
+//bool speed_condition = false;
+//bool regenerating = false;
 
-int digit_counter (uint16_t number)
-{
-    int counter = 0;
-    if (number == 0)
-        return 1;
-    while (number != 0)
-    {
-        number /= 10;
-        counter++;
-    }
-    // printf("contdor parcial %d\n", contador);
-    return counter;
-}
-
-uint16_t two_complement_transform(uint16_t number)
-{
-	uint16_t bits_size = 16;
-	uint16_t max_pos_value = (1 << (bits_size-1)) -1;
-
-	if (number & (1<<(bits_size -1)))
-	{
-		uint16_t absolute_value = (~number+1)&max_pos_value;
-		return absolute_value;
-	}
-	else
-	{
-		return number;
-	}
-}
+//int digit_counter (uint16_t number)
+//{
+//    int counter = 0;
+//    if (number == 0)
+//        return 1;
+//    while (number != 0)
+//    {
+//        number /= 10;
+//        counter++;
+//    }
+//    // printf("contdor parcial %d\n", contador);
+//    return counter;
+//}
+//
+//uint16_t two_complement_transform(uint16_t number)
+//{
+//	uint16_t bits_size = 16;
+//	uint16_t max_pos_value = (1 << (bits_size-1)) -1;
+//
+//	if (number & (1<<(bits_size -1)))
+//	{
+//		uint16_t absolute_value = (~number+1)&max_pos_value;
+//		return absolute_value;
+//	}
+//	else
+//	{
+//		return number;
+//	}
+//}
 
 void update_state(bool disable) {
     if (disable == true) {
@@ -152,7 +148,7 @@ void torque_parameters(void* argument) {
     ref_torque_t ref_torque_message;
     // complete message to be sent to inverter
     torque_message_t torque_message = {.parameters = 0};
-    char buffer [25] = {0};
+    //char buffer [25] = {0};
 
     for (;;) {
 
@@ -229,12 +225,4 @@ void update_regen_state(vehicle_state_e vehicle_state) {
         // se frenagem ativa, limpa flag de aviso
         osEventFlagsClear(e_ECU_control_flagsHandle, REGEN_WARN_FLAG);
     }
-}
-
-static uint16_t calculate_inverter_cc_current ()
-{
-	uint16_t left_motor_power = inverter_get_value(power_m_l);
-	uint16_t right_motor_power = inverter_get_value(power_m_r);
-
-	return (uint16_t)(((left_motor_power + right_motor_power)*INVERTER_EFFICIENCY)/(ACCUMULATOR_VOLTAGE));
 }

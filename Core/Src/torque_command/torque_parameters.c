@@ -32,18 +32,6 @@ volatile vehicle_state_e vehicle_state;
 uint16_t regenerative_cc_current = 0;
 bool speed_condition = false;
 bool regenerating = false;
-uint16_t MAX_REG_BRAKING_TORQUE = 740;
-uint16_t regen_power = 2000*10;
-#define equation_constant 45.22
-uint16_t REG_BRAKING_TORQUE = 0;
-uint16_t max_speed = 0;
-
-void constant_power_torque_calc()
-{
-	max_speed = max(inverter_get_value(speed_m_l), inverter_get_value(speed_m_r));
-	REG_BRAKING_TORQUE = ((regen_power*equation_constant)/max_speed);
-	REG_BRAKING_TORQUE = min(REG_BRAKING_TORQUE, MAX_REG_BRAKING_TORQUE);
-}
 
 int digit_counter (uint16_t number)
 {
@@ -79,11 +67,11 @@ void update_state(bool disable) {
     if (disable == true) {
         vehicle_state = S_DISABLE_E;
         speed_condition = false;
-        REG_BRAKING_TORQUE = 0;
-        max_speed = 0;
+        //REG_BRAKING_TORQUE = 0;
+        //max_speed = 0;
     } else if ((get_global_var_value(THROTTLE_PERCENT) < 100)
                && (frenagem_regenerativa == true)
-               && get_global_var_value(REAR_AVG_SPEED) > RPM_BRAKE_MIN) {
+               && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
         vehicle_state = S_BRAKE_E;
         //constant_power_torque_calc();
         speed_condition = true; //teste pra ver se ta entrando
@@ -91,13 +79,13 @@ void update_state(bool disable) {
     } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {
         vehicle_state = S_ACCELERATE_E;
         speed_condition = false;
-        REG_BRAKING_TORQUE = 0;
-        max_speed = 0;
+        //REG_BRAKING_TORQUE = 0;
+        //max_speed = 0;
     } else {
         vehicle_state = S_NEUTER_E;
         speed_condition = false;
-        REG_BRAKING_TORQUE = 0;
-        max_speed = 0;
+        //REG_BRAKING_TORQUE = 0;
+        //max_speed = 0;
     }
 
     update_regen_state(vehicle_state);
@@ -127,8 +115,8 @@ void update_state_parameters(torque_message_t* torque_message) {
             set_bit8(&torque_message->parameters, P_RUNSTOP, true);
             torque_message->torque_ref[R_MOTOR]     = 0;
             torque_message->torque_ref[L_MOTOR]     = 0;
-            torque_message->neg_torque_ref[R_MOTOR] = /*REG_BRAKING_TORQUE*/ 0;
-            torque_message->neg_torque_ref[L_MOTOR] = /*REG_BRAKING_TORQUE*/ 0;
+            torque_message->neg_torque_ref[R_MOTOR] = REG_BRAKING_TORQUE;
+            torque_message->neg_torque_ref[L_MOTOR] = REG_BRAKING_TORQUE;
             torque_message->speed_ref[R_MOTOR]      = 0;
             torque_message->speed_ref[L_MOTOR]      = 0;
             break;

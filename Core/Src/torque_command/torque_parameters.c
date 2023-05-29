@@ -66,7 +66,7 @@ uint16_t two_complement_transform(uint16_t number)
 void update_state(bool disable) {
     if (disable == true) {
         vehicle_state = S_DISABLE_E;
-        speed_condition = false;
+        //speed_condition = false;
         //REG_BRAKING_TORQUE = 0;
         //max_speed = 0;
     } else if ((get_global_var_value(THROTTLE_PERCENT) < 100)
@@ -74,16 +74,16 @@ void update_state(bool disable) {
                && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
         vehicle_state = S_BRAKE_E;
         //constant_power_torque_calc();
-        speed_condition = true; //teste pra ver se ta entrando
+        //speed_condition = true; //teste pra ver se ta entrando
 
     } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {
         vehicle_state = S_ACCELERATE_E;
-        speed_condition = false;
+        //speed_condition = false;
         //REG_BRAKING_TORQUE = 0;
         //max_speed = 0;
     } else {
         vehicle_state = S_NEUTER_E;
-        speed_condition = false;
+        //speed_condition = false;
         //REG_BRAKING_TORQUE = 0;
         //max_speed = 0;
     }
@@ -181,28 +181,28 @@ void torque_parameters(void* argument) {
 
                 log_data(ID_REF_TORQUE_R_MOTOR, torque_message.torque_ref[R_MOTOR]);
                 log_data(ID_REF_TORQUE_L_MOTOR, torque_message.torque_ref[L_MOTOR]);
-                regenerative_cc_current = calculate_inverter_cc_current();
+                //regenerative_cc_current = calculate_inverter_cc_current();
 
-                uint16_t int_left_motor_rpm = inverter_get_value(speed_m_l) /*1000*/;
-                uint16_t int_right_motor_rpm = inverter_get_value(speed_m_r) /*2000*/;
-                uint16_t int_left_motor_torque = inverter_get_value(torque_m_l) /*300*/;
-                uint16_t int_right_motor_torque = inverter_get_value(torque_m_r) /*4000*/;
-                int cont1 = digit_counter(int_left_motor_rpm);
-                int cont2 = digit_counter(int_right_motor_rpm);
-                int cont3 = digit_counter(int_left_motor_torque);
-                int cont4 = digit_counter(int_right_motor_torque);
-                int total_cont = cont1 + cont2 + cont3 + cont4;
-                snprintf(buffer, (total_cont +5), "%u,%u,%u,%u-", int_left_motor_rpm, int_right_motor_rpm, int_left_motor_torque, int_right_motor_torque);
-                HAL_UART_Transmit(&hlpuart1, (uint8_t *)buffer, (total_cont+5), 500);
+//                uint16_t int_left_motor_rpm = inverter_get_value(speed_m_l) /*1000*/;
+//                uint16_t int_right_motor_rpm = inverter_get_value(speed_m_r) /*2000*/;
+//                uint16_t int_left_motor_torque = inverter_get_value(torque_m_l) /*300*/;
+//                uint16_t int_right_motor_torque = inverter_get_value(torque_m_r) /*4000*/;
+//                int cont1 = digit_counter(int_left_motor_rpm);
+//                int cont2 = digit_counter(int_right_motor_rpm);
+//                int cont3 = digit_counter(int_left_motor_torque);
+//                int cont4 = digit_counter(int_right_motor_torque);
+//                int total_cont = cont1 + cont2 + cont3 + cont4;
+//                snprintf(buffer, (total_cont +5), "%u,%u,%u,%u-", int_left_motor_rpm, int_right_motor_rpm, int_left_motor_torque, int_right_motor_torque);
+//                HAL_UART_Transmit(&hlpuart1, (uint8_t *)buffer, (total_cont+5), 500);
 
-                if ((inverter_get_value(current_m_l) & (1<<(15))&& (inverter_get_value(current_m_r) & (1<<15))))
-                {
-                	regenerating = true;
-                }
-                else
-                {
-                	regenerating = false;
-                }
+//                if ((inverter_get_value(current_m_l) & (1<<(15))&& (inverter_get_value(current_m_r) & (1<<15))))
+//                {
+//                	regenerating = true;
+//                }
+//                else
+//                {
+//                	regenerating = false;
+//                }
 
                 break;
             case osErrorTimeout:

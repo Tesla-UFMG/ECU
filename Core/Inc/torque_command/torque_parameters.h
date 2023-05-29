@@ -19,5 +19,6 @@
 
 // TODO(Felipe): verify if this define is correct
 #define RPM_KMPH_5 459
+#define RPM_BRAKE_MIN 1200
 
 #endif /* INC_CONTROLE_H_ */

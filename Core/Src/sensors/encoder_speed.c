@@ -8,13 +8,17 @@
 #include "sensors/encoder_speed.h"
 
 #include "datalogging/speed.h"
-#include "math.h"
 #include "stm32h7xx.h"
 #include "string.h"
 #include "util/CMSIS_extra/cmsis_extra.h"
 #include "util/global_instances.h"
 #include "util/util.h"
 
+// Some compilers do not implement by default math defines, so it's better by implement by
+// ourselves here
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 /*
  * distance = circumference divided by the number of teeth
  *          = 2*pi*radius/teeth_number (m)

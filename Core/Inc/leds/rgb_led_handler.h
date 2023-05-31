@@ -2,7 +2,7 @@
  * leds.h
  *
  *  Created on: May 21, 2023
- *      Author: Samuel Dantas
+ *      Author: Felipe Telles
  */
 
 #ifndef INC_RGB_LED_H_

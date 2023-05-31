@@ -12,7 +12,7 @@
 #include "util/global_definitions.h"
 #include "util/util.h"
 
-volatile uint16_t datalog_data_holder[CAN_ID_QUAN];
+volatile uint16_t datalog_data_holder[CAN_GENERAL_ID_QUAN];
 
 extern osMessageQueueId_t q_datalog_messageHandle;
 
@@ -23,32 +23,29 @@ void datalogger(void* argument) {
 
     uint16_t vet_tx[4];
 
+    int16_t internal_id;
+
+    uint16_t external_id;
+
     for (;;) {
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        // enquanto conseguir extrair item da fila de mensagens
+        // as long as you can extract item from the message queue
         while (osMessageQueueGet(q_datalog_messageHandle, &message, 0, 0) == osOK) {
             datalog_data_holder[message.id] = message.data;
         }
 
-        const uint16_t WRITE_ITERATION_LIMIT = ECU_CAN_LAST_POPULATED_ID
-                                               + ECU_CAN_LAST_DEBUG_ID
-                                               - ECU_CAN_FIRST_DEBUG_ID + 1;
-        for (uint16_t id = ECU_CAN_INITIAL_ID; id < WRITE_ITERATION_LIMIT; id++) {
-            for (uint16_t pos = 0; pos < 4; pos++) {
-                uint16_t internal_index = get_internal_from_id_pos(id, pos);
-                // caso passe por uma combinacao de id e posicao inexistente, internal
-                // sera 0. a posicao 0 e sempre vazia para preencher lacunas
-                vet_tx[pos] = datalog_data_holder[internal_index];
+        // does the for using the size of the structure
+        for (uint16_t struct_pos = 0; struct_pos < get_amount_ext_id(); struct_pos++) {
+            for (uint16_t word = 0; word < WORDS_PER_ID; word++) {
+                internal_id = get_internal_id_from_pos_and_word(struct_pos, word);
+                // if internal id does not exist
+                vet_tx[word] = (internal_id != -1) ? datalog_data_holder[internal_id] : 0;
             }
-            CAN_ID_t can_id = get_CAN_ID_from_internal(get_internal_from_id_pos(id, 0));
-            // transmite a mensagem
-            general_can_transmit(can_id.id, vet_tx);
+            external_id = get_external_id_from_struct_pos(struct_pos);
+            general_can_transmit(external_id, vet_tx);
         }
-
-        // quando extrair todos os itens enfileirados e enviar, espera uma certa
-        // quantidade de tempo para extrair novamente
         osDelay(DATALOGGER_DELAY);
     }
 }

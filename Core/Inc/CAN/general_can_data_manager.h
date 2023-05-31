@@ -21,10 +21,11 @@
     ENTRY(error_imu_gyroscope, 292, 3)
 
 typedef enum {
+    INVALID_VARIABLE_GENERAL = -1,
 #define ENTRY(a, b, c) a,
     VARIABLES_GENERAL_CAN_RX_IDS
 #undef ENTRY
-        NUM_STATES_GENERAL
+        NUM_VARIABLE_GENERAL
 } general_can_vars_e;
 
 void general_store_value(general_can_vars_e var_name, uint16_t general_value_can);

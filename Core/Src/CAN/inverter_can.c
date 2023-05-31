@@ -71,7 +71,8 @@ static void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan,
         for (int i = 0; i < 4; ++i) {
             can_vars_inverter_e var_name = inverter_get_var_name_from_id_and_pos(id, i);
 
-            if ((int)var_name != -1) {
+            if (var_name > INVALID_VARIABLE_INVERTER
+                && var_name < NUM_VARIABLES_INVERTER) {
                 uint16_t data = concatenate_two_uint8_to_uint16(rx_data + i * 2);
                 inverter_store_value(var_name, data);
             }

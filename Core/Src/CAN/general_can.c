@@ -51,7 +51,7 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
         for (int i = 0; i < 4; ++i) {
             general_can_vars_e var_name = general_get_var_name_from_id_and_pos(id, i);
 
-            if ((int)var_name != -1) {
+            if (var_name > INVALID_VARIABLE_GENERAL && var_name < NUM_VARIABLE_GENERAL) {
                 uint16_t data = concatenate_two_uint8_to_uint16(rx_data + i * 2);
                 general_store_value(var_name, data);
             }

@@ -28,7 +28,7 @@ typedef enum modos_desempenho {
     AUTOX
 } race_mode_t;
 
-typedef struct // struct de modo
+typedef struct        // struct de modo
 {
     int tor_max;      // torque maximo (de 0 a 4000)
     int vel_max;      // velocidade maxima (de 0 a 9000)

@@ -24,7 +24,7 @@ osStatus_t set_rgb_led(const colors_t* pattern, uint8_t size_of_pattern,
     message.pattern[0]      = pattern[0];
     message.pattern[1]      = size_of_pattern > 1 ? pattern[1] : 0;
     message.pattern[2]      = size_of_pattern > 2 ? pattern[2] : 0;
-    return osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
+    return osMessageQueuePutOverwrite(q_rgb_led_messageHandle, &message, 0);
 }
 
 void rgb_led(void* argument) {

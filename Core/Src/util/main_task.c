@@ -60,6 +60,19 @@ void led_color_response(uint32_t flag) {
         }
     }
 }
+int test_aux = 500;
+uint32_t oldValue;
+
+uint32_t test(int test_aux, uint32_t* oldValue) {
+    uint32_t error_vec[3] = {BSE_ERROR_FLAG, INVERTER_CAN_TRANSMIT_ERROR_FLAG,
+                             RIGHT_INVERTER_COMM_ERROR_FLAG};
+    if (test_aux % 500 == 0 && test_aux < 1501) {
+        *oldValue = error_vec[(test_aux / 500) - 1];
+        return error_vec[(test_aux / 500) - 1];
+    } else {
+        return *oldValue;
+    }
+}
 
 void main_task(void* argument) {
 
@@ -67,18 +80,20 @@ void main_task(void* argument) {
 
     for (;;) {
 
-        ECU_ENABLE_BREAKPOINT_DEBUG();
+        // ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        wait_for_rtd();
+        // wait_for_rtd();
 
         // Wait for any error
         osThreadFlagsWait(ALL_ERRORS_FLAG, osFlagsWaitAny | osFlagsNoClear,
                           osWaitForever);
         // Get the most significant thread flag
-        uint32_t most_significant_error_flag = get_most_significant_thread_flag();
+        uint32_t most_significant_error_flag =
+            test(test_aux, &oldValue); // get_most_significant_thread_flag();
         // Get the event flag
-        uint32_t event_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
-
+        uint32_t event_flags =
+            test(test_aux, &oldValue); // osEventFlagsGet(e_ECU_control_flagsHandle);
+        test_aux++;
         bool isErrorPresent;
         switch (most_significant_error_flag) {
 

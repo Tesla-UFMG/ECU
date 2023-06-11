@@ -1,7 +1,7 @@
 /*
  * leds.h
  *
- *  Created on: May 13, 2021
+ *  Created on: May 21, 2023
  *      Author: Felipe Telles
  */
 
@@ -13,30 +13,53 @@
 #include "stdint.h"
 #include "util/global_definitions.h"
 
-#define RGB_BLINK_DELAY 200
+#define RGB_TIMEOUT                    200
+#define RGB_BLINK_200_DELAY            200
+#define RGB_BLINK_1000_DELAY           1000
+#define ONE_COLOR_PATTERN_POS          0
+#define ONE_COLOR_PATTERN_SIZE         1
+#define SOFT_ERROR_COLORS_PATTERN_SIZE 2
+#define HARD_ERROR_COLORS_PATTERN_SIZE 3
 
 #define RGB_BLACK                                                                        \
-    (rgb_t) { 0, 0, 0 }
+    (rgb_t) {                                                                            \
+        0, 0, 0                                                                          \
+    }
 #define RGB_RED                                                                          \
-    (rgb_t) { 1, 0, 0 }
+    (rgb_t) {                                                                            \
+        1, 0, 0                                                                          \
+    }
 #define RGB_GREEN                                                                        \
-    (rgb_t) { 0, 1, 0 }
+    (rgb_t) {                                                                            \
+        0, 1, 0                                                                          \
+    }
 #define RGB_BLUE                                                                         \
-    (rgb_t) { 0, 0, 1 }
+    (rgb_t) {                                                                            \
+        0, 0, 1                                                                          \
+    }
 #define RGB_YELLOW                                                                       \
-    (rgb_t) { 1, 1, 0 }
+    (rgb_t) {                                                                            \
+        1, 1, 0                                                                          \
+    }
 #define RGB_PURBLE                                                                       \
-    (rgb_t) { 1, 0, 1 }
+    (rgb_t) {                                                                            \
+        1, 0, 1                                                                          \
+    }
 #define RGB_CYAN                                                                         \
-    (rgb_t) { 0, 1, 1 }
+    (rgb_t) {                                                                            \
+        0, 1, 1                                                                          \
+    }
 #define RGB_WHITE                                                                        \
-    (rgb_t) { 1, 1, 1 }
+    (rgb_t) {                                                                            \
+        1, 1, 1                                                                          \
+    }
 
-typedef enum { FIXED, BLINK200, NO_CHANGE } control_rgb_led_e;
+typedef enum { FIXED, BLINK200 } control_rgb_led_e;
 
 typedef struct {
-    cores_t color;
+    colors_t pattern[3];
     control_rgb_led_e control;
+    uint8_t size_of_pattern;
 } rgb_led_message_t;
 
 typedef struct {
@@ -45,6 +68,7 @@ typedef struct {
     GPIO_PinState blue;
 } rgb_t;
 
-osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control);
+osStatus_t set_rgb_led(const colors_t* pattern, uint8_t size_of_pattern,
+                       control_rgb_led_e control);
 
 #endif /* INC_RGB_LED_H_ */

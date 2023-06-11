@@ -1,13 +1,15 @@
 /*
  * leds.c
  *
- *  Created on: May 12, 2021
- *      Author: Felipe Telles
+ *  Created on: May 21, 2023
+ *      Author: Samuel Dantas
  */
 
 #include "leds/debug_leds_handler.h"
 
 #include "cmsis_os.h"
+#include "util/CMSIS_extra/cmsis_extra.h"
+#include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/global_definitions.h"
 #include "util/global_variables.h"
 #include "util/util.h"
@@ -16,7 +18,7 @@ extern osMessageQueueId_t q_debug_leds_messageHandle;
 
 osStatus_t set_debugleds(uint16_t lednumber, ControlDebugLED_e control, uint8_t amount) {
     debug_led_message_t message = {lednumber, control, amount};
-    return osMessageQueuePut(q_debug_leds_messageHandle, &message, 0, 0U);
+    return osMessageQueuePutOverwrite(q_debug_leds_messageHandle, &message, 0);
 }
 
 void debug_leds(void* argument) {
@@ -27,36 +29,36 @@ void debug_leds(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        // espera ate alguma mensagem chegar
+        // wait until some message arrives
         osMessageQueueGet(q_debug_leds_messageHandle, &message, NULL, osWaitForever);
         switch (message.control) {
             case ON:
-                // acende o led escolhido
-                HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);
+                // lights up the chosen led
+                HAL_GPIO_WritePin(GPIOE, message.led_number, GPIO_PIN_RESET);
                 break;
             case OFF:
-                // apaga o led escolhido
-                HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_SET);
+                // turn off the chosen led
+                HAL_GPIO_WritePin(GPIOE, message.led_number, GPIO_PIN_SET);
                 break;
             case TOGGLE:
-                // toggle o led escolhido
-                HAL_GPIO_TogglePin(GPIOE, message.lednumber);
+                // toggle the chosen led
+                HAL_GPIO_TogglePin(GPIOE, message.led_number);
                 break;
             case BLINK:
-                // pisca o led escolhido, pelo valor de vezes escolhido
-                // delays garante que eh possivel contar quantas vezes piscou
+                // blink the chosen led, by the chosen value of times
+                // delays ensures that it is possible to count how many times it blinked
                 for (uint8_t i = 0; i < message.amount; i++) {
-                    HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);
+                    HAL_GPIO_WritePin(GPIOE, message.led_number, GPIO_PIN_RESET);
                     osDelay(300);
-                    HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_SET);
+                    HAL_GPIO_WritePin(GPIOE, message.led_number, GPIO_PIN_SET);
                     osDelay(300);
                 }
                 osDelay(500);
                 break;
             case FASTBLINK:
-                HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);
+                HAL_GPIO_WritePin(GPIOE, message.led_number, GPIO_PIN_RESET);
                 osDelay(message.amount);
-                HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_SET);
+                HAL_GPIO_WritePin(GPIOE, message.led_number, GPIO_PIN_SET);
                 osDelay(message.amount / 2);
                 break;
         }

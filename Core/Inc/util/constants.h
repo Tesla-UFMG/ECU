@@ -12,8 +12,8 @@
 #define TORQUE_MAX            3000 // em decimos de percentagem do torque nom
 #define vel_max_rpm           9000
 #define vetorizacao_torque    0
-#define frenagem_regenerativa 1
-//#define REG_BRAKING_TORQUE    300
+#define frenagem_regenerativa 0
+#define REG_BRAKING_TORQUE    750
 #define modo_aceleracao       0
 #define modo_enduro           0
 #define zona_morta_acelerador 10

@@ -45,12 +45,12 @@ void RTD(void* argument) {
 
 void exit_RTD() {
     // seta modo_selecionado como erro
-    //set_global_var_value(SELECTED_MODE, erro);
-    //set_global_var_value(RACE_MODE, ERRO);
+    set_global_var_value(SELECTED_MODE, erro);
+    set_global_var_value(RACE_MODE, ERRO);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
     // limpa flag de RTD
     osEventFlagsClear(e_ECU_control_flagsHandle, RTD_FLAG);
-    //osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
+    osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
 }
 
 /*
@@ -92,7 +92,7 @@ static bool can_RTD_be_enabled() {
     // ready
     bool is_inverter_ready =
         get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
-    if (/*is_brake_active &&*/ !is_throttle_active /*&& !error_flags*/ && (race_mode != ERRO)
+    if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
         && is_inverter_ready) {
         return true;
     }

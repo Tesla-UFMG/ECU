@@ -94,10 +94,10 @@ void Error_Handler(void);
 #define C_LED_GREEN_GPIO_Port GPIOD
 #define C_LED_RED_Pin GPIO_PIN_14
 #define C_LED_RED_GPIO_Port GPIOD
-#define B_DYNAMICS_CONTROLS_Pin GPIO_PIN_3
-#define B_DYNAMICS_CONTROLS_GPIO_Port GPIOD
-#define B_MODE_Pin GPIO_PIN_4
+#define B_MODE_Pin GPIO_PIN_3
 #define B_MODE_GPIO_Port GPIOD
+#define B_DYNAMICS_CONTROLS_Pin GPIO_PIN_4
+#define B_DYNAMICS_CONTROLS_GPIO_Port GPIOD
 #define B_RTD_Pin GPIO_PIN_6
 #define B_RTD_GPIO_Port GPIOD
 #define C_RTDS_Pin GPIO_PIN_5

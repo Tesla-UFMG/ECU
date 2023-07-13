@@ -91,7 +91,7 @@ static bool can_RTD_be_enabled() {
     // ready
     bool is_inverter_ready =
         get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
-    if (/*is_brake_active &&*/ !is_throttle_active && !error_flags && (race_mode != ERRO)
+    if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
         && is_inverter_ready) {
         return true;
     }

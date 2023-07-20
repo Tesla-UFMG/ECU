@@ -73,7 +73,7 @@ void init_modes() {
     aceleracao.dif_elt          = 0;
     aceleracao.traction_control = 1;
     aceleracao.bat_safe         = 0;
-    aceleracao.torq_gain        = 15;
+    aceleracao.torq_gain        = 25;
     aceleracao.mode             = ACELERACAO;
     aceleracao.cor              = ROXO;
 
@@ -83,7 +83,7 @@ void init_modes() {
     skidpad.dif_elt          = 0;
     skidpad.traction_control = 0;
     skidpad.bat_safe         = 0;
-    skidpad.torq_gain        = 20;
+    skidpad.torq_gain        = 15;
     skidpad.mode             = SKIDPAD;
     skidpad.cor              = CIANO;
 
@@ -93,7 +93,7 @@ void init_modes() {
     autox.dif_elt          = 0;
     autox.traction_control = 0;
     autox.bat_safe         = 0;
-    autox.torq_gain        = 25;
+    autox.torq_gain        = 20;
     autox.mode             = AUTOX;
     autox.cor              = AZUL;
 

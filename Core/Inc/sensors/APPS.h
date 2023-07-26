@@ -11,7 +11,7 @@
 #include "stdint.h"
 
 #define THROTTLE_DELAY   25
-#define BRAKE_ACTIVE     1800 // valor enviado pela SU-F: 2000
+#define BRAKE_ACTIVE     1800 // valor enviado pela SU-F: 2800
 #define SU_F_ERROR       3200 // valor enviado pela SU-F: 3500
 #define APPS_25_PERCENT  250
 #define APPS_05_PERCENT  50

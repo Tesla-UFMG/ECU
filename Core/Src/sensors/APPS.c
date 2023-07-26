@@ -34,15 +34,6 @@ static uint16_t apps1_throttle_percent = 0;
 static uint16_t apps2_throttle_percent = 0;
 static uint16_t throttle_percent       = 0;
 
-uint16_t avg_apps = 0;
-uint16_t apps1 = 0;
-uint16_t apps2 = 0;
-uint16_t bse1 = 0;
-uint16_t diff = 0;
-bool err = 0;
-bool err2 = 0;
-bool err3 = 0;
-
 void APPS_read(void* argument) {
     UNUSED(argument);
 
@@ -69,10 +60,7 @@ void APPS_read(void* argument) {
         // calcula a porcentagem do pedal a partir do APPS1 e APPS2 e faz a media
         apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);
         apps2_throttle_percent = throttle_calc(apps2_value, &apps2_ref);
-        apps1 = apps1_throttle_percent;
-        apps2 = apps2_throttle_percent;
         throttle_percent       = avg(apps1_throttle_percent, apps2_throttle_percent);
-        avg_apps = throttle_percent;
         set_global_var_value(BRAKE_STATUS, (bse > BRAKE_ACTIVE));
         set_global_var_value(THROTTLE_STATUS, (throttle_percent > 0));
 
@@ -82,10 +70,6 @@ void APPS_read(void* argument) {
         check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);
         check_for_errors_with_timeout(is_there_APPS_error, APPS_ERROR_FLAG,
                                       tim_APPS_errorHandle, APPS_ERROR_TIMER);
-        err = is_there_APPS_error();
-        err2 = is_there_SU_F_error();
-        err3 = is_there_BSE_error();
-        diff = abs(apps1_throttle_percent - apps2_throttle_percent) / 10;
         // verifica se a placa de freio esta enviando sinal de curto
         check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG,
                                       tim_SU_F_errorHandle, SU_F_ERROR_TIMER);

@@ -110,6 +110,8 @@ void MemManage_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_MemoryManagement_IRQn 0 */
+	  deInit_all_peripherals();
+	  HAL_NVIC_SystemReset();
     /* USER CODE END W1_MemoryManagement_IRQn 0 */
   }
 }
@@ -125,6 +127,8 @@ void BusFault_Handler(void)
   while (1)
   {
     /* USER CODE BEGIN W1_BusFault_IRQn 0 */
+	  deInit_all_peripherals();
+	  HAL_NVIC_SystemReset();
     /* USER CODE END W1_BusFault_IRQn 0 */
   }
 }

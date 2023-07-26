@@ -61,6 +61,7 @@ void APPS_read(void* argument) {
         apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);
         apps2_throttle_percent = throttle_calc(apps2_value, &apps2_ref);
         throttle_percent       = avg(apps1_throttle_percent, apps2_throttle_percent);
+
         set_global_var_value(BRAKE_STATUS, (bse > BRAKE_ACTIVE));
         set_global_var_value(THROTTLE_STATUS, (throttle_percent > 0));
 

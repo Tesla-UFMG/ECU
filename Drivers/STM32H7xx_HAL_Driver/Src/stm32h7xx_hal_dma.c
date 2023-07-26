@@ -1245,7 +1245,7 @@ void HAL_DMA_IRQHandler(DMA_HandleTypeDef *hdma)
     /* Direct Mode Error Interrupt management ***********************************/
     if ((tmpisr_dma & (DMA_FLAG_DMEIF0_4 << (hdma->StreamIndex & 0x1FU))) != 0U)
     {
-    	if(__HAL_DMA_GET_IT_SOURCE(hdma, DMA_IT_DME) != 0U)
+      if(__HAL_DMA_GET_IT_SOURCE(hdma, DMA_IT_DME) != 0U)
       {
         /* Clear the direct mode error flag */
         regs_dma->IFCR = DMA_FLAG_DMEIF0_4 << (hdma->StreamIndex & 0x1FU);

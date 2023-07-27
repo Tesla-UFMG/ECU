@@ -75,11 +75,11 @@ void odometer_calc() {
 //     log_data(ID_DISTANCE_P_ODOM, (uint16_t)cm_to_m(partial_dist));
 // }
 
-static inline uint32_t calculate_distance(uint32_t speed_avg) {
-    /*
-     * AVG_TIME (ms)
-     * speed_avg (10*km/h)
-     * 1/360 is a correction factor to make distance in centimeters (cm)
-     */
-    return (uint32_t)(((1.0 / 360) * speed_avg) * (CALC_DELAY));
-}
+// static inline uint32_t calculate_distance(uint32_t speed_avg) {
+//     /*
+//      * AVG_TIME (ms)
+//      * speed_avg (10*km/h)
+//      * 1/360 is a correction factor to make distance in centimeters (cm)
+//      */
+//     return (uint32_t)(((1.0 / 360) * speed_avg) * (CALC_DELAY));
+// }

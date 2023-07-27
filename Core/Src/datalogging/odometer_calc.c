@@ -18,8 +18,8 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
-static inline uint32_t calculate_distance(uint32_t speed_avg);
-static void log_distance(uint32_t total_dist, uint32_t partial_dist);
+//static inline uint32_t calculate_distance(uint32_t speed_avg);
+//static void log_distance(uint32_t total_dist, uint32_t partial_dist);
 
 void odometer_calc() {
 
@@ -65,10 +65,10 @@ void odometer_calc() {
     }
 }
 
-static void log_distance(uint32_t total_dist, uint32_t partial_dist) {
-    log_data(ID_DISTANCE_T_ODOM, (uint16_t)cm_to_m(total_dist));
-    log_data(ID_DISTANCE_P_ODOM, (uint16_t)cm_to_m(partial_dist));
-}
+//static void log_distance(uint32_t total_dist, uint32_t partial_dist) {
+//    log_data(ID_DISTANCE_T_ODOM, (uint16_t)cm_to_m(total_dist));
+//    log_data(ID_DISTANCE_P_ODOM, (uint16_t)cm_to_m(partial_dist));
+//}
 
 static inline uint32_t calculate_distance(uint32_t speed_avg) {
     /*

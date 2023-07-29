@@ -95,10 +95,9 @@ static void CAN_inverter_error_callback(FDCAN_HandleTypeDef* hfdcan,
         // Issue the error so main_task.c treats it
         issue_error(INVERTER_BUS_OFF_ERROR_FLAG, /*should_set_control_event_flag=*/false);
         HAL_FDCAN_DeInit(&hfdcan1);
-        if (HAL_FDCAN_Init(&hfdcan1) != HAL_OK)
-          {
+        if (HAL_FDCAN_Init(&hfdcan1) != HAL_OK) {
             Error_Handler();
-          }
+        }
         initialize_inverter_CAN(&hfdcan1);
     }
 }

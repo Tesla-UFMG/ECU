@@ -49,7 +49,7 @@ void exit_RTD() {
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
     // limpa flag de RTD
     osEventFlagsClear(e_ECU_control_flagsHandle, RTD_FLAG);
-    //osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
+    // osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
 }
 
 /*

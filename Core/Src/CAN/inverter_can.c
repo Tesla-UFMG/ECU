@@ -21,8 +21,6 @@ static void CAN_inverter_error_callback(FDCAN_HandleTypeDef* /*hfdcan*/,
                                         uint32_t /*ErrorStatusITs*/);
 static bool is_there_inverter_can_transmit_error();
 
-extern void MX_FDCAN1_Init(void);
-
 static FDCAN_HandleTypeDef* can_ptr;
 static FDCAN_TxHeaderTypeDef TxHeader;
 static FDCAN_RxHeaderTypeDef RxHeader;
@@ -97,7 +95,10 @@ static void CAN_inverter_error_callback(FDCAN_HandleTypeDef* hfdcan,
         // Issue the error so main_task.c treats it
         issue_error(INVERTER_BUS_OFF_ERROR_FLAG, /*should_set_control_event_flag=*/false);
         HAL_FDCAN_DeInit(&hfdcan1);
-        MX_FDCAN1_Init();
+        if (HAL_FDCAN_Init(&hfdcan1) != HAL_OK)
+          {
+            Error_Handler();
+          }
         initialize_inverter_CAN(&hfdcan1);
     }
 }

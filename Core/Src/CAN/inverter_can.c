@@ -21,11 +21,15 @@ static void CAN_inverter_error_callback(FDCAN_HandleTypeDef* /*hfdcan*/,
                                         uint32_t /*ErrorStatusITs*/);
 static bool is_there_inverter_can_transmit_error();
 
+extern void MX_FDCAN1_Init(void);
+
 static FDCAN_HandleTypeDef* can_ptr;
 static FDCAN_TxHeaderTypeDef TxHeader;
 static FDCAN_RxHeaderTypeDef RxHeader;
 
 static uint8_t inverter_can_status;
+
+extern FDCAN_HandleTypeDef hfdcan1;
 
 // Initialize the inverter CAN. Called in initializer.c
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
@@ -92,7 +96,8 @@ static void CAN_inverter_error_callback(FDCAN_HandleTypeDef* hfdcan,
     if (ErrorStatusITs | FDCAN_IT_BUS_OFF) {
         // Issue the error so main_task.c treats it
         issue_error(INVERTER_BUS_OFF_ERROR_FLAG, /*should_set_control_event_flag=*/false);
-        // Clean the INIT CAN bit to start receiving messages again
-        CLEAR_BIT(hfdcan->Instance->CCCR, FDCAN_CCCR_INIT);
+        HAL_FDCAN_DeInit(&hfdcan1);
+        MX_FDCAN1_Init();
+        initialize_inverter_CAN(&hfdcan1);
     }
 }

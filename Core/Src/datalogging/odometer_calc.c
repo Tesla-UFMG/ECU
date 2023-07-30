@@ -19,13 +19,12 @@
 #include "util/util.h"
 
 static inline uint32_t calculate_distance(uint32_t speed_avg);
-static void log_distance(uint32_t total_dist, uint32_t partial_dist);
+static void log_distance(uint32_t partial_dist);
 
 void odometer_calc() {
 
-    uint32_t partial_dist_traveled         = 0;
-    odometer_message_t total_dist_traveled = 0;
-    uint16_t odometer_speed_data           = 0;
+    uint32_t partial_dist_traveled = 0;
+    uint16_t odometer_speed_data   = 0;
 
     //        // Read distance from flash just once
     //        Flash_Read_Data(ODOMETER_DATA_FLASH_ADDR, &(total_dist_traveled),
@@ -67,13 +66,12 @@ void odometer_calc() {
         //                total_dist_traveled += instant_distant_traveled;
         //                osMessageQueuePutOverwrite(q_odometer_calc_save_messageHandle,
         //                                           &total_dist_traveled, 0);
-        log_distance(total_dist_traveled, partial_dist_traveled);
+        log_distance(partial_dist_traveled);
         osDelay(CALC_DELAY);
     }
 }
 
-static void log_distance(uint32_t total_dist, uint32_t partial_dist) {
-    //     log_data(ID_DISTANCE_T_ODOM, (uint16_t)cm_to_m(total_dist));
+static void log_distance(uint32_t partial_dist) {
     log_data(ID_DISTANCE_P_ODOM, (uint16_t)cm_to_m(partial_dist));
 }
 

@@ -27,8 +27,6 @@ static FDCAN_RxHeaderTypeDef RxHeader;
 
 static uint8_t inverter_can_status;
 
-extern FDCAN_HandleTypeDef hfdcan1;
-
 // Initialize the inverter CAN. Called in initializer.c
 void initialize_inverter_CAN(FDCAN_HandleTypeDef* can_ref) {
     can_ptr = can_ref;
@@ -94,10 +92,10 @@ static void CAN_inverter_error_callback(FDCAN_HandleTypeDef* hfdcan,
     if (ErrorStatusITs | FDCAN_IT_BUS_OFF) {
         // Issue the error so main_task.c treats it
         issue_error(INVERTER_BUS_OFF_ERROR_FLAG, /*should_set_control_event_flag=*/false);
-        HAL_FDCAN_DeInit(&hfdcan1);
-        if (HAL_FDCAN_Init(&hfdcan1) != HAL_OK) {
+        HAL_FDCAN_DeInit(hfdcan);
+        if (HAL_FDCAN_Init(hfdcan) != HAL_OK) {
             Error_Handler();
         }
-        initialize_inverter_CAN(&hfdcan1);
+        initialize_inverter_CAN(hfdcan);
     }
 }

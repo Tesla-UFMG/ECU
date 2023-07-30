@@ -217,9 +217,9 @@ const osThreadAttr_t t_odometer_save_attributes = {
 /* Definitions for t_dynamic_controls_choice */
 osThreadId_t t_dynamic_controls_choiceHandle;
 const osThreadAttr_t t_dynamic_controls_choice_attributes = {
-    .name       = "t_dynamic_controls_choice",
-    .stack_size = 1024 * 4,
-    .priority   = (osPriority_t)osPriorityLow,
+  .name = "t_dynamic_controls_choice",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for q_encoder_int_message */
 osMessageQueueId_t q_encoder_int_messageHandle;
@@ -1159,8 +1159,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : B_DYNAMICS_CONTROLS_Pin B_MODE_Pin B_RTD_Pin */
-  GPIO_InitStruct.Pin = B_DYNAMICS_CONTROLS_Pin|B_MODE_Pin|B_RTD_Pin;
+  /*Configure GPIO pins : B_MODE_Pin B_DYNAMICS_CONTROLS_Pin B_RTD_Pin */
+  GPIO_InitStruct.Pin = B_MODE_Pin|B_DYNAMICS_CONTROLS_Pin|B_RTD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);

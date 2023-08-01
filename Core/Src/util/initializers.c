@@ -16,7 +16,6 @@
 #include "stm32h7xx.h"
 #include "stm32h7xx_hal.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
-#include "util/constants.h"
 #include "util/global_definitions.h"
 #include "util/global_variables.h"
 
@@ -56,60 +55,6 @@ void init_CAN() {
     initialize_CAN_IDs_struct();
 }
 
-void init_modes() {
-    enduro.tor_max          = 1000;
-    enduro.vel_max          = vel_max_rpm;
-    enduro.freio_regen      = frenagem_regenerativa;
-    enduro.dif_elt          = 0;
-    enduro.traction_control = 0;
-    enduro.bat_safe         = 1;
-    enduro.torq_gain        = 10; // ERA 15
-    enduro.mode             = ENDURO;
-    enduro.cor              = VERDE;
-
-    aceleracao.tor_max          = 1500;
-    aceleracao.vel_max          = vel_max_rpm;
-    aceleracao.freio_regen      = 0;
-    aceleracao.dif_elt          = 0;
-    aceleracao.traction_control = 1;
-    aceleracao.bat_safe         = 0;
-    aceleracao.torq_gain        = 25;
-    aceleracao.mode             = ACELERACAO;
-    aceleracao.cor              = ROXO;
-
-    skidpad.tor_max          = 2000;
-    skidpad.vel_max          = vel_max_rpm;
-    skidpad.freio_regen      = 0;
-    skidpad.dif_elt          = 0;
-    skidpad.traction_control = 0;
-    skidpad.bat_safe         = 0;
-    skidpad.torq_gain        = 15;
-    skidpad.mode             = SKIDPAD;
-    skidpad.cor              = CIANO;
-
-    autox.tor_max          = 2500;
-    autox.vel_max          = vel_max_rpm;
-    autox.freio_regen      = 0;
-    autox.dif_elt          = 0;
-    autox.traction_control = 0;
-    autox.bat_safe         = 0;
-    autox.torq_gain        = 20;
-    autox.mode             = AUTOX;
-    autox.cor              = AZUL;
-
-    erro.tor_max          = 0;
-    erro.vel_max          = 0;
-    erro.freio_regen      = 0;
-    erro.dif_elt          = 0;
-    erro.traction_control = 0;
-    erro.bat_safe         = 0;
-    erro.torq_gain        = 0;
-    erro.mode             = ERRO;
-    erro.cor              = VERMELHO;
-
-    set_global_var_value(SELECTED_MODE, enduro); // inicializa no modo enduro
-}
-
 void deInit_all_peripherals() {
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_All);
     HAL_GPIO_DeInit(GPIOD, GPIO_PIN_All);
@@ -137,5 +82,5 @@ void init_ECU() {
     // (i.e. before functions that use global variables)
     init_global_variables();
     init_controls();
-    init_modes();
+    set_global_var_value(SELECTED_MODE, enduro); // inicializa no modo enduro
 }

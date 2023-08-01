@@ -65,10 +65,20 @@ static void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan,
             Error_Handler();
         }
 
-        uint32_t id = RxHeader.Identifier;
+        uint32_t id     = RxHeader.Identifier;
+        uint32_t length = RxHeader.DataLength;
+        uint32_t size;
+
+        switch (length) {
+            case FDCAN_DLC_BYTES_2: size = 1; break;
+            case FDCAN_DLC_BYTES_4: size = 2; break;
+            case FDCAN_DLC_BYTES_6: size = 3; break;
+            case FDCAN_DLC_BYTES_8: size = 4; break;
+            default: return;
+        }
         osMessageQueuePut(q_ids_can_inverterHandle, &id, 0, 0);
 
-        for (int i = 0; i < 4; ++i) {
+        for (uint32_t i = 0; i < size; ++i) {
             can_vars_inverter_e var_name = inverter_get_var_name_from_id_and_pos(id, i);
 
             if (var_name > INVALID_VARIABLE_INVERTER

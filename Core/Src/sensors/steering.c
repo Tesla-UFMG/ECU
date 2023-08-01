@@ -38,10 +38,11 @@ void steering_read(void* argument) {
         }
 
         if (volante_cru < zero_aux) {
-            set_global_var_value(STEERING_WHEEL, 0);
+            set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)0);
         } else {
-            set_global_var_value(STEERING_WHEEL,
-                                 (uint16_t)volante_cru * GANHO_VOLANTE - ZERO_VOLANTE);
+            set_global_var_value(
+                STEERING_WHEEL,
+                (STEERING_WHEEL_t)(volante_cru * GANHO_VOLANTE - ZERO_VOLANTE));
         }
 
         STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
@@ -51,11 +52,11 @@ void steering_read(void* argument) {
         // SPAN_ALINHAMENTO eh apenas um span pra ainda considerar o volante no centro
         // ate uma certa quantidade
         if (steering_wheel > VOLANTE_ALINHADO + SPAN_ALINHAMENTO) {
-            set_global_var_value(INTERNAL_WHEEL, ESQUERDA);
+            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)ESQUERDA);
         } else if (steering_wheel < VOLANTE_ALINHADO - SPAN_ALINHAMENTO) {
-            set_global_var_value(INTERNAL_WHEEL, DIREITA);
+            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)DIREITA);
         } else {
-            set_global_var_value(INTERNAL_WHEEL, CENTRO);
+            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);
         }
 
         osDelay(100);

@@ -9,4 +9,9 @@
 
 volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
-modos aceleracao, skidpad, autox, enduro, reverse, erro;
+volatile modos aceleracao;
+volatile modos skidpad;
+volatile modos autox;
+volatile modos enduro;
+volatile modos reverse;
+volatile modos erro;

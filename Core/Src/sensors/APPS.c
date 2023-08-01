@@ -15,6 +15,8 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
+extern IWDG_HandleTypeDef hiwdg1;
+
 typedef struct {
     uint16_t deadzone_lower_limit;
     uint16_t deadzone_upper_limit;
@@ -78,6 +80,7 @@ void APPS_read(void* argument) {
         uint16_t message = throttle_percent;
         osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);
 
+        HAL_IWDG_Refresh(&hiwdg1);
         osDelay(THROTTLE_DELAY);
     }
 }

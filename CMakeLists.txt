@@ -49,6 +49,7 @@ set(HAL_DRIVERS_SOURCES
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c
+    Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c
 
     Middlewares/Third_Party/FreeRTOS/Source/croutine.c

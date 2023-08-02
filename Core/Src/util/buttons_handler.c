@@ -49,9 +49,11 @@ void long_button_press_handler(available_buttons_e button) {
     RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
     bool is_inverter_ready =
         get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
+    THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     switch (button) {
         case B_RTD:
-            if (!error_flags && (race_mode != ERRO) && is_inverter_ready) {
+            if (!error_flags && (race_mode != ERRO) && is_inverter_ready
+                && !is_throttle_active) {
                 osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
                 set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
             }

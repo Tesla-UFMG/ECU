@@ -13,7 +13,7 @@
 
 #define POLLING_TIME    (10)
 #define DEBOUNCE_TIME   (50 / POLLING_TIME)   // Debounce time in ms
-#define LONG_PRESS_TIME (1000 / POLLING_TIME) // long press time in ms
+#define LONG_PRESS_TIME (2500 / POLLING_TIME) // long press time in ms
 
 /**
  * @brief enum with all possible buttons states

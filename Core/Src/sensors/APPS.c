@@ -36,6 +36,14 @@ static uint16_t apps1_throttle_percent = 0;
 static uint16_t apps2_throttle_percent = 0;
 static uint16_t throttle_percent       = 0;
 
+uint16_t apps1 = 0;
+uint16_t apps2 = 0;
+bool err;
+bool err2;
+bool err3;
+uint16_t diff = 0;
+
+
 void APPS_read(void* argument) {
     UNUSED(argument);
 
@@ -77,6 +85,12 @@ void APPS_read(void* argument) {
         check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG,
                                       tim_SU_F_errorHandle, SU_F_ERROR_TIMER);
 
+        apps1 = apps1_throttle_percent;
+        apps2 = apps2_throttle_percent;
+        diff = abs(apps1_throttle_percent - apps2_throttle_percent) / 10;
+        err = is_there_APPS_error();
+        err2 = is_there_BSE_error();
+        err3 = is_there_SU_F_error();
         uint16_t message = throttle_percent;
         osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);
 

@@ -82,5 +82,5 @@ static inline uint32_t calculate_distance(uint32_t speed_avg) {
      * 0.3025 is a correction factor :
      * distance (cm) = ((2*pi*26)/(60*9)) * rpm
      */
-    return (uint32_t)((0.3025 * speed_avg) * (CALC_DELAY));
+    return (uint32_t)(cm_to_m((0.3025 * speed_avg) * (CALC_DELAY)));
 }

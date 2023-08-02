@@ -7,9 +7,12 @@
 
 #include "util/buttons_handler.h"
 
+#include "leds/rgb_led_handler.h"
 #include "main.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/global_instances.h"
+#include "util/global_variables.h"
+#include "util/util.h"
 
 void long_button_press_handler(available_buttons_e button);
 void button_release_handler(available_buttons_e button);
@@ -41,8 +44,18 @@ void button_release_handler(available_buttons_e button) {
 }
 
 void long_button_press_handler(available_buttons_e button) {
-    switch (button) { // NOLINT
-            // case B_RTD: break;
+    uint32_t error_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
+    error_flags &= ALL_SEVERE_ERROR_FLAG;
+    RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
+    bool is_inverter_ready =
+        get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
+    switch (button) {
+        case B_RTD:
+            if (!error_flags && (race_mode != ERRO) && is_inverter_ready) {
+                osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
+                set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
+            }
+            break;
             // case B_MODE: break;
             // case B_DYNAMICS_CONTROLS: break;
         default: break;
@@ -106,7 +119,7 @@ void initialize_buttons() {
                                             .port            = B_RTD_GPIO_Port,
                                             .setCounter      = 0,
                                             .state           = BUTTON_NOT_PRESSED,
-                                            .enableLongPress = 0};
+                                            .enableLongPress = 1};
 
     buttons[B_MODE] = (buttons_parameters_t){.pin             = B_MODE_Pin,
                                              .port            = B_MODE_GPIO_Port,

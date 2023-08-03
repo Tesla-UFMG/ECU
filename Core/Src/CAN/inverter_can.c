@@ -78,7 +78,7 @@ static void CAN_inverter_receive_callback(FDCAN_HandleTypeDef* hfdcan,
         }
         osMessageQueuePut(q_ids_can_inverterHandle, &id, 0, 0);
 
-        for (uint32_t i = 0; i < size; ++i) {
+        for (int32_t i = 0; i < size; ++i) {
             can_vars_inverter_e var_name = inverter_get_var_name_from_id_and_pos(id, i);
 
             if (var_name > INVALID_VARIABLE_INVERTER

@@ -58,7 +58,7 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
             case FDCAN_DLC_BYTES_8: size = 4; break;
             default: return;
         }
-        for (uint32_t i = 0; i < size; ++i) {
+        for (int32_t i = 0; i < size; ++i) {
             general_can_vars_e var_name = general_get_var_name_from_id_and_pos(id, i);
 
             if (var_name > INVALID_VARIABLE_GENERAL && var_name < NUM_VARIABLE_GENERAL) {

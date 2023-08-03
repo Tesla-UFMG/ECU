@@ -49,7 +49,7 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
         }
         uint32_t id     = RxHeader.Identifier;
         uint32_t length = RxHeader.DataLength;
-        uint32_t size;
+        int32_t size;
 
         switch (length) {
             case FDCAN_DLC_BYTES_2: size = 1; break;

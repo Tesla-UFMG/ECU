@@ -16,21 +16,37 @@
 #define RGB_BLINK_DELAY 200
 
 #define RGB_BLACK                                                                        \
-    (rgb_t) { 0, 0, 0 }
+    (rgb_t) {                                                                            \
+        0, 0, 0                                                                          \
+    }
 #define RGB_RED                                                                          \
-    (rgb_t) { 1, 0, 0 }
+    (rgb_t) {                                                                            \
+        1, 0, 0                                                                          \
+    }
 #define RGB_GREEN                                                                        \
-    (rgb_t) { 0, 1, 0 }
+    (rgb_t) {                                                                            \
+        0, 1, 0                                                                          \
+    }
 #define RGB_BLUE                                                                         \
-    (rgb_t) { 0, 0, 1 }
+    (rgb_t) {                                                                            \
+        0, 0, 1                                                                          \
+    }
 #define RGB_YELLOW                                                                       \
-    (rgb_t) { 1, 1, 0 }
+    (rgb_t) {                                                                            \
+        1, 1, 0                                                                          \
+    }
 #define RGB_PURBLE                                                                       \
-    (rgb_t) { 1, 0, 1 }
+    (rgb_t) {                                                                            \
+        1, 0, 1                                                                          \
+    }
 #define RGB_CYAN                                                                         \
-    (rgb_t) { 0, 1, 1 }
+    (rgb_t) {                                                                            \
+        0, 1, 1                                                                          \
+    }
 #define RGB_WHITE                                                                        \
-    (rgb_t) { 1, 1, 1 }
+    (rgb_t) {                                                                            \
+        1, 1, 1                                                                          \
+    }
 
 typedef enum { FIXED, BLINK200, NO_CHANGE } control_rgb_led_e;
 

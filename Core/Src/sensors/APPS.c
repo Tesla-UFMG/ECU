@@ -36,14 +36,6 @@ static uint16_t apps1_throttle_percent = 0;
 static uint16_t apps2_throttle_percent = 0;
 static uint16_t throttle_percent       = 0;
 
-uint16_t apps1 = 0;
-uint16_t apps2 = 0;
-bool err;
-bool err2;
-bool err3;
-uint16_t diff = 0;
-
-
 void APPS_read(void* argument) {
     UNUSED(argument);
 

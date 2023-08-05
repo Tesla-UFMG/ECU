@@ -9,7 +9,7 @@
 #define INC_RTD_H_
 
 // FSAE Rules: EV.10.5.2.a (2023)
-#define RTDS_TIME_MS 1000
+#define RTDS_TIME_MS 3000
 
 void exit_RTD();
 

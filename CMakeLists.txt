@@ -36,19 +36,14 @@ set(HAL_DRIVERS_SOURCES
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_flash.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hsem.c
-    Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c_ex.c
-    Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_mdma.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr_ex.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c
-    Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c
-    Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c
-    Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c
-    Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c
+    Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_iwdg.c
     Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c
 
     Middlewares/Third_Party/FreeRTOS/Source/croutine.c

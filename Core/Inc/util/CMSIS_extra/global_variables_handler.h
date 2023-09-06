@@ -131,7 +131,8 @@ void set_global_var(global_vars_e type, void* message);
  */
 #define set_global_var_value(type, value)                                                \
     {                                                                                    \
-        type##_t type##_var = value;                                                     \
+        _Static_assert(sizeof(value) == sizeof(type##_t), "Wrong global variable size"); \
+        type##_t type##_var = (type##_t)(value);                                         \
         set_global_var(type, &(type##_var));                                             \
     }
 

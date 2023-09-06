@@ -20,15 +20,9 @@ typedef enum { FRONT_RIGHT = 0, FRONT_LEFT, REAR_RIGHT, REAR_LEFT } speed_pin_e;
 // cores do LED da ECU
 typedef enum { PRETO = 0, VERMELHO, VERDE, AZUL, AMARELO, ROXO, CIANO, BRANCO } cores_t;
 
-typedef enum modos_desempenho {
-    ERRO = 0,
-    ENDURO,
-    ACELERACAO,
-    SKIDPAD,
-    AUTOX
-} race_mode_t;
+typedef enum { ERRO = 0, ENDURO, ACELERACAO, SKIDPAD, AUTOX } race_mode_t;
 
-typedef struct // struct de modo
+typedef struct        // struct de modo
 {
     int tor_max;      // torque maximo (de 0 a 4000)
     int vel_max;      // velocidade maxima (de 0 a 9000)

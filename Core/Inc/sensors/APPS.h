@@ -11,8 +11,8 @@
 #include "stdint.h"
 
 #define THROTTLE_DELAY   25
-#define BRAKE_ACTIVE     1200 // valor enviado pela SU-F: 2000
-#define SU_F_ERROR       3000 // valor enviado pela SU-F: 3500
+#define BRAKE_ACTIVE     1800 // valor enviado pela SU-F: 2800
+#define SU_F_ERROR       3200 // valor enviado pela SU-F: 3500
 #define APPS_25_PERCENT  250
 #define APPS_05_PERCENT  50
 #define SU_F_ERROR_TIMER (100 - THROTTLE_DELAY) // Regulamento: T.4.3.3 (2022)
@@ -26,15 +26,15 @@
 
 // APPS 1
 #define APPS1_LOWER_DEADZONE   350
-#define APPS1_UPPER_DEADZONE   1730
+#define APPS1_UPPER_DEADZONE   1720
 #define APPS1_ADJUST_SLOPE     0.662
 #define APPS1_ADJUST_INTERCEPT (-165.404)
-#define APPS1_MAX              1800
+#define APPS1_MAX              1850
 #define APPS1_MIN              200
 
 // APPS 2
 #define APPS2_LOWER_DEADZONE   750
-#define APPS2_UPPER_DEADZONE   3580
+#define APPS2_UPPER_DEADZONE   3530
 #define APPS2_ADJUST_SLOPE     0.321
 #define APPS2_ADJUST_INTERCEPT (-148.386)
 #define APPS2_MIN              500

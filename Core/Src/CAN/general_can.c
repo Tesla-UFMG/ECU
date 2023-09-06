@@ -47,8 +47,18 @@ void CAN_general_receive_callback(FDCAN_HandleTypeDef* hfdcan, uint32_t RxFifo0I
             /* Reception Error */
             Error_Handler();
         }
-        uint32_t id = RxHeader.Identifier;
-        for (int i = 0; i < 4; ++i) {
+        uint32_t id     = RxHeader.Identifier;
+        uint32_t length = RxHeader.DataLength;
+        int32_t size;
+
+        switch (length) {
+            case FDCAN_DLC_BYTES_2: size = 1; break;
+            case FDCAN_DLC_BYTES_4: size = 2; break;
+            case FDCAN_DLC_BYTES_6: size = 3; break;
+            case FDCAN_DLC_BYTES_8: size = 4; break;
+            default: return;
+        }
+        for (int32_t i = 0; i < size; ++i) {
             general_can_vars_e var_name = general_get_var_name_from_id_and_pos(id, i);
 
             if (var_name > INVALID_VARIABLE_GENERAL && var_name < NUM_VARIABLE_GENERAL) {

@@ -9,7 +9,8 @@
 #define INC_RTD_H_
 
 // FSAE Rules: EV.10.5.2.a (2023)
-#define RTDS_TIME_MS 1000
+// Note : Judge specifically requested to use maximum time during Electrical Inspection
+#define RTDS_TIME_MS 3000
 
 void exit_RTD();
 

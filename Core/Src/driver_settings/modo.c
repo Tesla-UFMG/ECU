@@ -27,7 +27,8 @@ void seleciona_modo(void* argument) {
 
         if (!is_RTD_active()) {
             if (get_global_var_value(RACE_MODE) > AUTOX) {
-                set_global_var_value(RACE_MODE, ENDURO);
+                const race_mode_t race_mode = ENDURO;
+                set_global_var_value(RACE_MODE, race_mode);
             }
 
             switch (get_global_var_value(RACE_MODE)) {

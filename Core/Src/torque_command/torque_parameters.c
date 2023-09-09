@@ -27,7 +27,7 @@ volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 volatile vehicle_state_e vehicle_state;
 
 // Regen brake tests variables
-uint16_t MAX_REG_BRAKING_TORQUE = 2000;
+uint16_t MAX_REG_BRAKING_TORQUE = 1000;
 uint16_t regen_power = 6000*10;
 #define equation_constant 45.22
 uint16_t REG_BRAKING_TORQUE = 0;

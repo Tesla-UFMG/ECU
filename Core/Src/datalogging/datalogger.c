@@ -5,7 +5,7 @@
  *      Author: renanmoreira
  */
 #include "datalogging/datalogger.h"
-
+#include "CAN/FDCAN.h"
 #include "CAN/CAN_IDs.h"
 #include "CAN/general_can.h"
 #include "cmsis_os.h"
@@ -36,16 +36,22 @@ void datalogger(void* argument) {
             datalog_data_holder[message.id] = message.data;
         }
 
+        external_id = get_external_id_from_struct_pos(message.id);
+        CAN_Send(external_id, message.data);
+
         // does the for using the size of the structure
-        for (uint16_t struct_pos = 0; struct_pos < get_amount_ext_id(); struct_pos++) {
+
+        /*for (uint16_t struct_pos = 0; struct_pos < get_amount_ext_id(); struct_pos++) {
             for (uint16_t word = 0; word < WORDS_PER_ID; word++) {
                 internal_id = get_internal_id_from_pos_and_word(struct_pos, word);
                 // if internal id does not exist
                 vet_tx[word] = (internal_id != -1) ? datalog_data_holder[internal_id] : 0;
             }
             external_id = get_external_id_from_struct_pos(struct_pos);
-            general_can_transmit(external_id, vet_tx);
-        }
+            CAN_Send(external_id, vet_tx[0]);
+
+        }*/ // This code is deprecated
+
         osDelay(DATALOGGER_DELAY);
     }
 }

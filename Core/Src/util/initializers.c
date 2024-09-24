@@ -9,6 +9,7 @@
 
 #include "CAN/CAN_IDs.h"
 #include "CAN/general_can.h"
+#include "CAN/FDCAN.h"
 #include "CAN/inverter_can.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/initializer_controls.h"

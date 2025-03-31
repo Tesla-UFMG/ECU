@@ -5,9 +5,8 @@
  *      Author: renanmoreira
  */
 #include "datalogging/datalogger.h"
-#include "CAN/FDCAN.h"
-#include "CAN/CAN_IDs.h"
 #include "CAN/general_can.h"
+#include "CAN/CAN_IDs.h"
 #include "cmsis_os.h"
 #include "util/global_definitions.h"
 #include "util/util.h"

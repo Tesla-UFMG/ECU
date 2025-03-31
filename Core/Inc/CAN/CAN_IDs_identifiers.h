@@ -1,5 +1,5 @@
 /*
- * NK625 can network identifiers - ID.h
+ * NK625 can network identifiers - CAN_IDs_identifiers.h
  *
  *      Created on: Jul 24, 2024
  *      Author: Gabriel Luiz

@@ -101,7 +101,7 @@ void encoder_speed_calc(void) {
 }
 
 static void reset_speed_all() {
-    for (uint8_t i = 0; i < WHEEL_ENCODERS_AVAILABLE; i++) {
+    for (uint8_t i = 0; i <= WHEEL_ENCODERS_AVAILABLE; i++) {
         speeds_message.wheels[i] = 0;
     }
 }

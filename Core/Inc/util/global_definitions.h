@@ -25,7 +25,7 @@ typedef enum { ERRO = 0, ENDURO, ACELERACAO, SKIDPAD, AUTOX } race_mode_t;
 typedef struct        // struct de modo
 {
     int tor_max;      // torque maximo (de 0 a 4000)
-    int vel_max;      // velocidade maxima (de 0 a 9000)
+    int vel_max;      // velocidade maxima (de 0 a 7500)
     bool freio_regen; // frenagem regenerativa (1 para ativada, 0 para desativada)
     bool dif_elt;     // diferencial eletronico (1 ativo, 0 desat)
 

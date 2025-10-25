@@ -1,0 +1,97 @@
+#include "CAN/CAN_IDs.h"
+
+#include <stdio.h>
+#include <string.h>
+
+static CAN_var_inf CAN_ID_map[CAN_GENERAL_ID_QUAN];
+
+static datalog_send_t datalog_send_struct[QUANT_RESERVED_ID];
+
+static datalog_send_t aux_datalog_struct;
+
+static uint16_t quant_of_ext_id;
+
+static void populate_datalog_send_struct(void);
+static void initialize_CAN_var_inf(void);
+static int compare_CAN_var_info(const void* value1, const void* value2);
+static void sort_struct(void);
+
+static void initialize_CAN_var_inf() {
+    // does the mapping of the ids in a structure that will be sorted
+#define CAN_GENERAL_LIST_DATA(var_name, msg_id, msg_wrd)                                 \
+    CAN_ID_map[var_name].id              = msg_id;                                       \
+    CAN_ID_map[var_name].message_to_send = msg_wrd;
+    VARIABLES_GENERAL_CAN_TX
+#undef CAN_GENERAL_LIST_DATA
+}
+
+static int compare_CAN_var_info(const void* value1, const void* value2) {
+    // Sort by ID
+    const uint16_t first_id  = ((CAN_var_inf*)value1)->id;
+    const uint16_t second_id = ((CAN_var_inf*)value2)->id;
+    if (first_id < second_id) {
+        return -1;
+    }
+    if (first_id > second_id) {
+        return 1;
+    }
+
+    // Sort by position if ID is the same
+    const uint16_t first_pos  = ((CAN_var_inf*)value1)->message_to_send;
+    const uint16_t second_pos = ((CAN_var_inf*)value2)->message_to_send;
+    if (first_pos < second_pos) {
+        return -1;
+    }
+    if (first_pos > second_pos) {
+        return 1;
+    }
+
+    // ID and pos are the same
+    return 0;
+}
+
+// Mapped structure ordering function
+static void sort_struct() {
+    qsort(CAN_ID_map, CAN_GENERAL_ID_QUAN, sizeof(CAN_var_inf), compare_CAN_var_info);
+}
+
+void initialize_CAN_IDs_struct() {
+    initialize_CAN_var_inf();
+    sort_struct();
+    // gets the amount of external id
+    quant_of_ext_id = 1;
+    for (uint16_t i = 0; i < (uint16_t)CAN_GENERAL_ID_QUAN - 1; i++) {
+        if (CAN_ID_map[i].id != CAN_ID_map[i + 1].id) {
+            quant_of_ext_id++;
+        }
+    }
+    populate_datalog_send_struct();
+}
+
+static void populate_datalog_send_struct() {
+    uint16_t j = 0;
+    uint16_t i = 0;
+    for (j = 0; j < quant_of_ext_id; j++) {
+        for (uint16_t k = 0; k < WORDS_PER_ID; k++) {
+            aux_datalog_struct.message_to_send[k] = -1;
+        }
+        do {
+            aux_datalog_struct.external_ID = CAN_ID_map[i].id;
+            aux_datalog_struct.message_to_send[CAN_ID_map[i].message_to_send] = i;
+            i++;
+        } while (aux_datalog_struct.external_ID == CAN_ID_map[i].id);
+        datalog_send_struct[j] = aux_datalog_struct;
+    }
+}
+
+int16_t get_internal_id_from_pos_and_word(uint16_t pos_struct, uint16_t pos_word) {
+    return datalog_send_struct[pos_struct].message_to_send[pos_word];
+}
+
+uint16_t get_external_id_from_struct_pos(uint16_t struct_pos) {
+    return datalog_send_struct[struct_pos].external_ID;
+}
+
+uint16_t get_amount_ext_id() {
+    return quant_of_ext_id;
+}

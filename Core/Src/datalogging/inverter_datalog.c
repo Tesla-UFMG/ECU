@@ -50,6 +50,9 @@ void inverter_datalog() {
         log_data(ID_TEMPERATURE1_R, inverter_get_value(temp_mosf1_m_r));
         log_data(ID_TEMPERATURE2_L, inverter_get_value(temp_mosf2_m_l));
         log_data(ID_TEMPERATURE2_R, inverter_get_value(temp_mosf2_m_r));
+        log_data(ID_CAR_SPEED_R, inverter_get_value(car_speed_m_r));
+        log_data(ID_CAR_SPEED_L, inverter_get_value(car_speed_m_l));
+
         osDelay(DATALOGGER_DELAY);
     }
 }

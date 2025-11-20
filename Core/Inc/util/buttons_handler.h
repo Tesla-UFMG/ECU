@@ -31,8 +31,8 @@ typedef enum {
  */
 typedef enum {
     B_RTD = 0,
-	B_MODE,
-	B_DYNAMICS_CONTROLS,
+    B_MODE,
+    B_DYNAMICS_CONTROLS,
 
     BUTTONS_QUAN
 } available_buttons_e;

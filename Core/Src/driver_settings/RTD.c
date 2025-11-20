@@ -20,7 +20,6 @@ static void activate_RTDS();
 static bool can_RTD_be_enabled();
 static void set_RTD();
 
-
 void RTD(void* argument) {
     UNUSED(argument);
 
@@ -83,7 +82,6 @@ void exit_RTD() {
  *      TODO: Allow RTD activation from the status check of the AIRs.
  */
 static bool can_RTD_be_enabled() {
-
     // obtem todas as flags e filtra apenas flags de erros severos, ignorando as outras
     uint32_t error_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
     error_flags &= ALL_SEVERE_ERROR_FLAG;
@@ -94,12 +92,11 @@ static bool can_RTD_be_enabled() {
     // ready
     bool is_inverter_ready =
         get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
-
-    if (/*is_brake_active &&*/ !is_throttle_active && /*!error_flags */ (race_mode != ERRO)
+    if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
         && is_inverter_ready) {
         return true;
     }
-    return true;
+    return false;
 }
 
 static void set_RTD() {

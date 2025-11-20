@@ -37,7 +37,7 @@ volatile const modos skidpad    = {.tor_max          = 2000,
                                    .bat_safe         = 0,
                                    .torq_gain        = 15,
                                    .mode             = SKIDPAD,
-                                   .cor              = AZUL};
+                                   .cor              = CIANO};
 volatile const modos autox      = {.tor_max          = 2500,
                                    .vel_max          = vel_max_rpm,
                                    .freio_regen      = 0,

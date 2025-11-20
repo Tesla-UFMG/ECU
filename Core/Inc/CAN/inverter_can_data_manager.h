@@ -39,7 +39,9 @@
     ENTRY(alarm_m_l, 0x103, 2)                                                           \
     ENTRY(inv_state_m_r, 0x203, 0)                                                       \
     ENTRY(failure_m_r, 0x203, 1)                                                         \
-    ENTRY(alarm_m_r, 0x203, 2)
+    ENTRY(alarm_m_r, 0x203, 2)                                                           \
+	ENTRY(car_speed_m_r, 0x204, 0)                                                       \
+	ENTRY(car_speed_m_l, 0x104, 0)
 
 typedef enum {
     INVALID_VARIABLE_INVERTER = -1,

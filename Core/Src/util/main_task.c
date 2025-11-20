@@ -59,6 +59,7 @@ void main_task(void* argument) {
             case INVERTER_CAN_TRANSMIT_ERROR_FLAG:
             case LEFT_INVERTER_COMM_ERROR_FLAG:
             case RIGHT_INVERTER_COMM_ERROR_FLAG:
+            case SU_F_ERROR_FLAG:
                 // If the event flag contains the error flag the car leaves RTD mode.
                 isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
@@ -68,10 +69,6 @@ void main_task(void* argument) {
                     osThreadFlagsClear(most_significant_error_flag);
                 }
                 break;
-            case SU_F_ERROR_FLAG:
-            		// SUF error detected, but does NOT exit RTD (just clears the flag)
-                	osThreadFlagsClear(SU_F_ERROR_FLAG);
-                break;
 
             case APPS_ERROR_FLAG: // FSAE Rules: T.4.2 (2021)
             case BSE_ERROR_FLAG:  // FSAE Rules: EV.5.7 (2021)
@@ -79,7 +76,7 @@ void main_task(void* argument) {
                 // If the event flag contains the error flag ECU led is set to yellow
                 isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
-                    set_rgb_led(ROXO, BLINK200);
+                    set_rgb_led(AZUL, NO_CHANGE);
                     osDelay(20);
                 } else {
                     // Clear the thread flag and set ECU led to normal

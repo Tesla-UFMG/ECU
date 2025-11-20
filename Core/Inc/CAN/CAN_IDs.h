@@ -64,7 +64,9 @@
     CAN_GENERAL_LIST_DATA(ID_PANEL_DEBUG_1, 351, 0)                                      \
     CAN_GENERAL_LIST_DATA(ID_PANEL_DEBUG_2, 351, 1)                                      \
     CAN_GENERAL_LIST_DATA(ID_PANEL_DEBUG_3, 351, 2)                                      \
-    CAN_GENERAL_LIST_DATA(ID_PANEL_DEBUG_4, 351, 3)
+    CAN_GENERAL_LIST_DATA(ID_PANEL_DEBUG_4, 351, 3)                                      \
+	CAN_GENERAL_LIST_DATA(ID_CAR_SPEED_R, 80, 0)                                         \
+	CAN_GENERAL_LIST_DATA(ID_CAR_SPEED_L, 80, 1)
 
 typedef enum {
     RESERVED_GENERAL_ID_0,

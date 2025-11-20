@@ -43,8 +43,8 @@ void APPS_read(void* argument) {
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        apps1_value = ADC_DMA_buffer[APPS1_E] ;
-        apps2_value = ADC_DMA_buffer[APPS2_E] ;
+        apps1_value = ADC_DMA_buffer[APPS1_E];
+        apps2_value = ADC_DMA_buffer[APPS2_E];
         bse         = ADC_DMA_buffer[BRAKE_E];
 
         // valores de referencia e parametros para o calculo da porcentagem
@@ -104,7 +104,7 @@ static bool is_there_APPS_error() { // Regulamento: T.4.2 (2021)
         // Se os APPS1 e APPS2 discordarem em mais de 10%
         || abs(apps1_throttle_percent - apps2_throttle_percent) / 10
                > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {
-        return false;
+        return true;
     }
     return false;
 }

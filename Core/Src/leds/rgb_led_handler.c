@@ -5,10 +5,10 @@
  *      Vermelho:   Erro
  *      Verde:      Enduro
  *      Azul:       Autox
- *      Amarelo: -
+ *      Amarelo:    Erro leve (APPS ou BSE Plausability)
  *      Roxo:       Aceleracao
  *      Ciano:      Skidpad
- *      Branco:     Aviso (REGEN ou Controle dinamicos) - Erro leve (APPS ou BSE Plausability)
+ *      Branco:     Aviso (REGEN ou Controle dinamicos)
  *
  *
  *  Created on: May 12, 2021

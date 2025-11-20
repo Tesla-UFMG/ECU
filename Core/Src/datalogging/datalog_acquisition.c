@@ -18,12 +18,11 @@
 #include "util/util.h"
 
 void datalog_acquisition() {
-
+    modos modo_dl;
+    uint16_t flag_ecu_1;
+    uint16_t flag_ecu_2;
     for (;;) {
 
-    	modos modo_dl;
-    	uint16_t flag_ecu_1;
-    	uint16_t flag_ecu_2;
         modo_dl = get_global_var_value(SELECTED_MODE);
         // divisao da flag de 32 bits em duas mensagens de 16bits, para isso o valor da
         // flag eh passado e shiftado para a direita 16x, apos ser shiftado o que

@@ -23,19 +23,19 @@ static void set_RTD();
 void RTD(void* argument) {
     UNUSED(argument);
 
-    // seta o led rgb no primeira execucao do codigo
+    //Sets the RGB LED during the first execution of the code
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
 
     for (;;) {
 
-        // espera receber flag q o botao de RTD foi pressionado
+    	//waits for the flag indicating that the RTD button was pressed
         osThreadFlagsWait(RTD_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
         if (!is_RTD_active()) {
             if (can_RTD_be_enabled()) {
                 set_RTD();
             } else {
-                // envia uma mensagem de alerta caso n seja possivel acionar RTD
+            	//sends an alert menssage if it is not possible to starts RTD
                 set_debugleds(DEBUGLED1, BLINK, 2);
             }
         }
@@ -43,12 +43,12 @@ void RTD(void* argument) {
 }
 
 void exit_RTD() {
-    // seta modo_selecionado como erro
+	//sets selected_mode as an error
     set_global_var_value(SELECTED_MODE, erro);
     const race_mode_t race_mode = ERRO;
     set_global_var_value(RACE_MODE, race_mode);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
-    // limpa flag de RTD
+    //clean RTD flag
     osEventFlagsClear(e_ECU_control_flagsHandle, RTD_FLAG);
     // osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
 }
@@ -82,7 +82,7 @@ void exit_RTD() {
  *      TODO: Allow RTD activation from the status check of the AIRs.
  */
 static bool can_RTD_be_enabled() {
-    // obtem todas as flags e filtra apenas flags de erros severos, ignorando as outras
+	 //gets all flags and filters only those with severe errors, ignoring the others
     uint32_t error_flags = osEventFlagsGet(e_ECU_control_flagsHandle);
     error_flags &= ALL_SEVERE_ERROR_FLAG;
     BRAKE_STATUS_t is_brake_active       = get_global_var_value(BRAKE_STATUS);

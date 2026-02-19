@@ -99,7 +99,7 @@ static bool can_RTD_be_enabled() {
     return false;
 }
 
-static void set_RTD() {
+static void set_RTD() {10
     osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
     activate_RTDS();

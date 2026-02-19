@@ -47,7 +47,7 @@ void APPS_read(void* argument) {
         apps2_value = ADC_DMA_buffer[APPS2_E];
         bse         = ADC_DMA_buffer[BRAKE_E];
 
-        // valores de referencia e parametros para o calculo da porcentagem
+        //Reference values and parameters for the percentage calculation
         static const apps_ref apps1_ref = {.deadzone_lower_limit = APPS1_LOWER_DEADZONE,
                                            .deadzone_upper_limit = APPS1_UPPER_DEADZONE,
                                            .adjust_parameters_slope = APPS1_ADJUST_SLOPE,
@@ -59,7 +59,7 @@ void APPS_read(void* argument) {
                                            .adjust_parameters_intercept =
                                                APPS2_ADJUST_INTERCEPT};
 
-        // calcula a porcentagem do pedal a partir do APPS1 e APPS2 e faz a media
+        //calculates the pedal percentage based on APPS1 and APPS2 and computes their average
         apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);
         apps2_throttle_percent = throttle_calc(apps2_value, &apps2_ref);
         throttle_percent       = avg(apps1_throttle_percent, apps2_throttle_percent);
@@ -69,11 +69,11 @@ void APPS_read(void* argument) {
 
         log_data(ID_BRAKE, get_global_var_value(BRAKE_STATUS));
 
-        // verifica a plausabilidade do APPS e BSE e plausabilidade dos APPSs
+        //verifies the plausability of APPS and BSE and the plausability of APPS1 and APPS2
         check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);
         check_for_errors_with_timeout(is_there_APPS_error, APPS_ERROR_FLAG,
                                       tim_APPS_errorHandle, APPS_ERROR_TIMER);
-        // verifica se a placa de freio esta enviando sinal de curto
+        //Verifies if the brake board is sending a short-circuit signal
         check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG,
                                       tim_SU_F_errorHandle, SU_F_ERROR_TIMER);
 
@@ -96,12 +96,12 @@ static uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
                       + ref->adjust_parameters_intercept);
 }
 
-static bool is_there_APPS_error() { // Regulamento: T.4.2 (2021)
-    if (apps2_value > APPS2_MAX     // Se o valor de APPS2 for acima do seu maximo
-        || apps2_value < APPS2_MIN  // ou abaixo do seu minimo
-        || apps1_value > APPS1_MAX  // Se o valor de APPS1 for acima do seu maximo
-        || apps1_value < APPS1_MIN  // ou abaixo do seu minimo
-        // Se os APPS1 e APPS2 discordarem em mais de 10%
+static bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2021)
+    if (apps2_value > APPS2_MAX     // if APPS2 value is above of its maximum
+        || apps2_value < APPS2_MIN  // or bellow its minimum
+        || apps1_value > APPS1_MAX  //if APPS1 value is above of its maximum
+        || apps1_value < APPS1_MIN  // or bellow its minimum
+        //if APPS1 and APPS2 differ by more than 10%
         || abs(apps1_throttle_percent - apps2_throttle_percent) / 10
                > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {
         return true;
@@ -113,10 +113,10 @@ static bool is_there_BSE_error() {
     const bool is_BSE_error_active =
         get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
     if (is_BSE_error_active) {
-        // Regulamento: EV.5.7.2 (2021)
+        // FSAE Rules: EV.5.7.2 (2021)
         return (throttle_percent >= APPS_05_PERCENT);
     }
-    // Regulamento: EV.5.7.1 (2021)
+    // FSAE Rules: EV.5.7.1 (2021)
     return (throttle_percent > APPS_25_PERCENT && bse > BRAKE_ACTIVE);
 }
 

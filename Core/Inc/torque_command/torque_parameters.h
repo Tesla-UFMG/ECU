@@ -1,5 +1,5 @@
 /*
- * controle.h
+ * torque_parameters.h
  *
  *  Created on: May 11, 2020
  *      Author: renanmoreira

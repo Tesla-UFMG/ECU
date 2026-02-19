@@ -19,8 +19,8 @@
 #include "util/global_definitions.h"
 #include "util/global_variables.h"
 
-// inicializa prioridade dos ISRs para permitir chamada da API do RTOS de dentro dos ISRs
-//  mantendo a prioridade maxima de ISRs
+/*initializes ISRs priorities to allow calling  the RTOS API from within the ISRs
+while maintaning the highest allowed interrupt priority*/
 void init_NVIC_priorities() {
     NVIC_SetPriority(S_VEL1_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
     NVIC_SetPriority(S_VEL2_EXTI_IRQn, configMAX_SYSCALL_INTERRUPT_PRIORITY);
@@ -35,7 +35,7 @@ void init_ADC_DMA(ADC_HandleTypeDef* hadc) {
 extern uint8_t error_count;
 cores_t led_conf;
 
-uint8_t error_count  = 0; // conta erros, quantas vezes o programa caiu no error handler
+uint8_t error_count  = 0; // count errors, how many times did the program enter the Error_Handler function
 uint16_t debug_milis = 0, debug_milis_ant = 0;
 
 extern FDCAN_HandleTypeDef hfdcan1;
@@ -44,8 +44,7 @@ extern ADC_HandleTypeDef hadc1;
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
 
-// inicializar a CAN, chamada na main.c. Outra funcao que inicializa o periferico da CAN
-// na main.c
+/*inicialize CAN, call in main.c. Another way to inicialize CAN in main.c*/
 void init_CAN() {
     initialize_inverter_CAN(&hfdcan1);
     initialize_general_CAN(&hfdcan2);
@@ -76,5 +75,5 @@ void init_ECU() {
     // (i.e. before functions that use global variables)
     init_global_variables();
     init_controls();
-    set_global_var_value(SELECTED_MODE, enduro); // inicializa no modo enduro
+    set_global_var_value(SELECTED_MODE, enduro); // inicializes the Enduro mode
 }

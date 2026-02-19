@@ -1,5 +1,5 @@
 /*
- * speed_calc.c
+ * encoder_speed.c
  *
  *  Created on: May 11, 2020
  *      Author: renanmoreira

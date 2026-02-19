@@ -24,12 +24,12 @@ void datalog_acquisition() {
     for (;;) {
 
         modo_dl = get_global_var_value(SELECTED_MODE);
-        // divisao da flag de 32 bits em duas mensagens de 16bits, para isso o valor da
-        // flag eh passado e shiftado para a direita 16x, apos ser shiftado o que
-        // permaneceu nos 16 bits mais significativos eh ignorado a partir da operacao and
+        /*splitting the 32-bit flag into two 16-bit messages. To do
+		this the flag value is shifted right 16 times. After being shifted
+        the remaining 16 most significant bits are ignored usind an AND operaion */
         flag_ecu_1 = (osEventFlagsGet(e_ECU_control_flagsHandle) >> 16);
         flag_ecu_1 = flag_ecu_1 & 0xffff;
-        // o mesmo ocorre na segunda parte da msg porem sem o shift.
+        // the same occur in the second part of the mesagge, however whithout the shift part
         flag_ecu_2 = (osEventFlagsGet(e_ECU_control_flagsHandle) & 0xffff);
 
         log_data(ID_MODE, modo_dl.mode);

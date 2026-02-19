@@ -1,14 +1,14 @@
 /*
  * leds.c
  *  Cores:
- *      Preto: -
- *      Vermelho:   Erro
- *      Verde:      Enduro
- *      Azul:       Autox
- *      Amarelo:    Erro leve (APPS ou BSE Plausability)
- *      Roxo:       Aceleracao
- *      Ciano:      Skidpad
- *      Branco:     Aviso (REGEN ou Controle dinamicos)
+ *      Black: -
+ *      Red:   	Error
+ *      Green: 	Enduro
+ *      Blue:  	Autox
+ *      Yellow:	Slight error (APPS or BSE Plausability)
+ *      Purple	Aceleration
+ *      Cyan:	Skidpad
+ *      White:  Warning(REGEN or Dynamic Controls)
  *
  *
  *  Created on: May 12, 2021
@@ -39,11 +39,10 @@ void rgb_led(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        // espera RTD ser setado ou timeout estourar
+        //waits for the RTD to be set or for the timeout to elapse
         switch (
             osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, RGB_BLINK_DELAY)) {
-
-            // caso timeout estore vai piscar o led, indicando que ta fora do RTD
+        	//if the timeout elapse it will blink an LED, indicating that is out of RTD mode
             case osErrorTimeout:
                 write_rgb_color(get_rgb_color(message.color));
                 blink_rgb(RGB_BLINK_DELAY);
@@ -80,7 +79,7 @@ void write_rgb_color(rgb_t rgb_gpio) {
     HAL_GPIO_WritePin(C_LED_RED_GPIO_Port, C_LED_RED_Pin, rgb_gpio.red);
     HAL_GPIO_WritePin(C_LED_GREEN_GPIO_Port, C_LED_GREEN_Pin, rgb_gpio.green);
     HAL_GPIO_WritePin(C_LED_BLUE_GPIO_Port, C_LED_BLUE_Pin, rgb_gpio.blue);
-    // write_debug_color(rgb_gpio); //apenas para debug
+    // write_debug_color(rgb_gpio); //only for debug purpose
 }
 
 void write_debug_color(rgb_t rgb_gpio) {

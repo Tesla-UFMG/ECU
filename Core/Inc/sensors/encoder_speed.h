@@ -1,5 +1,5 @@
 /*
- * speed_calc.h
+ * encoder_speed.h
  *
  *  Created on: May 11, 2020
  *      Author: renanmoreira

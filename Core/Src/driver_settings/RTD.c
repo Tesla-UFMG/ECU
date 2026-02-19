@@ -23,7 +23,7 @@ static void set_RTD();
 void RTD(void* argument) {
     UNUSED(argument);
 
-    //Sets the RGB LED during the first execution of the code
+    //Sets the RGB LED during the first execution of the code.
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
 
     for (;;) {

@@ -17,8 +17,7 @@ void torque_message(void* argument) {
     torque_message_t message;
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
-
-        // espera indefinidamente ate alguma mensagem de torque$ chegar
+        //waits forever until a torque message is received
         osMessageQueueGet(q_torque_messageHandle, &message, NULL, osWaitForever);
 
         for (int i = 0; i < TORQUE_MESSAGE_RESEND_TIMES; i++) {

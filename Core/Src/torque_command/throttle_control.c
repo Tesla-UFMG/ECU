@@ -18,13 +18,11 @@ void throttle_control(void* argument) {
 
     for (;;) {
         uint16_t message;
-
-        // espera por uma mensagem com o valor de APPS
+        //waits for an message with the APPS value
         osMessageQueueGet(q_throttle_controlHandle, &message, NULL, osWaitForever);
-
-        // verifica a se a flag de RTD esta ativada e se as flags de erro de BSE e APPS
-        // estao desativadas, caso sim, atualiza o valor de throttle_percent para o da
-        // mensagem, caso nao atualiza para 0
+        /*checks whether the RTD flag is active and the BSE and APPS flags
+         are cleaned, if true, updates the throttle_percent with the received message value.
+         .Else its updates to 0*/
         bool is_apps_error_present =
             get_individual_flag(e_ECU_control_flagsHandle, APPS_ERROR_FLAG);
         bool is_bse_error_present =

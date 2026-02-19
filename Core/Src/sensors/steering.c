@@ -26,10 +26,10 @@ void steering_read(void* argument) {
 
         double zero_aux = ZERO_VOLANTE;
 
-        // Se o minimo do volante for menor que 0, o sensor voltara no valor maximo do ADC
-        // se isso acontecer, o valor do ADC voltara para 4095
-        // entao subtrai 4095 do valor lido, dando um valor negativo que pode ser aplicado
-        // na formula o mesmo vale pro zero do volante
+        /*if the steering minimum value is below 0, the sensor wraps around the ADC maximum value
+        In this case, the ADC reading returns 4095*/
+        /*therefore, subtract 4095 from the measured value to obtaining a negative value
+		that can be used in the calculation. The same applies to the steering zero position*/
         if (VOLANTE_MIN > VOLANTE_MAX) {
             zero_aux -= 4095;
             if (volante_cru > VOLANTE_MAX) {
@@ -49,8 +49,8 @@ void steering_read(void* argument) {
 
         log_data(ID_STEERING_WHEEL, steering_wheel);
 
-        // SPAN_ALINHAMENTO eh apenas um span pra ainda considerar o volante no centro
-        // ate uma certa quantidade
+        //SPAN_ALINHAMENTO, defines the tolerance rang used to determine whether the
+        //steering wheel is considered to be in the center position
         if (steering_wheel > VOLANTE_ALINHADO + SPAN_ALINHAMENTO) {
             set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)ESQUERDA);
         } else if (steering_wheel < VOLANTE_ALINHADO - SPAN_ALINHAMENTO) {

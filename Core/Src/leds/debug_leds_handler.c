@@ -27,24 +27,24 @@ void debug_leds(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        // espera ate alguma mensagem chegar
+        //wait for the mensagge arrive
         osMessageQueueGet(q_debug_leds_messageHandle, &message, NULL, osWaitForever);
         switch (message.control) {
             case ON:
-                // acende o led escolhido
+            	// turn on the selected LED
                 HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);
                 break;
             case OFF:
-                // apaga o led escolhido
+            	//turn off the selected LED
                 HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_SET);
                 break;
             case TOGGLE:
-                // toggle o led escolhido
+            	// toggle the selected LED
                 HAL_GPIO_TogglePin(GPIOE, message.lednumber);
                 break;
             case BLINK:
-                // pisca o led escolhido, pelo valor de vezes escolhido
-                // delays garante que eh possivel contar quantas vezes piscou
+            	//blinks the selected LED, the chosen number of times
+            	//delays ensure it is possible to count how many times it blinked
                 for (uint8_t i = 0; i < message.amount; i++) {
                     HAL_GPIO_WritePin(GPIOE, message.lednumber, GPIO_PIN_RESET);
                     osDelay(300);

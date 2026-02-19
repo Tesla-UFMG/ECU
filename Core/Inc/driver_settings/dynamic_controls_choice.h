@@ -1,5 +1,5 @@
 /*
- * choose_dynamic_controls.h
+ * dynamic_controls_choice.h
  *
  *  Created on: 7 de jul de 2022
  *      Author: JoaoPedroNunes

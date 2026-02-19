@@ -20,9 +20,8 @@ void seleciona_modo(void* argument) {
     for (;;) {
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
-
-        // espera um semaforo liberado por interrupcao e espera esta autorizado a mudar de
-        // modo
+        /*waits for the semaphore release by the interruption and waits for authorization to
+		change modes */
         osThreadFlagsWait(MODE_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
         if (!is_RTD_active()) {

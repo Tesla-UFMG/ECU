@@ -1,5 +1,5 @@
 /*
- * leds.h
+ * rgb_led_handler.h
  *
  *  Created on: May 13, 2021
  *      Author: Felipe Telles

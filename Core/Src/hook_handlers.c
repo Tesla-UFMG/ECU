@@ -11,7 +11,7 @@
 #include "util/util.h"
 
 // void vApplicationMallocFailedHook(void) {
-//	//erro de alocacao de memoria
+//	memory allocation error
 // }
 
 void brkpt() {

@@ -11,7 +11,8 @@
 #include "stdint.h"
 #include "util/global_definitions.h"
 
-#define SPEED_SENSOR_TEETH_NUMBER 16   // number of teeth on the phonic wheel
+#define SPEED_SENSOR_TEETH_NUMBER 16   // number of teeth on the phonic wheel front wheel
+#define SPEED_SENSOR_TEETH_NUMBER_REAR 24 //number of phonic wheel teeths in rear wheel
 #define WHEEL_RADIUS              0.26 // in m
 #define MAX_SPEED                 2000 // in km/h*10
 #define MIN_SPEED                 10   // in km/h*10

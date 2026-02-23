@@ -13,30 +13,29 @@
 
 #define DEBUG_ECU 1
 
-#define WHEEL_ENCODERS_AVAILABLE 2
-// pinos do sensores de velocidade
+#define WHEEL_ENCODERS_AVAILABLE 4
+//sensor velocity pins
 typedef enum { FRONT_RIGHT = 0, FRONT_LEFT, REAR_RIGHT, REAR_LEFT } speed_pin_e;
-
-// cores do LED da ECU
+//colors of ECU LED
 typedef enum { PRETO = 0, VERMELHO, VERDE, AZUL, AMARELO, ROXO, CIANO, BRANCO } cores_t;
 
 typedef enum { ERRO = 0, ENDURO, ACELERACAO, SKIDPAD, AUTOX } race_mode_t;
 
-typedef struct        // struct de modo
+typedef struct        // mode struct
 {
-    int tor_max;      // torque maximo (de 0 a 4000)
-    int vel_max;      // velocidade maxima (de 0 a 9000)
-    bool freio_regen; // frenagem regenerativa (1 para ativada, 0 para desativada)
-    bool dif_elt;     // diferencial eletronico (1 ativo, 0 desat)
+    int tor_max;      // max torque (from 0 to 4000)
+    int vel_max;      // maximum velocity (from 0 to 9000)
+    bool freio_regen; // regenerative braking (1 for activated, 0 for disabled)
+    bool dif_elt;     // electronic differential (1 active, 0 disabled)
 
     // bool arranc_control;
 
-    bool traction_control; // controle de tracao (1 ativo, 0 desat)
-    bool bat_safe; // reducao de consumo de bateria se em niveis criticos (1 ativo, 0
-                   // desat)
-    int torq_gain; // ganho de torque, aconselhavel q seja proporcional ao torque maximo (
+    bool traction_control; // traction control (1 ativo, 0 desat)
+    bool bat_safe; // reducing battery consumption when it is in critical levels (1 active, 0
+                   // disabled)
+    int torq_gain; // torque gain, recommended that should be proportional to the maximum torque(
                    // de 0 a 40)
-    race_mode_t mode; // 1 enduro, 2 aceleracao, 3 skidpad, 4 autox
+    race_mode_t mode; // 1 enduro, 2 aceleration, 3 skidpad, 4 autox
     cores_t cor;
 } modos;
 
@@ -141,7 +140,7 @@ typedef enum {
 
 // FUNCOES
 
-// seta o bit na posicao pos do byte como state
+//sets bit on the position and puts the byte as an state
 __attribute__((always_inline)) inline void set_bit(uint32_t* byte, uint8_t pos,
                                                    uint8_t state) {
     *byte ^= (-(!!((unsigned long)state)) ^ *byte) & (1UL << pos);

@@ -35,6 +35,7 @@ static void reset_speed_single(const encoder_int_message_t* message,
                                uint32_t min_count);
 static inline uint32_t get_tim2_freq();
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
+static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout(uint32_t speed);
 
 static encoder_speeds_message_t speeds_message;
@@ -130,6 +131,10 @@ static inline uint32_t get_tim2_freq() {
 
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc) {
     return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER)
+                      * ((float)freq / ((float)presc)) / speed);
+}
+static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint32_t presc) {
+    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR)
                       * ((float)freq / ((float)presc)) / speed);
 }
 

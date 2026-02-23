@@ -17,6 +17,8 @@
 #define MIN_SPEED                 10   // in km/h*10
 
 #define FIRST_WHEEL FRONT_RIGHT
+#define SECOND_WHEEL REAR_RIGHT
+#define THIRD_WHEEL REAR_LEFT
 #define LAST_WHEEL  FRONT_LEFT // last wheel with an encoder
 
 typedef struct {

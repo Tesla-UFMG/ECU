@@ -15,7 +15,7 @@
 
 #define SPEED_LOG_DELAY 10
 
-#if WHEEL_ENCODERS_AVAILABLE == 2
+#if WHEEL_ENCODERS_AVAILABLE == 4
 static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0}};
 #else
 static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0, 0, 0}};
@@ -41,13 +41,11 @@ void speed_datalog(void* argument) {
         osMessageQueueGet(q_encoder_speeds_messageHandle, &encoder_speeds_message, NULL,
                           SPEED_LOG_DELAY);
 
-        uint16_t motor_speed_right = inverter_get_value(speed_m_r);
-        uint16_t motor_speed_left  = inverter_get_value(speed_m_l);
 
         speed.wheels[FRONT_RIGHT] = encoder_speeds_message.wheels[FRONT_RIGHT];
         speed.wheels[FRONT_LEFT]  = encoder_speeds_message.wheels[FRONT_LEFT];
-        speed.wheels[REAR_RIGHT]  = motor_speed_right;
-        speed.wheels[REAR_LEFT]   = motor_speed_left;
+        speed.wheels[REAR_RIGHT]  = encoder_speeds_message.wheels[REAR_RIGHT];
+        speed.wheels[REAR_LEFT]   = encoder_speeds_message.wheels[REAR_LEFT];
 
         FRONT_AVG_SPEED_t avg_front_speed =
             avg(speed.wheels[FRONT_RIGHT], speed.wheels[FRONT_LEFT]);

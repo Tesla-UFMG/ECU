@@ -32,11 +32,13 @@
 static void reset_speed_all();
 static void reset_speed_single(const encoder_int_message_t* message,
                                const encoder_int_message_t* last_messages,
-                               uint32_t min_count);
+                               uint32_t min_count_rear,
+							   uint32_t min_count_front);
 static inline uint32_t get_tim2_freq();
 static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout(uint32_t speed);
+static inline uint32_t calculate_timeout_rear(uint32_t speed);
 
 static encoder_speeds_message_t speeds_message;
 
@@ -54,9 +56,10 @@ void encoder_speed_calc(void) {
     // value in tim2 time of the maximum speed which will be calculated
     const uint32_t max_count = calculate_speed(MAX_SPEED, tim_freq, tim_presc);
     // value in tim2 time of the minimum speed which will be calculated
-    const uint32_t min_count = calculate_speed(MIN_SPEED, tim_freq, tim_presc);
+    //const uint32_t min_count = calculate_speed(MIN_SPEED, tim_freq, tim_presc);
     // value in timersys time of the minimum speed which will be calculated
     const uint32_t min_timeout = calculate_timeout(MIN_SPEED);
+    const uint32_t min_timeout_rear = calculate_timeout_rear(MIN_SPEED);
 
     uint32_t d_tim_count;
     uint32_t speed;
@@ -66,7 +69,7 @@ void encoder_speed_calc(void) {
 
         // waits until a message arrives or until timeout
         switch (osMessageQueueGet(q_encoder_int_messageHandle, &interrupt_message, NULL,
-                                  min_timeout)) {
+                                  osWaitForever)) {
 
             // case the task was called by timeout
             case osErrorTimeout:
@@ -78,7 +81,7 @@ void encoder_speed_calc(void) {
                 // verifies if any wheel is without an interruption for a long time,
                 // if yes that wheel speed is zeroed
                 reset_speed_single(&interrupt_message, last_interrupt_messages,
-                                   min_count);
+                                   min_timeout_rear, min_timeout);
 
                 // difference between current message and last message timestamp
                 d_tim_count = interrupt_message.tim_count
@@ -89,8 +92,11 @@ void encoder_speed_calc(void) {
                 if (d_tim_count < max_count) {
                     continue;
                 }
-
-                speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
+                if(interrupt_message.pin == REAR_RIGHT || interrupt_message.pin == REAR_LEFT){
+                	speed = calculate_speed_rear(d_tim_count, tim_freq, tim_presc);
+                }else{
+                	speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
+                }
                 // saves the speed only of the wheel which speed was just calculated
                 speeds_message.wheels[interrupt_message.pin] = speed;
                 // store message to use in the next iteration
@@ -109,8 +115,15 @@ static void reset_speed_all() {
 
 static void reset_speed_single(const encoder_int_message_t* message,
                                const encoder_int_message_t* last_messages,
-                               uint32_t min_count) {
+                               uint32_t min_count_rear,
+							   uint32_t min_count_front) {
     for (speed_pin_e i = FIRST_WHEEL; i <= WHEEL_ENCODERS_AVAILABLE; i++) {
+    	uint32_t min_count;
+    	if(i == REAR_RIGHT || i == REAR_LEFT){
+    		min_count = min_count_rear;
+    	}else{
+    		min_count = min_count_front;
+    	}
         if ((message->tim_count - last_messages[i].tim_count) > min_count) {
             speeds_message.wheels[i] = 0;
         }
@@ -140,5 +153,9 @@ static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint3
 
 static inline uint32_t calculate_timeout(uint32_t speed) {
     return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER)
+                      * 1000 / speed);
+}
+static inline uint32_t calculate_timeout_rear(uint32_t speed) {
+    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR)
                       * 1000 / speed);
 }

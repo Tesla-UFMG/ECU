@@ -19,12 +19,16 @@ void steering_read(void* argument) {
     UNUSED(argument);
 
     double volante_cru;
+
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
         volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
 
         double zero_aux = ZERO_VOLANTE;
+        double steering_scaled_bits;
+        double steering_rad;
+        double steering_wheel_rad;
 
         /*if the steering minimum value is below 0, the sensor wraps around the ADC maximum value
         In this case, the ADC reading returns 4095*/
@@ -37,23 +41,40 @@ void steering_read(void* argument) {
             }
         }
 
+
         if (volante_cru < zero_aux) {
-            set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)0);
+        	steering_scaled_bits = 0;
         } else {
-            set_global_var_value(
-                STEERING_WHEEL,
-                (STEERING_WHEEL_t)(volante_cru * GANHO_VOLANTE - ZERO_VOLANTE));
+        	steering_scaled_bits = (volante_cru * GANHO_VOLANTE) - ZERO_VOLANTE;
         }
 
-        STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
 
+        if (steering_scaled_bits < VOLANTE_MIN){
+        	steering_scaled_bits = VOLANTE_MIN;
+        } else if(steering_scaled_bits > VOLANTE_MAX){
+        	steering_scaled_bits = VOLANTE_MAX;
+        }
+
+
+        //y = y0 + (y1-y0)/(x1-x0) * (x-x0)
+        //volante_rad = X0 + ((X1 - X0) / (float)(VOLANTE_MAX - VOLANTE_MIN)) * (float)(steering_wheel-(VOLANTE_MIN-ZERO_VOLANTE));
+        steering_rad = STEERING_RAD_LEFT + ( (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) / (VOLANTE_MAX - VOLANTE_MIN) ) * (steering_scaled_bits - VOLANTE_MIN);
+
+        //roda_rad = Y0 + ((Y1 - Y0) / (X1 - X0)) * (volante_rad - X0);
+        steering_wheel_rad = STEERING_RAD_LEFT_WHEEL + ( (STEERING_RAD_RIGHT_WHEEL - STEERING_RAD_LEFT_WHEEL) / (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) ) * (steering_rad - STEERING_RAD_LEFT);
+
+
+        //STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
+        set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
+        STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
         log_data(ID_STEERING_WHEEL, steering_wheel);
+
 
         //SPAN_ALINHAMENTO, defines the tolerance rang used to determine whether the
         //steering wheel is considered to be in the center position
-        if (steering_wheel > VOLANTE_ALINHADO + SPAN_ALINHAMENTO) {
+        if (steering_scaled_bits > VOLANTE_ALINHADO + SPAN_ALINHAMENTO) {
             set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)ESQUERDA);
-        } else if (steering_wheel < VOLANTE_ALINHADO - SPAN_ALINHAMENTO) {
+        } else if (steering_scaled_bits < VOLANTE_ALINHADO - SPAN_ALINHAMENTO) {
             set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)DIREITA);
         } else {
             set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);

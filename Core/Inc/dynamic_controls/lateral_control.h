@@ -20,18 +20,6 @@
 #define ADJUST_GYRO_R 1000
 #define ADJUST_GYRO_L 2000
 
-//TODO (João): Atualizar esses valores com os dados do carro. Lembrar de atualizar o cálculo no steering.c
-// #define ADJUST_STEERING 2000
-//  lookup table
-#define STEERING_RAD_LEFT_WHEEL            ( (-0.523598776 - 0.599520598) / 2)
-#define STEERING_RAD_RIGHT_WHEEL           ( (0.599520598 + 0.523598776) / 2)
-#define STEERING_RAD_LEFT              (-1.941983885)
-#define STEERING_RAD_RIGHT             (1.941983885)
-#define Y0            ((-0.523598776 - 0.599520598) / 2)
-#define Y1            ((0.599520598 + 0.523598776) / 2)
-#define X0            (-1.941983885)
-#define X1            (1.941983885)
-
 //TODO (João): Estudar como implementar lookup table
 // defines PID LATERAL
 #define KP_LATERAL    6.51864262048678

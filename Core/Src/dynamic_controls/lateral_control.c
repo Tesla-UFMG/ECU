@@ -25,29 +25,25 @@ void init_lateral_control() {
 
 lateral_result_t lateral_control() {
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
-    INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
+    //INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
 
     double cg_speed;
     double gyro_adjusted;    // entre -1.5 e 1.5
-    float steering_adjusted; // entre -0.5 e 0.5
     double desired_yaw;
     double max_yaw;
     double setpoint;
     double pid_result;
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
     double calc_gyro(uint16_t gyro_yaw);
-    float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel);
 
     int16_t gyro_yaw = (int16_t)general_get_value(gyroscope_y);
 
     // velocidade em m/s
     cg_speed = ((double)get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);
-    // steering
-    steering_adjusted = calc_steering(steering_wheel, internal_wheel);
     // yaw rate
     gyro_adjusted = calc_gyro(gyro_yaw);
-    desired_yaw   = cg_speed * steering_adjusted / (WHEELBASE + KU * cg_speed * cg_speed);
-    max_yaw       = sign(steering_adjusted) * FRICTION_COEFFICIENT * GRAVITY / cg_speed;
+    desired_yaw   = cg_speed * steering_wheel / (WHEELBASE + KU * cg_speed * cg_speed);
+    max_yaw       = sign(steering_wheel) * FRICTION_COEFFICIENT * GRAVITY / cg_speed;
     // max desired yaw (setpoint), o menor valor, em modulo
     setpoint = fabs(desired_yaw) > fabs(max_yaw) ? max_yaw : desired_yaw;
     // PID
@@ -81,16 +77,4 @@ double calc_gyro(uint16_t gyro_yaw) {
     }
 
     return gyro_adjusted;
-}
-
-// TODO(Luiza): verificar valor do steering
-float calc_steering(uint16_t steering_wheel, uint8_t internal_wheel) {
-    float steering_adjusted;
-    if (internal_wheel == DIREITA) {
-        steering_adjusted = Y0 + ((Y1 - Y0) / (X1 - X0)) * ((float)steering_wheel - X0);
-    } else {
-        steering_adjusted = Y0 + ((Y1 - Y0) / (X1 - X0)) * (-(float)steering_wheel - X0);
-    }
-
-    return steering_adjusted;
 }

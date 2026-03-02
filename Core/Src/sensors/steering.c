@@ -56,15 +56,14 @@ void steering_read(void* argument) {
         }
 
 
+        //lookup table
         //y = y0 + (y1-y0)/(x1-x0) * (x-x0)
-        //volante_rad = X0 + ((X1 - X0) / (float)(VOLANTE_MAX - VOLANTE_MIN)) * (float)(steering_wheel-(VOLANTE_MIN-ZERO_VOLANTE));
-        steering_rad = STEERING_RAD_LEFT + ( (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) / (VOLANTE_MAX - VOLANTE_MIN) ) * (steering_scaled_bits - VOLANTE_MIN);
+        //steering to right is positive, to left is negative.
+        //negative sign compensates the sensor behavior, since its voltage decreases when steering to the right.
+        steering_rad = - (STEERING_RAD_LEFT + ( (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) / (VOLANTE_MAX - VOLANTE_MIN) ) * (steering_scaled_bits - VOLANTE_MIN));
+        steering_wheel_rad =  (STEERING_RAD_LEFT_WHEEL + ( (STEERING_RAD_RIGHT_WHEEL - STEERING_RAD_LEFT_WHEEL) / (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) ) * (steering_rad - STEERING_RAD_LEFT));
 
-        //roda_rad = Y0 + ((Y1 - Y0) / (X1 - X0)) * (volante_rad - X0);
-        steering_wheel_rad = STEERING_RAD_LEFT_WHEEL + ( (STEERING_RAD_RIGHT_WHEEL - STEERING_RAD_LEFT_WHEEL) / (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) ) * (steering_rad - STEERING_RAD_LEFT);
 
-
-        //STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
         set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
         STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
         log_data(ID_STEERING_WHEEL, steering_wheel);

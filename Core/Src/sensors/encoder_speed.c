@@ -113,9 +113,8 @@ void encoder_speed_calc(void) {
     const uint32_t tim_presc = htim2.Init.Prescaler + 1;
 
     // value in tim2 time of the minimum period between messages. This will be used to avoid mistakes caused by signal noise.
-    //TODO: (Guilherme) Essa váriavel é analisada como um valor de tempo, mas a função utilizada é para calcular a velocidade. Verificar se isso é correto ou se é necessário criar uma função específica para calcular o tempo mínimo entre mensagens.
-    const uint32_t min_count = calculate_speed(MAX_SPEED, tim_freq, tim_presc);
-
+    const uint32_t min_count_rear = calculate_timeout_rear(MAX_SPEED);
+    const uint32_t min_count = calculate_timeout(MAX_SPEED);
     // value in tim2 time of the minimum speed which will be calculated
     //const uint32_t min_count = calculate_speed(MIN_SPEED, tim_freq, tim_presc);
 
@@ -151,10 +150,19 @@ void encoder_speed_calc(void) {
                 d_tim_count = interrupt_message.tim_count
                               - last_interrupt_messages[interrupt_message.pin].tim_count;
 
+                
                 //discards value if d_tim_count results in a speed greater than the one configured as maximum
-                if (d_tim_count < min_count) {
-                    continue;
+                if (interrupt_message.pin == REAR_RIGHT || interrupt_message.pin == REAR_LEFT) {
+                	if (d_tim_count < min_count_rear) {
+                		continue;
+                	}
+                } else {
+                	if (d_tim_count < min_count) {
+                		continue;
+                	}
                 }
+
+
                 if(interrupt_message.pin == REAR_RIGHT || interrupt_message.pin == REAR_LEFT){
                 	speed = calculate_speed_rear(d_tim_count, tim_freq, tim_presc);
                 }else{

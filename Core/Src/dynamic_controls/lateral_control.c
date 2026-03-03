@@ -39,18 +39,28 @@ lateral_result_t lateral_control() {
     int16_t gyro_yaw = (int16_t)general_get_value(gyroscope_y);
 
     // velocidade em m/s
-    cg_speed = ((double)get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);
+    //cg_speed = ((double)get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);
+    cg_speed = ((double)get_global_var_value(FRONT_AVG_SPEED)) / (10 * 3.6);
+
     // yaw rate
+    //TODO(JOÃO): Verificar com aquisição. Acredito que não será necessário
     gyro_adjusted = calc_gyro(gyro_yaw);
-    desired_yaw   = cg_speed * steering_wheel / (WHEELBASE + KU * cg_speed * cg_speed);
-    max_yaw       = sign(steering_wheel) * FRICTION_COEFFICIENT * GRAVITY / cg_speed;
+
+    //Using always absolute value
+    desired_yaw   = (cg_speed * fabs(steering_wheel)) / (WHEELBASE + (KU * cg_speed * cg_speed));
+
+    max_yaw       = TUNABILITY_FACTOR * ((FRICTION_COEFFICIENT * GRAVITY) / cg_speed);
+
     // max desired yaw (setpoint), o menor valor, em modulo
-    setpoint = fabs(desired_yaw) > fabs(max_yaw) ? max_yaw : desired_yaw;
+    setpoint = desired_yaw > max_yaw ? max_yaw : desired_yaw;
+
     // PID
+    //TODO(JOÃO): Implementar lookup table
     PID_set_setpoint(&pid_lateral, setpoint);
     pid_result = PID_compute(&pid_lateral, gyro_adjusted);
     // variavel de retorno
 
+    //TODO(JOÃO): Usar a condição de roda interna da curva
     // se o sinal for positivo, a reducao sera na roda direita caso contrario, sera na
     // roda esquerda
     if (pid_result > 0) {
@@ -64,6 +74,7 @@ lateral_result_t lateral_control() {
 
 // TODO(renanmoreira): verificar os calculos quando tivermos os valores reais de gyro e
 // steering
+//TODO(JOÃO): Verificar se é necessário
 
 double calc_gyro(uint16_t gyro_yaw) {
     // ajusta o valor do yaw para aquele usado no pid

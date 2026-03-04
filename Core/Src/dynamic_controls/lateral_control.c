@@ -25,7 +25,7 @@ void init_lateral_control() {
 
 lateral_result_t lateral_control() {
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
-    //INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
+    INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
 
     double cg_speed;
     double gyro_adjusted;    // entre -1.5 e 1.5
@@ -49,7 +49,12 @@ lateral_result_t lateral_control() {
     //Using always absolute value
     desired_yaw   = (cg_speed * fabs(steering_wheel)) / (WHEELBASE + (KU * cg_speed * cg_speed));
 
-    max_yaw       = TUNABILITY_FACTOR * ((FRICTION_COEFFICIENT * GRAVITY) / cg_speed);
+    //This condition prevents division by zero.
+    if (cg_speed < 1){
+    	max_yaw = 0;
+    } else{
+    	max_yaw       = TUNABILITY_FACTOR * ((FRICTION_COEFFICIENT * GRAVITY) / cg_speed);
+    }
 
     // max desired yaw (setpoint), o menor valor, em modulo
     setpoint = desired_yaw > max_yaw ? max_yaw : desired_yaw;
@@ -60,15 +65,17 @@ lateral_result_t lateral_control() {
     pid_result = PID_compute(&pid_lateral, gyro_adjusted);
     // variavel de retorno
 
-    //TODO(JOÃO): Usar a condição de roda interna da curva
-    // se o sinal for positivo, a reducao sera na roda direita caso contrario, sera na
-    // roda esquerda
-    if (pid_result > 0) {
-        ref_torque_result.torque_decrease[R_MOTOR] = fabs(pid_result);
-    } else {
-        ref_torque_result.torque_decrease[L_MOTOR] = fabs(pid_result);
-    }
 
+    if(internal_wheel == DIREITA) {
+        ref_torque_result.torque_decrease[R_MOTOR] = fabs(pid_result);
+		ref_torque_result.torque_decrease[L_MOTOR] = 0;
+    } else if(internal_wheel == ESQUERDA){
+    	ref_torque_result.torque_decrease[R_MOTOR] = 0;
+        ref_torque_result.torque_decrease[L_MOTOR] = fabs(pid_result);
+    } else {
+    	ref_torque_result.torque_decrease[R_MOTOR] = 0;
+		ref_torque_result.torque_decrease[L_MOTOR] = 0;
+    }
     return ref_torque_result;
 }
 

@@ -33,6 +33,7 @@ lateral_result_t lateral_control() {
     double max_yaw;
     double setpoint;
     double pid_result;
+    THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
     double calc_gyro(uint16_t gyro_yaw);
 
@@ -66,10 +67,10 @@ lateral_result_t lateral_control() {
     // variavel de retorno
 
 
-    if(internal_wheel == DIREITA) {
+    if(internal_wheel == DIREITA && cg_speed > 5 && is_throttle_active) {
         ref_torque_result.torque_decrease[R_MOTOR] = fabs(pid_result);
 		ref_torque_result.torque_decrease[L_MOTOR] = 0;
-    } else if(internal_wheel == ESQUERDA){
+    } else if(internal_wheel == ESQUERDA && cg_speed > 5 && is_throttle_active){
     	ref_torque_result.torque_decrease[R_MOTOR] = 0;
         ref_torque_result.torque_decrease[L_MOTOR] = fabs(pid_result);
     } else {

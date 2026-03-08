@@ -20,27 +20,29 @@
 static PID_t pid_lateral;
 
 void init_lateral_control() {
-    PID_init(&pid_lateral, 1, KP_LATERAL, TI_LATERAL, 0, 4000, -4000, LATERAL_DELAY);
+    PID_init(&pid_lateral, 1, P_REF[0], P_REF[0]/I_REF[0], 0, 4000, -4000, LATERAL_DELAY);
 }
+
 
 lateral_result_t lateral_control() {
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
+    THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
 
     double cg_speed;
     double gyro_adjusted;    // entre -1.5 e 1.5
     double desired_yaw;
     double max_yaw;
     double setpoint;
+    double kp;
+    double ti;
     double pid_result;
-    THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
     double calc_gyro(uint16_t gyro_yaw);
 
     int16_t gyro_yaw = (int16_t)general_get_value(gyroscope_y);
 
-    // velocidade em m/s
-    //cg_speed = ((double)get_global_var_value(REAR_AVG_SPEED)) / (10 * 3.6);
+    //[m/s]
     cg_speed = ((double)get_global_var_value(FRONT_AVG_SPEED)) / (10 * 3.6);
 
     // yaw rate
@@ -57,25 +59,28 @@ lateral_result_t lateral_control() {
     	max_yaw       = TUNABILITY_FACTOR * ((FRICTION_COEFFICIENT * GRAVITY) / cg_speed);
     }
 
-    // max desired yaw (setpoint), o menor valor, em modulo
-    setpoint = desired_yaw > max_yaw ? max_yaw : desired_yaw;
+    //the smaller value in absolute magnitude
+    setpoint = fmin(desired_yaw, max_yaw);
 
     // PID
-    //TODO(JOÃO): Implementar lookup table
     PID_set_setpoint(&pid_lateral, setpoint);
-    pid_result = PID_compute(&pid_lateral, gyro_adjusted);
-    // variavel de retorno
+    pi_lookup_table(cg_speed, &kp, &ti);
+    PID_set_parameters(&pid_lateral, kp, ti, 0);
+    pid_result = PID_compute(&pid_lateral, gyro_adjusted); //Return variable
 
 
-    if(internal_wheel == DIREITA && cg_speed > 5 && is_throttle_active) {
+    if(cg_speed > 5 && is_throttle_active){
+    	if(internal_wheel == DIREITA){
         ref_torque_result.torque_decrease[R_MOTOR] = fabs(pid_result);
 		ref_torque_result.torque_decrease[L_MOTOR] = 0;
-    } else if(internal_wheel == ESQUERDA && cg_speed > 5 && is_throttle_active){
+    	} else if(internal_wheel == ESQUERDA){
     	ref_torque_result.torque_decrease[R_MOTOR] = 0;
         ref_torque_result.torque_decrease[L_MOTOR] = fabs(pid_result);
-    } else {
+    	}
+    else{
     	ref_torque_result.torque_decrease[R_MOTOR] = 0;
 		ref_torque_result.torque_decrease[L_MOTOR] = 0;
+    	}
     }
     return ref_torque_result;
 }
@@ -96,4 +101,46 @@ double calc_gyro(uint16_t gyro_yaw) {
     }
 
     return gyro_adjusted;
+}
+
+
+
+void pi_lookup_table(double Vx, double *Pout, double *TIout)
+{
+    int i;
+    int idx = 0;
+    double kp;
+    double ki;
+
+    if (Vx <= VX_REF[0]) {
+        *Pout = P_REF[0];
+        *TIout = P_REF[0]/I_REF[0];
+        return;
+    }
+
+    if (Vx >= VX_REF[LUT_SIZE-1]) {
+        *Pout = P_REF[LUT_SIZE-1];
+        *TIout = P_REF[LUT_SIZE-1]/I_REF[LUT_SIZE-1];
+        return;
+    }
+
+    for (i = 0; i < LUT_SIZE-1; i++) {
+        if (Vx >= VX_REF[i] && Vx < VX_REF[i+1]) {
+            idx = i;
+            break;
+        }
+    }
+
+    kp = 	P_REF[idx] +
+           (P_REF[idx+1] - P_REF[idx]) *
+           (Vx - VX_REF[idx]) /
+           (VX_REF[idx+1] - VX_REF[idx]);
+
+    ki =    I_REF[idx] +
+           (I_REF[idx+1] - I_REF[idx]) *
+           (Vx - VX_REF[idx]) /
+           (VX_REF[idx+1] - VX_REF[idx]);
+
+    *Pout = kp;
+    *TIout = kp/ki;
 }

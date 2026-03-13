@@ -15,7 +15,7 @@
 #define FRONT_CORNER_STIFF   50420.286  // cornering stiffness of the front axle
 #define REAR_CORNER_STIFF    50420.286  // cornering stiffness of the rear axle
 #define FRICTION_COEFFICIENT 1.3
-#define TUNABILITY_FACTOR    1.0
+#define TUNABILITY_FACTOR    0.8
 #define GRAVITY              9.81
 #define WHEELBASE            (FRONT_DISTANCE + REAR_DISTANCE)
 #define KU                                                                               \

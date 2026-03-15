@@ -19,9 +19,9 @@
 
 static PID_t pid_lateral;
 
-//TODO: analisar se faz sentido ser negativo
 void init_lateral_control() {
-    PID_init(&pid_lateral, 1, P_REF[0], P_REF[0]/I_REF[0], 0, get_global_var_value(SELECTED_MODE).tor_max, 0, LATERAL_DELAY);
+    PID_init(&pid_lateral, 1, P_REF[0], P_REF[0]/I_REF[0], 0, NOMINAL_TORQUE,
+    		-NOMINAL_TORQUE, LATERAL_DELAY);
 }
 
 lateral_result_t lateral_control() {
@@ -37,8 +37,9 @@ lateral_result_t lateral_control() {
     double kp;
     double ti;
     double pid_result;
+    int ref_torque;
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
-    double calc_gyro(uint16_t gyro_yaw);
+    //double calc_gyro(uint16_t gyro_yaw);
 
     int16_t gyro_yaw = ((int16_t)fabs(general_get_value(gyroscope_y)));
 
@@ -46,7 +47,6 @@ lateral_result_t lateral_control() {
     cg_speed = ((double)get_global_var_value(FRONT_AVG_SPEED)) / (10 * 3.6);
 
     // yaw rate
-    //TODO(JOÃO): Verificar com aquisição. Acredito que não será necessário
     //gyro_adjusted = calc_gyro(gyro_yaw);
 
     //Using always absolute value
@@ -68,20 +68,34 @@ lateral_result_t lateral_control() {
     PID_set_parameters(&pid_lateral, kp, ti, 0);
     pid_result = PID_compute(&pid_lateral, gyro_yaw); //Return variable
 
+    //pid_result: delta torque 0 - 13 [N.m]
+    //ref_torque: 0 to torq.max [%]
+    modos mode = get_global_var_value(SELECTED_MODE);
+    ref_torque = (fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max;
 
-    if(cg_speed > 5 && is_throttle_active && internal_wheel != CENTRO && pid_result > 0){
-    	if(internal_wheel == DIREITA){
-    		ref_torque_result.torque_decrease[R_MOTOR] = fabs(pid_result);
-    		ref_torque_result.torque_decrease[L_MOTOR] = 0;
-    	}else if(internal_wheel == ESQUERDA){
+    if(cg_speed > 5 && is_throttle_active && internal_wheel != CENTRO){
+    	if(pid_result > 0){
+    		//increase yaw rate -> decrease torque on internal wheel
+    		ref_torque_result.torque_decrease[R_MOTOR] =
+    				(internal_wheel == DIREITA) ? ref_torque : 0;
+    		ref_torque_result.torque_decrease[L_MOTOR] =
+    		    	(internal_wheel == ESQUERDA) ? ref_torque : 0;
+    	} else if(pid_result < 0){
+    		//decrease yaw rate -> decrease torque on external wheel
+    		ref_torque_result.torque_decrease[R_MOTOR] =
+    		    	(internal_wheel == DIREITA) ? 0 : ref_torque;
+    		ref_torque_result.torque_decrease[L_MOTOR] =
+    		    	(internal_wheel == ESQUERDA) ? 0 : ref_torque;
+    	}else{
     		ref_torque_result.torque_decrease[R_MOTOR] = 0;
-    		ref_torque_result.torque_decrease[L_MOTOR] = fabs(pid_result);
-    	}
-    else{
-    	ref_torque_result.torque_decrease[R_MOTOR] = 0;
-		ref_torque_result.torque_decrease[L_MOTOR] = 0;
+    		ref_torque_result.torque_decrease[L_MOTOR] = 0;
     	}
     }
+    else{
+    	ref_torque_result.torque_decrease[R_MOTOR] = 0;
+    	ref_torque_result.torque_decrease[L_MOTOR] = 0;
+    }
+
     return ref_torque_result;
 }
 
@@ -102,7 +116,6 @@ lateral_result_t lateral_control() {
 
 //    return gyro_adjusted;
 //}
-
 
 
 void pi_lookup_table(double Vx, double *Pout, double *TIout)

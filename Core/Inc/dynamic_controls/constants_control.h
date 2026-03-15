@@ -9,6 +9,7 @@
 #define INC_DYNAMICCONTROLS_CONSTANTS_CONTROL_H_
 
 // vehicle parameters
+#define NOMINAL_TORQUE       13
 #define FRONT_DISTANCE       1.0     	// distance between the CG and the front axle
 #define REAR_DISTANCE        0.549      // distance between the CG and the rear axle
 #define MASS                 412        // vehicle (342kg) + driver (70kg)

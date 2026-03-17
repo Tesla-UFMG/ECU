@@ -84,39 +84,53 @@ double wheel_control() {
 
 
 longitudinal_control_result_t longitudinal_control() {
+
     //Variable that will store the result of both right and left wheel
-    longitudinal_control_result_t result;
+    longitudinal_control_result_t ref_torque_result;
+    int ref_torque;
 
-    //TODO (Guilherme): verificar qual o tipo da variável do torque e substituir no PID_output
-    double PID_output = wheel_control();
+    double pid_result = wheel_control();
 
-    //Store the right and left motor PID's result
-    result.torque_decrease[R_MOTOR] = PID_output;
-    result.torque_decrease[L_MOTOR] = PID_output;
+    //pid_result: delta torque 0 - 13 [N.m]
+    //ref_torque: 0 to torq.max [%]
+    modos mode = get_global_var_value(SELECTED_MODE);
+    ref_torque = (fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max;
 
-    return result;
+    //Store the right and left motor torque reference that must be subtracted
+    ref_torque_result.torque_decrease[R_MOTOR] = ref_torque;
+    ref_torque_result.torque_decrease[L_MOTOR] = ref_torque;
+
+
+    return ref_torque_result;
 }
 //TODO (Guilherme): Verificar qual das implementações é melhor
 
 /*
 //Function that returns the longitudinal control's result (it contains the result of each wheel controller).
-longitudinal_control_result_t longitudinal_control_result() {
+longitudinal_control_result_t longitudinal_control() {
     //Variable that will store the result of both right and left wheel
-    longitudinal_control_result_t result;
+    longitudinal_control_result_t ref_torque_result;
+    int ref_torque;
 
     //Gets the speed of the wheels
     SPEEDS_t speeds = get_global_var_value(SPEEDS);
 
     //TODO (Guilherme): verificar qual o tipo da variável do torque e substituir no PID_output
-    double PID_output = longitudinal_control(speeds);
+    double pid_result = wheel_control(speeds);
 
-    //Store the right and left motor PID's result
-    result.torque_decrease[R_MOTOR] = PID_output;
-    result.torque_decrease[L_MOTOR] = PID_output;
+    //pid_result: delta torque 0 - 13 [N.m]
+    //ref_torque: 0 to torq.max [%]
+    modos mode = get_global_var_value(SELECTED_MODE);
+    ref_torque = (fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max;
 
-    return result;
+    //Store the right and left motor torque reference that must be subtracted
+    ref_torque_result.torque_decrease[R_MOTOR] = ref_torque;
+    ref_torque_result.torque_decrease[L_MOTOR] = ref_torque;
+
+    return ref_torque_result;
 }
 */
+
 
 
 

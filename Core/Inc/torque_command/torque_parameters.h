@@ -17,6 +17,8 @@
 
 #define TORQUE_PARAMETERS_DELAY 50
 
+//#define KMPH_5 50
+
 // TODO(Felipe): verify if this define is correct
 #define RPM_KMPH_5 459
 

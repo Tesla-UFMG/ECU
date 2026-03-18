@@ -29,6 +29,7 @@ void update_state(bool disable) {
     } else if ((get_global_var_value(THROTTLE_PERCENT) < 100)
                && (frenagem_regenerativa == true)
                && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
+                //TODO (Guilherme): && get_global_var_value(FRONT_AVG_SPEED) > KMPH_5) {
         vehicle_state = S_BRAKE_E;
     } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {
         vehicle_state = S_ACCELERATE_E;
@@ -49,7 +50,9 @@ void update_state_parameters(torque_message_t* torque_message) {
             SPEEDS_t speeds = get_global_var_value(SPEEDS);
             set_bit8(&torque_message->parameters, P_RUNSTOP,
                      (speeds.wheels[R_MOTOR] > RPM_KMPH_5
+                    //TODO (Guilherme): (speeds.wheels[REAR_RIGHT] > KMPH_5
                       || speeds.wheels[L_MOTOR] > RPM_KMPH_5));
+                      //TODO (Guilherme): || speeds.wheels[REAR_LEFT] > KMPH_5));
             torque_message->torque_ref[R_MOTOR]     = 0;
             torque_message->torque_ref[L_MOTOR]     = 0;
             torque_message->neg_torque_ref[R_MOTOR] = 0;

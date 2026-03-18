@@ -41,11 +41,15 @@ double wheel_control() {
     cg_speed = (double)get_global_var_value(FRONT_AVG_SPEED);
     rear_avg_speed = (double)get_global_var_value(REAR_AVG_SPEED);
 
-    // slip ratio of the selected wheel
-    slip = ((rear_avg_speed - cg_speed)
-            / cg_speed)
-           * 100;
-
+    // treatment made to avoid division by zero
+    if (cg_speed < 1) {
+        slip = 0;
+    } else {
+        //slip ratio calculation (the explanation of the negative sign is in the "longitudinal_control.h" file, in the definition of the setpoint). 
+        slip = -((rear_avg_speed - cg_speed)
+                / cg_speed)
+               * 100;
+    }
 
     return (double)(PID_compute(&(pid_longitudinal), slip));
 }

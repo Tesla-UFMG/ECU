@@ -33,7 +33,6 @@ typedef struct {
 
 //Initializes some functions that will be developed in the file "longitudinal_control.c"
 void init_longitudinal_control();
-double wheel_control();
 longitudinal_control_result_t longitudinal_control();
 
 

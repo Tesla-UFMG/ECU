@@ -15,7 +15,7 @@
 
 #define SPEED_LOG_DELAY 10
 
-#if WHEEL_ENCODERS_AVAILABLE == 4
+#if WHEEL_ENCODERS_AVAILABLE == 2
 static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0}};
 #else
 static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0, 0, 0}};

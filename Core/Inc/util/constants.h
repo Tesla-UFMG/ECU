@@ -11,7 +11,7 @@
 
 #define num_amostras_filtro   10		   // Moving average sample of the accelerator.
 #define TORQUE_MAX            3000 		   // In tenth of a percent of the nominal torque.
-#define vel_max_rpm           9000
+#define vel_max_rpm           7500
 #define vetorizacao_torque    0
 #define frenagem_regenerativa 0
 #define REG_BRAKING_TORQUE    750

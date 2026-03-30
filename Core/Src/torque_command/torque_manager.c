@@ -30,9 +30,15 @@ void rampa_torque(uint32_t* ref_torque, const double* ref_torque_decrease) {
     bool should_decrease = (ref_torque_decrease != NULL);
 
     //Torque requested by the pilot.
-    double torque = ((double)(get_global_var_value(SELECTED_MODE).torq_gain
-                              * get_global_var_value(THROTTLE_PERCENT))
-                     / 10);
+    //double torque = ((double)(get_global_var_value(SELECTED_MODE).torq_gain
+                            //  * get_global_var_value(THROTTLE_PERCENT))
+                   //  / 10);
+
+    // Maps throttle_percent [0,1] to torque range [0, tor_max].
+    double torque = (double) (get_global_var_value(SELECTED_MODE).tor_max
+                             *get_global_var_value(THROTTLE_PERCENT)) /1000;
+
+
 
     //Torque after the decrease of the dynamic control, if it is active. If the control is not active, the torque is not decreased.
     desired_torque[R_MOTOR] = (uint32_t)(max(

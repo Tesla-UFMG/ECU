@@ -30,6 +30,8 @@ static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t
 
 static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc);
 
+static inline uint32_t calculate_timeout_RTOS(uint32_t speed);
+
 //Variable that stores the speed of each wheel
 static encoder_speeds_message_t speeds_message;
 
@@ -61,15 +63,21 @@ static inline uint32_t calculate_timeout_rear(uint32_t speed) {
 }
 */
 
-//Functions that calculate the timeout for rear and front wheels, seperatly.
+//Functions that calculate the timeout for rear and front wheels
+
+//calculates time in ticks
 static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc) {
     return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * (freq/presc) / speed);
 }
+//calculates time in ticks
 static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc) {
     return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR) * (freq/presc) / speed);
 }
 
-
+//calculates time in milisseconds
+static inline uint32_t calculate_timeout_RTOS(uint32_t speed) {
+    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * 1000 / speed);
+}
 
 //Function that reset all wheel's speed.
 static void reset_speed_all() {
@@ -128,11 +136,14 @@ void encoder_speed_calc(void) {
     const uint32_t min_count_rear = calculate_timeout_rear(MAX_SPEED, tim_freq, tim_presc);
     const uint32_t min_count = calculate_timeout(MAX_SPEED, tim_freq, tim_presc);
     // value in tim2 time of the minimum speed which will be calculated
-    //const uint32_t min_count = calculate_speed(MIN_SPEED, tim_freq, tim_presc);
-
-    // value in timersys time of the maximum period between messages. This will be used to reset the speed to zero when the wheel is without an interruption for a long time.
-    const uint32_t max_timeout = calculate_timeout(MIN_SPEED, tim_freq, tim_presc);
+    
+    
+    // value in timersys time of the maximum period between messages. This will be used as a value to comparison in "reset_speed_single"
     const uint32_t max_timeout_rear = calculate_timeout_rear(MIN_SPEED, tim_freq, tim_presc);
+    const uint32_t max_timeout = calculate_timeout(MIN_SPEED, tim_freq, tim_presc);
+    
+    // value in milliseconds of the maximum period between messages to consider in the RTOS task. This will be the max time the function osMessageQueueGet will wait for a message before returning with timeout error.
+    const uint32_t max_timeout_RTOS = calculate_timeout_RTOS(MIN_SPEED);
 
     //Variable that will store the difference between the current message timer count and the last message timer count
     uint32_t d_tim_count;
@@ -144,7 +155,7 @@ void encoder_speed_calc(void) {
 
         // waits until a message arrives or until timeout
         switch (osMessageQueueGet(q_encoder_int_messageHandle, &interrupt_message, NULL,
-                                  max_timeout_rear)) {
+                                  max_timeout_RTOS)) {
 
             // case the task was called by timeout
             case osErrorTimeout:

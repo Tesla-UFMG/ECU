@@ -25,19 +25,19 @@
 #define APPS_MATRIX_LENGTH 2
 
 // APPS 1
-#define APPS1_LOWER_DEADZONE   350
-#define APPS1_UPPER_DEADZONE   1720
-#define APPS1_ADJUST_SLOPE     0.662
-#define APPS1_ADJUST_INTERCEPT (-165.404)
-#define APPS1_MAX              1850
-#define APPS1_MIN              200
+#define APPS1_LOWER_DEADZONE   370
+#define APPS1_UPPER_DEADZONE   1530
+#define APPS1_ADJUST_SLOPE     0.7843
+#define APPS1_ADJUST_INTERCEPT (-270.58)
+#define APPS1_MIN              345
+#define APPS1_MAX              1620
 
 // APPS 2
-#define APPS2_LOWER_DEADZONE   750
-#define APPS2_UPPER_DEADZONE   3530
-#define APPS2_ADJUST_SLOPE     0.321
-#define APPS2_ADJUST_INTERCEPT (-148.386)
-#define APPS2_MIN              500
-#define APPS2_MAX              3700
+#define APPS2_LOWER_DEADZONE   500
+#define APPS2_UPPER_DEADZONE   2100
+#define APPS2_ADJUST_SLOPE     0.5714
+#define APPS2_ADJUST_INTERCEPT (-268.57)
+#define APPS2_MIN              470
+#define APPS2_MAX              2220
 
 #endif /* INC_THROTTLE_H_ */

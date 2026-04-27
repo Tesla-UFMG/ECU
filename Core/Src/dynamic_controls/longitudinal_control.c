@@ -46,6 +46,8 @@ longitudinal_control_result_t longitudinal_control() {
     double rear_avg_speed;
     double slip;
 
+    INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
+
     //speed of the car's center of mass
     cg_speed = (double)get_global_var_value(FRONT_AVG_SPEED);
     //avarage speed of the rear wheels
@@ -61,8 +63,8 @@ longitudinal_control_result_t longitudinal_control() {
                * 100;
     }
 
-    //This if is here for redundance resons, this garantees that the PID will not try to decrease the torque when the slip is lower than the ideal slip
-    if (slip <= 13) {
+    //This "if" is here to deactivate the controller when the slip is lower than the ideal or when the car is making a turn 
+    if (slip <= 13 || internal_wheel != CENTRO) {
         pid_result = 0;
     } else {
         pid_result = fabs((double)(PID_compute(&(pid_longitudinal), slip)));

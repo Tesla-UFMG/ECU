@@ -37,8 +37,11 @@ void seleciona_modo(void* argument) {
                 case AUTOX: set_global_var_value(SELECTED_MODE, autox); break;
                 default: set_global_var_value(SELECTED_MODE, erro); break;
             }
-
-            set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+            const bool is_DYNAMIC_CONTROL_active =
+        			 get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
+            if(!is_DYNAMIC_CONTROL_active){
+                set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+            }
             osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
         }
         // todo: dataloggar modos

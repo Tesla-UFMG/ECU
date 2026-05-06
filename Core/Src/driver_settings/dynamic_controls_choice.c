@@ -10,6 +10,7 @@
 #include "cmsis_os.h"
 #include "util/global_instances.h"
 #include "util/global_variables.h"
+#include "leds/rgb_led_handler.h"
 #include "util/util.h"
 
 static bool teste;
@@ -36,6 +37,7 @@ void dynamic_controls_choice(void* argument) {
 
         	 if (!is_DYNAMIC_CONTROL_active) {
         		 osEventFlagsSet(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
+				 set_rgb_led(BRANCO, FIXED);
         	 } else {
         		 osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
         	 }

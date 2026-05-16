@@ -12,7 +12,6 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-static bool teste;
 
 void dynamic_controls_choice(void* argument) {
     UNUSED(argument);
@@ -32,7 +31,6 @@ void dynamic_controls_choice(void* argument) {
         	 }
         	 const bool is_DYNAMIC_CONTROL_active =
         			 get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
-        	 teste = is_DYNAMIC_CONTROL_active;
 
         	 if (!is_DYNAMIC_CONTROL_active) {
         		 osEventFlagsSet(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);

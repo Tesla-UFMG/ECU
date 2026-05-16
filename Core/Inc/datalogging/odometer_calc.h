@@ -11,5 +11,9 @@
 #define CALC_DELAY 100
 
 #define WORDS_READ_ONE 1
+#include "cmsis_os.h"
+
+static inline uint32_t calculate_distance(uint32_t speed_avg);
+static void log_distance(uint32_t partial_dist);
 
 #endif /* INC_ODOMETER_CALC_H_ */

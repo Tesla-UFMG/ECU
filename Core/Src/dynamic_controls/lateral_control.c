@@ -98,16 +98,14 @@ lateral_result_t lateral_control() {
 
     return ref_torque_result;
 }
-
-// TODO(renanmoreira): verificar os calculos quando tivermos os valores reais de gyro e
-// steering
-//TODO(JOÃO): Verificar se é necessário
+// TODO(renanmoreira): check the calcs when we have the real real values of gyro and steering
+//TODO(JOÃO): check if is necessary
 
 //double calc_gyro(uint16_t gyro_yaw) {
-    // ajusta o valor do yaw para aquele usado no pid
+    //adjust the yaw value for that using PID
 //    double gyro_adjusted;
-    // na primeira metade, virando a direita (valor positivo) e na segunda, a esquerda
-    // (negativo)
+    // in the first half, turning right(positive value) and in the second halph, to the left
+    //(negative value)
 //    if (gyro_yaw < HALF_GYRO) {
 //        gyro_adjusted = (double)gyro_yaw / ADJUST_GYRO_R;
 //    } else {

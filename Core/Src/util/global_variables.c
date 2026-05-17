@@ -54,5 +54,5 @@ volatile const modes error       = {.tor_max         = 0,
                                    .traction_control = 0,
                                    .bat_safe         = 0,
                                    .torq_gain        = 0,
-                                   .mode             = ERROR,
+                                   .mode             = ERRO,
                                    .color            = RED};

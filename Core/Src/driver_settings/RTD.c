@@ -21,7 +21,7 @@ void RTD(void* argument) {
     UNUSED(argument);
 
     //Sets the RGB LED during the first execution of the code.
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).color, BLINK200);
 
     for (;;) {
 
@@ -41,10 +41,10 @@ void RTD(void* argument) {
 
 void exit_RTD() {
 	//sets selected_mode as an error
-    set_global_var_value(SELECTED_MODE, erro);
+    set_global_var_value(SELECTED_MODE, error);
     const race_mode_t race_mode = ERRO;
     set_global_var_value(RACE_MODE, race_mode);
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).color, BLINK200);
     //clean RTD flag
     osEventFlagsClear(e_ECU_control_flagsHandle, RTD_FLAG);
     // osThreadFlagsSet(t_odometer_saveHandle, ODOMETER_SAVE_THREAD_FLAG);
@@ -98,7 +98,7 @@ bool can_RTD_be_enabled() {
 
 void set_RTD() {
 	osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, FIXED);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).color, FIXED);
     activate_RTDS();
 }
 

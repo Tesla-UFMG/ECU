@@ -18,41 +18,41 @@ extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 void steering_read(void* argument) {
     UNUSED(argument);
 
-    double volante_cru;
+    double raw_steering_wheel;
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
+        raw_steering_wheel = ADC_DMA_buffer[STEERING_WHEEL_E];
 
-        double zero_aux = ZERO_VOLANTE;
+        double zero_aux = STEERING_WHEEL_ZERO;
         double steering_scaled_bits;
         double steering_rad;
         double steering_wheel_rad;
 
         /*if the steering minimum value is below 0, the sensor wraps around the ADC maximum value
-        In this case, the ADC reading returns 4095*/
+         *        In this case, the ADC reading returns 4095*/
         /*therefore, subtract 4095 from the measured value to obtaining a negative value
-		that can be used in the calculation. The same applies to the steering zero position*/
-        if (VOLANTE_MIN > VOLANTE_MAX) {
+         *		that can be used in the calculation. The same applies to the steering zero position*/
+        if (STEERING_WHEEL__MIN > STEERING_WHEEL_MAX) {
             zero_aux -= 4095;
-            if (volante_cru > VOLANTE_MAX) {
-                volante_cru -= 4095;
+            if (raw_steering_wheel > STEERING_WHEEL_MAX) {
+                raw_steering_wheel -= 4095;
             }
         }
 
 
-        if (volante_cru < zero_aux) {
-        	steering_scaled_bits = 0;
+        if (raw_steering_wheel < zero_aux) {
+            steering_scaled_bits = 0;
         } else {
-        	steering_scaled_bits = (volante_cru * GANHO_VOLANTE) - ZERO_VOLANTE;
+            steering_scaled_bits = (raw_steering_wheel * STEERING_WHEEL_GAIN) - STEERING_WHEEL_ZERO;
         }
 
 
-        if (steering_scaled_bits < VOLANTE_MIN){
-        	steering_scaled_bits = VOLANTE_MIN;
-        } else if(steering_scaled_bits > VOLANTE_MAX){
-        	steering_scaled_bits = VOLANTE_MAX;
+        if (steering_scaled_bits < STEERING_WHEEL_MIN){
+            steering_scaled_bits = STEERING_WHEEL_MIN;
+        } else if(steering_scaled_bits > STEERING_WHEEL_MAX){
+            steering_scaled_bits = STEERING_WHEEL_MAX;
         }
 
 
@@ -60,7 +60,7 @@ void steering_read(void* argument) {
         //y = y0 + (y1-y0)/(x1-x0) * (x-x0)
         //steering to right is positive, to left is negative.
         //negative sign compensates the sensor behavior, since its voltage decreases when steering to the right.
-        steering_rad = - (STEERING_RAD_LEFT + ( (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) / (VOLANTE_MAX - VOLANTE_MIN) ) * (steering_scaled_bits - VOLANTE_MIN));
+        steering_rad = - (STEERING_RAD_LEFT + ( (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) / (STEERING_WHEEL_MAX - STEERING_WHEEL_MIN) ) * (steering_scaled_bits - STEERING_WHEEL_MIN));
         steering_wheel_rad =  (STEERING_RAD_LEFT_WHEEL + ( (STEERING_RAD_RIGHT_WHEEL - STEERING_RAD_LEFT_WHEEL) / (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) ) * (steering_rad - STEERING_RAD_LEFT));
 
 
@@ -69,14 +69,14 @@ void steering_read(void* argument) {
         log_data(ID_STEERING_WHEEL, steering_wheel);
 
 
-        //SPAN_ALINHAMENTO, defines the tolerance rang used to determine whether the
+        //SPAN_ALIGNMENT, defines the tolerance rang used to determine whether the
         //steering wheel is considered to be in the center position
-        if (steering_scaled_bits > VOLANTE_ALINHADO + SPAN_ALINHAMENTO) {
-            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)ESQUERDA);
-        } else if (steering_scaled_bits < VOLANTE_ALINHADO - SPAN_ALINHAMENTO) {
-            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)DIREITA);
+        if (steering_scaled_bits > STEERING_WHEEL_ALIGNED + SPAN_ALIGNMENT) {
+            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)LEFT);
+        } else if (steering_scaled_bits < STEERING_WHEEL_ALIGNED - SPAN_ALIGNMENT) {
+            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)RIGHT);
         } else {
-            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);
+            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTER);
         }
 
         osDelay(100);

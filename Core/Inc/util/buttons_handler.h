@@ -15,22 +15,6 @@
 #define DEBOUNCE_TIME   (50 / POLLING_TIME)   // Debounce time in ms
 #define LONG_PRESS_TIME (1000 / POLLING_TIME) // long press time in ms
 
-// Initialization of functions
-
-void long_button_press_handler(available_buttons_e button);
-void button_release_handler(available_buttons_e button);
-void initialize_buttons();
-
-/**
- * @brief enum with all possible buttons states
- *
- */
-typedef enum {
-    BUTTON_NOT_PRESSED = 0,
-    BUTTON_PRESSED,
-    BUTTON_LONG_PRESSED
-} button_state_e;
-
 /**
  * @brief enum with all buttons available on the ECU
  *
@@ -43,6 +27,16 @@ typedef enum {
     BUTTONS_QUAN
 } available_buttons_e;
 
+
+/**
+ * @brief enum with all possible buttons states
+ *
+ */
+typedef enum {
+    BUTTON_NOT_PRESSED = 0,
+    BUTTON_PRESSED,
+    BUTTON_LONG_PRESSED
+} button_state_e;
 /**
  * @brief struct with all buttons parameters.
  *
@@ -54,5 +48,11 @@ typedef struct {
     button_state_e state;
     uint8_t enableLongPress;
 } buttons_parameters_t;
+// Initialization of functions
+
+void long_button_press_handler(available_buttons_e button);
+void button_release_handler(available_buttons_e button);
+void initialize_buttons();
+
 
 #endif /* INC_UTIL_BUTTON_HANDLER_H_ */

@@ -17,15 +17,15 @@
 //sensor velocity pins
 typedef enum { FRONT_RIGHT = 0, FRONT_LEFT, REAR_RIGHT, REAR_LEFT } speed_pin_e;
 //colors of ECU LED
-typedef enum { PRETO = 0, VERMELHO, VERDE, AZUL, AMARELO, ROXO, CIANO, BRANCO } cores_t;
+typedef enum { BLACK = 0, RED, GREEN, BLUE, YELLOW, PURPLE, CYAN, WHITE } colors_t;
 
-typedef enum { ERRO = 0, ENDURO, ACELERACAO, SKIDPAD, AUTOX } race_mode_t;
+typedef enum { ERROR = 0, ENDURO, ACCELERATION, SKIDPAD, AUTOX } race_mode_t;
 
 typedef struct        // mode struct
 {
     int tor_max;      // max torque (from 0 to 4000)
     int vel_max;      // maximum velocity (from 0 to 9000)
-    bool freio_regen; // regenerative braking (1 for activated, 0 for disabled)
+    bool regen_brake; // regenerative braking (1 for activated, 0 for disabled)
     bool dif_elt;     // electronic differential (1 active, 0 disabled)
 
     // bool arranc_control;
@@ -35,9 +35,9 @@ typedef struct        // mode struct
                    // disabled)
     int torq_gain; // torque gain, recommended that should be proportional to the maximum torque(
                    // de 0 a 40)
-    race_mode_t mode; // 1 enduro, 2 aceleration, 3 skidpad, 4 autox
-    cores_t cor;
-} modos;
+    race_mode_t mode; // 1 enduro, 2 acceleration, 3 skidpad, 4 autox
+    colors_t color;
+} modes;
 
 #define R_MOTOR 0
 #define L_MOTOR 1
@@ -56,7 +56,7 @@ typedef struct {
     bool disable;
 } ref_torque_t;
 
-typedef enum estado_veiculo {
+typedef enum state_vehicle {
     S_DISABLE_E    = 0,
     S_BRAKE_E      = 1,
     S_ACCELERATE_E = 2,
@@ -129,8 +129,8 @@ typedef enum {
 #define LEFT_INVERTER_COMM_ERROR_FLAG    (1 << 22)
 #define RIGHT_INVERTER_COMM_ERROR_FLAG   (1 << 23)
 
-#define ALL_WARN_FLAG        (REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG)
-#define ALL_MINOR_ERROR_FLAG (APPS_ERROR_FLAG | BSE_ERROR_FLAG)
+#define ALL_WARN_FLAG             (REGEN_WARN_FLAG | DYNAMIC_CONTROL_WARN_FLAG)
+#define ALL_MINOR_ERROR_FLAG      (APPS_ERROR_FLAG | BSE_ERROR_FLAG)
 #define ALL_SEVERE_ERROR_FLAG                                                            \
     (LEFT_INVERTER_COMM_ERROR_FLAG | RIGHT_INVERTER_COMM_ERROR_FLAG                      \
      | INVERTER_CAN_TRANSMIT_ERROR_FLAG | SU_F_ERROR_FLAG | INVERTER_BUS_OFF_ERROR_FLAG)
@@ -138,7 +138,7 @@ typedef enum {
 
 #define ALL_THROTTLE_ERROR_FLAG (APPS_ERROR_FLAG | BSE_ERROR_FLAG)
 
-// FUNCOES
+// FUNCTIONS
 
 //sets bit on the position and puts the byte as an state
 __attribute__((always_inline)) inline void set_bit(uint32_t* byte, uint8_t pos,

@@ -34,7 +34,7 @@ void steering_read(void* argument) {
          *        In this case, the ADC reading returns 4095*/
         /*therefore, subtract 4095 from the measured value to obtaining a negative value
          *		that can be used in the calculation. The same applies to the steering zero position*/
-        if (STEERING_WHEEL__MIN > STEERING_WHEEL_MAX) {
+        if (STEERING_WHEEL_MIN > STEERING_WHEEL_MAX) {
             zero_aux -= 4095;
             if (raw_steering_wheel > STEERING_WHEEL_MAX) {
                 raw_steering_wheel -= 4095;

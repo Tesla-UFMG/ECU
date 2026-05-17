@@ -1,9 +1,9 @@
 /*
- * encoder_speed.h
- *
- *  Created on: May 11, 2020
- *      Author: renanmoreira
- */
+* encoder_speed.h
+*
+*  Created on: May 11, 2020
+*      Author: renanmoreira
+*/
 
 #ifndef INC_SPEED_CALC_H_
 #define INC_SPEED_CALC_H_
@@ -11,16 +11,15 @@
 #include "stdint.h"
 #include "util/global_definitions.h"
 
+
 // Initialization of functions
 
-static void reset_speed_all();
-static void reset_speed_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t min_count_rear, uint32_t min_count_front);
-static inline uint32_t get_tim2_freq();
-static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout_RTOS(uint32_t speed);
+typedef struct {
+    uint32_t tim_count;
+    speed_pin_e pin;
+} encoder_int_message_t;
+void reset_speed_all();
+void reset_speed_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t min_count_rear, uint32_t min_count_front);
 
 #define SPEED_SENSOR_TEETH_NUMBER 16        // number of teeth on the phonic wheel front wheel
 #define SPEED_SENSOR_TEETH_NUMBER_REAR 24   //number of teeth on the phonic wheel rear wheel
@@ -39,10 +38,6 @@ static inline uint32_t calculate_timeout_RTOS(uint32_t speed);
 #define M_PI 3.14159265358979323846
 #endif
 
-typedef struct {
-    uint32_t tim_count;
-    speed_pin_e pin;
-} encoder_int_message_t;
 
 
 #endif /* INC_SPEED_CALC_H_ */

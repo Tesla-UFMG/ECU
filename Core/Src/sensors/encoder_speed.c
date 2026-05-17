@@ -17,6 +17,12 @@
 
 //Variable that stores the speed of each wheel
 static encoder_speeds_message_t speeds_message;
+static inline uint32_t get_tim2_freq();
+static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
+static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint32_t presc);
+static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc);
+static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc);
+static inline uint32_t calculate_timeout_RTOS(uint32_t speed);
 
 /* Functions that calculate wheel's speeds (rear and front axle)
  *
@@ -63,14 +69,14 @@ static inline uint32_t calculate_timeout_RTOS(uint32_t speed) {
 }
 
 //Function that reset all wheel's speed.
-static void reset_speed_all() {
+void reset_speed_all() {
     for (uint8_t i = 0; i < WHEEL_ENCODERS_AVAILABLE; i++) {
         speeds_message.wheels[i] = 0;
     }
 }
 
 //Function that reset the speed of a single wheel, if it is without an interruption for a long time.
-static void reset_speed_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t max_count_rear, uint32_t max_count_front) {
+void reset_speed_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t max_count_rear, uint32_t max_count_front) {
     for (speed_pin_e i = FIRST_WHEEL; i <= WHEEL_ENCODERS_AVAILABLE; i++) {
         uint32_t max_count;
         if(i == REAR_RIGHT || i == REAR_LEFT){

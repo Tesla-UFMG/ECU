@@ -6,7 +6,7 @@
  *      Green: 	Enduro
  *      Blue:  	Autox
  *      Yellow:	Slight error (APPS or BSE Plausability)
- *      Purple	Aceleration
+ *      Purple	Acceleration
  *      Cyan:	Skidpad
  *      White:  Warning(REGEN or Dynamic Controls)
  *
@@ -21,12 +21,7 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-void write_rgb_color(rgb_t rgb_gpio);
-void write_debug_color(rgb_t rgb_gpio);
-rgb_t get_rgb_color(cores_t color);
-void blink_rgb(uint32_t delay);
-
-osStatus_t set_rgb_led(cores_t color, control_rgb_led_e control) {
+osStatus_t set_rgb_led(colors_t color, control_rgb_led_e control) {
     rgb_led_message_t message = {color, control};
     return osMessageQueuePut(q_rgb_led_messageHandle, &message, 0, 0U);
 }
@@ -42,7 +37,7 @@ void rgb_led(void* argument) {
         //waits for the RTD to be set or for the timeout to elapse
         switch (
             osMessageQueueGet(q_rgb_led_messageHandle, &message, NULL, RGB_BLINK_DELAY)) {
-        	//if the timeout elapse it will blink an LED, indicating that is out of RTD mode
+            //if the timeout elapse it will blink an LED, indicating that is out of RTD mode
             case osErrorTimeout:
                 write_rgb_color(get_rgb_color(message.color));
                 blink_rgb(RGB_BLINK_DELAY);
@@ -66,13 +61,13 @@ void rgb_led(void* argument) {
                         break;
                 }
                 break;
-        }
+            }
     }
 }
 
 void blink_rgb(uint32_t delay) {
     osDelay(delay);
-    write_rgb_color(get_rgb_color(PRETO));
+    write_rgb_color(get_rgb_color(BLACK));
 }
 
 void write_rgb_color(rgb_t rgb_gpio) {
@@ -88,16 +83,16 @@ void write_debug_color(rgb_t rgb_gpio) {
     HAL_GPIO_WritePin(C_LED_DEBUG3_GPIO_Port, C_LED_DEBUG3_Pin, !rgb_gpio.blue);
 }
 
-rgb_t get_rgb_color(cores_t color) {
+rgb_t get_rgb_color(colors_t color) {
     switch (color) {
-        case PRETO: return RGB_BLACK;
-        case VERMELHO: return RGB_RED;
-        case VERDE: return RGB_GREEN;
-        case AZUL: return RGB_BLUE;
-        case AMARELO: return RGB_YELLOW;
-        case ROXO: return RGB_PURBLE;
-        case CIANO: return RGB_CYAN;
-        case BRANCO:
+        case BLACK: return RGB_BLACK;
+        case RED: return RGB_RED;
+        case GREEN: return RGB_GREEN;
+        case BLUE: return RGB_BLUE;
+        case YELLOW: return RGB_YELLOW;
+        case PURPLE: return RGB_PURPLE;
+        case CYAN: return RGB_CYAN;
+        case WHITE:
         default: return RGB_WHITE;
     }
 }

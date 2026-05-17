@@ -17,7 +17,7 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 #include "stm32h7xx_hal.h"
-extern UART_HandleTypeDef huart1; //apenas avisa ao compilador
+//extern UART_HandleTypeDef huart1; //apenas avisa ao compilador
 //que foi declarada em outro arquivo
 
 
@@ -33,11 +33,15 @@ lateral_result_t lateral_control() {
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
 
-    char tx_data[] = "Hello World \r\n";
-    char rx_data[1];
+    //uint8_t t[] = "E\r\n";
+    //HAL_UART_Transmit(&huart1, t, strlen(t), 100);
+    //osDelay(1);
+    //HAL_Delay(1000);
+    //char tx_data[] = "Hello World \r\n";
+   // char rx_data[1];
 
-    HAL_UART_Transmit(&huart1, (uint8_t*)tx_data, sizeof(tx_data), 100);
-    HAL_UART_Receive(&huart1, (uint8_t*)rx_data, sizeof(rx_data), 100);
+    //HAL_UART_Transmit(&huart1, (uint8_t*)tx_data, sizeof(tx_data), 100);
+    //HAL_UART_Receive(&huart1, (uint8_t*)rx_data, sizeof(rx_data), 100);
 
     double cg_speed;
     //double gyro_adjusted;    // entre -1.5 e 1.5

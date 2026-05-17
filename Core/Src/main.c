@@ -219,6 +219,13 @@ const osThreadAttr_t t_dynamic_controls_choice_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_UARTHandle */
+osThreadId_t t_UARTHandleHandle;
+const osThreadAttr_t t_UARTHandle_attributes = {
+  .name = "t_UARTHandle",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_encoder_int_message */
 osMessageQueueId_t q_encoder_int_messageHandle;
 const osMessageQueueAttr_t q_encoder_int_message_attributes = {
@@ -351,6 +358,7 @@ extern void buttons_handler(void *argument);
 extern void speed_datalog(void *argument);
 extern void odometer_save(void *argument);
 extern void dynamic_controls_choice(void *argument);
+void StartTask23(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -358,6 +366,8 @@ extern void left_inv_error_callback(void *argument);
 extern void right_inv_error_callback(void *argument);
 
 /* USER CODE BEGIN PFP */
+
+uint8_t txt[] = "HELLO\r\n";
 
 /* USER CODE END PFP */
 
@@ -548,6 +558,9 @@ int main(void)
   /* creation of t_dynamic_controls_choice */
   t_dynamic_controls_choiceHandle = osThreadNew(dynamic_controls_choice, NULL, &t_dynamic_controls_choice_attributes);
 
+  /* creation of t_UARTHandle */
+  t_UARTHandleHandle = osThreadNew(StartTask23, NULL, &t_UARTHandle_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -570,6 +583,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  //HAL_UART_Transmit(&huart1, (uint8_t*) txt, 12, 1000);
+	  //HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -996,7 +1011,7 @@ static void MX_USART1_UART_Init(void)
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.Mode = UART_MODE_TX;
   huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart1.Init.OverSampling = UART_OVERSAMPLING_16;
   huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
@@ -1135,6 +1150,27 @@ __weak void main_task(void *argument)
     osDelay(1);
   }
   /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_StartTask23 */
+/**
+* @brief Function implementing the t_UARTHandle thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask23 */
+void StartTask23(void *argument)
+{
+  /* USER CODE BEGIN StartTask23 */
+  /* Infinite loop */
+  for(;;)
+  {
+	  uint8_t txt[] = "Hello World\r\n";
+	  HAL_UART_Transmit(&huart1, txt, strlen(txt), 100);
+	  //osDelay(1);
+	  HAL_Delay(1000);
+  }
+  /* USER CODE END StartTask23 */
 }
 
 /**

@@ -41,7 +41,9 @@ void PID_set_parameters(PID_t* pid, double Kp, double Ti, double Td);
 void PID_set_limits(PID_t* pid, double max_output, double min_output);
 
 //Function that updates the PID's sample period
-//TODO (Guilherme): Não vi essa função ser chamada em nenhum arquivo além do "PID.c". Não sei se isso é por que o "sample period" é constante, mas se for, qual seria a necessidade dessa função?
+//TODO (Guilherme): Not see this function be called in any archive
+//beyond the "PID.c". I don't know if that is because the "sample period" is constant, if it is, what is the
+//need of this function?
 void PID_set_sample_period(PID_t* pid, double sample_period);
 
 //Function that defines the PID's output

@@ -34,11 +34,11 @@ void init_longitudinal_control() {
 
 longitudinal_control_result_t longitudinal_control() {
 
-    //Variables that will store the result 
+    //Variables that will store the result
     double pid_result;
     int ref_torque;
     longitudinal_control_result_t ref_torque_result;
-    
+
 
 
     //Calculus variables
@@ -59,12 +59,12 @@ longitudinal_control_result_t longitudinal_control() {
     } else {
         //slip ratio calculation
         slip = ((rear_avg_speed - cg_speed)
-                / cg_speed)
-               * 100;
+        / cg_speed)
+        * 100;
     }
 
-    //This "if" is here to deactivate the controller when the slip is lower than the ideal or when the car is making a turn 
-    if (slip <= 13 || internal_wheel != CENTRO) {
+    //This "if" is here to deactivate the controller when the slip is lower than the ideal or when the car is making a turn
+    if (slip <= 13 || internal_wheel != CENTER) {
         pid_result = 0;
     } else {
         pid_result = fabs((double)(PID_compute(&(pid_longitudinal), slip)));
@@ -72,7 +72,7 @@ longitudinal_control_result_t longitudinal_control() {
 
     //pid_result: delta torque 0 - 13 [N.m]
     //ref_torque: 0 to torq.max [%]
-    modos mode = get_global_var_value(SELECTED_MODE);
+    modes mode = get_global_var_value(SELECTED_MODE);
     ref_torque = (fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max;
 
     //Store the right and left motor torque reference that must be subtracted
@@ -82,12 +82,3 @@ longitudinal_control_result_t longitudinal_control() {
 
     return ref_torque_result;
 }
-
-
-
-
-
-
-
-
-

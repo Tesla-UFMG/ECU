@@ -24,11 +24,6 @@ typedef struct {
     float adjust_parameters_intercept;
 } apps_ref;
 
-static uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref* ref);
-static bool is_there_APPS_error();
-static bool is_there_BSE_error();
-static bool is_there_SU_F_error();
-
 static uint16_t apps1_value;
 static uint16_t apps2_value;
 static uint16_t bse;
@@ -49,39 +44,39 @@ void APPS_read(void* argument) {
 
         //Reference values and parameters for the percentage calculation
         static const apps_ref apps1_ref = {.deadzone_lower_limit = APPS1_LOWER_DEADZONE,
-                                           .deadzone_upper_limit = APPS1_UPPER_DEADZONE,
-                                           .adjust_parameters_slope = APPS1_ADJUST_SLOPE,
-                                           .adjust_parameters_intercept =
-                                               APPS1_ADJUST_INTERCEPT};
-        static const apps_ref apps2_ref = {.deadzone_lower_limit = APPS2_LOWER_DEADZONE,
-                                           .deadzone_upper_limit = APPS2_UPPER_DEADZONE,
-                                           .adjust_parameters_slope = APPS2_ADJUST_SLOPE,
-                                           .adjust_parameters_intercept =
-                                               APPS2_ADJUST_INTERCEPT};
+            .deadzone_upper_limit = APPS1_UPPER_DEADZONE,
+            .adjust_parameters_slope = APPS1_ADJUST_SLOPE,
+            .adjust_parameters_intercept =
+            APPS1_ADJUST_INTERCEPT};
+            static const apps_ref apps2_ref = {.deadzone_lower_limit = APPS2_LOWER_DEADZONE,
+                .deadzone_upper_limit = APPS2_UPPER_DEADZONE,
+                .adjust_parameters_slope = APPS2_ADJUST_SLOPE,
+                .adjust_parameters_intercept =
+                APPS2_ADJUST_INTERCEPT};
 
-        //calculates the pedal percentage based on APPS1 and APPS2 and computes their average
-        apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);
-        apps2_throttle_percent = throttle_calc(apps2_value, &apps2_ref);
-        throttle_percent       = avg(apps1_throttle_percent, apps2_throttle_percent);
+                //calculates the pedal percentage based on APPS1 and APPS2 and computes their average
+                apps1_throttle_percent = throttle_calc(apps1_value, &apps1_ref);
+                apps2_throttle_percent = throttle_calc(apps2_value, &apps2_ref);
+                throttle_percent       = avg(apps1_throttle_percent, apps2_throttle_percent);
 
-        set_global_var_value(BRAKE_STATUS, (BRAKE_STATUS_t)(bse > BRAKE_ACTIVE));
-        set_global_var_value(THROTTLE_STATUS, (THROTTLE_STATUS_t)(throttle_percent > 0));
+                set_global_var_value(BRAKE_STATUS, (BRAKE_STATUS_t)(bse > BRAKE_ACTIVE));
+                set_global_var_value(THROTTLE_STATUS, (THROTTLE_STATUS_t)(throttle_percent > 0));
 
-        log_data(ID_BRAKE, get_global_var_value(BRAKE_STATUS));
+                log_data(ID_BRAKE, get_global_var_value(BRAKE_STATUS));
 
-        //verifies the plausability of APPS and BSE and the plausability of APPS1 and APPS2
-        check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);
-        check_for_errors_with_timeout(is_there_APPS_error, APPS_ERROR_FLAG,
-                                      tim_APPS_errorHandle, APPS_ERROR_TIMER);
-        //Verifies if the brake board is sending a short-circuit signal
-        check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG,
-                                      tim_SU_F_errorHandle, SU_F_ERROR_TIMER);
+                //verifies the plausability of APPS and BSE and the plausability of APPS1 and APPS2
+                check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);
+                check_for_errors_with_timeout(is_there_APPS_error, APPS_ERROR_FLAG,
+                                              tim_APPS_errorHandle, APPS_ERROR_TIMER);
+                //Verifies if the brake board is sending a short-circuit signal
+                check_for_errors_with_timeout(is_there_SU_F_error, SU_F_ERROR_FLAG,
+                                              tim_SU_F_errorHandle, SU_F_ERROR_TIMER);
 
-        uint16_t message = throttle_percent;
-        osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);
+                uint16_t message = throttle_percent;
+                osMessageQueuePut(q_throttle_controlHandle, &message, 0, 0U);
 
-        HAL_IWDG_Refresh(&hiwdg1);
-        osDelay(THROTTLE_DELAY);
+                HAL_IWDG_Refresh(&hiwdg1);
+                osDelay(THROTTLE_DELAY);
     }
 }
 
@@ -93,7 +88,7 @@ static uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
         return 0;
     }
     return (uint16_t)(ref->adjust_parameters_slope * (float)apps_value
-                      + ref->adjust_parameters_intercept);
+    + ref->adjust_parameters_intercept);
 }
 
 static bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2021)
@@ -103,15 +98,15 @@ static bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2021)
         || apps1_value < APPS1_MIN  // or bellow its minimum
         //if APPS1 and APPS2 differ by more than 10%
         || abs(apps1_throttle_percent - apps2_throttle_percent) / 10
-               > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {
+        > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {
         return true;
-    }
-    return false;
+        }
+        return false;
 }
 
 static bool is_there_BSE_error() {
     const bool is_BSE_error_active =
-        get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
+    get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
     if (is_BSE_error_active) {
         // FSAE Rules: EV.5.7.2 (2021)
         return (throttle_percent >= APPS_05_PERCENT);

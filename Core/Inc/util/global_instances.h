@@ -27,7 +27,7 @@ extern osMessageQueueId_t q_ids_can_inverterHandle;
 
 // TASKS
 extern osThreadId_t t_main_taskHandle;
-extern osThreadId_t t_seleciona_modoHandle;
+extern osThreadId_t t_select_modeHandle;
 extern osThreadId_t t_RTDHandle;
 extern osThreadId_t t_pilot_resetHandle;
 extern osThreadId_t t_inverter_comm_errorHandle;

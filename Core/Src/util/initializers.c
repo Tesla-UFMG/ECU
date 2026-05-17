@@ -33,7 +33,7 @@ void init_ADC_DMA(ADC_HandleTypeDef* hadc) {
 }
 
 extern uint8_t error_count;
-cores_t led_conf;
+colors_t led_conf;
 
 uint8_t error_count  = 0; // count errors, how many times did the program enter the Error_Handler function
 uint16_t debug_milis = 0, debug_milis_ant = 0;

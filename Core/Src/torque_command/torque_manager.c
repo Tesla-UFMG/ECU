@@ -113,7 +113,7 @@ void torque_manager(void* argument) {
 
                 // sends the reference torque
                 send_ref_torque_message(ref_torque);
-
+            
                 osDelayUntil(tick);
 
                 break;

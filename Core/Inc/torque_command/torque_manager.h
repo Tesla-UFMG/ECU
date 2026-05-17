@@ -9,6 +9,8 @@
 #define INC_TORQUE_MANAGER_H_
 
 #include "stdint.h"
+#include "cmsis_os.h"
+#include "stdbool.h"
 
 // Initialization os functions
 

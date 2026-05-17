@@ -19,11 +19,11 @@ extern volatile uint8_t g_should_disable_engines;
 // variable that holds the parameters of the vehicle's current state
 extern volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
-extern volatile const modos aceleracao;
-extern volatile const modos skidpad;
-extern volatile const modos autox;
-extern volatile const modos enduro;
-extern volatile const modos erro;
+extern volatile const modes acceleration;
+extern volatile const modes skidpad;
+extern volatile const modes autox;
+extern volatile const modes enduro;
+extern volatile const modes error;
 
 // stores the vehicle's current state (accelerate, neutral, brake)
 extern volatile vehicle_state_e vehicle_state;

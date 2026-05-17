@@ -10,6 +10,10 @@
 
 #include "util/global_variables.h"
 
+// Initialization of function
+
+void update_regen_state(void);
+
 #define P_ENABLE   0
 #define P_RUNSTOP  1
 #define P_BRAKE    2

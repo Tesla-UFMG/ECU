@@ -15,8 +15,6 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
-void update_regen_state(void);
-
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 
 volatile vehicle_state_parameters_t g_vehicle_state_parameters;
@@ -27,17 +25,17 @@ void update_state(bool disable) {
     if (disable == true) {
         vehicle_state = S_DISABLE_E;
     } else if ((get_global_var_value(THROTTLE_PERCENT) < 100)
-               && (frenagem_regenerativa == true)
-               && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
-                //TODO (Guilherme): && get_global_var_value(FRONT_AVG_SPEED) > KMPH_5) {
+        && (regenerative_braking == true)
+        && get_global_var_value(REAR_AVG_SPEED) > RPM_KMPH_5) {
+        //TODO (Guilherme): && get_global_var_value(FRONT_AVG_SPEED) > KMPH_5) {
         vehicle_state = S_BRAKE_E;
-    } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {
-        vehicle_state = S_ACCELERATE_E;
-    } else {
-        vehicle_state = S_NEUTER_E;
-    }
+        } else if (get_global_var_value(THROTTLE_PERCENT) > 100) {
+            vehicle_state = S_ACCELERATE_E;
+        } else {
+            vehicle_state = S_NEUTER_E;
+        }
 
-    update_regen_state();
+        update_regen_state();
 }
 
 void update_state_parameters(torque_message_t* torque_message) {
@@ -50,9 +48,9 @@ void update_state_parameters(torque_message_t* torque_message) {
             SPEEDS_t speeds = get_global_var_value(SPEEDS);
             set_bit8(&torque_message->parameters, P_RUNSTOP,
                      (speeds.wheels[R_MOTOR] > RPM_KMPH_5
-                    //TODO (Guilherme): (speeds.wheels[REAR_RIGHT] > KMPH_5
-                      || speeds.wheels[L_MOTOR] > RPM_KMPH_5));
-                      //TODO (Guilherme): || speeds.wheels[REAR_LEFT] > KMPH_5));
+                     //TODO (Guilherme): (speeds.wheels[REAR_RIGHT] > KMPH_5
+                     || speeds.wheels[L_MOTOR] > RPM_KMPH_5));
+            //TODO (Guilherme): || speeds.wheels[REAR_LEFT] > KMPH_5));
             torque_message->torque_ref[R_MOTOR]     = 0;
             torque_message->torque_ref[L_MOTOR]     = 0;
             torque_message->neg_torque_ref[R_MOTOR] = 0;
@@ -62,7 +60,7 @@ void update_state_parameters(torque_message_t* torque_message) {
             break;
         case S_BRAKE_E:
             set_bit8(&torque_message->parameters, P_ENABLE, true);
-            set_bit8(&torque_message->parameters, P_BRAKE, selected_mode.freio_regen);
+            set_bit8(&torque_message->parameters, P_BRAKE, selected_mode.regen_brake);
             set_bit8(&torque_message->parameters, P_RUNSTOP, true);
             torque_message->torque_ref[R_MOTOR]     = 0;
             torque_message->torque_ref[L_MOTOR]     = 0;
@@ -106,24 +104,24 @@ void torque_parameters(void* argument) {
 
     for (;;) {
 
-#ifdef DEBUG_ECU
+        #ifdef DEBUG_ECU
         extern void brkpt();
         brkpt();
-#endif
+        #endif
 
         bool disable;
         // disable will only be FALSE when RTD_FLAG is setted
         disable = !is_RTD_active();
 
         switch (osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0,
-                                  TORQUE_PARAMETERS_DELAY)) {
+            TORQUE_PARAMETERS_DELAY)) {
 
             case osOK:
 
                 torque_message.torque_ref[R_MOTOR] =
-                    ref_torque_message.ref_torque[R_MOTOR];
+                ref_torque_message.ref_torque[R_MOTOR];
                 torque_message.torque_ref[L_MOTOR] =
-                    ref_torque_message.ref_torque[L_MOTOR];
+                ref_torque_message.ref_torque[L_MOTOR];
 
                 update_state(disable);
                 update_state_parameters(&torque_message);
@@ -141,7 +139,7 @@ void torque_parameters(void* argument) {
                 osMessageQueuePut(q_torque_messageHandle, &torque_message, 0, 0U);
                 break;
             default: break;
-        }
+            }
     }
 }
 
@@ -151,10 +149,11 @@ void torque_parameters(void* argument) {
  */
 void update_regen_state(void) {
     if (vehicle_state == S_BRAKE_E) {
-        // se frenagem ativa, seta flag de aviso
+        // If braking is active, sets the warning flag
         osEventFlagsSet(e_ECU_control_flagsHandle, REGEN_WARN_FLAG);
     } else {
         // se frenagem ativa, limpa flag de aviso
+        // If braking is inactive(?), clears the warning flag
         osEventFlagsClear(e_ECU_control_flagsHandle, REGEN_WARN_FLAG);
     }
 }

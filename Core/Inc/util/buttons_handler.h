@@ -15,6 +15,12 @@
 #define DEBOUNCE_TIME   (50 / POLLING_TIME)   // Debounce time in ms
 #define LONG_PRESS_TIME (1000 / POLLING_TIME) // long press time in ms
 
+// Initialization of functions
+
+void long_button_press_handler(available_buttons_e button);
+void button_release_handler(available_buttons_e button);
+void initialize_buttons();
+
 /**
  * @brief enum with all possible buttons states
  *

@@ -70,7 +70,7 @@ lateral_result_t lateral_control() {
 
     //pid_result: delta torque 0 - 13 [N.m]
     //ref_torque: 0 to torq.max [%]
-    modos mode = get_global_var_value(SELECTED_MODE);
+    modes mode = get_global_var_value(SELECTED_MODE);
     ref_torque = (fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max;
 
     if(cg_speed > 5 && is_throttle_active && internal_wheel != CENTER){

@@ -73,19 +73,19 @@ lateral_result_t lateral_control() {
     modos mode = get_global_var_value(SELECTED_MODE);
     ref_torque = (fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max;
 
-    if(cg_speed > 5 && is_throttle_active && internal_wheel != CENTRO){
+    if(cg_speed > 5 && is_throttle_active && internal_wheel != CENTER){
     	if(pid_result > 0){
     		//increase yaw rate -> decrease torque on internal wheel
     		ref_torque_result.torque_decrease[R_MOTOR] =
-    				(internal_wheel == DIREITA) ? ref_torque : 0;
+    				(internal_wheel == RIGHT) ? ref_torque : 0;
     		ref_torque_result.torque_decrease[L_MOTOR] =
-    		    	(internal_wheel == ESQUERDA) ? ref_torque : 0;
+    		    	(internal_wheel == LEFT) ? ref_torque : 0;
     	} else if(pid_result < 0){
     		//decrease yaw rate -> decrease torque on external wheel
     		ref_torque_result.torque_decrease[R_MOTOR] =
-    		    	(internal_wheel == DIREITA) ? 0 : ref_torque;
+    		    	(internal_wheel == RIGHT) ? 0 : ref_torque;
     		ref_torque_result.torque_decrease[L_MOTOR] =
-    		    	(internal_wheel == ESQUERDA) ? 0 : ref_torque;
+    		    	(internal_wheel == LEFT) ? 0 : ref_torque;
     	}else{
     		ref_torque_result.torque_decrease[R_MOTOR] = 0;
     		ref_torque_result.torque_decrease[L_MOTOR] = 0;

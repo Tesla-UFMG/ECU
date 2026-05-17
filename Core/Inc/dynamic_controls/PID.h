@@ -63,7 +63,8 @@ __attribute__((always_inline)) inline double PID_compute(PID_t* pid, double inpu
     }
 
     //Uptading the error and input states
-    //TODO (Guilherme): Acho que esse error_state[1] é inútil. No cálculo da saída só se usa o último erro (error_state[0]).
+    //TODO(Guilherme): I think that error_state[1] is useless. In the output calc
+    //only use the last error(error_state[0])
     pid->error_state[1] = pid->error_state[0];
     pid->error_state[0] = error;
     pid->input_state[1] = pid->input_state[0];

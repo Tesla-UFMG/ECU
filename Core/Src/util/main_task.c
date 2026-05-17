@@ -37,9 +37,9 @@ void main_task(void* argument) {
         bool isErrorPresent;
         switch (most_significant_error_flag) {
 
-                // BUSOFF error is treated when it happens more than once in a short
-                // period of time (period defined by: BUS_OFF_ERROR_TIME).The car leaves
-                // RTD mode only if there is a frequent CAN error.
+            // BUSOFF error is treated when it happens more than once in a short
+            // period of time (period defined by: BUS_OFF_ERROR_TIME).The car leaves
+            // RTD mode only if there is a frequent CAN error.
             case INVERTER_BUS_OFF_ERROR_FLAG:
 
                 // If the event flag contains the error flag the car leaves RTD mode.
@@ -71,18 +71,18 @@ void main_task(void* argument) {
                 break;
 
             case APPS_ERROR_FLAG: // FSAE Rules: T.4.2 (2021)
-            
+
             case BSE_ERROR_FLAG:  // FSAE Rules: EV.5.7 (2021)
 
                 // If the event flag contains the error flag ECU led is set to yellow
                 isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
-                    set_rgb_led(AMARELO, NO_CHANGE);
+                    set_rgb_led(YELLOW, NO_CHANGE);
                     osDelay(20);
                 } else {
                     // Clear the thread flag and set ECU led to normal
                     osThreadFlagsClear(most_significant_error_flag);
-                    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, NO_CHANGE);
+                    set_rgb_led(get_global_var_value(SELECTED_MODE).color, NO_CHANGE);
                 }
                 break;
 

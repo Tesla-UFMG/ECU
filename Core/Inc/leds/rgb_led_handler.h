@@ -13,8 +13,20 @@
 #include "stdint.h"
 #include "util/global_definitions.h"
 
-// Initialization of functions
 
+typedef enum { FIXED, BLINK200, NO_CHANGE } control_rgb_led_e;
+
+typedef struct {
+    colors_t color;
+    control_rgb_led_e control;
+} rgb_led_message_t;
+
+typedef struct {
+    GPIO_PinState red;
+    GPIO_PinState green;
+    GPIO_PinState blue;
+} rgb_t;
+// Initialization of functions
 void write_rgb_color(rgb_t rgb_gpio);
 void write_debug_color(rgb_t rgb_gpio);
 rgb_t get_rgb_color(colors_t color);
@@ -55,18 +67,7 @@ void blink_rgb(uint32_t delay);
     1, 1, 1                                                                          \
 }
 
-typedef enum { FIXED, BLINK200, NO_CHANGE } control_rgb_led_e;
 
-typedef struct {
-    colors_t color;
-    control_rgb_led_e control;
-} rgb_led_message_t;
-
-typedef struct {
-    GPIO_PinState red;
-    GPIO_PinState green;
-    GPIO_PinState blue;
-} rgb_t;
 
 osStatus_t set_rgb_led(colors_t color, control_rgb_led_e control);
 

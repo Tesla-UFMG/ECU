@@ -19,7 +19,7 @@ typedef enum { FRONT_RIGHT = 0, FRONT_LEFT, REAR_RIGHT, REAR_LEFT } speed_pin_e;
 //colors of ECU LED
 typedef enum { BLACK = 0, RED, GREEN, BLUE, YELLOW, PURPLE, CYAN, WHITE } colors_t;
 
-typedef enum { ERROR = 0, ENDURO, ACCELERATION, SKIDPAD, AUTOX } race_mode_t;
+typedef enum { ERRO = 0, ENDURO, ACCELERATION, SKIDPAD, AUTOX } race_mode_t;
 
 typedef struct        // mode struct
 {

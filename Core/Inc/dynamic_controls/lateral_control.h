@@ -10,12 +10,11 @@
 
 #include "stdint.h"
 
-
-//TODO (João): Verificar o tempo de amostragem. MUITO IMPORTANTE!
+//TODO (João): Check the sampling time. VERY IMPORTANT!
 #define LATERAL_DELAY 30
 
-//TODO (João): Verificar se isso é necessário. Acredito que não.
-// defines calculos
+//TODO (João): Check if it is necessary. I believe that is not.
+//defines the calcs
 #define HALF_GYRO     2000
 #define ADJUST_GYRO_R 1000
 #define ADJUST_GYRO_L 2000

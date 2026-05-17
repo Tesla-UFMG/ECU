@@ -17,12 +17,6 @@
 
 extern IWDG_HandleTypeDef hiwdg1;
 
-typedef struct {
-    uint16_t deadzone_lower_limit;
-    uint16_t deadzone_upper_limit;
-    float adjust_parameters_slope;
-    float adjust_parameters_intercept;
-} apps_ref;
 
 static uint16_t apps1_value;
 static uint16_t apps2_value;
@@ -80,7 +74,7 @@ void APPS_read(void* argument) {
     }
 }
 
-static uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
+uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
     if (apps_value > ref->deadzone_upper_limit) {
         return 1000;
     }
@@ -91,7 +85,7 @@ static uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
     + ref->adjust_parameters_intercept);
 }
 
-static bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2021)
+bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2021)
     if (apps2_value > APPS2_MAX     // if APPS2 value is above of its maximum
         || apps2_value < APPS2_MIN  // or bellow its minimum
         || apps1_value > APPS1_MAX  //if APPS1 value is above of its maximum
@@ -104,7 +98,7 @@ static bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2021)
         return false;
 }
 
-static bool is_there_BSE_error() {
+bool is_there_BSE_error() {
     const bool is_BSE_error_active =
     get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
     if (is_BSE_error_active) {
@@ -115,6 +109,6 @@ static bool is_there_BSE_error() {
     return (throttle_percent > APPS_25_PERCENT && bse > BRAKE_ACTIVE);
 }
 
-static bool is_there_SU_F_error() {
+bool is_there_SU_F_error() {
     return (bse > SU_F_ERROR);
 }

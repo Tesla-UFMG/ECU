@@ -9,13 +9,20 @@
 #define INC_THROTTLE_H_
 
 #include "stdint.h"
+#include "stdbool.h"
 
 // Initialization of functions
+typedef struct {
+    uint16_t deadzone_lower_limit;
+    uint16_t deadzone_upper_limit;
+    float adjust_parameters_slope;
+    float adjust_parameters_intercept;
+} apps_ref;
 
-static uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref* ref);
-static bool is_there_APPS_error();
-static bool is_there_BSE_error();
-static bool is_there_SU_F_error();
+uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref* ref);
+bool is_there_APPS_error();
+bool is_there_BSE_error();
+bool is_there_SU_F_error();
 
 #define THROTTLE_DELAY   25
 #define BRAKE_ACTIVE     1800 // value send by SU-F: 2800

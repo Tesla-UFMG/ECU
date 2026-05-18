@@ -16,12 +16,14 @@
 //TODO (Guilherme): Verificar o tempo de amostragem. MUITO IMPORTANTE!
 #define LONGITUDINAL_DELAY 30
 
-//TODO (Guilherme): Pode ser interessante pensar em alterar o valor do setpoint. Durante o processo de validação viu-se que o valor ótimo de slip varia entre 0,1 e 0,2. Nesse sentido, pode ser interessante tentar definir qual seria o valor do slip ratio ideal do nosso pneu.
+/*TODO (Guilherme): It might be interesting change the setpoint value.
+During the validation process, we saw that the optimum value of slip goes from 0,1 to 0,2.
+So, it might be intersting define what is the optimum slip ratio value for our tire*/
 #define IDEAL_SLIP_DRY     13
 #define IDEAL_SLIP_WET     30
 
 //Defines the longitudinal PID's parameters
-//TODO (Guilherme): Ainda precisamos definir os parâmetros do controlador.
+//TODO (Guilherme): We still need to define the control parameters
 #define KP_LONGITUDINAL 6.51864262048678 
 #define KI_LONGITUDINAL 0.14843404179579
 #define TI_LONGITUDINAL (KP_LONGITUDINAL / KI_LONGITUDINAL)

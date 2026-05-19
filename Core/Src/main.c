@@ -1011,7 +1011,7 @@ static void MX_USART1_UART_Init(void)
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX;
+  huart1.Init.Mode = UART_MODE_TX_RX;
   huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart1.Init.OverSampling = UART_OVERSAMPLING_16;
   huart1.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
@@ -1163,12 +1163,21 @@ void StartTask23(void *argument)
 {
   /* USER CODE BEGIN StartTask23 */
   /* Infinite loop */
+
+  uint8_t rx;
+  uint8_t msg[50];
+
   for(;;)
   {
-	  uint8_t txt[] = "Hello World\r\n";
-	  HAL_UART_Transmit(&huart1, txt, strlen(txt), 100);
+	  //uint8_t txt[] = "Hello World\r\n";
+	  //HAL_UART_Transmit(&huart1, txt, strlen(txt), 100);
 	  //osDelay(1);
-	  HAL_Delay(1000);
+	  //HAL_Delay(1000);
+
+	  if(HAL_UART_Receive(&huart1, &rx, 1, HAL_MAX_DELAY) == HAL_OK){
+		  sprintf((char*)msg, "Byte recebido: %c\r\n", rx);
+		  HAL_UART_Transmit(&huart1, msg, strlen(msg), HAL_MAX_DELAY);
+	  }
   }
   /* USER CODE END StartTask23 */
 }

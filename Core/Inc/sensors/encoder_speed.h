@@ -25,7 +25,7 @@ static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t p
 static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout_RTOS(uint32_t speed);
+static inline uint32_t calculate_timeout_RTOS(uint32_t speed); 
 
 #define SPEED_SENSOR_TEETH_NUMBER 16        // number of teeth on the phonic wheel front wheel
 #define SPEED_SENSOR_TEETH_NUMBER_REAR 24   //number of teeth on the phonic wheel rear wheel

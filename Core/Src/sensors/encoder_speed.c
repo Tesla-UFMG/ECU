@@ -17,90 +17,7 @@
 
 //Variable that stores the speed of each wheel
 static encoder_speeds_message_t speeds_message;
-static inline uint32_t get_tim2_freq();
-static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout_RTOS(uint32_t speed);
 
-/* Functions that calculate wheel's speeds (rear and front axle)
- *
- * distance = circumference divided by the number of teeth
- *          = 2*pi*radius/teeth_number (m)
- * time     = timer value multiplied by the prescaler divided by frequency
- *          = timer*prescaler/frequency (s)
- * speed    = distance/time
- *          = (2*pi*radius/teeth_number)*freq/(presc*timer) (m/s)
- *          = (10*3.6*2*pi*radius/teeth_number)*freq/(presc*timer) (10*km/h)
- */
-static inline uint32_t calculate_speed(uint32_t time_between_messages, uint32_t freq, uint32_t presc) {
-    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER)* ((float)freq / ((float)presc)) / time_between_messages);
-}
-
-static inline uint32_t calculate_speed_rear(uint32_t time_between_messages, uint32_t freq, uint32_t presc) {
-    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR)* ((float)freq / ((float)presc)) / time_between_messages);
-}
-
-/*
- * //Functions that calculate the timeout for rear and front wheels, seperatly.
- * static inline uint32_t calculate_timeout(uint32_t speed) {
- *    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * 1000 / speed);
- * }
- * static inline uint32_t calculate_timeout_rear(uint32_t speed) {
- *    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR) * 1000 / speed);
- * }
- */
-
-//Functions that calculate the timeout for rear and front wheels
-
-//calculates time in ticks
-static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc) {
-    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * (freq/presc) / speed);
-}
-//calculates time in ticks
-static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc) {
-    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR) * (freq/presc) / speed);
-}
-
-//calculates time in milisseconds
-static inline uint32_t calculate_timeout_RTOS(uint32_t speed) {
-    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * 1000 / speed);
-}
-
-//Function that reset all wheel's speed.
-void reset_speed_all() {
-    for (uint8_t i = 0; i < WHEEL_ENCODERS_AVAILABLE; i++) {
-        speeds_message.wheels[i] = 0;
-    }
-}
-
-//Function that reset the speed of a single wheel, if it is without an interruption for a long time.
-void reset_speed_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t max_count_rear, uint32_t max_count_front) {
-    for (speed_pin_e i = FIRST_WHEEL; i <= WHEEL_ENCODERS_AVAILABLE; i++) {
-        uint32_t max_count;
-        if(i == REAR_RIGHT || i == REAR_LEFT){
-            max_count = max_count_rear;
-        }else{
-            max_count = max_count_front;
-        }
-        if ((message->tim_count - last_messages[i].tim_count) > max_count) {
-            speeds_message.wheels[i] = 0;
-        }
-    }
-}
-
-// gets tim2 frequency from the APB1 clock domain, considering that it might have an
-// prescaler which doubles the frequency
-static inline uint32_t get_tim2_freq() {
-    // Get PCLK1 prescaler
-    if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) {
-        // PCLK1 prescaler different from 1 => TIMCLK = 2 * PCLK1
-        return 2 * HAL_RCC_GetPCLK1Freq();
-    }
-    // PCLK1 prescaler equal to 1 => TIMCLK = PCLK1
-    return HAL_RCC_GetPCLK1Freq();
-}
 
 
 void encoder_speed_calc(void) {
@@ -188,3 +105,83 @@ void encoder_speed_calc(void) {
             osMessageQueuePutOverwrite(q_encoder_speeds_messageHandle, &speeds_message, 0);
     }
 }
+
+/* Functions that calculate wheel's speeds (rear and front axle)
+ *
+ * distance = circumference divided by the number of teeth
+ *          = 2*pi*radius/teeth_number (m)
+ * time     = timer value multiplied by the prescaler divided by frequency
+ *          = timer*prescaler/frequency (s)
+ * speed    = distance/time
+ *          = (2*pi*radius/teeth_number)*freq/(presc*timer) (m/s)
+ *          = (10*3.6*2*pi*radius/teeth_number)*freq/(presc*timer) (10*km/h)
+ */
+static inline uint32_t calculate_speed(uint32_t time_between_messages, uint32_t freq, uint32_t presc) {
+    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER)* ((float)freq / ((float)presc)) / time_between_messages);
+}
+
+static inline uint32_t calculate_speed_rear(uint32_t time_between_messages, uint32_t freq, uint32_t presc) {
+    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR)* ((float)freq / ((float)presc)) / time_between_messages);
+}
+
+/*
+ * //Functions that calculate the timeout for rear and front wheels, seperatly.
+ * static inline uint32_t calculate_timeout(uint32_t speed) {
+ *    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * 1000 / speed);
+ * }
+ * static inline uint32_t calculate_timeout_rear(uint32_t speed) {
+ *    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR) * 1000 / speed);
+ * }
+ */
+
+//Functions that calculate the timeout for rear and front wheels
+
+//calculates time in ticks
+static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc) {
+    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * (freq/presc) / speed);
+}
+//calculates time in ticks
+static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc) {
+    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR) * (freq/presc) / speed);
+}
+
+//calculates time in milisseconds
+static inline uint32_t calculate_timeout_RTOS(uint32_t speed) {
+    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * 1000 / speed);
+}
+
+//Function that reset all wheel's speed.
+static void reset_speed_all() {
+    for (uint8_t i = 0; i < WHEEL_ENCODERS_AVAILABLE; i++) {
+        speeds_message.wheels[i] = 0;
+    }
+}
+
+//Function that reset the speed of a single wheel, if it is without an interruption for a long time.
+static void reset_speed_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t max_count_rear, uint32_t max_count_front) {
+    for (speed_pin_e i = FIRST_WHEEL; i <= WHEEL_ENCODERS_AVAILABLE; i++) {
+        uint32_t max_count;
+        if(i == REAR_RIGHT || i == REAR_LEFT){
+            max_count = max_count_rear;
+        }else{
+            max_count = max_count_front;
+        }
+        if ((message->tim_count - last_messages[i].tim_count) > max_count) {
+            speeds_message.wheels[i] = 0;
+        }
+    }
+}
+
+// gets tim2 frequency from the APB1 clock domain, considering that it might have an
+// prescaler which doubles the frequency
+static inline uint32_t get_tim2_freq() {
+    // Get PCLK1 prescaler
+    if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) {
+        // PCLK1 prescaler different from 1 => TIMCLK = 2 * PCLK1
+        return 2 * HAL_RCC_GetPCLK1Freq();
+    }
+    // PCLK1 prescaler equal to 1 => TIMCLK = PCLK1
+    return HAL_RCC_GetPCLK1Freq();
+}
+
+

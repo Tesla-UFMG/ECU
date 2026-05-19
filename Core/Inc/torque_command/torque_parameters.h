@@ -12,7 +12,9 @@
 
 // Initialization of function
 
-void update_regen_state(void);
+static void update_regen_state(void);
+static void update_state(bool disable);
+static void update_state_parameters(torque_message_t* torque_message); 
 
 #define P_ENABLE   0
 #define P_RUNSTOP  1

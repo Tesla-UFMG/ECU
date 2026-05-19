@@ -21,7 +21,56 @@ volatile vehicle_state_parameters_t g_vehicle_state_parameters;
 
 volatile vehicle_state_e vehicle_state;
 
-void update_state(bool disable) {
+void torque_parameters(void* argument) {
+    UNUSED(argument);
+
+    // torque reference message. Includes the desired torque value and if a disable is
+    // intended
+    ref_torque_t ref_torque_message;
+    // complete message to be sent to inverter
+    torque_message_t torque_message = {.parameters = 0};
+
+    for (;;) {
+
+        #ifdef DEBUG_ECU
+        extern void brkpt();
+        brkpt();
+        #endif
+
+        bool disable;
+        // disable will only be FALSE when RTD_FLAG is setted
+        disable = !is_RTD_active();
+
+        switch (osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0,
+            TORQUE_PARAMETERS_DELAY)) {
+
+            case osOK:
+
+                torque_message.torque_ref[R_MOTOR] =
+                ref_torque_message.ref_torque[R_MOTOR];
+                torque_message.torque_ref[L_MOTOR] =
+                ref_torque_message.ref_torque[L_MOTOR];
+
+                update_state(disable);
+                update_state_parameters(&torque_message);
+
+                osMessageQueuePut(q_torque_messageHandle, &torque_message, 0, 0U);
+
+                log_data(ID_REF_TORQUE_R_MOTOR, torque_message.torque_ref[R_MOTOR]);
+                log_data(ID_REF_TORQUE_L_MOTOR, torque_message.torque_ref[L_MOTOR]);
+
+                break;
+            case osErrorTimeout:
+                update_state(disable);
+                update_state_parameters(&torque_message);
+
+                osMessageQueuePut(q_torque_messageHandle, &torque_message, 0, 0U);
+                break;
+            default: break;
+            }
+    }
+}
+static void update_state(bool disable) {
     if (disable == true) {
         vehicle_state = S_DISABLE_E;
     } else if ((get_global_var_value(THROTTLE_PERCENT) < 100)
@@ -38,7 +87,7 @@ void update_state(bool disable) {
         update_regen_state();
 }
 
-void update_state_parameters(torque_message_t* torque_message) {
+static void update_state_parameters(torque_message_t* torque_message) {
 
     SELECTED_MODE_t selected_mode = get_global_var_value(SELECTED_MODE);
     switch (vehicle_state) {
@@ -93,55 +142,6 @@ void update_state_parameters(torque_message_t* torque_message) {
     }
 }
 
-void torque_parameters(void* argument) {
-    UNUSED(argument);
-
-    // torque reference message. Includes the desired torque value and if a disable is
-    // intended
-    ref_torque_t ref_torque_message;
-    // complete message to be sent to inverter
-    torque_message_t torque_message = {.parameters = 0};
-
-    for (;;) {
-
-        #ifdef DEBUG_ECU
-        extern void brkpt();
-        brkpt();
-        #endif
-
-        bool disable;
-        // disable will only be FALSE when RTD_FLAG is setted
-        disable = !is_RTD_active();
-
-        switch (osMessageQueueGet(q_ref_torque_messageHandle, &ref_torque_message, 0,
-            TORQUE_PARAMETERS_DELAY)) {
-
-            case osOK:
-
-                torque_message.torque_ref[R_MOTOR] =
-                ref_torque_message.ref_torque[R_MOTOR];
-                torque_message.torque_ref[L_MOTOR] =
-                ref_torque_message.ref_torque[L_MOTOR];
-
-                update_state(disable);
-                update_state_parameters(&torque_message);
-
-                osMessageQueuePut(q_torque_messageHandle, &torque_message, 0, 0U);
-
-                log_data(ID_REF_TORQUE_R_MOTOR, torque_message.torque_ref[R_MOTOR]);
-                log_data(ID_REF_TORQUE_L_MOTOR, torque_message.torque_ref[L_MOTOR]);
-
-                break;
-            case osErrorTimeout:
-                update_state(disable);
-                update_state_parameters(&torque_message);
-
-                osMessageQueuePut(q_torque_messageHandle, &torque_message, 0, 0U);
-                break;
-            default: break;
-            }
-    }
-}
 
 /**
  * @brief Set regenerative braking warning flag

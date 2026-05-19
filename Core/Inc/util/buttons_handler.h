@@ -50,9 +50,9 @@ typedef struct {
 } buttons_parameters_t;
 // Initialization of functions
 
-void long_button_press_handler(available_buttons_e button);
-void button_release_handler(available_buttons_e button);
-void initialize_buttons();
+static void long_button_press_handler(available_buttons_e button);
+static void button_release_handler(available_buttons_e button);
+static void initialize_buttons();
 
 
 #endif /* INC_UTIL_BUTTON_HANDLER_H_ */

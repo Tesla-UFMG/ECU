@@ -13,38 +13,6 @@
 
 static buttons_parameters_t buttons[BUTTONS_QUAN];
 
-void button_release_handler(available_buttons_e button) {
-    switch (button) {
-        case B_RTD:
-            osThreadFlagsSet(t_RTDHandle, RTD_BTN_PRESSED_THREAD_FLAG);
-            osThreadFlagsSet(t_pilot_resetHandle, RTD_BTN_PRESSED_THREAD_FLAG);
-            break;
-
-        case B_MODE:;
-        RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
-        set_global_var_value(RACE_MODE, (RACE_MODE_t)(race_mode + 1));
-        osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_THREAD_FLAG);
-        osThreadFlagsSet(t_pilot_resetHandle, MODE_BTN_PRESSED_THREAD_FLAG);
-        break;
-
-        case B_DYNAMICS_CONTROLS:
-            osThreadFlagsSet(t_dynamic_controls_choiceHandle,
-                             DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_THREAD_FLAG);
-            break;
-
-        default: break;
-    }
-}
-
-void long_button_press_handler(available_buttons_e button) {
-    switch (button) { // NOLINT
-        // case B_RTD: break;
-        // case B_MODE: break;
-        // case B_DYNAMICS_CONTROLS: break;
-        default: break;
-    }
-}
-
 void buttons_handler(void* argument) {
     UNUSED(argument);
 
@@ -89,6 +57,38 @@ void buttons_handler(void* argument) {
         osDelay(POLLING_TIME);
     }
 }
+static void button_release_handler(available_buttons_e button) {
+    switch (button) {
+        case B_RTD:
+            osThreadFlagsSet(t_RTDHandle, RTD_BTN_PRESSED_THREAD_FLAG);
+            osThreadFlagsSet(t_pilot_resetHandle, RTD_BTN_PRESSED_THREAD_FLAG);
+            break;
+
+        case B_MODE:;
+        RACE_MODE_t race_mode = get_global_var_value(RACE_MODE);
+        set_global_var_value(RACE_MODE, (RACE_MODE_t)(race_mode + 1));
+        osThreadFlagsSet(t_seleciona_modoHandle, MODE_BTN_PRESSED_THREAD_FLAG);
+        osThreadFlagsSet(t_pilot_resetHandle, MODE_BTN_PRESSED_THREAD_FLAG);
+        break;
+
+        case B_DYNAMICS_CONTROLS:
+            osThreadFlagsSet(t_dynamic_controls_choiceHandle,
+                             DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_THREAD_FLAG);
+            break;
+
+        default: break;
+    }
+}
+
+static void long_button_press_handler(available_buttons_e button) {
+    switch (button) { // NOLINT
+        // case B_RTD: break;
+        // case B_MODE: break;
+        // case B_DYNAMICS_CONTROLS: break;
+        default: break;
+    }
+}
+
 
 /**
  * @brief initialize the ECU buttons parameters. .pin and .port are specific to the pin
@@ -97,7 +97,7 @@ void buttons_handler(void* argument) {
  * configured
  *
  */
-void initialize_buttons() {
+static void initialize_buttons() {
     buttons[B_RTD] = (buttons_parameters_t){.pin             = B_RTD_Pin,
         .port            = B_RTD_GPIO_Port,
         .setCounter      = 0,

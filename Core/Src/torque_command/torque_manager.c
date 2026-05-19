@@ -18,73 +18,6 @@
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 
-
-// normal ramp
-void torque_ramp(uint32_t* ref_torque, const double* ref_torque_decrease) {
-    static uint32_t ref_torque_ant[2] = {0, 0};
-    double desired_torque[2];
-    bool should_decrease = (ref_torque_decrease != NULL);
-
-    //Torque requested by the pilot.
-    //double torque = ((double)(get_global_var_value(SELECTED_MODE).torq_gain
-    //  * get_global_var_value(THROTTLE_PERCENT))
-    //  / 10);
-
-    // Maps throttle_percent [0,1] to torque range [0, tor_max].
-    double torque = (double) (get_global_var_value(SELECTED_MODE).tor_max
-    *get_global_var_value(THROTTLE_PERCENT)) /1000;
-
-
-
-    //Torque after the decrease of the dynamic control, if it is active. If the control is not active, the torque is not decreased.
-    desired_torque[R_MOTOR] = (uint32_t)(max(
-        0, (float)(torque - (should_decrease ? ref_torque_decrease[R_MOTOR] : 0))));
-    desired_torque[L_MOTOR] = (uint32_t)(max(
-        0, (float)(torque - (should_decrease ? ref_torque_decrease[L_MOTOR] : 0))));
-
-    for (int i = 0; i < 2; i++) {
-        /*checks whether the reference passed the inflection point and applies the
-         * aggressive increment(INC_TORQUE). Otherwise, uses the initial
-         * ramp increment(INC_TORQUE_INIT)*/
-        uint32_t torque_increment = (ref_torque_ant[i] > TORQUE_INIT_LIMIT) ? INC_TORQUE : INC_TORQUE_INIT;
-        ref_torque[i] = min(desired_torque[i], (ref_torque_ant[i] + torque_increment));
-        ref_torque_ant[i] = ref_torque[i];
-    }
-}
-
-
-// sends the torque message
-void send_ref_torque_message(const uint32_t* ref_torque) {
-    ref_torque_t ref_torque_message;
-    ref_torque_message.ref_torque[R_MOTOR] = ref_torque[R_MOTOR];
-    ref_torque_message.ref_torque[L_MOTOR] = ref_torque[L_MOTOR];
-
-    osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
-}
-
-
-void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
-
-    if (is_DYNAMIC_CONTROL_active) {
-        if (get_global_var_value(SELECTED_MODE).dif_elt == 1
-            && get_global_var_value(SELECTED_MODE).traction_control == 0) {
-            g_control_type = LATERAL;
-            }
-            if (get_global_var_value(SELECTED_MODE).dif_elt == 0
-                && get_global_var_value(SELECTED_MODE).traction_control == 1) {
-                g_control_type = LONGITUDINAL;
-                }
-                //TODO (Guilherme): Abaixo está uma das possíveis alterações a serem feitas para a integração dos controles.
-                if (get_global_var_value(SELECTED_MODE).dif_elt == 1
-                    && get_global_var_value(SELECTED_MODE).traction_control == 1) {
-                    g_control_type = BOTH_CONTROLS;
-                    }
-    } else {
-        g_control_type = NO_CONTROL;
-    }
-}
-
-
 void torque_manager(void* argument) {
     UNUSED(argument);
 
@@ -164,3 +97,70 @@ void torque_manager(void* argument) {
         }
     }
 }
+
+// normal ramp
+static void torque_ramp(uint32_t* ref_torque, const double* ref_torque_decrease) {
+    static uint32_t ref_torque_ant[2] = {0, 0};
+    double desired_torque[2];
+    bool should_decrease = (ref_torque_decrease != NULL);
+
+    //Torque requested by the pilot.
+    //double torque = ((double)(get_global_var_value(SELECTED_MODE).torq_gain
+    //  * get_global_var_value(THROTTLE_PERCENT))
+    //  / 10);
+
+    // Maps throttle_percent [0,1] to torque range [0, tor_max].
+    double torque = (double) (get_global_var_value(SELECTED_MODE).tor_max
+    *get_global_var_value(THROTTLE_PERCENT)) /1000;
+
+
+
+    //Torque after the decrease of the dynamic control, if it is active. If the control is not active, the torque is not decreased.
+    desired_torque[R_MOTOR] = (uint32_t)(max(
+        0, (float)(torque - (should_decrease ? ref_torque_decrease[R_MOTOR] : 0))));
+    desired_torque[L_MOTOR] = (uint32_t)(max(
+        0, (float)(torque - (should_decrease ? ref_torque_decrease[L_MOTOR] : 0))));
+
+    for (int i = 0; i < 2; i++) {
+        /*checks whether the reference passed the inflection point and applies the
+         * aggressive increment(INC_TORQUE). Otherwise, uses the initial
+         * ramp increment(INC_TORQUE_INIT)*/
+        uint32_t torque_increment = (ref_torque_ant[i] > TORQUE_INIT_LIMIT) ? INC_TORQUE : INC_TORQUE_INIT;
+        ref_torque[i] = min(desired_torque[i], (ref_torque_ant[i] + torque_increment));
+        ref_torque_ant[i] = ref_torque[i];
+    }
+}
+
+
+// sends the torque message
+static void send_ref_torque_message(const uint32_t* ref_torque) {
+    ref_torque_t ref_torque_message;
+    ref_torque_message.ref_torque[R_MOTOR] = ref_torque[R_MOTOR];
+    ref_torque_message.ref_torque[L_MOTOR] = ref_torque[L_MOTOR];
+
+    osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
+}
+
+
+static void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
+
+    if (is_DYNAMIC_CONTROL_active) {
+        if (get_global_var_value(SELECTED_MODE).dif_elt == 1
+            && get_global_var_value(SELECTED_MODE).traction_control == 0) {
+            g_control_type = LATERAL;
+            }
+            if (get_global_var_value(SELECTED_MODE).dif_elt == 0
+                && get_global_var_value(SELECTED_MODE).traction_control == 1) {
+                g_control_type = LONGITUDINAL;
+                }
+                //TODO (Guilherme): Abaixo está uma das possíveis alterações a serem feitas para a integração dos controles.
+                if (get_global_var_value(SELECTED_MODE).dif_elt == 1
+                    && get_global_var_value(SELECTED_MODE).traction_control == 1) {
+                    g_control_type = BOTH_CONTROLS;
+                    }
+    } else {
+        g_control_type = NO_CONTROL;
+    }
+}
+
+

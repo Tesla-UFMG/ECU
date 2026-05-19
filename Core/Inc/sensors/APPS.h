@@ -18,11 +18,10 @@ typedef struct {
     float adjust_parameters_slope;
     float adjust_parameters_intercept;
 } apps_ref;
-
-uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref* ref);
-bool is_there_APPS_error();
-bool is_there_BSE_error();
-bool is_there_SU_F_error();
+static uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref* ref);
+static bool is_there_APPS_error();
+static bool is_there_BSE_error();
+static bool is_there_SU_F_error();
 
 #define THROTTLE_DELAY   25
 #define BRAKE_ACTIVE     1800 // value send by SU-F: 2800

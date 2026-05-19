@@ -74,7 +74,7 @@ void APPS_read(void* argument) {
     }
 }
 
-uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
+static uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
     if (apps_value > ref->deadzone_upper_limit) {
         return 1000;
     }
@@ -85,7 +85,7 @@ uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
     + ref->adjust_parameters_intercept);
 }
 
-bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2021)
+static bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2021)
     if (apps2_value > APPS2_MAX     // if APPS2 value is above of its maximum
         || apps2_value < APPS2_MIN  // or bellow its minimum
         || apps1_value > APPS1_MAX  //if APPS1 value is above of its maximum
@@ -98,7 +98,7 @@ bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2021)
         return false;
 }
 
-bool is_there_BSE_error() {
+static bool is_there_BSE_error() {
     const bool is_BSE_error_active =
     get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
     if (is_BSE_error_active) {
@@ -109,6 +109,6 @@ bool is_there_BSE_error() {
     return (throttle_percent > APPS_25_PERCENT && bse > BRAKE_ACTIVE);
 }
 
-bool is_there_SU_F_error() {
+static bool is_there_SU_F_error() {
     return (bse > SU_F_ERROR);
 }

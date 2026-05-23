@@ -16,7 +16,7 @@
 #define STEERING_WHEEL_MAX          3189		// Maximum value that the sensor can achieve once installed.
 #define STEERING_WHEEL_MIN          700         // Minimum value that the sensor can achieve once installed.
 
-//TODO (João): Atualizar esses valores com os dados do carro. Lembrar de atualizar o cálculo no steering.c
+//TODO (João): Update this values with the car data. Remember to update on the steering.c calc.
 //  lookup table
 #define STEERING_RAD_LEFT_WHEEL        ( (-0.523598776 - 0.599520598) / 2)
 #define STEERING_RAD_RIGHT_WHEEL       ( (0.599520598 + 0.523598776) / 2)

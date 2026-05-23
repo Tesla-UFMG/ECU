@@ -21,13 +21,13 @@
     CAN_GENERAL_LIST_DATA(ID_THROTTLE, 16, 2)                                            \
     CAN_GENERAL_LIST_DATA(ID_BRAKE, 16, 3)                                               \
     CAN_GENERAL_LIST_DATA(ID_MODE, 67, 0)                                                \
-    CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN, 68, 1)                                         \
-    CAN_GENERAL_LIST_DATA(ID_DISTANCE_P_ODOM, 70, 2)                                     \
-    CAN_GENERAL_LIST_DATA(ID_DISTANCE_T_ODOM, 70, 3)                                     \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN, 68, 0)                                         \
+    CAN_GENERAL_LIST_DATA(ID_DISTANCE_P_ODOM, 70, 0)                                     \
+    CAN_GENERAL_LIST_DATA(ID_DISTANCE_T_ODOM, 70, 1)                                     \
     CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_1, 69, 0)                                \
     CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_2, 69, 1)                                \
-    CAN_GENERAL_LIST_DATA(ID_REF_TORQUE_R_MOTOR, 17, 2)                                  \
-    CAN_GENERAL_LIST_DATA(ID_REF_TORQUE_L_MOTOR, 17, 3)                                  \
+    CAN_GENERAL_LIST_DATA(ID_REF_TORQUE_R_MOTOR, 17, 0)                                  \
+    CAN_GENERAL_LIST_DATA(ID_REF_TORQUE_L_MOTOR, 17, 1)                                  \
     CAN_GENERAL_LIST_DATA(ID_SPEED_FL, 18, 0)                                            \
     CAN_GENERAL_LIST_DATA(ID_SPEED_FR, 18, 1)                                            \
     CAN_GENERAL_LIST_DATA(ID_SPEED_RL, 18, 2)                                            \

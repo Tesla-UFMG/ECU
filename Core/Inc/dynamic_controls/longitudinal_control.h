@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 //Defines the longitudinal control's sample time and setpoint
-//TODO (Guilherme): Verificar o tempo de amostragem. MUITO IMPORTANTE!
+//TODO (Guilherme): check the sampling time. REALLY IMPORTANT!
 #define LONGITUDINAL_DELAY 30
 
 /*TODO (Guilherme): It might be interesting change the setpoint value.

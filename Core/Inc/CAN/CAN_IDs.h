@@ -16,22 +16,22 @@
 // 0 E RESERVADO PARA LACUNAS NO PACOTE
 // Variable name, Message Id, Message word
 #define VARIABLES_GENERAL_CAN_TX                                                         \
-    CAN_GENERAL_LIST_DATA(ID_SPEED_AVG, 76, 0)                                           \
-    CAN_GENERAL_LIST_DATA(ID_STEERING_WHEEL, 76, 1)                                      \
-    CAN_GENERAL_LIST_DATA(ID_THROTTLE, 76, 2)                                            \
-    CAN_GENERAL_LIST_DATA(ID_BRAKE, 76, 3)                                               \
-    CAN_GENERAL_LIST_DATA(ID_MODE, 77, 0)                                                \
-    CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN, 77, 1)                                         \
-    CAN_GENERAL_LIST_DATA(ID_DISTANCE_P_ODOM, 77, 2)                                     \
-    CAN_GENERAL_LIST_DATA(ID_DISTANCE_T_ODOM, 77, 3)                                     \
-    CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_1, 78, 0)                                \
-    CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_2, 78, 1)                                \
-    CAN_GENERAL_LIST_DATA(ID_REF_TORQUE_R_MOTOR, 78, 2)                                  \
-    CAN_GENERAL_LIST_DATA(ID_REF_TORQUE_L_MOTOR, 78, 3)                                  \
-    CAN_GENERAL_LIST_DATA(ID_SPEED_FL, 79, 0)                                            \
-    CAN_GENERAL_LIST_DATA(ID_SPEED_FR, 79, 1)                                            \
-    CAN_GENERAL_LIST_DATA(ID_SPEED_RL, 79, 2)                                            \
-    CAN_GENERAL_LIST_DATA(ID_SPEED_RR, 79, 3)                                            \
+    CAN_GENERAL_LIST_DATA(ID_SPEED_AVG, 16, 0)                                           \
+    CAN_GENERAL_LIST_DATA(ID_STEERING_WHEEL, 16, 1)                                      \
+    CAN_GENERAL_LIST_DATA(ID_THROTTLE, 16, 2)                                            \
+    CAN_GENERAL_LIST_DATA(ID_BRAKE, 16, 3)                                               \
+    CAN_GENERAL_LIST_DATA(ID_MODE, 67, 0)                                                \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN, 68, 0)                                         \
+    CAN_GENERAL_LIST_DATA(ID_DISTANCE_P_ODOM, 70, 0)                                     \
+    CAN_GENERAL_LIST_DATA(ID_DISTANCE_T_ODOM, 70, 1)                                     \
+    CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_1, 69, 0)                                \
+    CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_2, 69, 1)                                \
+    CAN_GENERAL_LIST_DATA(ID_REF_TORQUE_R_MOTOR, 17, 0)                                  \
+    CAN_GENERAL_LIST_DATA(ID_REF_TORQUE_L_MOTOR, 17, 1)                                  \
+    CAN_GENERAL_LIST_DATA(ID_SPEED_FL, 18, 0)                                            \
+    CAN_GENERAL_LIST_DATA(ID_SPEED_FR, 18, 1)                                            \
+    CAN_GENERAL_LIST_DATA(ID_SPEED_RL, 18, 2)                                            \
+    CAN_GENERAL_LIST_DATA(ID_SPEED_RR, 18, 3)                                            \
     CAN_GENERAL_LIST_DATA(ID_REGEN_BRAKE_STATE, 81, 0)                                   \
     CAN_GENERAL_LIST_DATA(ID_SPEED_L_MOTOR, 85, 0)                                       \
     CAN_GENERAL_LIST_DATA(ID_TORQUE_L_MOTOR, 85, 1)                                      \

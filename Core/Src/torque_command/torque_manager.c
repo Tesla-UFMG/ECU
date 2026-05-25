@@ -69,11 +69,11 @@ void send_ref_torque_message(const uint32_t* ref_torque) {
 
 void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
 
-    if (is_DYNAMIC_CONTROL_active) {
-        if (get_global_var_value(SELECTED_MODE).dif_elt == 1
-            && get_global_var_value(SELECTED_MODE).traction_control == 0) {
+    if (!is_DYNAMIC_CONTROL_active) {
+        //if (get_global_var_value(SELECTED_MODE).dif_elt == 1
+        //    && get_global_var_value(SELECTED_MODE).traction_control == 0) {
             g_control_type = LATERAL;
-        }
+        //}
         if (get_global_var_value(SELECTED_MODE).dif_elt == 0
             && get_global_var_value(SELECTED_MODE).traction_control == 1) {
             g_control_type = LONGITUDINAL;

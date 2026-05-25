@@ -29,6 +29,8 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h7xx_hal.h"
+extern volatile uint8_t rx;
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

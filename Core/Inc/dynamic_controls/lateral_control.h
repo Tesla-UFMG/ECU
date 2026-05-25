@@ -34,5 +34,7 @@ lateral_result_t lateral_control();
 void init_lateral_control();
 void pi_lookup_table(double Vx, double *Pout, double *TIout);
 
+extern volatile uint8_t yaw_RX;
+
 
 #endif /* INC_DYNAMICCONTROLS_LATERAL_CONTROL_H_ */

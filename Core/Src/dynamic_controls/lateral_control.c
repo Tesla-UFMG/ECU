@@ -6,6 +6,7 @@
  */
 
 #include "dynamic_controls/lateral_control.h"
+#include "main.h"
 
 #include "CAN/general_can_data_manager.h"
 #include "cmsis_os.h"
@@ -17,8 +18,9 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 #include "stm32h7xx_hal.h"
-//extern UART_HandleTypeDef huart1; //apenas avisa ao compilador
-//que foi declarada em outro arquivo
+
+volatile uint8_t yaw_RX;
+uint8_t t;
 
 
 static PID_t pid_lateral;
@@ -32,16 +34,17 @@ lateral_result_t lateral_control() {
     STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
+    yaw_RX = 20;
+    t = rx;
 
-    //uint8_t t[] = "E\r\n";
-    //HAL_UART_Transmit(&huart1, t, strlen(t), 100);
-    //osDelay(1);
-    //HAL_Delay(1000);
-    //char tx_data[] = "Hello World \r\n";
-   // char rx_data[1];
 
-    //HAL_UART_Transmit(&huart1, (uint8_t*)tx_data, sizeof(tx_data), 100);
-    //HAL_UART_Receive(&huart1, (uint8_t*)rx_data, sizeof(rx_data), 100);
+
+	  //osDelay(1);
+	  //HAL_Delay(10000);
+
+	  //uint8_t yaw_RX;
+	  //HAL_UART_Receive(&huart1, &yaw_RX, strlena(yaw_RX), HAL_MAX_DELAY);
+
 
     double cg_speed;
     //double gyro_adjusted;    // entre -1.5 e 1.5
@@ -55,7 +58,8 @@ lateral_result_t lateral_control() {
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
     //double calc_gyro(uint16_t gyro_yaw);
 
-    int16_t gyro_yaw = ((int16_t)fabs(general_get_value(gyroscope_y)));
+    //int16_t gyro_yaw = ((int16_t)fabs(general_get_value(gyroscope_y)));
+    //int8_t gyro_yaw = fabs(yaw_RX);
 
     //[m/s]
     cg_speed = ((double)get_global_var_value(FRONT_AVG_SPEED)) / (10 * 3.6);
@@ -80,7 +84,16 @@ lateral_result_t lateral_control() {
     PID_set_setpoint(&pid_lateral, setpoint);
     pi_lookup_table(cg_speed, &kp, &ti);
     PID_set_parameters(&pid_lateral, kp, ti, 0);
-    pid_result = PID_compute(&pid_lateral, gyro_yaw); //Return variable
+    //pid_result = PID_compute(&pid_lateral, gyro_yaw); //Return variable
+    //pid_result = PID_comute(&pid_lateral, gyro_yaw);
+
+    //const char *txt = "Hello World\r\n";
+    //HAL_UART_Transmit(&huart1, (uint8_t*)txt, strlen(txt), HAL_MAX_DELAY);
+
+    //Enviando o resultado do pid em N.m
+    //Fazendo cast de double para uint8_t
+    //Verificar o tempo de mensagem, pois isso está relacionado a amostragem
+    //HAL_UART_Transmit(&huart1, (uint8_t*) pid_result, strlen(pid_result), HAL_MAX_DELAY);
 
     //pid_result: delta torque 0 - 13 [N.m]
     //ref_torque: 0 to torq.max [%]

@@ -29,16 +29,17 @@ void RTD(void* argument) {
     for (;;) {
 
     	//waits for the flag indicating that the RTD button was pressed
-        osThreadFlagsWait(RTD_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
+    	osEventFlagsSet(e_ECU_control_flagsHandle, RTD_FLAG);
+        //osThreadFlagsWait(RTD_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
-        if (!is_RTD_active()) {
+        /*if (!is_RTD_active()) {
             if (can_RTD_be_enabled()) {
                 set_RTD();
             } else {
             	//sends an alert menssage if it is not possible to starts RTD
                 set_debugleds(DEBUGLED1, BLINK, 2);
             }
-        }
+        }*/
     }
 }
 

@@ -38,6 +38,8 @@
 #include "dynamic_controls/lateral_control.h"
 
 volatile uint8_t rx;
+volatile double yaw_RXSIM;
+
 
 /* USER CODE END Includes */
 
@@ -1182,11 +1184,18 @@ void StartTask23(void *argument)
 		  HAL_UART_Transmit(&huart1, msg, strlen(msg), HAL_MAX_DELAY);
 	  }*/
 
-      sprintf((char*)msg, "Yaw: %d\r\n", yaw_RX);
+	  //Código de transmissão e de recepção de dado validado.
+      /*sprintf((char*)msg, "Yaw: %d\r\n", yaw_RX);
       HAL_UART_Transmit(&huart1, msg, strlen((char*)msg), HAL_MAX_DELAY);
 	  HAL_Delay(1000);
+	  HAL_UART_Receive(&huart1, &rx, 1, HAL_MAX_DELAY);*/
 
-	  HAL_UART_Receive(&huart1, &rx, 1, HAL_MAX_DELAY);
+	  HAL_UART_Transmit(&huart1, (uint8_t*)&pidResult_TX, sizeof(double), HAL_MAX_DELAY);
+	  HAL_UART_Receive(&huart1, (uint8_t*)&yaw_RXSIM, sizeof(double), HAL_MAX_DELAY);
+
+
+
+
   	 }
   /* USER CODE END StartTask23 */
 }

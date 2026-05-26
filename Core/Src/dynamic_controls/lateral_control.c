@@ -20,7 +20,10 @@
 #include "stm32h7xx_hal.h"
 
 volatile uint8_t yaw_RX;
+volatile double pidResult_TX;
+
 uint8_t t;
+double tt;
 
 
 static PID_t pid_lateral;
@@ -36,6 +39,10 @@ lateral_result_t lateral_control() {
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
     yaw_RX = 20;
     t = rx;
+
+    pidResult_TX = 10;
+    tt = yaw_RXSIM;
+
 
 
 
@@ -85,7 +92,6 @@ lateral_result_t lateral_control() {
     pi_lookup_table(cg_speed, &kp, &ti);
     PID_set_parameters(&pid_lateral, kp, ti, 0);
     //pid_result = PID_compute(&pid_lateral, gyro_yaw); //Return variable
-    //pid_result = PID_comute(&pid_lateral, gyro_yaw);
 
     //const char *txt = "Hello World\r\n";
     //HAL_UART_Transmit(&huart1, (uint8_t*)txt, strlen(txt), HAL_MAX_DELAY);

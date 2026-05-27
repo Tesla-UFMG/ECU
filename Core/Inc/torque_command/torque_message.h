@@ -13,7 +13,7 @@
 #include "util/global_instances.h"
 #include "util/global_variables.h"
 
-void inverter_transmit(torque_message_t * message);
+static void inverter_transmit(torque_message_t * message);
 
 #define TORQUE_MESSAGE_RESEND_TIMES 1
 #define TORQUE_MESSAGE_DELAY        10

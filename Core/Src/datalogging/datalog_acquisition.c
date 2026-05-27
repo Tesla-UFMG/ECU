@@ -18,12 +18,12 @@
 #include "util/util.h"
 
 void datalog_acquisition() {
-    modes modo_dl;
+    modes mode_dl;
     uint16_t flag_ecu_1;
     uint16_t flag_ecu_2;
     for (;;) {
 
-        modo_dl = get_global_var_value(SELECTED_MODE);
+        mode_dl = get_global_var_value(SELECTED_MODE);
         /*splitting the 32-bit flag into two 16-bit messages. To do
 		this the flag value is shifted right 16 times. After being shifted
         the remaining 16 most significant bits are ignored usind an AND operaion */
@@ -32,9 +32,9 @@ void datalog_acquisition() {
         // the same occur in the second part of the mesagge, however whithout the shift part
         flag_ecu_2 = (osEventFlagsGet(e_ECU_control_flagsHandle) & 0xffff);
 
-        log_data(ID_MODE, modo_dl.mode);
-        log_data(ID_TORQUE_GAIN, modo_dl.torq_gain);
-        log_data(ID_REGEN_BRAKE_STATE, modo_dl.regen_brake);
+        log_data(ID_MODE, mode_dl.mode);
+        log_data(ID_TORQUE_GAIN, mode_dl.torq_gain);
+        log_data(ID_REGEN_BRAKE_STATE, mode_dl.regen_brake);
         log_data(ID_CONTROL_EVENT_FLAG_1, flag_ecu_1);
         log_data(ID_CONTROL_EVENT_FLAG_2, flag_ecu_2);
 

@@ -11,8 +11,27 @@
 #include "CAN/inverter_can.h"
 #include "util/util.h"
 
+void torque_message(void* argument) {
+    UNUSED(argument);
 
-void inverter_transmit(torque_message_t* message) {
+    torque_message_t message;
+    for (;;) {
+        ECU_ENABLE_BREAKPOINT_DEBUG();
+
+        //waits forever until a torque message is received
+        osMessageQueueGet(q_torque_messageHandle, &message, NULL, osWaitForever);
+
+        for (int i = 0; i < TORQUE_MESSAGE_RESEND_TIMES; i++) {
+            inverter_transmit(&message);
+
+            #if (TORQUE_MESSAGE_DELAY > 0)
+                        osDelay(TORQUE_MESSAGE_DELAY);
+            #endif
+        }
+    }
+}
+
+static void inverter_transmit(torque_message_t* message) {
     //The parameter in this function is a pointer to a struct that has the torque reference, negative torque reference and speed reference for both motors, as well as some other important parameters.
 
     //This variable will be used to receive and transmit the data to the inverters
@@ -42,24 +61,5 @@ void inverter_transmit(torque_message_t* message) {
 }
 
 
-void torque_message(void* argument) {
-    UNUSED(argument);
-
-    torque_message_t message;
-    for (;;) {
-        ECU_ENABLE_BREAKPOINT_DEBUG();
-
-        //waits forever until a torque message is received
-        osMessageQueueGet(q_torque_messageHandle, &message, NULL, osWaitForever);
-
-        for (int i = 0; i < TORQUE_MESSAGE_RESEND_TIMES; i++) {
-            inverter_transmit(&message);
-
-            #if (TORQUE_MESSAGE_DELAY > 0)
-                        osDelay(TORQUE_MESSAGE_DELAY);
-            #endif
-        }
-    }
-}
 
 

@@ -62,16 +62,16 @@ void torque_manager(void* argument) {
                 osDelayUntil(tick);
 
                 break;
-
-                //TODO (Guilherme): Abaixo está mais uma das possíveis alterações a serem feitas para a integração dos controles.
-                //                  Essa parte pode se tornar mais complexa caso o delay dos controles seja diferente então é necessário ter mais cuidado.
-                //                  Nesse sentido, a minha sugestão é apenas uma possibilidade simples de implementação que só funciona caso os delays sejam iguais.
+                // TODO (Guilherme): Below is another possible change to be made for integrating the controls.
+                //This part can become more complex if the control delays are different, so more care is needed.
+                //In this sense, my suggestion is just a simple implementation possibility that only works if the delays are the same.
 
             case BOTH_CONTROLS:
                 tick += LATERAL_DELAY;//Could be longitudinal as well (since they are equal)
                 lateral_result_t lateral_result = lateral_control();
                 longitudinal_control_result_t longitudinal_result = longitudinal_control();
-                // TODO (Guilherme): Pode ser interressante criar um tipo para armazenar os resultados dos dois controles, isso é puramente estético mas tornaria o código mais intuitivo.
+                //TODO (Guilherme):It might be interesting to create a type to store the results of the two controls;  
+                //this is purely aesthetic but would make the code more intuitive.
                 lateral_result_t result;
                 result.torque_decrease[R_MOTOR] = lateral_result.torque_decrease[R_MOTOR] + longitudinal_result.torque_decrease[R_MOTOR];
                 result.torque_decrease[L_MOTOR] = lateral_result.torque_decrease[L_MOTOR] + longitudinal_result.torque_decrease[L_MOTOR];

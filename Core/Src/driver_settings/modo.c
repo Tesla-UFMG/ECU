@@ -14,7 +14,7 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-void seleciona_modo(void* argument) {
+void select_mode(void* argument) {
     UNUSED(argument);
 
     for (;;) {

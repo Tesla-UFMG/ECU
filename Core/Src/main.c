@@ -140,10 +140,10 @@ const osThreadAttr_t t_rgb_led_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for t_seleciona_modo */
-osThreadId_t t_seleciona_modoHandle;
-const osThreadAttr_t t_seleciona_modo_attributes = {
-  .name = "t_seleciona_modo",
+/* Definitions for t_select_mode */
+osThreadId_t t_select_modeHandle;
+const osThreadAttr_t t_select_mode_attributes = {
+  .name = "t_select_mode",
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
@@ -337,7 +337,7 @@ extern void torque_message(void *argument);
 extern void torque_manager(void *argument);
 extern void debug_leds(void *argument);
 extern void rgb_led(void *argument);
-extern void seleciona_modo(void *argument);
+extern void select_mode(void *argument);
 extern void RTD(void *argument);
 extern void throttle_control(void *argument);
 extern void datalog_acquisition(void *argument);
@@ -511,8 +511,8 @@ int main(void)
   /* creation of t_rgb_led */
   t_rgb_ledHandle = osThreadNew(rgb_led, NULL, &t_rgb_led_attributes);
 
-  /* creation of t_seleciona_modo */
-  t_seleciona_modoHandle = osThreadNew(seleciona_modo, NULL, &t_seleciona_modo_attributes);
+  /* creation of t_select_mode */
+  t_select_modeHandle = osThreadNew(select_mode, NULL, &t_select_mode_attributes);
 
   /* creation of t_RTD */
   t_RTDHandle = osThreadNew(RTD, NULL, &t_RTD_attributes);

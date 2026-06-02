@@ -40,7 +40,7 @@ lateral_result_t lateral_control() {
     yaw_RX = 20;
     t = rx;
 
-    pidResult_TX = 10;
+    pidResult_TX = 100;
     tt = yaw_RXSIM;
 
 

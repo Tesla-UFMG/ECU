@@ -24,6 +24,10 @@ static uint16_t bse;
 static uint16_t apps1_throttle_percent = 0;
 static uint16_t apps2_throttle_percent = 0;
 static uint16_t throttle_percent       = 0;
+static bool is_there_APPS_error();
+static bool is_there_BSE_error();
+static bool is_there_SU_F_error();
+static uint16_t throttle_calc(uint16_t APPS_VALUE, const apps_ref* ref);
 
 void APPS_read(void* argument) {
     UNUSED(argument);

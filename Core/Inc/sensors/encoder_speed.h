@@ -18,14 +18,7 @@ typedef struct {
     uint32_t tim_count;
     speed_pin_e pin;
 } encoder_int_message_t;
-static void reset_speed_all();
-static void reset_speed_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t min_count_rear, uint32_t min_count_front);
-static inline uint32_t get_tim2_freq();
-static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc);
-static inline uint32_t calculate_timeout_RTOS(uint32_t speed); 
+
 
 #define SPEED_SENSOR_TEETH_NUMBER 16        // number of teeth on the phonic wheel front wheel
 #define SPEED_SENSOR_TEETH_NUMBER_REAR 24   //number of teeth on the phonic wheel rear wheel

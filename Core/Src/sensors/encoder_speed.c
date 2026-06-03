@@ -17,9 +17,14 @@
 
 //Variable that stores the speed of each wheel
 static encoder_speeds_message_t speeds_message;
-
-
-
+static void reset_speed_all();
+static void reset_speed_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t min_count_rear, uint32_t min_count_front);
+static inline uint32_t get_tim2_freq();
+static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
+static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint32_t presc);
+static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc);
+static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc);
+static inline uint32_t calculate_timeout_RTOS(uint32_t speed); 
 void encoder_speed_calc(void) {
 
     //Variable that stores the message received from the encoder interrupt, which contains the timer count and the wheel pin that caused the interruption

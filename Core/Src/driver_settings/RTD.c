@@ -16,7 +16,9 @@
 #include "util/global_variables.h"
 #include "util/util.h"
 
-
+static void activate_RTDS();
+static bool can_RTD_be_enabled(); 
+static void set_RTD();
 void RTD(void* argument) {
     UNUSED(argument);
 

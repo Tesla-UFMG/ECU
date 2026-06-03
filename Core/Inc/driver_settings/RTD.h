@@ -16,8 +16,5 @@
 
 
 void exit_RTD();
-static void activate_RTDS();
-static bool can_RTD_be_enabled();
-static void set_RTD();
 
 #endif /* INC_RTD_H_ */

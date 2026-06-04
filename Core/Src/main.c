@@ -37,7 +37,6 @@
 #include "datalogging/odometer_save.h"
 #include "dynamic_controls/lateral_control.h"
 
-volatile uint8_t rx;
 volatile double yaw_RXSIM;
 
 
@@ -1171,7 +1170,6 @@ void StartTask23(void *argument)
   /* Infinite loop */
 
   //uint8_t rx;
-  uint8_t msg[50];
 
   for(;;)
   {
@@ -1192,9 +1190,6 @@ void StartTask23(void *argument)
 
 	  HAL_UART_Transmit(&huart1, (uint8_t*)&pidResult_TX, sizeof(double), HAL_MAX_DELAY);
 	  HAL_UART_Receive(&huart1, (uint8_t*)&yaw_RXSIM, sizeof(double), HAL_MAX_DELAY);
-
-
-
 
   	 }
   /* USER CODE END StartTask23 */

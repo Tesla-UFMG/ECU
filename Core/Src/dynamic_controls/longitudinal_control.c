@@ -9,6 +9,7 @@
 
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
+#include "datalogging/datalog_handler.h"
 #include "dynamic_controls/constants_control.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
@@ -28,6 +29,7 @@ void init_longitudinal_control() {
              TI_LONGITUDINAL, 0, 0, -NOMINAL_TORQUE, LONGITUDINAL_DELAY);
     //Defines the longitudinal PID's setpoint
     PID_set_setpoint(&pid_longitudinal, IDEAL_SLIP_DRY);
+    log_data(ID_SET_POINT_LONGITUDINAL, IDEAL_SLIP_DRY);
 }
 
 

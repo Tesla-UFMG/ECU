@@ -11,6 +11,7 @@
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
 #include "dynamic_controls/constants_control.h"
+#include "datalogging/datalog_handler.h"
 #include "math.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
@@ -61,7 +62,7 @@ lateral_result_t lateral_control() {
 
     //the smaller value in absolute magnitude
     setpoint = fmin(desired_yaw, max_yaw);
-
+    log_data(ID_SET_POINT_LATERAL, setpoint);
     // PID
     PID_set_setpoint(&pid_lateral, setpoint);
     pi_lookup_table(cg_speed, &kp, &ti);

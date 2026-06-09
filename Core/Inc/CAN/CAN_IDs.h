@@ -32,6 +32,8 @@
     CAN_GENERAL_LIST_DATA(ID_SPEED_FR, 18, 1)                                            \
     CAN_GENERAL_LIST_DATA(ID_SPEED_RL, 18, 2)                                            \
     CAN_GENERAL_LIST_DATA(ID_SPEED_RR, 18, 3)                                            \
+    CAN_GENERAL_LIST_DATA(ID_SET_POINT_LONGITUDINAL, 71, 0)                                            \
+    CAN_GENERAL_LIST_DATA(ID_SET_POINT_LATERAL, 71, 1)                                            \
     CAN_GENERAL_LIST_DATA(ID_REGEN_BRAKE_STATE, 81, 0)                                   \
     CAN_GENERAL_LIST_DATA(ID_SPEED_L_MOTOR, 85, 0)                                       \
     CAN_GENERAL_LIST_DATA(ID_TORQUE_L_MOTOR, 85, 1)                                      \

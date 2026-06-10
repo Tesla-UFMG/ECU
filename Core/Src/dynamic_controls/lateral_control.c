@@ -66,6 +66,8 @@ lateral_result_t lateral_control() {
     // PID
     PID_set_setpoint(&pid_lateral, setpoint);
     pi_lookup_table(cg_speed, &kp, &ti);
+    log_data(ID_KP, kp);
+    log_data(ID_TI, ti);
     PID_set_parameters(&pid_lateral, kp, ti, 0);
     pid_result = PID_compute(&pid_lateral, gyro_yaw); //Return variable
 

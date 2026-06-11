@@ -22,6 +22,8 @@
     CAN_GENERAL_LIST_DATA(ID_BRAKE, 16, 3)                                               \
     CAN_GENERAL_LIST_DATA(ID_MODE, 67, 0)                                                \
     CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN, 68, 0)                                         \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_DECREASE_R, 68, 1)                                   \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_DECREASE_L, 68, 2)                                   \
     CAN_GENERAL_LIST_DATA(ID_DISTANCE_P_ODOM, 70, 0)                                     \
     CAN_GENERAL_LIST_DATA(ID_DISTANCE_T_ODOM, 70, 1)                                     \
     CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_1, 69, 0)                                \

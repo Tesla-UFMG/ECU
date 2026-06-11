@@ -52,6 +52,7 @@ lateral_result_t lateral_control() {
 
     //Using always absolute value
     desired_yaw   = (cg_speed * fabs(steering_wheel)) / (WHEELBASE + (KU * cg_speed * cg_speed));
+    log_data(ID_DESIRED_YAW, desired_yaw);
 
     //This condition prevents division by zero.
     if (cg_speed < 1){
@@ -59,7 +60,7 @@ lateral_result_t lateral_control() {
     } else{
     	max_yaw = TUNABILITY_FACTOR * ((FRICTION_COEFFICIENT * GRAVITY) / cg_speed);
     }
-
+    log_data(ID_MAX_YAW, max_yaw);
     //the smaller value in absolute magnitude
     setpoint = fmin(desired_yaw, max_yaw);
     log_data(ID_SET_POINT_LATERAL, setpoint);

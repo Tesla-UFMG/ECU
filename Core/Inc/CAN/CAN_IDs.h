@@ -20,6 +20,8 @@
     CAN_GENERAL_LIST_DATA(ID_STEERING_WHEEL, 16, 1)                                      \
     CAN_GENERAL_LIST_DATA(ID_THROTTLE, 16, 2)                                            \
     CAN_GENERAL_LIST_DATA(ID_BRAKE, 16, 3)                                               \
+    CAN_GENERAL_LIST_DATA(ID_DESIRED_YAW, 66, 0)                                         \
+    CAN_GENERAL_LIST_DATA(ID_MAX_YAW, 66, 1)                                             \
     CAN_GENERAL_LIST_DATA(ID_MODE, 67, 0)                                                \
     CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN, 68, 0)                                         \
     CAN_GENERAL_LIST_DATA(ID_TORQUE_DECREASE_R, 68, 1)                                   \

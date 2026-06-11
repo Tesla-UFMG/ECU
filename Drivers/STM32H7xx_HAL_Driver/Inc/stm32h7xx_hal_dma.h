@@ -1211,8 +1211,8 @@ HAL_StatusTypeDef HAL_DMA_UnRegisterCallback(DMA_HandleTypeDef *hdma, HAL_DMA_Ca
   * @brief    Peripheral State functions
   * @{
   */
-HAL_DMA_StateTypeDef HAL_DMA_GetState(DMA_HandleTypeDef *hdma);
-uint32_t             HAL_DMA_GetError(DMA_HandleTypeDef *hdma);
+HAL_DMA_StateTypeDef HAL_DMA_GetState(const DMA_HandleTypeDef *hdma);
+uint32_t             HAL_DMA_GetError(const DMA_HandleTypeDef *hdma);
 /**
   * @}
   */
@@ -1222,6 +1222,14 @@ uint32_t             HAL_DMA_GetError(DMA_HandleTypeDef *hdma);
 /* Private Constants -------------------------------------------------------------*/
 /** @defgroup DMA_Private_Constants DMA Private Constants
   * @brief    DMA private defines and constants
+  * @{
+  */
+/**
+  * @}
+  */
+
+/* Private types -------------------------------------------------------------*/
+/** @defgroup DMA_Private_Types DMA Private Types
   * @{
   */
 /**

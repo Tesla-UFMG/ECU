@@ -62,7 +62,9 @@ static const uint8_t LL_DMA_STR_OFFSET_TAB[] =
   */
 
 /* Private macros ------------------------------------------------------------*/
-
+/** @defgroup DMA_LL_Private_Macros DMA LL Private Macros
+  * @{
+  */
 /**
   * @brief  Helper macro to convert DMA Instance DMAx into DMAMUX channel
   * @note   DMAMUX channel 0 to 7 are mapped to DMA1 stream 0 to 7.
@@ -72,6 +74,9 @@ static const uint8_t LL_DMA_STR_OFFSET_TAB[] =
   */
 #define LL_DMA_INSTANCE_TO_DMAMUX_CHANNEL(__DMA_INSTANCE__)   \
 (((uint32_t)(__DMA_INSTANCE__) == ((uint32_t)DMA1)) ? 0UL : 8UL)
+/**
+  * @}
+  */
 
 /* Exported types ------------------------------------------------------------*/
 #if defined(USE_FULL_LL_DRIVER)
@@ -80,98 +85,107 @@ static const uint8_t LL_DMA_STR_OFFSET_TAB[] =
   */
 typedef struct
 {
-  uint32_t PeriphOrM2MSrcAddress;  /*!< Specifies the peripheral base address for DMA transfer
-                                        or as Source base address in case of memory to memory transfer direction.
+  uint32_t PeriphOrM2MSrcAddress;       /*!< Specifies the peripheral base address for DMA transfer
+                                             or as Source base address in case of memory to memory transfer direction.
 
-                                        This parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF. */
+                                             This parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF. */
 
-  uint32_t MemoryOrM2MDstAddress;  /*!< Specifies the memory base address for DMA transfer
-                                        or as Destination base address in case of memory to memory transfer direction.
+  uint32_t MemoryOrM2MDstAddress;       /*!< Specifies the memory base address for DMA transfer
+                                             or as Destination base address in case of memory to memory transfer direction.
 
-                                        This parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF. */
+                                             This parameter must be a value between Min_Data = 0 and Max_Data = 0xFFFFFFFF. */
 
-  uint32_t Direction;              /*!< Specifies if the data will be transferred from memory to peripheral,
-                                        from memory to memory or from peripheral to memory.
-                                        This parameter can be a value of @ref DMA_LL_EC_DIRECTION
+  uint32_t Direction;                   /*!< Specifies if the data will be transferred from memory to peripheral,
+                                             from memory to memory or from peripheral to memory.
+                                             This parameter can be a value of @ref DMA_LL_EC_DIRECTION
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetDataTransferDirection(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetDataTransferDirection(). */
 
-  uint32_t Mode;                   /*!< Specifies the normal or circular operation mode.
-                                        This parameter can be a value of @ref DMA_LL_EC_MODE
-                                        @note The circular buffer mode cannot be used if the memory to memory
-                                              data transfer direction is configured on the selected Stream
+  uint32_t Mode;                        /*!< Specifies the normal or circular operation mode.
+                                             This parameter can be a value of @ref DMA_LL_EC_MODE
+                                             @note The circular buffer mode cannot be used if the memory to memory
+                                                   data transfer direction is configured on the selected Stream
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetMode(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetMode(). */
 
-  uint32_t PeriphOrM2MSrcIncMode;  /*!< Specifies whether the Peripheral address or Source address in case of memory to memory transfer direction
-                                        is incremented or not.
-                                        This parameter can be a value of @ref DMA_LL_EC_PERIPH
+  uint32_t PeriphOrM2MSrcIncMode;       /*!< Specifies whether the Peripheral address or Source address in case of memory to memory transfer direction
+                                             is incremented or not.
+                                             This parameter can be a value of @ref DMA_LL_EC_PERIPH
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphIncMode(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphIncMode(). */
 
-  uint32_t MemoryOrM2MDstIncMode;  /*!< Specifies whether the Memory address or Destination address in case of memory to memory transfer direction
-                                        is incremented or not.
-                                        This parameter can be a value of @ref DMA_LL_EC_MEMORY
+  uint32_t MemoryOrM2MDstIncMode;       /*!< Specifies whether the Memory address or Destination address in case of memory to memory transfer direction
+                                             is incremented or not.
+                                             This parameter can be a value of @ref DMA_LL_EC_MEMORY
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetMemoryIncMode(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetMemoryIncMode(). */
 
-  uint32_t PeriphOrM2MSrcDataSize; /*!< Specifies the Peripheral data size alignment or Source data size alignment (byte, half word, word)
-                                        in case of memory to memory transfer direction.
-                                        This parameter can be a value of @ref DMA_LL_EC_PDATAALIGN
+  uint32_t PeriphOrM2MSrcDataSize;      /*!< Specifies the Peripheral data size alignment or Source data size alignment (byte, half word, word)
+                                             in case of memory to memory transfer direction.
+                                             This parameter can be a value of @ref DMA_LL_EC_PDATAALIGN
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphSize(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphSize(). */
 
-  uint32_t MemoryOrM2MDstDataSize; /*!< Specifies the Memory data size alignment or Destination data size alignment (byte, half word, word)
-                                        in case of memory to memory transfer direction.
-                                        This parameter can be a value of @ref DMA_LL_EC_MDATAALIGN
+  uint32_t MemoryOrM2MDstDataSize;      /*!< Specifies the Memory data size alignment or Destination data size alignment (byte, half word, word)
+                                             in case of memory to memory transfer direction.
+                                             This parameter can be a value of @ref DMA_LL_EC_MDATAALIGN
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetMemorySize(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetMemorySize(). */
 
-  uint32_t NbData;                 /*!< Specifies the number of data to transfer, in data unit.
-                                        The data unit is equal to the source buffer configuration set in PeripheralSize
-                                        or MemorySize parameters depending in the transfer direction.
-                                        This parameter must be a value between Min_Data = 0 and Max_Data = 0x0000FFFF
+  uint32_t NbData;                      /*!< Specifies the number of data to transfer, in data unit.
+                                             The data unit is equal to the source buffer configuration set in PeripheralSize
+                                             or MemorySize parameters depending in the transfer direction.
+                                             This parameter must be a value between Min_Data = 0 and Max_Data = 0x0000FFFF
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetDataLength(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetDataLength(). */
 
-  uint32_t PeriphRequest;          /*!< Specifies the peripheral request.
-                                        This parameter can be a value of @ref DMAMUX1_Request_selection
+  uint32_t PeriphRequest;               /*!< Specifies the peripheral request.
+                                             This parameter can be a value of @ref DMAMUX_LL_EC_REQUEST
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphRequest(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphRequest(). */
 
-  uint32_t Priority;               /*!< Specifies the channel priority level.
-                                        This parameter can be a value of @ref DMA_LL_EC_PRIORITY
+  uint32_t Priority;                    /*!< Specifies the channel priority level.
+                                             This parameter can be a value of @ref DMA_LL_EC_PRIORITY
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetStreamPriorityLevel(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetStreamPriorityLevel(). */
 
-  uint32_t FIFOMode;               /*!< Specifies if the FIFO mode or Direct mode will be used for the specified stream.
-                                        This parameter can be a value of @ref DMA_LL_FIFOMODE
-                                        @note The Direct mode (FIFO mode disabled) cannot be used if the
-                                        memory-to-memory data transfer is configured on the selected stream
+  uint32_t FIFOMode;                    /*!< Specifies if the FIFO mode or Direct mode will be used for the specified stream.
+                                             This parameter can be a value of @ref DMA_LL_FIFOMODE
+                                             @note The Direct mode (FIFO mode disabled) cannot be used if the
+                                             memory-to-memory data transfer is configured on the selected stream
 
-                                        This feature can be modified afterwards using unitary functions @ref LL_DMA_EnableFifoMode() or @ref LL_DMA_EnableFifoMode() . */
+                                             This feature can be modified afterwards using unitary functions @ref LL_DMA_EnableFifoMode() or @ref LL_DMA_EnableFifoMode() . */
 
-  uint32_t FIFOThreshold;          /*!< Specifies the FIFO threshold level.
-                                        This parameter can be a value of @ref DMA_LL_EC_FIFOTHRESHOLD
+  uint32_t FIFOThreshold;               /*!< Specifies the FIFO threshold level.
+                                             This parameter can be a value of @ref DMA_LL_EC_FIFOTHRESHOLD
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetFIFOThreshold(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetFIFOThreshold(). */
 
-  uint32_t MemBurst;               /*!< Specifies the Burst transfer configuration for the memory transfers.
-                                        It specifies the amount of data to be transferred in a single non interruptible
-                                        transaction.
-                                        This parameter can be a value of @ref DMA_LL_EC_MBURST
-                                        @note The burst mode is possible only if the address Increment mode is enabled.
+  uint32_t MemBurst;                    /*!< Specifies the Burst transfer configuration for the memory transfers.
+                                             It specifies the amount of data to be transferred in a single non interruptible
+                                             transaction.
+                                             This parameter can be a value of @ref DMA_LL_EC_MBURST
+                                             @note The burst mode is possible only if the address Increment mode is enabled.
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetMemoryBurstxfer(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetMemoryBurstxfer(). */
 
-  uint32_t PeriphBurst;            /*!< Specifies the Burst transfer configuration for the peripheral transfers.
-                                        It specifies the amount of data to be transferred in a single non interruptible
-                                        transaction.
-                                        This parameter can be a value of @ref DMA_LL_EC_PBURST
-                                        @note The burst mode is possible only if the address Increment mode is enabled.
+  uint32_t PeriphBurst;                 /*!< Specifies the Burst transfer configuration for the peripheral transfers.
+                                             It specifies the amount of data to be transferred in a single non interruptible
+                                             transaction.
+                                             This parameter can be a value of @ref DMA_LL_EC_PBURST
+                                             @note The burst mode is possible only if the address Increment mode is enabled.
 
-                                        This feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphBurstxfer(). */
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetPeriphBurstxfer(). */
 
+  uint32_t DoubleBufferMode;            /*!< Specifies the double buffer mode.
+                                             This parameter can be a value of @ref DMA_LL_EC_DOUBLEBUFFER_MODE
+
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_EnableDoubleBufferMode() & LL_DMA_DisableDoubleBufferMode(). */
+
+  uint32_t TargetMemInDoubleBufferMode; /*!< Specifies the target memory in double buffer mode.
+                                             This parameter can be a value of @ref DMA_LL_EC_CURRENTTARGETMEM
+
+                                             This feature can be modified afterwards using unitary function @ref LL_DMA_SetCurrentTargetMem(). */
 } LL_DMA_InitTypeDef;
 /**
   * @}
@@ -224,6 +238,15 @@ typedef struct
   */
 #define LL_DMA_DOUBLEBUFFER_MODE_DISABLE  0x00000000U               /*!< Disable double buffering mode */
 #define LL_DMA_DOUBLEBUFFER_MODE_ENABLE   DMA_SxCR_DBM              /*!< Enable double buffering mode  */
+/**
+  * @}
+  */
+
+/** @defgroup DMA_LL_EC_CURRENTTARGETMEM CURRENTTARGETMEM
+  * @{
+  */
+#define LL_DMA_CURRENTTARGETMEM0          0x00000000U                             /*!< Set CurrentTarget Memory to Memory 0  */
+#define LL_DMA_CURRENTTARGETMEM1          DMA_SxCR_CT                             /*!< Set CurrentTarget Memory to Memory 1  */
 /**
   * @}
   */
@@ -338,15 +361,6 @@ typedef struct
 #define LL_DMA_FIFOTHRESHOLD_1_2          DMA_SxFCR_FTH_0                         /*!< FIFO threshold half full configuration     */
 #define LL_DMA_FIFOTHRESHOLD_3_4          DMA_SxFCR_FTH_1                         /*!< FIFO threshold 3 quarts full configuration */
 #define LL_DMA_FIFOTHRESHOLD_FULL         DMA_SxFCR_FTH                           /*!< FIFO threshold full configuration          */
-/**
-  * @}
-  */
-
-/** @defgroup DMA_LL_EC_CURRENTTARGETMEM CURRENTTARGETMEM
-  * @{
-  */
-#define LL_DMA_CURRENTTARGETMEM0          0x00000000U                             /*!< Set CurrentTarget Memory to Memory 0  */
-#define LL_DMA_CURRENTTARGETMEM1          DMA_SxCR_CT                             /*!< Set CurrentTarget Memory to Memory 1  */
 /**
   * @}
   */
@@ -472,7 +486,7 @@ typedef struct
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_EnableStream(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_EnableStream(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -494,7 +508,7 @@ __STATIC_INLINE void LL_DMA_EnableStream(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_DisableStream(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_DisableStream(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -516,7 +530,7 @@ __STATIC_INLINE void LL_DMA_DisableStream(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsEnabledStream(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_IsEnabledStream(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -532,7 +546,9 @@ __STATIC_INLINE uint32_t LL_DMA_IsEnabledStream(DMA_TypeDef *DMAx, uint32_t Stre
   *         CR          PSIZE         LL_DMA_ConfigTransfer\n
   *         CR          MSIZE         LL_DMA_ConfigTransfer\n
   *         CR          PL            LL_DMA_ConfigTransfer\n
-  *         CR          PFCTRL        LL_DMA_ConfigTransfer
+  *         CR          PFCTRL        LL_DMA_ConfigTransfer\n
+  *         CR          DBM           LL_DMA_ConfigTransfer\n
+  *         CR          CT            LL_DMA_ConfigTransfer
   * @param  DMAx DMAx Instance
   * @param  Stream This parameter can be one of the following values:
   *         @arg @ref LL_DMA_STREAM_0
@@ -551,15 +567,17 @@ __STATIC_INLINE uint32_t LL_DMA_IsEnabledStream(DMA_TypeDef *DMAx, uint32_t Stre
   *         @arg @ref LL_DMA_PDATAALIGN_BYTE or @ref LL_DMA_PDATAALIGN_HALFWORD or @ref LL_DMA_PDATAALIGN_WORD
   *         @arg @ref LL_DMA_MDATAALIGN_BYTE or @ref LL_DMA_MDATAALIGN_HALFWORD or @ref LL_DMA_MDATAALIGN_WORD
   *         @arg @ref LL_DMA_PRIORITY_LOW or @ref LL_DMA_PRIORITY_MEDIUM or @ref LL_DMA_PRIORITY_HIGH or @ref LL_DMA_PRIORITY_VERYHIGH
+  *         @arg @ref LL_DMA_DOUBLEBUFFER_MODE_DISABLE or @ref LL_DMA_DOUBLEBUFFER_MODE_ENABLE
+  *         @arg @ref LL_DMA_CURRENTTARGETMEM0 or @ref LL_DMA_CURRENTTARGETMEM1
   *@retval None
   */
-__STATIC_INLINE void LL_DMA_ConfigTransfer(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Configuration)
+__STATIC_INLINE void LL_DMA_ConfigTransfer(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Configuration)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
   MODIFY_REG(((DMA_Stream_TypeDef *)(dma_base_addr + LL_DMA_STR_OFFSET_TAB[Stream]))->CR,
-             DMA_SxCR_DIR | DMA_SxCR_CIRC | DMA_SxCR_PINC | DMA_SxCR_MINC | DMA_SxCR_PSIZE | DMA_SxCR_MSIZE | DMA_SxCR_PL | DMA_SxCR_PFCTRL,
-             Configuration);
+             DMA_SxCR_DIR | DMA_SxCR_CIRC | DMA_SxCR_PINC | DMA_SxCR_MINC | DMA_SxCR_PSIZE | DMA_SxCR_MSIZE | DMA_SxCR_PL | \
+             DMA_SxCR_PFCTRL | DMA_SxCR_DBM | DMA_SxCR_CT, Configuration);
 }
 
 /**
@@ -581,7 +599,7 @@ __STATIC_INLINE void LL_DMA_ConfigTransfer(DMA_TypeDef *DMAx, uint32_t Stream, u
   *         @arg @ref LL_DMA_DIRECTION_MEMORY_TO_MEMORY
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetDataTransferDirection(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t  Direction)
+__STATIC_INLINE void LL_DMA_SetDataTransferDirection(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t  Direction)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -606,7 +624,7 @@ __STATIC_INLINE void LL_DMA_SetDataTransferDirection(DMA_TypeDef *DMAx, uint32_t
   *         @arg @ref LL_DMA_DIRECTION_MEMORY_TO_PERIPH
   *         @arg @ref LL_DMA_DIRECTION_MEMORY_TO_MEMORY
   */
-__STATIC_INLINE uint32_t LL_DMA_GetDataTransferDirection(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetDataTransferDirection(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -633,7 +651,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetDataTransferDirection(DMA_TypeDef *DMAx, uint
   *         @arg @ref LL_DMA_MODE_PFCTRL
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetMode(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Mode)
+__STATIC_INLINE void LL_DMA_SetMode(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Mode)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -659,7 +677,7 @@ __STATIC_INLINE void LL_DMA_SetMode(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t
   *         @arg @ref LL_DMA_MODE_CIRCULAR
   *         @arg @ref LL_DMA_MODE_PFCTRL
   */
-__STATIC_INLINE uint32_t LL_DMA_GetMode(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetMode(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -684,7 +702,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetMode(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_PERIPH_INCREMENT
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetPeriphIncMode(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t IncrementMode)
+__STATIC_INLINE void LL_DMA_SetPeriphIncMode(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t IncrementMode)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -708,7 +726,7 @@ __STATIC_INLINE void LL_DMA_SetPeriphIncMode(DMA_TypeDef *DMAx, uint32_t Stream,
   *         @arg @ref LL_DMA_PERIPH_NOINCREMENT
   *         @arg @ref LL_DMA_PERIPH_INCREMENT
   */
-__STATIC_INLINE uint32_t LL_DMA_GetPeriphIncMode(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetPeriphIncMode(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -733,7 +751,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetPeriphIncMode(DMA_TypeDef *DMAx, uint32_t Str
   *         @arg @ref LL_DMA_MEMORY_INCREMENT
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetMemoryIncMode(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t IncrementMode)
+__STATIC_INLINE void LL_DMA_SetMemoryIncMode(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t IncrementMode)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -757,7 +775,7 @@ __STATIC_INLINE void LL_DMA_SetMemoryIncMode(DMA_TypeDef *DMAx, uint32_t Stream,
   *         @arg @ref LL_DMA_MEMORY_NOINCREMENT
   *         @arg @ref LL_DMA_MEMORY_INCREMENT
   */
-__STATIC_INLINE uint32_t LL_DMA_GetMemoryIncMode(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetMemoryIncMode(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -783,7 +801,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetMemoryIncMode(DMA_TypeDef *DMAx, uint32_t Str
   *         @arg @ref LL_DMA_PDATAALIGN_WORD
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetPeriphSize(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t  Size)
+__STATIC_INLINE void LL_DMA_SetPeriphSize(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t  Size)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -808,7 +826,7 @@ __STATIC_INLINE void LL_DMA_SetPeriphSize(DMA_TypeDef *DMAx, uint32_t Stream, ui
   *         @arg @ref LL_DMA_PDATAALIGN_HALFWORD
   *         @arg @ref LL_DMA_PDATAALIGN_WORD
   */
-__STATIC_INLINE uint32_t LL_DMA_GetPeriphSize(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetPeriphSize(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -834,7 +852,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetPeriphSize(DMA_TypeDef *DMAx, uint32_t Stream
   *         @arg @ref LL_DMA_MDATAALIGN_WORD
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetMemorySize(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t  Size)
+__STATIC_INLINE void LL_DMA_SetMemorySize(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t  Size)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -859,7 +877,7 @@ __STATIC_INLINE void LL_DMA_SetMemorySize(DMA_TypeDef *DMAx, uint32_t Stream, ui
   *         @arg @ref LL_DMA_MDATAALIGN_HALFWORD
   *         @arg @ref LL_DMA_MDATAALIGN_WORD
   */
-__STATIC_INLINE uint32_t LL_DMA_GetMemorySize(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetMemorySize(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -884,7 +902,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetMemorySize(DMA_TypeDef *DMAx, uint32_t Stream
   *         @arg @ref LL_DMA_OFFSETSIZE_FIXEDTO4
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetIncOffsetSize(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t OffsetSize)
+__STATIC_INLINE void LL_DMA_SetIncOffsetSize(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t OffsetSize)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -908,7 +926,7 @@ __STATIC_INLINE void LL_DMA_SetIncOffsetSize(DMA_TypeDef *DMAx, uint32_t Stream,
   *         @arg @ref LL_DMA_OFFSETSIZE_PSIZE
   *         @arg @ref LL_DMA_OFFSETSIZE_FIXEDTO4
   */
-__STATIC_INLINE uint32_t LL_DMA_GetIncOffsetSize(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetIncOffsetSize(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -935,7 +953,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetIncOffsetSize(DMA_TypeDef *DMAx, uint32_t Str
   *         @arg @ref LL_DMA_PRIORITY_VERYHIGH
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetStreamPriorityLevel(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t  Priority)
+__STATIC_INLINE void LL_DMA_SetStreamPriorityLevel(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t  Priority)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -961,7 +979,7 @@ __STATIC_INLINE void LL_DMA_SetStreamPriorityLevel(DMA_TypeDef *DMAx, uint32_t S
   *         @arg @ref LL_DMA_PRIORITY_HIGH
   *         @arg @ref LL_DMA_PRIORITY_VERYHIGH
   */
-__STATIC_INLINE uint32_t LL_DMA_GetStreamPriorityLevel(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetStreamPriorityLevel(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -983,7 +1001,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetStreamPriorityLevel(DMA_TypeDef *DMAx, uint32
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_EnableBufferableTransfer(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_EnableBufferableTransfer(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1005,7 +1023,7 @@ __STATIC_INLINE void LL_DMA_EnableBufferableTransfer(DMA_TypeDef *DMAx, uint32_t
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_DisableBufferableTransfer(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_DisableBufferableTransfer(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1030,7 +1048,7 @@ __STATIC_INLINE void LL_DMA_DisableBufferableTransfer(DMA_TypeDef *DMAx, uint32_
   * @param  NbData Between 0 to 0xFFFFFFFF
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetDataLength(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t NbData)
+__STATIC_INLINE void LL_DMA_SetDataLength(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t NbData)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1054,7 +1072,7 @@ __STATIC_INLINE void LL_DMA_SetDataLength(DMA_TypeDef *DMAx, uint32_t Stream, ui
   *         @arg @ref LL_DMA_STREAM_7
   * @retval Between 0 to 0xFFFFFFFF
   */
-__STATIC_INLINE uint32_t LL_DMA_GetDataLength(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetDataLength(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1378,7 +1396,7 @@ __STATIC_INLINE void LL_DMA_SetPeriphRequest(DMA_TypeDef *DMAx, uint32_t Stream,
   *
   * @note   (*) Availability depends on devices.
   */
-__STATIC_INLINE  uint32_t LL_DMA_GetPeriphRequest(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE  uint32_t LL_DMA_GetPeriphRequest(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   return (READ_BIT(((DMAMUX_Channel_TypeDef *)((uint32_t)((uint32_t)DMAMUX1_Channel0 + (DMAMUX_CCR_SIZE * (Stream)) + (uint32_t)(DMAMUX_CCR_SIZE * LL_DMA_INSTANCE_TO_DMAMUX_CHANNEL(DMAx)))))->CCR, DMAMUX_CxCR_DMAREQ_ID));
 }
@@ -1403,7 +1421,7 @@ __STATIC_INLINE  uint32_t LL_DMA_GetPeriphRequest(DMA_TypeDef *DMAx, uint32_t St
   *         @arg @ref LL_DMA_MBURST_INC16
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetMemoryBurstxfer(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Mburst)
+__STATIC_INLINE void LL_DMA_SetMemoryBurstxfer(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Mburst)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1429,7 +1447,7 @@ __STATIC_INLINE void LL_DMA_SetMemoryBurstxfer(DMA_TypeDef *DMAx, uint32_t Strea
   *         @arg @ref LL_DMA_MBURST_INC8
   *         @arg @ref LL_DMA_MBURST_INC16
   */
-__STATIC_INLINE uint32_t LL_DMA_GetMemoryBurstxfer(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetMemoryBurstxfer(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1456,7 +1474,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetMemoryBurstxfer(DMA_TypeDef *DMAx, uint32_t S
   *         @arg @ref LL_DMA_PBURST_INC16
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetPeriphBurstxfer(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Pburst)
+__STATIC_INLINE void LL_DMA_SetPeriphBurstxfer(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Pburst)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1482,7 +1500,7 @@ __STATIC_INLINE void LL_DMA_SetPeriphBurstxfer(DMA_TypeDef *DMAx, uint32_t Strea
   *         @arg @ref LL_DMA_PBURST_INC8
   *         @arg @ref LL_DMA_PBURST_INC16
   */
-__STATIC_INLINE uint32_t LL_DMA_GetPeriphBurstxfer(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetPeriphBurstxfer(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1507,7 +1525,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetPeriphBurstxfer(DMA_TypeDef *DMAx, uint32_t S
   *         @arg @ref LL_DMA_CURRENTTARGETMEM1
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetCurrentTargetMem(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t CurrentMemory)
+__STATIC_INLINE void LL_DMA_SetCurrentTargetMem(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t CurrentMemory)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1531,7 +1549,7 @@ __STATIC_INLINE void LL_DMA_SetCurrentTargetMem(DMA_TypeDef *DMAx, uint32_t Stre
   *         @arg @ref LL_DMA_CURRENTTARGETMEM0
   *         @arg @ref LL_DMA_CURRENTTARGETMEM1
   */
-__STATIC_INLINE uint32_t LL_DMA_GetCurrentTargetMem(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetCurrentTargetMem(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1553,7 +1571,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetCurrentTargetMem(DMA_TypeDef *DMAx, uint32_t 
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_EnableDoubleBufferMode(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_EnableDoubleBufferMode(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1575,11 +1593,33 @@ __STATIC_INLINE void LL_DMA_EnableDoubleBufferMode(DMA_TypeDef *DMAx, uint32_t S
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_DisableDoubleBufferMode(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_DisableDoubleBufferMode(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
   CLEAR_BIT(((DMA_Stream_TypeDef *)(dma_base_addr + LL_DMA_STR_OFFSET_TAB[Stream]))->CR, DMA_SxCR_DBM);
+}
+
+/**
+  * @brief  Check if double buffer mode is enabled or not.
+  * @rmtoll CR          DBM           LL_DMA_IsEnabledDoubleBufferMode
+  * @param  DMAx DMAx Instance
+  * @param  Stream This parameter can be one of the following values:
+  *         @arg @ref LL_DMA_STREAM_0
+  *         @arg @ref LL_DMA_STREAM_1
+  *         @arg @ref LL_DMA_STREAM_2
+  *         @arg @ref LL_DMA_STREAM_3
+  *         @arg @ref LL_DMA_STREAM_4
+  *         @arg @ref LL_DMA_STREAM_5
+  *         @arg @ref LL_DMA_STREAM_6
+  *         @arg @ref LL_DMA_STREAM_7
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_DMA_IsEnabledDoubleBufferMode(const DMA_TypeDef *DMAx, uint32_t Stream)
+{
+  uint32_t dma_base_addr = (uint32_t)DMAx;
+
+  return ((READ_BIT(((DMA_Stream_TypeDef *)(dma_base_addr + LL_DMA_STR_OFFSET_TAB[Stream]))->CR, DMA_SxCR_DBM) == (DMA_SxCR_DBM)) ? 1UL : 0UL);
 }
 
 /**
@@ -1603,7 +1643,7 @@ __STATIC_INLINE void LL_DMA_DisableDoubleBufferMode(DMA_TypeDef *DMAx, uint32_t 
   *         @arg @ref LL_DMA_FIFOSTATUS_EMPTY
   *         @arg @ref LL_DMA_FIFOSTATUS_FULL
   */
-__STATIC_INLINE uint32_t LL_DMA_GetFIFOStatus(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetFIFOStatus(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1625,7 +1665,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetFIFOStatus(DMA_TypeDef *DMAx, uint32_t Stream
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_DisableFifoMode(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_DisableFifoMode(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1647,7 +1687,7 @@ __STATIC_INLINE void LL_DMA_DisableFifoMode(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_EnableFifoMode(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_EnableFifoMode(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1674,7 +1714,7 @@ __STATIC_INLINE void LL_DMA_EnableFifoMode(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_FIFOTHRESHOLD_FULL
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetFIFOThreshold(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Threshold)
+__STATIC_INLINE void LL_DMA_SetFIFOThreshold(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Threshold)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1700,7 +1740,7 @@ __STATIC_INLINE void LL_DMA_SetFIFOThreshold(DMA_TypeDef *DMAx, uint32_t Stream,
   *         @arg @ref LL_DMA_FIFOTHRESHOLD_3_4
   *         @arg @ref LL_DMA_FIFOTHRESHOLD_FULL
   */
-__STATIC_INLINE uint32_t LL_DMA_GetFIFOThreshold(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetFIFOThreshold(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1731,7 +1771,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetFIFOThreshold(DMA_TypeDef *DMAx, uint32_t Str
   *         @arg @ref LL_DMA_FIFOTHRESHOLD_FULL
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_ConfigFifo(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t FifoMode, uint32_t FifoThreshold)
+__STATIC_INLINE void LL_DMA_ConfigFifo(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t FifoMode, uint32_t FifoThreshold)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1761,7 +1801,7 @@ __STATIC_INLINE void LL_DMA_ConfigFifo(DMA_TypeDef *DMAx, uint32_t Stream, uint3
   *         @arg @ref LL_DMA_DIRECTION_MEMORY_TO_MEMORY
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_ConfigAddresses(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t SrcAddress, uint32_t DstAddress, uint32_t Direction)
+__STATIC_INLINE void LL_DMA_ConfigAddresses(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t SrcAddress, uint32_t DstAddress, uint32_t Direction)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1797,7 +1837,7 @@ __STATIC_INLINE void LL_DMA_ConfigAddresses(DMA_TypeDef *DMAx, uint32_t Stream, 
   * @param  MemoryAddress Between 0 to 0xFFFFFFFF
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetMemoryAddress(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t MemoryAddress)
+__STATIC_INLINE void LL_DMA_SetMemoryAddress(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t MemoryAddress)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1822,7 +1862,7 @@ __STATIC_INLINE void LL_DMA_SetMemoryAddress(DMA_TypeDef *DMAx, uint32_t Stream,
   * @param  PeriphAddress Between 0 to 0xFFFFFFFF
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetPeriphAddress(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t PeriphAddress)
+__STATIC_INLINE void LL_DMA_SetPeriphAddress(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t PeriphAddress)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1845,7 +1885,7 @@ __STATIC_INLINE void LL_DMA_SetPeriphAddress(DMA_TypeDef *DMAx, uint32_t Stream,
   *         @arg @ref LL_DMA_STREAM_7
   * @retval Between 0 to 0xFFFFFFFF
   */
-__STATIC_INLINE uint32_t LL_DMA_GetMemoryAddress(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetMemoryAddress(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1868,7 +1908,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetMemoryAddress(DMA_TypeDef *DMAx, uint32_t Str
   *         @arg @ref LL_DMA_STREAM_7
   * @retval Between 0 to 0xFFFFFFFF
   */
-__STATIC_INLINE uint32_t LL_DMA_GetPeriphAddress(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetPeriphAddress(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1893,7 +1933,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetPeriphAddress(DMA_TypeDef *DMAx, uint32_t Str
   * @param  MemoryAddress Between 0 to 0xFFFFFFFF
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetM2MSrcAddress(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t MemoryAddress)
+__STATIC_INLINE void LL_DMA_SetM2MSrcAddress(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t MemoryAddress)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1918,7 +1958,7 @@ __STATIC_INLINE void LL_DMA_SetM2MSrcAddress(DMA_TypeDef *DMAx, uint32_t Stream,
   * @param  MemoryAddress Between 0 to 0xFFFFFFFF
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetM2MDstAddress(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t MemoryAddress)
+__STATIC_INLINE void LL_DMA_SetM2MDstAddress(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t MemoryAddress)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1941,7 +1981,7 @@ __STATIC_INLINE void LL_DMA_SetM2MDstAddress(DMA_TypeDef *DMAx, uint32_t Stream,
   *         @arg @ref LL_DMA_STREAM_7
   * @retval Between 0 to 0xFFFFFFFF
   */
-__STATIC_INLINE uint32_t LL_DMA_GetM2MSrcAddress(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetM2MSrcAddress(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1964,7 +2004,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetM2MSrcAddress(DMA_TypeDef *DMAx, uint32_t Str
   *         @arg @ref LL_DMA_STREAM_7
   * @retval Between 0 to 0xFFFFFFFF
   */
-__STATIC_INLINE uint32_t LL_DMA_GetM2MDstAddress(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetM2MDstAddress(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -1987,7 +2027,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetM2MDstAddress(DMA_TypeDef *DMAx, uint32_t Str
   * @param  Address Between 0 to 0xFFFFFFFF
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_SetMemory1Address(DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Address)
+__STATIC_INLINE void LL_DMA_SetMemory1Address(const DMA_TypeDef *DMAx, uint32_t Stream, uint32_t Address)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -2009,7 +2049,7 @@ __STATIC_INLINE void LL_DMA_SetMemory1Address(DMA_TypeDef *DMAx, uint32_t Stream
   *         @arg @ref LL_DMA_STREAM_7
   * @retval Between 0 to 0xFFFFFFFF
   */
-__STATIC_INLINE uint32_t LL_DMA_GetMemory1Address(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_GetMemory1Address(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -2030,7 +2070,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetMemory1Address(DMA_TypeDef *DMAx, uint32_t St
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT0(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT0(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_HTIF0) == (DMA_LISR_HTIF0)) ? 1UL : 0UL);
 }
@@ -2041,7 +2081,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT0(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT1(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT1(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_HTIF1) == (DMA_LISR_HTIF1)) ? 1UL : 0UL);
 }
@@ -2052,7 +2092,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT1(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT2(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT2(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_HTIF2) == (DMA_LISR_HTIF2)) ? 1UL : 0UL);
 }
@@ -2063,7 +2103,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT2(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT3(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT3(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_HTIF3) == (DMA_LISR_HTIF3)) ? 1UL : 0UL);
 }
@@ -2074,7 +2114,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT3(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT4(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT4(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_HTIF4) == (DMA_HISR_HTIF4)) ? 1UL : 0UL);
 }
@@ -2085,7 +2125,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT4(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT5(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT5(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_HTIF5) == (DMA_HISR_HTIF5)) ? 1UL : 0UL);
 }
@@ -2096,7 +2136,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT5(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT6(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT6(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_HTIF6) == (DMA_HISR_HTIF6)) ? 1UL : 0UL);
 }
@@ -2107,7 +2147,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT6(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT7(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT7(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_HTIF7) == (DMA_HISR_HTIF7)) ? 1UL : 0UL);
 }
@@ -2118,7 +2158,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_HT7(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC0(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC0(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_TCIF0) == (DMA_LISR_TCIF0)) ? 1UL : 0UL);
 }
@@ -2129,7 +2169,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC0(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC1(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC1(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_TCIF1) == (DMA_LISR_TCIF1)) ? 1UL : 0UL);
 }
@@ -2140,7 +2180,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC1(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC2(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC2(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_TCIF2) == (DMA_LISR_TCIF2)) ? 1UL : 0UL);
 }
@@ -2151,7 +2191,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC2(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC3(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC3(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_TCIF3) == (DMA_LISR_TCIF3)) ? 1UL : 0UL);
 }
@@ -2162,7 +2202,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC3(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC4(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC4(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_TCIF4) == (DMA_HISR_TCIF4)) ? 1UL : 0UL);
 }
@@ -2173,7 +2213,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC4(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC5(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC5(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_TCIF5) == (DMA_HISR_TCIF5)) ? 1UL : 0UL);
 }
@@ -2184,7 +2224,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC5(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC6(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC6(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_TCIF6) == (DMA_HISR_TCIF6)) ? 1UL : 0UL);
 }
@@ -2195,7 +2235,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC6(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC7(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC7(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_TCIF7) == (DMA_HISR_TCIF7)) ? 1UL : 0UL);
 }
@@ -2206,7 +2246,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TC7(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE0(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE0(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_TEIF0) == (DMA_LISR_TEIF0)) ? 1UL : 0UL);
 }
@@ -2217,7 +2257,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE0(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE1(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE1(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_TEIF1) == (DMA_LISR_TEIF1)) ? 1UL : 0UL);
 }
@@ -2228,7 +2268,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE1(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE2(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE2(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_TEIF2) == (DMA_LISR_TEIF2)) ? 1UL : 0UL);
 }
@@ -2239,7 +2279,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE2(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE3(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE3(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_TEIF3) == (DMA_LISR_TEIF3)) ? 1UL : 0UL);
 }
@@ -2250,7 +2290,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE3(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE4(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE4(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_TEIF4) == (DMA_HISR_TEIF4)) ? 1UL : 0UL);
 }
@@ -2261,7 +2301,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE4(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE5(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE5(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_TEIF5) == (DMA_HISR_TEIF5)) ? 1UL : 0UL);
 }
@@ -2272,7 +2312,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE5(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE6(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE6(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_TEIF6) == (DMA_HISR_TEIF6)) ? 1UL : 0UL);
 }
@@ -2283,7 +2323,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE6(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE7(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE7(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_TEIF7) == (DMA_HISR_TEIF7)) ? 1UL : 0UL);
 }
@@ -2294,7 +2334,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_TE7(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME0(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME0(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_DMEIF0) == (DMA_LISR_DMEIF0)) ? 1UL : 0UL);
 }
@@ -2305,7 +2345,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME0(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME1(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME1(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_DMEIF1) == (DMA_LISR_DMEIF1)) ? 1UL : 0UL);
 }
@@ -2316,7 +2356,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME1(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME2(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME2(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_DMEIF2) == (DMA_LISR_DMEIF2)) ? 1UL : 0UL);
 }
@@ -2327,7 +2367,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME2(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME3(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME3(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_DMEIF3) == (DMA_LISR_DMEIF3)) ? 1UL : 0UL);
 }
@@ -2338,7 +2378,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME3(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME4(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME4(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_DMEIF4) == (DMA_HISR_DMEIF4)) ? 1UL : 0UL);
 }
@@ -2349,7 +2389,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME4(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME5(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME5(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_DMEIF5) == (DMA_HISR_DMEIF5)) ? 1UL : 0UL);
 }
@@ -2360,7 +2400,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME5(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME6(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME6(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_DMEIF6) == (DMA_HISR_DMEIF6)) ? 1UL : 0UL);
 }
@@ -2371,7 +2411,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME6(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME7(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME7(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_DMEIF7) == (DMA_HISR_DMEIF7)) ? 1UL : 0UL);
 }
@@ -2382,7 +2422,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_DME7(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE0(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE0(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_FEIF0) == (DMA_LISR_FEIF0)) ? 1UL : 0UL);
 }
@@ -2393,7 +2433,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE0(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE1(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE1(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_FEIF1) == (DMA_LISR_FEIF1)) ? 1UL : 0UL);
 }
@@ -2404,7 +2444,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE1(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE2(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE2(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_FEIF2) == (DMA_LISR_FEIF2)) ? 1UL : 0UL);
 }
@@ -2415,7 +2455,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE2(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE3(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE3(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->LISR, DMA_LISR_FEIF3) == (DMA_LISR_FEIF3)) ? 1UL : 0UL);
 }
@@ -2426,7 +2466,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE3(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE4(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE4(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_FEIF4) == (DMA_HISR_FEIF4)) ? 1UL : 0UL);
 }
@@ -2437,7 +2477,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE4(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE5(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE5(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_FEIF5) == (DMA_HISR_FEIF5)) ? 1UL : 0UL);
 }
@@ -2448,7 +2488,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE5(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE6(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE6(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_FEIF6) == (DMA_HISR_FEIF6)) ? 1UL : 0UL);
 }
@@ -2459,7 +2499,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE6(DMA_TypeDef *DMAx)
   * @param  DMAx DMAx Instance
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE7(DMA_TypeDef *DMAx)
+__STATIC_INLINE uint32_t LL_DMA_IsActiveFlag_FE7(const DMA_TypeDef *DMAx)
 {
   return ((READ_BIT(DMAx->HISR, DMA_HISR_FEIF7) == (DMA_HISR_FEIF7)) ? 1UL : 0UL);
 }
@@ -2927,7 +2967,7 @@ __STATIC_INLINE void LL_DMA_ClearFlag_FE7(DMA_TypeDef *DMAx)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_EnableIT_HT(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_EnableIT_HT(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -2949,7 +2989,7 @@ __STATIC_INLINE void LL_DMA_EnableIT_HT(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_EnableIT_TE(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_EnableIT_TE(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -2971,7 +3011,7 @@ __STATIC_INLINE void LL_DMA_EnableIT_TE(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_EnableIT_TC(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_EnableIT_TC(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -2993,7 +3033,7 @@ __STATIC_INLINE void LL_DMA_EnableIT_TC(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_EnableIT_DME(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_EnableIT_DME(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3015,7 +3055,7 @@ __STATIC_INLINE void LL_DMA_EnableIT_DME(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_EnableIT_FE(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_EnableIT_FE(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3037,7 +3077,7 @@ __STATIC_INLINE void LL_DMA_EnableIT_FE(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_DisableIT_HT(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_DisableIT_HT(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3059,7 +3099,7 @@ __STATIC_INLINE void LL_DMA_DisableIT_HT(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_DisableIT_TE(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_DisableIT_TE(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3081,7 +3121,7 @@ __STATIC_INLINE void LL_DMA_DisableIT_TE(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_DisableIT_TC(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_DisableIT_TC(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3103,7 +3143,7 @@ __STATIC_INLINE void LL_DMA_DisableIT_TC(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_DisableIT_DME(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_DisableIT_DME(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3125,7 +3165,7 @@ __STATIC_INLINE void LL_DMA_DisableIT_DME(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval None
   */
-__STATIC_INLINE void LL_DMA_DisableIT_FE(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE void LL_DMA_DisableIT_FE(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3133,7 +3173,7 @@ __STATIC_INLINE void LL_DMA_DisableIT_FE(DMA_TypeDef *DMAx, uint32_t Stream)
 }
 
 /**
-  * @brief Check if Half transfer interrup is enabled.
+  * @brief Check if Half transfer interrupt is enabled.
   * @rmtoll CR        HTIE         LL_DMA_IsEnabledIT_HT
   * @param  DMAx DMAx Instance
   * @param  Stream This parameter can be one of the following values:
@@ -3147,7 +3187,7 @@ __STATIC_INLINE void LL_DMA_DisableIT_FE(DMA_TypeDef *DMAx, uint32_t Stream)
   *         @arg @ref LL_DMA_STREAM_7
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_HT(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_HT(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3169,7 +3209,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_HT(DMA_TypeDef *DMAx, uint32_t Strea
   *         @arg @ref LL_DMA_STREAM_7
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_TE(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_TE(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3177,7 +3217,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_TE(DMA_TypeDef *DMAx, uint32_t Strea
 }
 
 /**
-  * @brief Check if Transfer complete interrup is enabled.
+  * @brief Check if Transfer complete interrupt is enabled.
   * @rmtoll CR        TCIE         LL_DMA_IsEnabledIT_TC
   * @param  DMAx DMAx Instance
   * @param  Stream This parameter can be one of the following values:
@@ -3191,7 +3231,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_TE(DMA_TypeDef *DMAx, uint32_t Strea
   *         @arg @ref LL_DMA_STREAM_7
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_TC(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_TC(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3213,7 +3253,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_TC(DMA_TypeDef *DMAx, uint32_t Strea
   *         @arg @ref LL_DMA_STREAM_7
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_DME(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_DME(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 
@@ -3221,7 +3261,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_DME(DMA_TypeDef *DMAx, uint32_t Stre
 }
 
 /**
-  * @brief Check if FIFO error interrup is enabled.
+  * @brief Check if FIFO error interrupt is enabled.
   * @rmtoll FCR        FEIE         LL_DMA_IsEnabledIT_FE
   * @param  DMAx DMAx Instance
   * @param  Stream This parameter can be one of the following values:
@@ -3235,7 +3275,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_DME(DMA_TypeDef *DMAx, uint32_t Stre
   *         @arg @ref LL_DMA_STREAM_7
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_FE(DMA_TypeDef *DMAx, uint32_t Stream)
+__STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_FE(const DMA_TypeDef *DMAx, uint32_t Stream)
 {
   uint32_t dma_base_addr = (uint32_t)DMAx;
 

@@ -7,6 +7,7 @@
 
 #include "torque_command/torque_manager.h"
 
+#include "CAN/general_can_data_manager.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/lateral_control.h"
 #include "dynamic_controls/longitudinal_control.h"
@@ -118,6 +119,8 @@ void torque_manager(void* argument) {
                 // sends the reference torque
                 send_ref_torque_message(ref_torque);
 
+                log_data(ID_TORQUE_DECREASE_R, result_lateral.torque_decrese[R_MOTOR]);
+                log_data(ID_TORQUE_DECREASE_L, result_lateral.torque_decrese[L_MOTOR]);
                 osDelayUntil(tick);
 
                 break;
@@ -129,7 +132,8 @@ void torque_manager(void* argument) {
                 rampa_torque(ref_torque, result_longitudinal.torque_decrease);
                 // sends the torque command to the inverter
                 send_ref_torque_message(ref_torque);
-
+                log_data(ID_TORQUE_DECREASE_R, result_longitudinal.torque_decrese[R_MOTOR]);
+                log_data(ID_TORQUE_DECREASE_L, result_longitudinal.torque_decrese[L_MOTOR]);
                 osDelayUntil(tick);
 
                 break;

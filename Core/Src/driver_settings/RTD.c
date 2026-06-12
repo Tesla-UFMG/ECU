@@ -15,10 +15,12 @@
 #include "util/global_instances.h"
 #include "util/global_variables.h"
 #include "util/util.h"
+#include "CAN/general_can_data_manager.h"
 
 static void activate_RTDS();
 static bool can_RTD_be_enabled();
 static void set_RTD();
+static bool air_status;
 
 void RTD(void* argument) {
     UNUSED(argument);
@@ -90,10 +92,12 @@ static bool can_RTD_be_enabled() {
     RACE_MODE_t race_mode                = get_global_var_value(RACE_MODE);
     // flag that indicates when the inverter precharge time has passed and the inverter is
     // ready
-    bool is_inverter_ready =
-        get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
+    /*bool is_inverter_ready =
+        get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);*/
+    air_status = general_get_value(AIR_MINUS);
+
     if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
-        && is_inverter_ready) {
+        && /*is_inverter_ready*/ air_status) {
         return true;
     }
     return false;

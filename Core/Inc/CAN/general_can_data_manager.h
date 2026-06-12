@@ -11,14 +11,13 @@
 #include "CAN/CAN_IDs.h"
 
 #define VARIABLES_GENERAL_CAN_RX_IDS                                                     \
-    ENTRY(accelerometer_x, 291, 0)                                                       \
-    ENTRY(accelerometer_y, 291, 1)                                                       \
-    ENTRY(accelerometer_z, 291, 2)                                                       \
-    ENTRY(error_imu_accelerometer, 291, 3)                                               \
-    ENTRY(gyroscope_x, 292, 0)                                                           \
-    ENTRY(gyroscope_y, 292, 1)                                                           \
-    ENTRY(gyroscope_z, 292, 2)                                                           \
-    ENTRY(error_imu_gyroscope, 292, 3)
+    ENTRY(ACEL_X, 2, 0)                                                       		 \
+    ENTRY(ACEL_Y, 2, 1)                                                       		 \
+    ENTRY(ACEL_Z, 2, 2)                                                       		 \
+    ENTRY(GYRO_X, 1, 0)                                                           	 \
+    ENTRY(GYRO_Y, 1, 1)                                                           	 \
+    ENTRY(GYRO_Z, 1, 2)                                                           	 \
+	ENTRY(AIR_MINUS, 8, 0)
 
 typedef enum {
     INVALID_VARIABLE_GENERAL = -1,

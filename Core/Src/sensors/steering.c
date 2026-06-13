@@ -12,23 +12,23 @@
 #include "util/constants.h"
 #include "util/global_definitions.h"
 #include "util/util.h"
-
+double zero_aux;
+double steering_scaled_bits;
+double steering_rad;
+double steering_wheel_rad;
+double volante_cru;
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 void steering_read(void* argument) {
     UNUSED(argument);
 
-    double volante_cru;
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
         volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
 
-        double zero_aux = ZERO_VOLANTE;
-        double steering_scaled_bits;
-        double steering_rad;
-        double steering_wheel_rad;
+        zero_aux = ZERO_VOLANTE;
 
         /*if the steering minimum value is below 0, the sensor wraps around the ADC maximum value
         In this case, the ADC reading returns 4095*/
@@ -65,7 +65,8 @@ void steering_read(void* argument) {
 
 
         set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
-        STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
+        //STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
+        float steering_wheel = steering_wheel_rad*1000 + 645;
         log_data(ID_STEERING_WHEEL, steering_wheel);
 
 

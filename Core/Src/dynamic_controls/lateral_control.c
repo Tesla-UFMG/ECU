@@ -41,7 +41,7 @@ lateral_result_t lateral_control() {
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
     //double calc_gyro(uint16_t gyro_yaw);
 
-    int16_t gyro_yaw = ((int16_t)fabs(general_get_value(gyroscope_y)));
+    int16_t gyro_yaw = ((int16_t)fabs(general_get_value(GYRO_Z)));
 
     //[m/s]
     cg_speed = ((double)get_global_var_value(FRONT_AVG_SPEED)) / (10 * 3.6);

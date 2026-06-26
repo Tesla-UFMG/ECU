@@ -21,17 +21,20 @@ static void activate_RTDS();
 static bool can_RTD_be_enabled();
 static void set_RTD();
 static bool air_status;
+modos modo;
 
 void RTD(void* argument) {
     UNUSED(argument);
 
     //Sets the RGB LED during the first execution of the code.
+
     set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
 
     for (;;) {
 
     	//waits for the flag indicating that the RTD button was pressed
         osThreadFlagsWait(RTD_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
+        modo = get_global_var_value(SELECTED_MODE);
         air_status = general_get_value(AIR_MINUS);
 
         if (!is_RTD_active()) {

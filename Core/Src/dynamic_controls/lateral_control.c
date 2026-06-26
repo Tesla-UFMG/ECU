@@ -18,6 +18,7 @@
 #include "util/util.h"
 
 static PID_t pid_lateral;
+volatile int16_t gyro_yaw;
 
 void init_lateral_control() {
     PID_init(&pid_lateral, 1, P_REF[0], P_REF[0]/I_REF[0], 0, NOMINAL_TORQUE,
@@ -29,6 +30,7 @@ lateral_result_t lateral_control() {
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
 
+
     double cg_speed;
     //double gyro_adjusted;    // entre -1.5 e 1.5
     double desired_yaw;
@@ -37,11 +39,13 @@ lateral_result_t lateral_control() {
     double kp;
     double ti;
     double pid_result;
+    double yaw_rads;
     int ref_torque;
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
     //double calc_gyro(uint16_t gyro_yaw);
 
-    int16_t gyro_yaw = ((int16_t)fabs(general_get_value(GYRO_Z)));
+    gyro_yaw = ((int16_t)fabs(general_get_value(GYRO_Z)));
+    yaw_rads = gyro_yaw * LSM6DSR_TO_RADS;
 
     //[m/s]
     cg_speed = ((double)get_global_var_value(FRONT_AVG_SPEED)) / (10 * 3.6);
@@ -66,7 +70,7 @@ lateral_result_t lateral_control() {
     PID_set_setpoint(&pid_lateral, setpoint);
     pi_lookup_table(cg_speed, &kp, &ti);
     PID_set_parameters(&pid_lateral, kp, ti, 0);
-    pid_result = PID_compute(&pid_lateral, gyro_yaw); //Return variable
+    pid_result = PID_compute(&pid_lateral, yaw_rads); //Return variable
 
     //pid_result: delta torque 0 - 13 [N.m]
     //ref_torque: 0 to torq.max [%]

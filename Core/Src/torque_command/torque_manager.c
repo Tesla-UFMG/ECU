@@ -15,6 +15,8 @@
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
 #include "util/util.h"
+#include "leds/rgb_led_handler.h"
+
 
 void rampa_torque(uint32_t * ref_torque, const double* ref_torque_decrease);
 void send_ref_torque_message(const uint32_t* ref_torque);
@@ -73,15 +75,18 @@ void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
         if (get_global_var_value(SELECTED_MODE).dif_elt == 1
             && get_global_var_value(SELECTED_MODE).traction_control == 0) {
             g_control_type = LATERAL;
+            set_rgb_led(BRANCO, FIXED);
         }
         if (get_global_var_value(SELECTED_MODE).dif_elt == 0
             && get_global_var_value(SELECTED_MODE).traction_control == 1) {
             g_control_type = LONGITUDINAL;
+            set_rgb_led(BRANCO, FIXED);
         }
         //TODO (Guilherme): Abaixo está uma das possíveis alterações a serem feitas para a integração dos controles.
         if (get_global_var_value(SELECTED_MODE).dif_elt == 1
             && get_global_var_value(SELECTED_MODE).traction_control == 1) {
             g_control_type = BOTH_CONTROLS;
+            set_rgb_led(BRANCO, FIXED);
         }
     } else {
         g_control_type = NO_CONTROL;

@@ -6,63 +6,67 @@
  */
 
 #include "sensors/steering.h"
-
 #include "datalogging/datalog_handler.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
 #include "util/global_definitions.h"
 #include "util/util.h"
+
 double zero_aux;
 double steering_scaled_bits;
-double steering_rad;
-double steering_wheel_rad;
-double volante_cru;
+
+uint16_t volante_cru;
+uint16_t previous_value = 0;
+int32_t delta;
+int32_t steering_position = 0;
+float steering_rad;
+float steering_wheel_rad;
+uint16_t primeiroValor = 0;
+volatile int16_t valor_inicial = 0;
+int16_t somador = 0;
+
+
+
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 void steering_read(void* argument) {
-    UNUSED(argument);
 
+	UNUSED(argument);
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
         volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
 
-        zero_aux = ZERO_VOLANTE;
-
-        /*if the steering minimum value is below 0, the sensor wraps around the ADC maximum value
-        In this case, the ADC reading returns 4095*/
-        /*therefore, subtract 4095 from the measured value to obtaining a negative value
-		that can be used in the calculation. The same applies to the steering zero position*/
-        if (VOLANTE_MIN > VOLANTE_MAX) {
-            zero_aux -= 4095;
-            if (volante_cru > VOLANTE_MAX) {
-                volante_cru -= 4095;
-            }
+        //apenas para inicializar: volante alinhado
+        if(primeiroValor == 0){
+        	valor_inicial = volante_cru;
         }
 
+        delta = (int32_t)volante_cru - (int32_t)previous_value;
 
-        if (volante_cru < zero_aux) {
-        	steering_scaled_bits = 0;
-        } else {
-        	steering_scaled_bits = (volante_cru * GANHO_VOLANTE) - ZERO_VOLANTE;
+        /*if(fabs(delta) < 30){
+        	delta = 0;
+        }*/
+
+
+        if(primeiroValor != 0){
+
+        if(delta > ADC_MAX_VALUE/2){
+        	delta -= ADC_MAX_VALUE;
+        	//-1095
         }
 
-
-        if (steering_scaled_bits < VOLANTE_MIN){
-        	steering_scaled_bits = VOLANTE_MIN;
-        } else if(steering_scaled_bits > VOLANTE_MAX){
-        	steering_scaled_bits = VOLANTE_MAX;
+        else if(delta < -ADC_MAX_VALUE/2){
+        	delta += ADC_MAX_VALUE;
         }
 
+        	steering_position += delta;
+        }
 
-        //lookup table
-        //y = y0 + (y1-y0)/(x1-x0) * (x-x0)
-        //steering to right is positive, to left is negative.
-        //negative sign compensates the sensor behavior, since its voltage decreases when steering to the right.
-        steering_rad = - (STEERING_RAD_LEFT + ( (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) / (VOLANTE_MAX - VOLANTE_MIN) ) * (steering_scaled_bits - VOLANTE_MIN));
-        steering_wheel_rad =  (STEERING_RAD_LEFT_WHEEL + ( (STEERING_RAD_RIGHT_WHEEL - STEERING_RAD_LEFT_WHEEL) / (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) ) * (steering_rad - STEERING_RAD_LEFT));
+        steering_rad = (steering_position * ((2.0*180)/ADC_MAX_VALUE));
 
+        steering_wheel_rad = steering_rad/RELATION_DIRECAO;
 
         set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
         //STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
@@ -80,7 +84,9 @@ void steering_read(void* argument) {
             set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);
         }
 
-        osDelay(100);
+        previous_value = volante_cru;
+    	primeiroValor = 1;
+        osDelay(10);
 
         //	return (volante);
     }

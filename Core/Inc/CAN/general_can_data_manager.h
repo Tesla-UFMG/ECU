@@ -10,13 +10,13 @@
 
 #include "CAN/CAN_IDs.h"
 
-#define VARIABLES_GENERAL_CAN_RX_IDS                                                     \
-    ENTRY(ACEL_X, 2, 0)                                                       		 \
-    ENTRY(ACEL_Y, 2, 1)                                                       		 \
-    ENTRY(ACEL_Z, 2, 2)                                                       		 \
+#define VARIABLES_GENERAL_CAN_RX_IDS                                                 \
     ENTRY(GYRO_X, 1, 0)                                                           	 \
     ENTRY(GYRO_Y, 1, 1)                                                           	 \
     ENTRY(GYRO_Z, 1, 2)                                                           	 \
+    ENTRY(ACEL_X, 2, 0)                                                       		 \
+    ENTRY(ACEL_Y, 2, 1)                                                       		 \
+    ENTRY(ACEL_Z, 2, 2)                                                       		 \
 	ENTRY(AIR_MINUS, 8, 1)
 
 typedef enum {

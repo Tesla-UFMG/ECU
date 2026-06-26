@@ -23,8 +23,8 @@
 // defines PID LATERAL
 #define LUT_SIZE 10
 static const double VX_REF[LUT_SIZE] = {5,7,9,11,13,15,17,19,21,23};
-static const double P_REF[LUT_SIZE]  = {1,2,3,4,5,6,7,8,9,10};
-static const double I_REF[LUT_SIZE]  = {1,2,3,4,5,6,7,8,9,10};
+static const double P_REF[LUT_SIZE]  = {11.85,49.26,64.61,93.15,111.82,128.26,158.12,344.21,353.61,363.16};
+static const double I_REF[LUT_SIZE]  = {415.39,69.16,42.06,24.40,16.47,12.61,9.08,15.82,16.97,17.87};
 
 typedef struct {
     double torque_decrease[2];

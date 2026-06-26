@@ -10,6 +10,7 @@
 #include "CAN/general_can_data_manager.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
+#include "datalogging/datalog_handler.h"
 #include "dynamic_controls/constants_control.h"
 #include "math.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
@@ -55,22 +56,26 @@ lateral_result_t lateral_control() {
 
     //Using always absolute value
     desired_yaw   = (cg_speed * fabs(steering_wheel)) / (WHEELBASE + (KU * cg_speed * cg_speed));
-
+    
+    log_data(ID_DESIRED_YAW, desired_yaw*1000);
     //This condition prevents division by zero.
     if (cg_speed < 1){
     	max_yaw = 0;
     } else{
     	max_yaw = TUNABILITY_FACTOR * ((FRICTION_COEFFICIENT * GRAVITY) / cg_speed);
     }
-
+    log_data(ID_MAX_YAW, max_yaw*1000);
     //the smaller value in absolute magnitude
     setpoint = fmin(desired_yaw, max_yaw);
-
+    log_data(ID_SET_POINT_LATERAL, setpoint*1000);
     // PID
     PID_set_setpoint(&pid_lateral, setpoint);
     pi_lookup_table(cg_speed, &kp, &ti);
     PID_set_parameters(&pid_lateral, kp, ti, 0);
     pid_result = PID_compute(&pid_lateral, yaw_rads); //Return variable
+
+    log_data(ID_KP, kp*100);
+    log_data(ID_TI, ti*100);
 
     //pid_result: delta torque 0 - 13 [N.m]
     //ref_torque: 0 to torq.max [%]
@@ -99,6 +104,9 @@ lateral_result_t lateral_control() {
     	ref_torque_result.torque_decrease[R_MOTOR] = 0;
     	ref_torque_result.torque_decrease[L_MOTOR] = 0;
     }
+    
+    log_data(ID_TORQUE_DECREASE_L, ref_torque_result.torque_decrease[L_MOTOR]);
+    log_data(ID_TORQUE_DECREASE_R, ref_torque_result.torque_decrease[R_MOTOR]);
 
     return ref_torque_result;
 }

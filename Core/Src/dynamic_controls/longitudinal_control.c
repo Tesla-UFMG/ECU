@@ -7,8 +7,10 @@
 
 #include "dynamic_controls/longitudinal_control.h"
 
+#include "CAN/general_can_data_manager.h"
 #include "cmsis_os.h"
 #include "dynamic_controls/PID.h"
+#include "datalogging/datalog_handler.h"
 #include "dynamic_controls/constants_control.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
@@ -62,7 +64,8 @@ longitudinal_control_result_t longitudinal_control() {
                 / cg_speed)
                * 100;
     }
-
+    double slip_data = (slip+1)*100;
+    log_data(ID_SLIP, slip_data);
     //This "if" is here to deactivate the controller when the slip is lower than the ideal or when the car is making a turn 
     if (slip <= 13 || internal_wheel != CENTRO) {
         pid_result = 0;

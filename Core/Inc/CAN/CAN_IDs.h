@@ -54,12 +54,18 @@
     CAN_GENERAL_LIST_DATA(ID_INV_STATE_R_MOTOR, 29, 0)                                   \
     CAN_GENERAL_LIST_DATA(ID_FAILURE_R_MOTOR, 29, 1)                                     \
     CAN_GENERAL_LIST_DATA(ID_ALARM_R_MOTOR, 29, 2)                                       \
+    CAN_GENERAL_LIST_DATA(ID_DESIRED_YAW, 66, 0)                                         \
+    CAN_GENERAL_LIST_DATA(ID_MAX_YAW, 66, 1)                                             \
     CAN_GENERAL_LIST_DATA(ID_MODE, 67, 0)                                                \
     CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN, 68, 0)                                         \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_DECREASE_R, 68, 1)                                   \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_DECREASE_L, 68, 2)                                   \
     CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_1, 69, 0)                                \
     CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_2, 69, 1)                                \
     CAN_GENERAL_LIST_DATA(ID_DISTANCE_P_ODOM, 70, 0)                                     \
     CAN_GENERAL_LIST_DATA(ID_DISTANCE_T_ODOM, 70, 1)                                     \
+    CAN_GENERAL_LIST_DATA(ID_G_CONTROL_TYPE, 71, 0)                              \
+    CAN_GENERAL_LIST_DATA(ID_SET_POINT_LATERAL, 71, 1)                                   \
     CAN_GENERAL_LIST_DATA(ID_KP, 72, 0)                                                  \
     CAN_GENERAL_LIST_DATA(ID_TI, 72, 1)                                                  \
     CAN_GENERAL_LIST_DATA(ID_SLIP, 72, 2)                                                \

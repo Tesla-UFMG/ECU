@@ -7,7 +7,9 @@
 
 #include "torque_command/torque_manager.h"
 
+#include "CAN/general_can_data_manager.h"
 #include "cmsis_os.h"
+#include "datalogging/datalog_handler.h"
 #include "dynamic_controls/lateral_control.h"
 #include "dynamic_controls/longitudinal_control.h"
 #include "stdint.h"
@@ -91,6 +93,7 @@ void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
     } else {
         g_control_type = NO_CONTROL;
     }
+    log_data(ID_G_CONTROL_TYPE, g_control_type);
 }
 
 

@@ -81,6 +81,8 @@ longitudinal_control_result_t longitudinal_control() {
     //Store the right and left motor torque reference that must be subtracted
     ref_torque_result.torque_decrease[R_MOTOR] = ref_torque;
     ref_torque_result.torque_decrease[L_MOTOR] = ref_torque;
+    log_data(ID_TORQUE_DECREASE_L, ref_torque_result.torque_decrease[L_MOTOR]);
+    log_data(ID_TORQUE_DECREASE_R, ref_torque_result.torque_decrease[R_MOTOR]);
 
 
     return ref_torque_result;

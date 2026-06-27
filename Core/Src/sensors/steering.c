@@ -64,7 +64,7 @@ void steering_read(void* argument) {
         	steering_position += delta;
         }
 
-        steering_rad = (steering_position * ((2.0*180)/ADC_MAX_VALUE));
+        steering_rad = (steering_position * ((2.0*3.1415)/ADC_MAX_VALUE));
 
         steering_wheel_rad = steering_rad/RELATION_DIRECAO;
 

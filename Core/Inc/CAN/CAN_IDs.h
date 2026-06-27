@@ -64,7 +64,7 @@
     CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_2, 69, 1)                                \
     CAN_GENERAL_LIST_DATA(ID_DISTANCE_P_ODOM, 70, 0)                                     \
     CAN_GENERAL_LIST_DATA(ID_DISTANCE_T_ODOM, 70, 1)                                     \
-    CAN_GENERAL_LIST_DATA(ID_G_CONTROL_TYPE, 71, 0)                              \
+    CAN_GENERAL_LIST_DATA(ID_G_CONTROL_TYPE, 71, 0)                                      \
     CAN_GENERAL_LIST_DATA(ID_SET_POINT_LATERAL, 71, 1)                                   \
     CAN_GENERAL_LIST_DATA(ID_KP, 72, 0)                                                  \
     CAN_GENERAL_LIST_DATA(ID_TI, 72, 1)                                                  \

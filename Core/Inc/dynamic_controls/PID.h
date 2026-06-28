@@ -72,5 +72,6 @@ __attribute__((always_inline)) inline double PID_compute(PID_t* pid, double inpu
     //returns output
     return (pid->output);
 }
+void PID_reset(PID_t* pid);
 
 #endif /* PID_H_ */

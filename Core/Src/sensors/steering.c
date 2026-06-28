@@ -24,6 +24,7 @@ float steering_wheel_rad;
 uint16_t primeiroValor = 0;
 volatile int16_t valor_inicial = 0;
 int16_t somador = 0;
+INTERNAL_WHEEL_t internal_wheel;
 
 
 
@@ -76,14 +77,15 @@ void steering_read(void* argument) {
 
         //SPAN_ALINHAMENTO, defines the tolerance rang used to determine whether the
         //steering wheel is considered to be in the center position
-        if (steering_scaled_bits > VOLANTE_ALINHADO + SPAN_ALINHAMENTO) {
-            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)ESQUERDA);
-        } else if (steering_scaled_bits < VOLANTE_ALINHADO - SPAN_ALINHAMENTO) {
+        if (volante_cru > 2800) {
             set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)DIREITA);
+        } else if (volante_cru < 2200) {
+              set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)ESQUERDA);
         } else {
-            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);
+              set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);
         }
-
+        internal_wheel =  get_global_var_value(INTERNAL_WHEEL);
+        log_data(ID_INTERNAL_WHEEL, get_global_var_value(INTERNAL_WHEEL));
         previous_value = volante_cru;
     	primeiroValor = 1;
         osDelay(10);

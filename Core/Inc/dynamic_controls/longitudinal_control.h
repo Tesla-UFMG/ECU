@@ -17,13 +17,13 @@
 #define LONGITUDINAL_DELAY 30
 
 //TODO (Guilherme): Pode ser interessante pensar em alterar o valor do setpoint. Durante o processo de validação viu-se que o valor ótimo de slip varia entre 0,1 e 0,2. Nesse sentido, pode ser interessante tentar definir qual seria o valor do slip ratio ideal do nosso pneu.
-#define IDEAL_SLIP_DRY     13
+#define IDEAL_SLIP_DRY     10.48
 #define IDEAL_SLIP_WET     30
 
 //Defines the longitudinal PID's parameters
 //TODO (Guilherme): Ainda precisamos definir os parâmetros do controlador.
-#define KP_LONGITUDINAL 6.51864262048678 
-#define KI_LONGITUDINAL 0.14843404179579
+#define KP_LONGITUDINAL 19.51864262048678
+#define KI_LONGITUDINAL 11.14843404179579
 #define TI_LONGITUDINAL (KP_LONGITUDINAL / KI_LONGITUDINAL)
 
 //Creates a struct that will be used to store the longitudinal PID's outputs

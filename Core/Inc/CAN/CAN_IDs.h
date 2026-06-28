@@ -26,6 +26,9 @@
     CAN_GENERAL_LIST_DATA(ID_SPEED_FR, 18, 1)                                            \
     CAN_GENERAL_LIST_DATA(ID_SPEED_RL, 18, 2)                                            \
     CAN_GENERAL_LIST_DATA(ID_SPEED_RR, 18, 3)                                            \
+    CAN_GENERAL_LIST_DATA(ID_INTERNAL_WHEEL, 19, 0)                                      \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN_R, 19, 1)                                      \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN_L, 19, 2)                                      \
     CAN_GENERAL_LIST_DATA(ID_SPEED_L_MOTOR, 20, 0)                                       \
     CAN_GENERAL_LIST_DATA(ID_TORQUE_L_MOTOR, 20, 1)                                      \
     CAN_GENERAL_LIST_DATA(ID_POWER_L_MOTOR, 20, 2)                                       \

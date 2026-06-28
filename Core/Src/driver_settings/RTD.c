@@ -60,7 +60,7 @@ void exit_RTD() {
 }
 
 /*
- * According to the rules EV.10.4.3 (2022) the only verifications needed to enable RTD are
+ * According to the rules EV.9.6 (2026) the only verifications needed to enable RTD are
  * if the brake is active and TS is active. As an added safety, others verifications are
  * made:
  *
@@ -113,7 +113,7 @@ static void set_RTD() {
     activate_RTDS();
 }
 
-// Ready to drive sound. As defined by FSAE Rules: EV.10.5 (2023)
+// Ready to drive sound. As defined by FSAE Rules: EV.9.7 (2026)
 static void activate_RTDS() {
     HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
     osDelay(RTDS_TIME_MS);

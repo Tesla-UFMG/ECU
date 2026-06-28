@@ -96,12 +96,12 @@ static uint16_t throttle_calc(uint16_t apps_value, const apps_ref* ref) {
                       + ref->adjust_parameters_intercept);
 }
 
-static bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2021)
+static bool is_there_APPS_error() { // FSAE Rules: T.4.2 (2026)
     if (apps2_value > APPS2_MAX     // if APPS2 value is above of its maximum
         || apps2_value < APPS2_MIN  // or bellow its minimum
         || apps1_value > APPS1_MAX  //if APPS1 value is above of its maximum
         || apps1_value < APPS1_MIN  // or bellow its minimum
-        //if APPS1 and APPS2 differ by more than 10%
+        //if APPS1 and APPS2 differ by more than 10% FSAE Rules:T.4.2.4 (2026)
         || abs(apps1_throttle_percent - apps2_throttle_percent) / 10
                > APPS_PLAUSIBILITY_PERCENTAGE_TOLERANCE) {
         return true;
@@ -113,10 +113,10 @@ static bool is_there_BSE_error() {
     const bool is_BSE_error_active =
         get_individual_flag(e_ECU_control_flagsHandle, BSE_ERROR_FLAG);
     if (is_BSE_error_active) {
-        // FSAE Rules: EV.5.7.2 (2021)
+        // FSAE Rules: EV.4.7.2 (2026)
         return (throttle_percent >= APPS_05_PERCENT);
     }
-    // FSAE Rules: EV.5.7.1 (2021)
+    // FSAE Rules: EV.4.7.1 (2026)
     return (throttle_percent > APPS_25_PERCENT && bse > BRAKE_ACTIVE);
 }
 

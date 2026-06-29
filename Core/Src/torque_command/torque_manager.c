@@ -137,9 +137,10 @@ void torque_manager(void* argument) {
                 // TODO(giovanni): remove ramp with bench tests
                 rampa_torque(ref_torque, result_longitudinal.torque_decrease);
                 // sends the torque command to the inverter
-                send_ref_torque_message(ref_torque);
                 log_data(ID_TORQUE_GAIN_L, ref_torque[1]);
                 log_data(ID_TORQUE_GAIN_R, ref_torque[0]);
+                send_ref_torque_message(ref_torque);
+
 
                 osDelayUntil(tick);
 

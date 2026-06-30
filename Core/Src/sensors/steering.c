@@ -12,22 +12,15 @@
 #include "util/global_definitions.h"
 #include "util/util.h"
 
-double zero_aux;
-double steering_scaled_bits;
-
-uint16_t volante_cru;
-uint16_t previous_value = 0;
+uint16_t steering_adc_raw;
+uint16_t previous_adc_raw = 0;
 int32_t delta;
-int32_t steering_position = 0;
+int32_t steering_position_adc = 0;
 float steering_rad;
 float steering_wheel_rad;
-uint16_t primeiroValor = 0;
-volatile int16_t valor_inicial = 0;
-int16_t somador = 0;
+uint16_t first_value = 0;
 INTERNAL_WHEEL_t internal_wheel;
-
-
-
+bool is_initialized = false;
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 void steering_read(void* argument) {
@@ -37,37 +30,35 @@ void steering_read(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        volante_cru = ADC_DMA_buffer[STEERING_WHEEL_E];
+        //Read the ADC value from the steering sensor.
+        steering_adc_raw = ADC_DMA_buffer[STEERING_WHEEL_E];
 
-        //apenas para inicializar: volante alinhado
-        if(primeiroValor == 0){
-        	valor_inicial = volante_cru;
+        //Store the initial ADC steering sensor.
+        if(!is_initialized){
+        	first_value = steering_adc_raw;
         }
 
-        delta = (int32_t)volante_cru - (int32_t)previous_value;
+        //Difference between the current and previous ADC readings.
+        //Handle ADC wraparound.
+        delta = (int32_t)steering_adc_raw - (int32_t)previous_adc_raw;
 
-        /*if(fabs(delta) < 30){
-        	delta = 0;
-        }*/
-
-
-        if(primeiroValor != 0){
-
-        if(delta > ADC_MAX_VALUE/2){
-        	delta -= ADC_MAX_VALUE;
-        	//-1095
+        //Detect ADC wraparound using the difference (delta) between consecutive samples.
+        //A large positive or negative delta indicates that the ADC reading crossed zero.
+        //Starts after the first sample, when a previous reading is available.
+        if(is_initialized){
+        	if(delta > ADC_MAX_VALUE/2){
+        		delta -= ADC_MAX_VALUE;
+        	}
+        	else if(delta < -ADC_MAX_VALUE/2){
+        		delta += ADC_MAX_VALUE;
+        	}
+        	//Accumulate all ADC deltas using the first reading as the zero reference.
+        	steering_position_adc += delta;
         }
 
-        else if(delta < -ADC_MAX_VALUE/2){
-        	delta += ADC_MAX_VALUE;
-        }
-
-        	steering_position += delta;
-        }
-
-        steering_rad = (steering_position * ((2.0*3.1415)/ADC_MAX_VALUE));
-
-        steering_wheel_rad = steering_rad/RELATION_DIRECAO;
+        //Convert the accumulated ADC counts to an angle in radians.
+        steering_rad = (steering_position_adc * ((2.0*3.1415)/ADC_MAX_VALUE));
+        steering_wheel_rad = steering_rad/STEERING_RATIO;
 
         set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
         //STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
@@ -75,21 +66,23 @@ void steering_read(void* argument) {
         log_data(ID_STEERING_WHEEL, steering_wheel);
 
 
-        //SPAN_ALINHAMENTO, defines the tolerance rang used to determine whether the
-        //steering wheel is considered to be in the center position
-        if (volante_cru > 2800) {
+        if (steering_adc_raw > (first_value + SENSOR_DEAD_ZONE) ) {
             set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)DIREITA);
-        } else if (volante_cru < 2200) {
+        } else if (steering_adc_raw < (first_value - SENSOR_DEAD_ZONE) ) {
               set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)ESQUERDA);
         } else {
               set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);
         }
+
         internal_wheel =  get_global_var_value(INTERNAL_WHEEL);
         log_data(ID_INTERNAL_WHEEL, get_global_var_value(INTERNAL_WHEEL));
-        previous_value = volante_cru;
-    	primeiroValor = 1;
-        osDelay(10);
 
-        //	return (volante);
+        previous_adc_raw = steering_adc_raw;
+
+        is_initialized = true;
+
+    	osDelay(10);
+
+        //return(volante);
     }
 }

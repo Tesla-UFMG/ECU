@@ -19,7 +19,7 @@
 #include "util/util.h"
 
 static PID_t pid_lateral;
-volatile int16_t gyro_yaw;
+volatile int16_t yaw_RX_CAN;
 
 void init_lateral_control() {
     PID_init(&pid_lateral, 1, P_REF[0], P_REF[0]/I_REF[0], 0, NOMINAL_TORQUE,
@@ -31,9 +31,7 @@ lateral_result_t lateral_control() {
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
     THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
 
-
     double cg_speed;
-    //double gyro_adjusted;    // entre -1.5 e 1.5
     double desired_yaw;
     double max_yaw;
     double setpoint;
@@ -43,32 +41,32 @@ lateral_result_t lateral_control() {
     double yaw_rads;
     int ref_torque;
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
-    //double calc_gyro(uint16_t gyro_yaw);
 
-    gyro_yaw = ((int16_t)fabs(general_get_value(GYRO_Z)));
-    yaw_rads = gyro_yaw * LSM6DSR_TO_RADS;
+    yaw_RX_CAN = ((int16_t)fabs(general_get_value(GYRO_Z)));
+    yaw_rads = yaw_RX_CAN * LSM6DSR_TO_RADS;
 
     //[m/s]
     cg_speed = ((double)get_global_var_value(FRONT_AVG_SPEED)) / (10 * 3.6);
-
-    // yaw rate
-    //gyro_adjusted = calc_gyro(gyro_yaw);
 
     //Using always absolute value
     desired_yaw   = (cg_speed * fabs(steering_wheel)) / (WHEELBASE + (KU * cg_speed * cg_speed));
     float desired_yaw_datalogado = desired_yaw*1000;
     log_data(ID_DESIRED_YAW, desired_yaw_datalogado);
+
     //This condition prevents division by zero.
     if (cg_speed < 1){
     	max_yaw = 0;
     } else{
     	max_yaw = TUNABILITY_FACTOR * ((FRICTION_COEFFICIENT * GRAVITY) / cg_speed);
     }
+
     float max_yaw_datalogado = max_yaw*1000;
     log_data(ID_MAX_YAW, max_yaw_datalogado);
+
     //the smaller value in absolute magnitude
     setpoint = fmin(desired_yaw, max_yaw);
     log_data(ID_SET_POINT_LATERAL, setpoint*1000);
+
     // PID
     PID_set_setpoint(&pid_lateral, setpoint);
     pi_lookup_table(cg_speed, &kp, &ti);
@@ -113,25 +111,6 @@ lateral_result_t lateral_control() {
 
     return ref_torque_result;
 }
-
-// TODO(renanmoreira): verificar os calculos quando tivermos os valores reais de gyro e
-// steering
-//TODO(JOÃO): Verificar se é necessário
-
-//double calc_gyro(uint16_t gyro_yaw) {
-    // ajusta o valor do yaw para aquele usado no pid
-//    double gyro_adjusted;
-    // na primeira metade, virando a direita (valor positivo) e na segunda, a esquerda
-    // (negativo)
-//    if (gyro_yaw < HALF_GYRO) {
-//        gyro_adjusted = (double)gyro_yaw / ADJUST_GYRO_R;
-//    } else {
-//        gyro_adjusted = -(double)gyro_yaw / ADJUST_GYRO_L;
-//    }
-
-//    return gyro_adjusted;
-//}
-
 
 void pi_lookup_table(double Vx, double *Pout, double *TIout)
 {

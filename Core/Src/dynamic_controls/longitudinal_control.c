@@ -64,8 +64,8 @@ longitudinal_control_result_t longitudinal_control() {
                 / cg_speed)
                * 100;
     }
-    double slip_data = (slip+1)*100;
-    log_data(ID_SLIP, slip_data);
+    // double slip_data = (slip+1)*100;
+    // log_data(ID_SLIP, slip_data);
     //This "if" is here to deactivate the controller when the slip is lower than the ideal or when the car is making a turn 
     if (slip <= 13 || internal_wheel != CENTRO) {
         pid_result = 0;

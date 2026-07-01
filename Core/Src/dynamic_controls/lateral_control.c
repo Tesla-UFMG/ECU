@@ -75,8 +75,10 @@ lateral_result_t lateral_control() {
     PID_set_parameters(&pid_lateral, kp, ti, 0);
     pid_result = PID_compute(&pid_lateral, yaw_rads); //Return variable
 
-    log_data(ID_KP, kp*100);
-    log_data(ID_TI, ti*100);
+    double kp_data = kp*100;
+    double ti_data = ti*100;
+    log_data(ID_KP, kp_data);
+    log_data(ID_TI, ti_data);
 
     //pid_result: delta torque 0 - 13 [N.m]
     //ref_torque: 0 to torq.max [%]

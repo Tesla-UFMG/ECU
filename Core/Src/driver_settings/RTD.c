@@ -21,14 +21,14 @@ static void activate_RTDS();
 static bool can_RTD_be_enabled(); 
 static void set_RTD();
 static bool air_status;
-modos modo;
+modes modo;
 
 void RTD(void* argument) {
     UNUSED(argument);
 
     //Sets the RGB LED during the first execution of the code.
 
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).color, BLINK200);
 
     for (;;) {
 

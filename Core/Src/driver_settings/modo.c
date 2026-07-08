@@ -38,7 +38,7 @@ void select_mode(void* argument) {
                 case AUTOX: set_global_var_value(SELECTED_MODE, autox); break;
                 default: set_global_var_value(SELECTED_MODE, error); break;
             }
-            set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+            set_rgb_led(get_global_var_value(SELECTED_MODE).color, BLINK200);
         }
         // todo: dataloggar modos
     }

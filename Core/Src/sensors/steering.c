@@ -67,11 +67,11 @@ void steering_read(void* argument) {
 
 
         if (steering_adc_raw > (first_value + SENSOR_DEAD_ZONE) ) {
-            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)DIREITA);
+            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)RIGHT);
         } else if (steering_adc_raw < (first_value - SENSOR_DEAD_ZONE) ) {
-              set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)ESQUERDA);
+              set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)LEFT);
         } else {
-              set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);
+              set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTER);
         }
 
         internal_wheel =  get_global_var_value(INTERNAL_WHEEL);

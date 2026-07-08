@@ -13,7 +13,7 @@ volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 volatile const modes enduro     = {.tor_max          = 1000,
                                    .vel_max          = vel_max_rpm,
-                                   .freio_regen      = frenagem_regenerativa,
+                                   .regen_brake      = regenerative_braking,
                                    .dif_elt          = 1,
                                    .traction_control = 0,
                                    .bat_safe         = 1,
@@ -22,7 +22,7 @@ volatile const modes enduro     = {.tor_max          = 1000,
                                    .color            = GREEN};
 volatile const modes acceleration = {.tor_max        = 1500,
                                    .vel_max          = vel_max_rpm,
-                                   .freio_regen      = 0,
+                                   .regen_brake      = 0,
                                    .dif_elt          = 1,
                                    .traction_control = 0,
                                    .bat_safe         = 0,

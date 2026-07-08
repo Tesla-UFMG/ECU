@@ -28,6 +28,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-
-
+typedef struct {
+    uint32_t tim_count;
+    speed_pin_e pin;
+} encoder_int_message_t;
 #endif /* INC_SPEED_CALC_H_ */

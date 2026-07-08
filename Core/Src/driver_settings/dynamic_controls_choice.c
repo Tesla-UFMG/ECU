@@ -37,7 +37,7 @@ void dynamic_controls_choice(void* argument) {
         		 osEventFlagsSet(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
         	 } else {
-        		 set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+        		 set_rgb_led(get_global_var_value(SELECTED_MODE).color, BLINK200);
         		 osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
         	 }
         }

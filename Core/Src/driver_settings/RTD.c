@@ -15,27 +15,20 @@
 #include "util/global_instances.h"
 #include "util/global_variables.h"
 #include "util/util.h"
-#include "CAN/general_can_data_manager.h"
 
 static void activate_RTDS();
 static bool can_RTD_be_enabled(); 
 static void set_RTD();
-static bool air_status;
-modos modo;
-
 void RTD(void* argument) {
     UNUSED(argument);
 
     //Sets the RGB LED during the first execution of the code.
-
-    set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
+    set_rgb_led(get_global_var_value(SELECTED_MODE).color, BLINK200);
 
     for (;;) {
 
     	//waits for the flag indicating that the RTD button was pressed
         osThreadFlagsWait(RTD_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
-        modo = get_global_var_value(SELECTED_MODE);
-        air_status = general_get_value(AIR_MINUS);
 
         if (!is_RTD_active()) {
             if (can_RTD_be_enabled()) {
@@ -60,7 +53,7 @@ void exit_RTD() {
 }
 
 /*
- * According to the rules EV.9.6 (2026) the only verifications needed to enable RTD are
+ * According to the rules EV.10.4.3 (2022) the only verifications needed to enable RTD are
  * if the brake is active and TS is active. As an added safety, others verifications are
  * made:
  *
@@ -96,12 +89,10 @@ static bool can_RTD_be_enabled(){
     RACE_MODE_t race_mode                = get_global_var_value(RACE_MODE);
     // flag that indicates when the inverter precharge time has passed and the inverter is
     // ready
-    /*bool is_inverter_ready =
-        get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);*/
-
-
-    if (/*is_brake_active &&*/ !is_throttle_active && !error_flags && (race_mode != ERRO)
-        && /*is_inverter_ready*/ air_status) {
+    bool is_inverter_ready =
+        get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);
+    if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
+        && is_inverter_ready) {
         return true;
     }
     return false;
@@ -113,7 +104,7 @@ void set_RTD() {
     activate_RTDS();
 }
 
-// Ready to drive sound. As defined by FSAE Rules: EV.9.7 (2026)
+// Ready to drive sound. As defined by FSAE Rules: EV.10.5 (2023)
 static void activate_RTDS() {
     HAL_GPIO_WritePin(C_RTDS_GPIO_Port, C_RTDS_Pin, GPIO_PIN_SET);
     osDelay(RTDS_TIME_MS);

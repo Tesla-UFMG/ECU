@@ -20,59 +20,47 @@
     CAN_GENERAL_LIST_DATA(ID_STEERING_WHEEL, 16, 1)                                      \
     CAN_GENERAL_LIST_DATA(ID_THROTTLE, 16, 2)                                            \
     CAN_GENERAL_LIST_DATA(ID_BRAKE, 16, 3)                                               \
+    CAN_GENERAL_LIST_DATA(ID_MODE, 67, 0)                                                \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN, 68, 0)                                         \
+    CAN_GENERAL_LIST_DATA(ID_DISTANCE_P_ODOM, 70, 0)                                     \
+    CAN_GENERAL_LIST_DATA(ID_DISTANCE_T_ODOM, 70, 1)                                     \
+    CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_1, 69, 0)                                \
+    CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_2, 69, 1)                                \
     CAN_GENERAL_LIST_DATA(ID_REF_TORQUE_R_MOTOR, 17, 0)                                  \
     CAN_GENERAL_LIST_DATA(ID_REF_TORQUE_L_MOTOR, 17, 1)                                  \
     CAN_GENERAL_LIST_DATA(ID_SPEED_FL, 18, 0)                                            \
     CAN_GENERAL_LIST_DATA(ID_SPEED_FR, 18, 1)                                            \
     CAN_GENERAL_LIST_DATA(ID_SPEED_RL, 18, 2)                                            \
     CAN_GENERAL_LIST_DATA(ID_SPEED_RR, 18, 3)                                            \
-    CAN_GENERAL_LIST_DATA(ID_INTERNAL_WHEEL, 19, 0)                                      \
-    CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN_R, 19, 1)                                      \
-    CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN_L, 19, 2)                                      \
-    CAN_GENERAL_LIST_DATA(ID_SPEED_L_MOTOR, 20, 0)                                       \
-    CAN_GENERAL_LIST_DATA(ID_TORQUE_L_MOTOR, 20, 1)                                      \
-    CAN_GENERAL_LIST_DATA(ID_POWER_L_MOTOR, 20, 2)                                       \
-    CAN_GENERAL_LIST_DATA(ID_CURRENT_L_MOTOR, 21, 0)                                     \
-    CAN_GENERAL_LIST_DATA(ID_ENERGY_L_MOTOR, 22, 0)                                      \
-    CAN_GENERAL_LIST_DATA(ID_OVERLOAD_L_MOTOR, 22, 1)                                    \
-    CAN_GENERAL_LIST_DATA(ID_TEMPERATURE1_L, 22, 2)                                      \
-    CAN_GENERAL_LIST_DATA(ID_TEMPERATURE2_L, 22, 3)                                      \
-    CAN_GENERAL_LIST_DATA(ID_LOST_MSG_L_MOTOR, 23, 0)                                    \
-    CAN_GENERAL_LIST_DATA(ID_BUS_OFF_L_MOTOR, 23, 1)                                     \
-    CAN_GENERAL_LIST_DATA(ID_CAN_STATE_L_MOTOR, 23, 2)                                   \
-    CAN_GENERAL_LIST_DATA(ID_INV_STATE_L_MOTOR, 24, 0)                                   \
-    CAN_GENERAL_LIST_DATA(ID_FAILURE_L_MOTOR, 24, 1)                                     \
-    CAN_GENERAL_LIST_DATA(ID_ALARM_L_MOTOR, 24, 2)                                       \
-    CAN_GENERAL_LIST_DATA(ID_SPEED_R_MOTOR, 25, 0)                                       \
-    CAN_GENERAL_LIST_DATA(ID_TORQUE_R_MOTOR, 25, 1)                                      \
-    CAN_GENERAL_LIST_DATA(ID_POWER_R_MOTOR, 25, 2)                                       \
-    CAN_GENERAL_LIST_DATA(ID_CURRENT_R_MOTOR, 26, 0)                                     \
-    CAN_GENERAL_LIST_DATA(ID_ENERGY_R_MOTOR, 27, 0)                                      \
-    CAN_GENERAL_LIST_DATA(ID_OVERLOAD_R_MOTOR, 27, 1)                                    \
-    CAN_GENERAL_LIST_DATA(ID_TEMPERATURE1_R, 27, 2)                                      \
-    CAN_GENERAL_LIST_DATA(ID_TEMPERATURE2_R, 27, 3)                                      \
-    CAN_GENERAL_LIST_DATA(ID_LOST_MSG_R_MOTOR, 28, 0)                                    \
-    CAN_GENERAL_LIST_DATA(ID_BUS_OFF_R_MOTOR, 28, 1)                                     \
-    CAN_GENERAL_LIST_DATA(ID_CAN_STATE_R_MOTOR, 28, 2)                                   \
-    CAN_GENERAL_LIST_DATA(ID_INV_STATE_R_MOTOR, 29, 0)                                   \
-    CAN_GENERAL_LIST_DATA(ID_FAILURE_R_MOTOR, 29, 1)                                     \
-    CAN_GENERAL_LIST_DATA(ID_ALARM_R_MOTOR, 29, 2)                                       \
-    CAN_GENERAL_LIST_DATA(ID_DESIRED_YAW, 66, 0)                                         \
-    CAN_GENERAL_LIST_DATA(ID_MAX_YAW, 66, 1)                                             \
-    CAN_GENERAL_LIST_DATA(ID_MODE, 67, 0)                                                \
-    CAN_GENERAL_LIST_DATA(ID_TORQUE_GAIN, 68, 0)                                         \
-    CAN_GENERAL_LIST_DATA(ID_TORQUE_DECREASE_R, 68, 1)                                   \
-    CAN_GENERAL_LIST_DATA(ID_TORQUE_DECREASE_L, 68, 2)                                   \
-    CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_1, 69, 0)                                \
-    CAN_GENERAL_LIST_DATA(ID_CONTROL_EVENT_FLAG_2, 69, 1)                                \
-    CAN_GENERAL_LIST_DATA(ID_DISTANCE_P_ODOM, 70, 0)                                     \
-    CAN_GENERAL_LIST_DATA(ID_DISTANCE_T_ODOM, 70, 1)                                     \
-    CAN_GENERAL_LIST_DATA(ID_G_CONTROL_TYPE, 71, 0)                                      \
-    CAN_GENERAL_LIST_DATA(ID_SET_POINT_LATERAL, 71, 1)                                   \
-    CAN_GENERAL_LIST_DATA(ID_KP, 72, 0)                                                  \
-    CAN_GENERAL_LIST_DATA(ID_TI, 72, 1)                                                  \
-    CAN_GENERAL_LIST_DATA(ID_SLIP, 72, 2)                                                \
     CAN_GENERAL_LIST_DATA(ID_REGEN_BRAKE_STATE, 81, 0)                                   \
+    CAN_GENERAL_LIST_DATA(ID_SPEED_L_MOTOR, 85, 0)                                       \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_L_MOTOR, 85, 1)                                      \
+    CAN_GENERAL_LIST_DATA(ID_POWER_L_MOTOR, 85, 2)                                       \
+    CAN_GENERAL_LIST_DATA(ID_CURRENT_L_MOTOR, 85, 3)                                     \
+    CAN_GENERAL_LIST_DATA(ID_ENERGY_L_MOTOR, 86, 0)                                      \
+    CAN_GENERAL_LIST_DATA(ID_OVERLOAD_L_MOTOR, 86, 1)                                    \
+    CAN_GENERAL_LIST_DATA(ID_TEMPERATURE1_L, 86, 2)                                      \
+    CAN_GENERAL_LIST_DATA(ID_TEMPERATURE2_L, 86, 3)                                      \
+    CAN_GENERAL_LIST_DATA(ID_LOST_MSG_L_MOTOR, 87, 0)                                    \
+    CAN_GENERAL_LIST_DATA(ID_BUS_OFF_L_MOTOR, 87, 1)                                     \
+    CAN_GENERAL_LIST_DATA(ID_CAN_STATE_L_MOTOR, 87, 2)                                   \
+    CAN_GENERAL_LIST_DATA(ID_INV_STATE_L_MOTOR, 88, 0)                                   \
+    CAN_GENERAL_LIST_DATA(ID_FAILURE_L_MOTOR, 88, 1)                                     \
+    CAN_GENERAL_LIST_DATA(ID_ALARM_L_MOTOR, 88, 2)                                       \
+    CAN_GENERAL_LIST_DATA(ID_SPEED_R_MOTOR, 95, 0)                                       \
+    CAN_GENERAL_LIST_DATA(ID_TORQUE_R_MOTOR, 95, 1)                                      \
+    CAN_GENERAL_LIST_DATA(ID_POWER_R_MOTOR, 95, 2)                                       \
+    CAN_GENERAL_LIST_DATA(ID_CURRENT_R_MOTOR, 95, 3)                                     \
+    CAN_GENERAL_LIST_DATA(ID_ENERGY_R_MOTOR, 96, 0)                                      \
+    CAN_GENERAL_LIST_DATA(ID_OVERLOAD_R_MOTOR, 96, 1)                                    \
+    CAN_GENERAL_LIST_DATA(ID_TEMPERATURE1_R, 96, 2)                                      \
+    CAN_GENERAL_LIST_DATA(ID_TEMPERATURE2_R, 96, 3)                                      \
+    CAN_GENERAL_LIST_DATA(ID_LOST_MSG_R_MOTOR, 97, 0)                                    \
+    CAN_GENERAL_LIST_DATA(ID_BUS_OFF_R_MOTOR, 97, 1)                                     \
+    CAN_GENERAL_LIST_DATA(ID_CAN_STATE_R_MOTOR, 97, 2)                                   \
+    CAN_GENERAL_LIST_DATA(ID_INV_STATE_R_MOTOR, 98, 0)                                   \
+    CAN_GENERAL_LIST_DATA(ID_FAILURE_R_MOTOR, 98, 1)                                     \
+    CAN_GENERAL_LIST_DATA(ID_ALARM_R_MOTOR, 98, 2)                                       \
     CAN_GENERAL_LIST_DATA(ID_PANEL_DEBUG_1, 351, 0)                                      \
     CAN_GENERAL_LIST_DATA(ID_PANEL_DEBUG_2, 351, 1)                                      \
     CAN_GENERAL_LIST_DATA(ID_PANEL_DEBUG_3, 351, 2)                                      \

@@ -22,6 +22,5 @@
 #define KU                                                                              \
    ( ( (REAR_DISTANCE * MASS) / (FRONT_CORNER_STIFF * WHEELBASE) )                       \
    - ( (FRONT_DISTANCE * MASS) / (REAR_CORNER_STIFF * WHEELBASE) ) )
-#define LSM6DSR_TO_RADS		0.00122173
 
 #endif /* INC_DYNAMICCONTROLS_CONSTANTS_CONTROL_H_ */

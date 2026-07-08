@@ -8,8 +8,20 @@
 #ifndef INC_STEERING_H_
 #define INC_STEERING_H_
 
-#define ADC_MAX_VALUE		  		4095
-#define STEERING_RATIO				4.4
-#define SENSOR_DEAD_ZONE      		150
+
+#define STEERING_WHEEL_ZERO         240	        // Bit value corresponding to 0 V at the sensor output; used to calibrate the measurement scaling.
+#define STEERING_WHEEL_GAIN         1.11	    // Controls the sensor gain; used to calibrate the sensitivity and measurement scaling.
+#define STEERING_WHEEL_ALIGNED      1944.5	    // ADC value when the steering wheel is in neutral position.
+#define SPAN_ALIGNMENT              200         // Sensor Dead zone.
+#define STEERING_WHEEL_MAX          3189		// Maximum value that the sensor can achieve once installed.
+#define STEERING_WHEEL_MIN          700         // Minimum value that the sensor can achieve once installed.
+
+//TODO (João): Update this values with the car data. Remember to update on the steering.c calc.
+//  lookup table
+#define STEERING_RAD_LEFT_WHEEL        ( (-0.523598776 - 0.599520598) / 2)
+#define STEERING_RAD_RIGHT_WHEEL       ( (0.599520598 + 0.523598776) / 2)
+#define STEERING_RAD_LEFT              (-1.941983885)
+#define STEERING_RAD_RIGHT             (1.941983885)
+
 
 #endif /* INC_STEERING_H_ */

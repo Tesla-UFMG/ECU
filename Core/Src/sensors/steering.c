@@ -6,83 +6,81 @@
  */
 
 #include "sensors/steering.h"
+
 #include "datalogging/datalog_handler.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "util/constants.h"
 #include "util/global_definitions.h"
 #include "util/util.h"
 
-uint16_t steering_adc_raw;
-uint16_t previous_adc_raw = 0;
-int32_t delta;
-int32_t steering_position_adc = 0;
-float steering_rad;
-float steering_wheel_rad;
-uint16_t first_value = 0;
-INTERNAL_WHEEL_t internal_wheel;
-bool is_initialized = false;
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 void steering_read(void* argument) {
+    UNUSED(argument);
 
-	UNUSED(argument);
+    double raw_steering_wheel;
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        //Read the ADC value from the steering sensor.
-        steering_adc_raw = ADC_DMA_buffer[STEERING_WHEEL_E];
+        raw_steering_wheel = ADC_DMA_buffer[STEERING_WHEEL_E];
 
-        //Store the initial ADC steering sensor.
-        if(!is_initialized){
-        	first_value = steering_adc_raw;
+        double zero_aux = STEERING_WHEEL_ZERO;
+        double steering_scaled_bits;
+        double steering_rad;
+        double steering_wheel_rad;
+
+        /*if the steering minimum value is below 0, the sensor wraps around the ADC maximum value
+         *        In this case, the ADC reading returns 4095*/
+        /*therefore, subtract 4095 from the measured value to obtaining a negative value
+         *		that can be used in the calculation. The same applies to the steering zero position*/
+        if (STEERING_WHEEL_MIN > STEERING_WHEEL_MAX) {
+            zero_aux -= 4095;
+            if (raw_steering_wheel > STEERING_WHEEL_MAX) {
+                raw_steering_wheel -= 4095;
+            }
         }
 
-        //Difference between the current and previous ADC readings.
-        //Handle ADC wraparound.
-        delta = (int32_t)steering_adc_raw - (int32_t)previous_adc_raw;
 
-        //Detect ADC wraparound using the difference (delta) between consecutive samples.
-        //A large positive or negative delta indicates that the ADC reading crossed zero.
-        //Starts after the first sample, when a previous reading is available.
-        if(is_initialized){
-        	if(delta > ADC_MAX_VALUE/2){
-        		delta -= ADC_MAX_VALUE;
-        	}
-        	else if(delta < -ADC_MAX_VALUE/2){
-        		delta += ADC_MAX_VALUE;
-        	}
-        	//Accumulate all ADC deltas using the first reading as the zero reference.
-        	steering_position_adc += delta;
+        if (raw_steering_wheel < zero_aux) {
+            steering_scaled_bits = 0;
+        } else {
+            steering_scaled_bits = (raw_steering_wheel * STEERING_WHEEL_GAIN) - STEERING_WHEEL_ZERO;
         }
 
-        //Convert the accumulated ADC counts to an angle in radians.
-        steering_rad = (steering_position_adc * ((2.0*3.1415)/ADC_MAX_VALUE));
-        steering_wheel_rad = steering_rad/STEERING_RATIO;
+
+        if (steering_scaled_bits < STEERING_WHEEL_MIN){
+            steering_scaled_bits = STEERING_WHEEL_MIN;
+        } else if(steering_scaled_bits > STEERING_WHEEL_MAX){
+            steering_scaled_bits = STEERING_WHEEL_MAX;
+        }
+
+
+        //lookup table
+        //y = y0 + (y1-y0)/(x1-x0) * (x-x0)
+        //steering to right is positive, to left is negative.
+        //negative sign compensates the sensor behavior, since its voltage decreases when steering to the right.
+        steering_rad = - (STEERING_RAD_LEFT + ( (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) / (STEERING_WHEEL_MAX - STEERING_WHEEL_MIN) ) * (steering_scaled_bits - STEERING_WHEEL_MIN));
+        steering_wheel_rad =  (STEERING_RAD_LEFT_WHEEL + ( (STEERING_RAD_RIGHT_WHEEL - STEERING_RAD_LEFT_WHEEL) / (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) ) * (steering_rad - STEERING_RAD_LEFT));
+
 
         set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
-        //STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
-        float steering_wheel = steering_wheel_rad*1000 + 645;
+        STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
         log_data(ID_STEERING_WHEEL, steering_wheel);
 
 
-        if (steering_adc_raw > (first_value + SENSOR_DEAD_ZONE) ) {
-            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)DIREITA);
-        } else if (steering_adc_raw < (first_value - SENSOR_DEAD_ZONE) ) {
-              set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)ESQUERDA);
+        //SPAN_ALIGNMENT, defines the tolerance rang used to determine whether the
+        //steering wheel is considered to be in the center position
+        if (steering_scaled_bits > STEERING_WHEEL_ALIGNED + SPAN_ALIGNMENT) {
+            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)LEFT);
+        } else if (steering_scaled_bits < STEERING_WHEEL_ALIGNED - SPAN_ALIGNMENT) {
+            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)RIGHT);
         } else {
-              set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);
+            set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTER);
         }
 
-        internal_wheel =  get_global_var_value(INTERNAL_WHEEL);
-        log_data(ID_INTERNAL_WHEEL, get_global_var_value(INTERNAL_WHEEL));
+        osDelay(100);
 
-        previous_adc_raw = steering_adc_raw;
-
-        is_initialized = true;
-
-    	osDelay(10);
-
-        //return(volante);
+        //	return (volante);
     }
 }

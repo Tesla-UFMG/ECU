@@ -33,6 +33,14 @@ void PID_init(PID_t* pid, uint8_t reset, double Kp, double Ti, double Td,
         memset(pid->input_state, 0, 2U * sizeof(double)); // NOLINT
     }
 }
+//função para resetar os controles PID
+void PID_reset(PID_t* pid) {
+
+    pid->output = 0;
+    memset(pid->error_state, 0, 2U * sizeof(double)); // NOLINT
+    memset(pid->input_state, 0, 2U * sizeof(double)); // NOLINT
+    
+}
 
 void PID_set_setpoint(PID_t* pid, double Setpoint) {
     pid->Setpoint = Setpoint;

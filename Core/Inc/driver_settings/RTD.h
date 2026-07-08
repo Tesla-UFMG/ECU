@@ -8,7 +8,7 @@
 #ifndef INC_RTD_H_
 #define INC_RTD_H_
 
-// FSAE Rules: EV.10.5.2.a (2023)
+// FSAE Rules: EV.9.7.2.a (2026)
 // Note : Judge specifically requested to use maximum time during Electrical Inspection
 #define RTDS_TIME_MS 3000
 #include "cmsis_os.h"

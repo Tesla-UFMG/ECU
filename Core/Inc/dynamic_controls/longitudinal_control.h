@@ -23,9 +23,9 @@ So, it might be intersting define what is the optimum slip ratio value for our t
 #define IDEAL_SLIP_WET     30
 
 //Defines the longitudinal PID's parameters
-//TODO (Guilherme): We still need to define the control parameters
-#define KP_LONGITUDINAL 6.51864262048678 
-#define KI_LONGITUDINAL 0.14843404179579
+//TODO (Guilherme): Ainda precisamos definir os parâmetros do controlador.
+#define KP_LONGITUDINAL 6.51
+#define KI_LONGITUDINAL 0.14
 #define TI_LONGITUDINAL (KP_LONGITUDINAL / KI_LONGITUDINAL)
 
 //Creates a struct that will be used to store the longitudinal PID's outputs

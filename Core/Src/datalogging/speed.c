@@ -46,21 +46,25 @@ void speed_datalog(void* argument) {
         speed.wheels[FRONT_LEFT]  = encoder_speeds_message.wheels[FRONT_LEFT];
         speed.wheels[REAR_RIGHT]  = encoder_speeds_message.wheels[REAR_RIGHT];
         speed.wheels[REAR_LEFT]   = encoder_speeds_message.wheels[REAR_LEFT];
-
         FRONT_AVG_SPEED_t avg_front_speed =
             avg(speed.wheels[FRONT_RIGHT], speed.wheels[FRONT_LEFT]);
         REAR_AVG_SPEED_t avg_rear_speed =
             avg(speed.wheels[REAR_RIGHT], speed.wheels[REAR_LEFT]);
-
+        double slip = ((avg_rear_speed - avg_front_speed)
+                / avg_front_speed)
+               * 100;
+        double slip_data = (slip+1)*100;
         set_global_var(SPEEDS, &speed);
         set_global_var(FRONT_AVG_SPEED, &avg_front_speed);
         set_global_var(REAR_AVG_SPEED, &avg_rear_speed);
+        // uint16_t avg_speeds = avg(&avg_front_speed, &avg_rear_speed);
 
+        log_data(ID_SLIP, slip_data);
         log_data(ID_SPEED_FR, speed.wheels[FRONT_RIGHT]);
         log_data(ID_SPEED_FL, speed.wheels[FRONT_LEFT]);
         log_data(ID_SPEED_RR, speed.wheels[REAR_RIGHT]);
         log_data(ID_SPEED_RL, speed.wheels[REAR_LEFT]);
-        // log_data(ID_SPEED_AVG, &avg_front_speed);
+        log_data(ID_SPEED_AVG, avg_rear_speed);
         // todo: (Felipe) log avg speed after updated datalogging task
 
         osDelay(SPEED_LOG_DELAY);

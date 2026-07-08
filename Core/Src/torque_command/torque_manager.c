@@ -7,7 +7,9 @@
 
 #include "torque_command/torque_manager.h"
 
+#include "CAN/general_can_data_manager.h"
 #include "cmsis_os.h"
+#include "datalogging/datalog_handler.h"
 #include "dynamic_controls/lateral_control.h"
 #include "dynamic_controls/longitudinal_control.h"
 #include "stdint.h"
@@ -15,6 +17,12 @@
 #include "util/global_definitions.h"
 #include "util/global_instances.h"
 #include "util/util.h"
+#include "leds/rgb_led_handler.h"
+
+
+void rampa_torque(uint32_t * ref_torque, const double* ref_torque_decrease);
+void send_ref_torque_message(const uint32_t* ref_torque);
+void select_dynamic_control(bool is_DYNAMIC_CONTROL_active);
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 
@@ -148,18 +156,107 @@ static void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
         if (get_global_var_value(SELECTED_MODE).dif_elt == 1
             && get_global_var_value(SELECTED_MODE).traction_control == 0) {
             g_control_type = LATERAL;
-            }
-            if (get_global_var_value(SELECTED_MODE).dif_elt == 0
-                && get_global_var_value(SELECTED_MODE).traction_control == 1) {
-                g_control_type = LONGITUDINAL;
-                }
-                //TODO (Guilherme): Abaixo está uma das possíveis alterações a serem feitas para a integração dos controles.
-                if (get_global_var_value(SELECTED_MODE).dif_elt == 1
-                    && get_global_var_value(SELECTED_MODE).traction_control == 1) {
-                    g_control_type = BOTH_CONTROLS;
-                    }
+            set_rgb_led(BRANCO, FIXED);
+        }
+        if (get_global_var_value(SELECTED_MODE).dif_elt == 0
+            && get_global_var_value(SELECTED_MODE).traction_control == 1) {
+            g_control_type = LONGITUDINAL;
+            set_rgb_led(BRANCO, FIXED);
+        }
+        //TODO (Guilherme): Abaixo está uma das possíveis alterações a serem feitas para a integração dos controles.
+        if (get_global_var_value(SELECTED_MODE).dif_elt == 1
+            && get_global_var_value(SELECTED_MODE).traction_control == 1) {
+            g_control_type = BOTH_CONTROLS;
+            set_rgb_led(BRANCO, FIXED);
+        }
     } else {
         g_control_type = NO_CONTROL;
+    }
+    log_data(ID_G_CONTROL_TYPE, g_control_type);
+}
+
+
+void torque_manager(void* argument) {
+    UNUSED(argument);
+
+    uint32_t ref_torque[2] = {0, 0};
+
+    for (;;) {
+        // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
+        uint32_t tick = osKernelGetTickCount();
+
+        ECU_ENABLE_BREAKPOINT_DEBUG();
+
+        const bool is_DYNAMIC_CONTROL_active =
+            get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
+
+        select_dynamic_control(is_DYNAMIC_CONTROL_active);
+
+        // todo (João Pedro): add new "case's" when the integration of controls is
+        // implemented
+
+        switch (g_control_type) {
+            case LATERAL: // TODO(giovanni): do the integration of the two controllers
+                tick += LATERAL_DELAY;
+                lateral_result_t result_lateral = lateral_control();
+                // TODO(giovanni): use rampa_torque while longitudinal control is not defined
+                rampa_torque(ref_torque, result_lateral.torque_decrease);
+                log_data(ID_TORQUE_GAIN_L, ref_torque[1]);
+                log_data(ID_TORQUE_GAIN_R, ref_torque[0]);
+                // sends the reference torque
+                send_ref_torque_message(ref_torque);
+
+                osDelayUntil(tick);
+
+                break;
+
+            case LONGITUDINAL:
+                tick += LONGITUDINAL_DELAY;
+                longitudinal_control_result_t result_longitudinal = longitudinal_control();
+                // TODO(giovanni): remove ramp with bench tests
+                rampa_torque(ref_torque, result_longitudinal.torque_decrease);
+                // sends the torque command to the inverter
+                log_data(ID_TORQUE_GAIN_L, ref_torque[1]);
+                log_data(ID_TORQUE_GAIN_R, ref_torque[0]);
+                send_ref_torque_message(ref_torque);
+
+
+                osDelayUntil(tick);
+
+                break;
+            
+            //TODO (Guilherme): Abaixo está mais uma das possíveis alterações a serem feitas para a integração dos controles. 
+            //                  Essa parte pode se tornar mais complexa caso o delay dos controles seja diferente então é necessário ter mais cuidado.
+            //                  Nesse sentido, a minha sugestão é apenas uma possibilidade simples de implementação que só funciona caso os delays sejam iguais.
+            
+            case BOTH_CONTROLS:
+                tick += LATERAL_DELAY;//Could be longitudinal as well (since they are equal)
+                lateral_result_t lateral_result = lateral_control();
+                longitudinal_control_result_t longitudinal_result = longitudinal_control();
+                // TODO (Guilherme): Pode ser interressante criar um tipo para armazenar os resultados dos dois controles, isso é puramente estético mas tornaria o código mais intuitivo.
+                lateral_result_t result;
+                result.torque_decrease[R_MOTOR] = lateral_result.torque_decrease[R_MOTOR] + longitudinal_result.torque_decrease[R_MOTOR];
+                result.torque_decrease[L_MOTOR] = lateral_result.torque_decrease[L_MOTOR] + longitudinal_result.torque_decrease[L_MOTOR];
+
+                rampa_torque(ref_torque, result.torque_decrease);
+
+                // sends the reference torque
+                send_ref_torque_message(ref_torque);
+
+                osDelayUntil(tick);
+
+                break;
+
+            default: // torque ramp
+                rampa_torque(ref_torque, NULL);
+
+                // sends the reference torque
+                send_ref_torque_message(ref_torque);
+
+                osDelay(RAMPA_DELAY);
+
+                break;
+        }
     }
 }
 

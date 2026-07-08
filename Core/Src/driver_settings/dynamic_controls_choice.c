@@ -10,6 +10,7 @@
 #include "cmsis_os.h"
 #include "util/global_instances.h"
 #include "util/global_variables.h"
+#include "leds/rgb_led_handler.h"
 #include "util/util.h"
 
 
@@ -25,16 +26,18 @@ void dynamic_controls_choice(void* argument) {
 
         if(osThreadFlagsWait(DYNAMIC_CONTROLS_CHOICE_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny,
                           osWaitForever)){
+       	 const bool is_DYNAMIC_CONTROL_active =
+       			 get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
         	 if (is_RTD_active()) {
         	            continue;
         	 }
-        	 const bool is_DYNAMIC_CONTROL_active =
-        			 get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
         	 if (!is_DYNAMIC_CONTROL_active) {
         		 osEventFlagsSet(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
+
         	 } else {
+        		 set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
         		 osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
         	 }
         }

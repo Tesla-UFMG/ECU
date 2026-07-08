@@ -24,6 +24,7 @@ void select_mode(void* argument) {
 		change modes */
         osThreadFlagsWait(MODE_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
 
+        osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
         if (!is_RTD_active()) {
             if (get_global_var_value(RACE_MODE) > AUTOX) {
                 const race_mode_t race_mode = ENDURO;
@@ -37,9 +38,7 @@ void select_mode(void* argument) {
                 case AUTOX: set_global_var_value(SELECTED_MODE, autox); break;
                 default: set_global_var_value(SELECTED_MODE, error); break;
             }
-
-            set_rgb_led(get_global_var_value(SELECTED_MODE).color, BLINK200);
-            osEventFlagsClear(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
+            set_rgb_led(get_global_var_value(SELECTED_MODE).cor, BLINK200);
         }
         // todo: dataloggar modos
     }

@@ -40,4 +40,11 @@
 #define APPS2_MIN              490
 #define APPS2_MAX              2120
 
+typedef struct {
+    uint16_t deadzone_lower_limit;
+    uint16_t deadzone_upper_limit;
+    float adjust_parameters_slope;
+    float adjust_parameters_intercept;
+} apps_ref;
+
 #endif /* INC_THROTTLE_H_ */

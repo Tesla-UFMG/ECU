@@ -60,7 +60,7 @@ void odometer_calc() {
         //                    }
         //                }
 
-        get_global_var(REAR_AVG_SPEED, &odometer_speed_data);
+        get_global_var(FRONT_AVG_SPEED, &odometer_speed_data);
         const uint16_t instant_distant_traveled = calculate_distance(odometer_speed_data);
         partial_dist_traveled += instant_distant_traveled;
         //                total_dist_traveled += instant_distant_traveled;

@@ -14,7 +14,7 @@
 
 uint16_t steering_adc_raw;
 uint16_t previous_adc_raw = 0;
-int32_t delta;
+int32_t delta = 0;
 int32_t steering_position_adc = 0;
 float steering_rad;
 float steering_wheel_rad;
@@ -57,7 +57,7 @@ void steering_read(void* argument) {
         }
 
         //Convert the accumulated ADC counts to an angle in radians.
-        steering_rad = (steering_position_adc * ((2.0*3.1415)/ADC_MAX_VALUE));
+        steering_rad = (steering_position_adc * ((2.0f * PI)/ADC_MAX_VALUE));
         steering_wheel_rad = steering_rad/STEERING_RATIO;
 
         set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
@@ -66,9 +66,9 @@ void steering_read(void* argument) {
         log_data(ID_STEERING_WHEEL, steering_wheel);
 
 
-        if (steering_adc_raw > (first_value + SENSOR_DEAD_ZONE) ) {
+        if (steering_position_adc > SENSOR_DEAD_ZONE) {
             set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)DIREITA);
-        } else if (steering_adc_raw < (first_value - SENSOR_DEAD_ZONE) ) {
+        } else if (steering_position_adc < -SENSOR_DEAD_ZONE ) {
               set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)ESQUERDA);
         } else {
               set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);

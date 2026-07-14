@@ -11,7 +11,7 @@
 #include "stdint.h"
 
 
-#define LATERAL_DELAY 0.014
+#define LATERAL_DELAY 30
 
 //defines PID LATERAL
 #define LUT_SIZE 10

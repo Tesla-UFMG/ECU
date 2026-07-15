@@ -12,24 +12,24 @@
 #include "util/global_definitions.h"
 #include "util/util.h"
 
+extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
+
 uint16_t steering_adc_raw;
 uint16_t previous_adc_raw = 0;
 int32_t delta = 0;
 int32_t steering_position_adc = 0;
-float steering_rad;
-float steering_wheel_rad;
+float steering_rad=0;
+float steering_wheel_rad=0;
 uint16_t first_value = 0;
 INTERNAL_WHEEL_t internal_wheel;
 bool is_initialized = false;
-extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
-
 void steering_read(void* argument) {
 
 	UNUSED(argument);
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
-
+        wait_for_rtd();
         //Read the ADC value from the steering sensor.
         steering_adc_raw = ADC_DMA_buffer[STEERING_WHEEL_E];
 

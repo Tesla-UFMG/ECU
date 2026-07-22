@@ -41,7 +41,14 @@ longitudinal_control_result_t longitudinal_control() {
     int ref_torque;
     longitudinal_control_result_t ref_torque_result = {.torque_decrease = {0, 0}};
     
+    if (is_RTD_active() == false){
 
+        ref_torque_result.torque_decrease[0] = 0;
+        ref_torque_result.torque_decrease[1] = 0;
+        
+        return ref_torque_result;
+
+    } 
 
     //Calculus variables
     double cg_speed;
@@ -56,7 +63,7 @@ longitudinal_control_result_t longitudinal_control() {
     rear_avg_speed = (double)get_global_var_value(REAR_AVG_SPEED);
 
     // treatment made to avoid division by zero
-    if (cg_speed < 60 ) {
+    if (cg_speed < 30 ) {
         slip = 0;
     } else {
         //slip ratio calculation
@@ -64,12 +71,14 @@ longitudinal_control_result_t longitudinal_control() {
                 / cg_speed)
                * 100;
     }
+
     // double slip_data = (slip+1)*100;
     // log_data(ID_SLIP, slip_data);
     //This "if" is here to deactivate the controller when the slip is lower than the ideal or when the car is making a turn 
-    if (slip <= 13 || internal_wheel != CENTRO) {
+
+    if (slip <= IDEAL_SLIP_DRY || internal_wheel != CENTRO) {
         pid_result = 0;
-        //PID_reset(&pid_longitudinal);
+        PID_reset(&pid_longitudinal);
     } else {
         pid_result = fabs((double)(PID_compute(&(pid_longitudinal), slip)));
     }
@@ -88,12 +97,3 @@ longitudinal_control_result_t longitudinal_control() {
 
     return ref_torque_result;
 }
-
-
-
-
-
-
-
-
-

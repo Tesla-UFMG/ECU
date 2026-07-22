@@ -17,7 +17,7 @@
 #define LONGITUDINAL_DELAY 30
 
 //TODO (Guilherme): Pode ser interessante pensar em alterar o valor do setpoint. Durante o processo de validação viu-se que o valor ótimo de slip varia entre 0,1 e 0,2. Nesse sentido, pode ser interessante tentar definir qual seria o valor do slip ratio ideal do nosso pneu.
-#define IDEAL_SLIP_DRY     13
+#define IDEAL_SLIP_DRY     6.6
 #define IDEAL_SLIP_WET     30
 
 //Defines the longitudinal PID's parameters

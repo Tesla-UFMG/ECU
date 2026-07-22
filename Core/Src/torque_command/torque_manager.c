@@ -101,6 +101,8 @@ void torque_manager(void* argument) {
     UNUSED(argument);
 
     uint32_t ref_torque[2] = {0, 0};
+    lateral_result_t result_lateral = {.torque_decrease = {0, 0}};;
+    longitudinal_control_result_t result_longitudinal = {.torque_decrease = {0, 0}};
 
     for (;;) {
         // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
@@ -119,7 +121,7 @@ void torque_manager(void* argument) {
         switch (g_control_type) {
             case LATERAL: // TODO(giovanni): do the integration of the two controllers
                 tick += LATERAL_DELAY;
-                lateral_result_t result_lateral = lateral_control();
+                result_lateral = lateral_control();
                 // TODO(giovanni): use rampa_torque while longitudinal control is not defined
                 rampa_torque(ref_torque, result_lateral.torque_decrease);
                 log_data(ID_TORQUE_GAIN_L, ref_torque[1]);
@@ -133,7 +135,7 @@ void torque_manager(void* argument) {
 
             case LONGITUDINAL:
                 tick += LONGITUDINAL_DELAY;
-                longitudinal_control_result_t result_longitudinal = longitudinal_control();
+                result_longitudinal = longitudinal_control();
                 // TODO(giovanni): remove ramp with bench tests
                 rampa_torque(ref_torque, result_longitudinal.torque_decrease);
                 // sends the torque command to the inverter
@@ -152,12 +154,12 @@ void torque_manager(void* argument) {
             
             case BOTH_CONTROLS:
                 tick += LATERAL_DELAY;//Could be longitudinal as well (since they are equal)
-                lateral_result_t lateral_result = lateral_control();
-                longitudinal_control_result_t longitudinal_result = longitudinal_control();
+                 result_lateral = lateral_control();
+                 result_longitudinal = longitudinal_control();
                 // TODO (Guilherme): Pode ser interressante criar um tipo para armazenar os resultados dos dois controles, isso é puramente estético mas tornaria o código mais intuitivo.
                 lateral_result_t result;
-                result.torque_decrease[R_MOTOR] = lateral_result.torque_decrease[R_MOTOR] + longitudinal_result.torque_decrease[R_MOTOR];
-                result.torque_decrease[L_MOTOR] = lateral_result.torque_decrease[L_MOTOR] + longitudinal_result.torque_decrease[L_MOTOR];
+                result.torque_decrease[R_MOTOR] = result_lateral.torque_decrease[R_MOTOR] + result_longitudinal.torque_decrease[R_MOTOR];
+                result.torque_decrease[L_MOTOR] = result_lateral.torque_decrease[L_MOTOR] + result_longitudinal.torque_decrease[L_MOTOR];
 
                 rampa_torque(ref_torque, result.torque_decrease);
 
@@ -180,5 +182,3 @@ void torque_manager(void* argument) {
         }
     }
 }
-
-

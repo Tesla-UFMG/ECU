@@ -42,6 +42,19 @@ lateral_result_t lateral_control() {
     int ref_torque;
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
 
+    if (is_RTD_active() == false){
+
+        ref_torque_result.torque_decrease[0] = 0;
+        ref_torque_result.torque_decrease[1] = 0;
+        
+        return ref_torque_result;
+
+    }
+
+    /*if (internal_wheel == CENTRO){
+        PID_reset(&pid_lateral);
+    }*/
+
     yaw_RX_CAN = ((int16_t)fabs(general_get_value(GYRO_Z)));
     yaw_rads = yaw_RX_CAN * LSM6DSR_TO_RADS;
 

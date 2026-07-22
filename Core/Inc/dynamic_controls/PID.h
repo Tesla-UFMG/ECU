@@ -40,6 +40,9 @@ void PID_set_parameters(PID_t* pid, double Kp, double Ti, double Td);
 //Function that updates the PID's output minimum and maximum limits
 void PID_set_limits(PID_t* pid, double max_output, double min_output);
 
+//Function that resets the PID's output
+void PID_reset(PID_t* pid);
+
 //Function that updates the PID's sample period
 //TODO (Guilherme): Não vi essa função ser chamada em nenhum arquivo além do "PID.c". Não sei se isso é por que o "sample period" é constante, mas se for, qual seria a necessidade dessa função?
 void PID_set_sample_period(PID_t* pid, double sample_period);
@@ -72,6 +75,5 @@ __attribute__((always_inline)) inline double PID_compute(PID_t* pid, double inpu
     //returns output
     return (pid->output);
 }
-void PID_reset(PID_t* pid);
 
 #endif /* PID_H_ */

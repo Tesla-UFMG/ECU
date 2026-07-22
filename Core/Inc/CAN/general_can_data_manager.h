@@ -17,7 +17,7 @@
     ENTRY(ACEL_X, 2, 0)                                                       		 \
     ENTRY(ACEL_Y, 2, 1)                                                       		 \
     ENTRY(ACEL_Z, 2, 2)                                                       		 \
-	ENTRY(AIR_MINUS, 8, 1)
+	ENTRY(AIR_PLUS, 8, 2)
 
 typedef enum {
     INVALID_VARIABLE_GENERAL = -1,

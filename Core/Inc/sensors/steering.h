@@ -10,7 +10,7 @@
 
 #define ADC_MAX_VALUE		  		4095
 #define STEERING_RATIO				4.4
-#define SENSOR_DEAD_ZONE      		10
+#define SENSOR_DEAD_ZONE      		100
 #define PI							3.1415
 
 #endif /* INC_STEERING_H_ */

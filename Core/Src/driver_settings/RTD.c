@@ -35,7 +35,7 @@ void RTD(void* argument) {
     	//waits for the flag indicating that the RTD button was pressed
         osThreadFlagsWait(RTD_BTN_PRESSED_THREAD_FLAG, osFlagsWaitAny, osWaitForever);
         modo = get_global_var_value(SELECTED_MODE);
-        air_status = general_get_value(AIR_MINUS);
+        air_status = general_get_value(AIR_PLUS);
 
         if (!is_RTD_active()) {
             if (can_RTD_be_enabled()) {
@@ -100,7 +100,7 @@ static bool can_RTD_be_enabled() {
         get_individual_flag(e_ECU_control_flagsHandle, INVERTER_READY_FLAG);*/
 
 
-    if (/*is_brake_active &&*/ !is_throttle_active && !error_flags && (race_mode != ERRO)
+    if (is_brake_active && !is_throttle_active && !error_flags && (race_mode != ERRO)
         && /*is_inverter_ready*/ air_status) {
         return true;
     }

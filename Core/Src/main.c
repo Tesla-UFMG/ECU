@@ -217,6 +217,13 @@ const osThreadAttr_t t_dynamic_controls_choice_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
+/* Definitions for t_encoder_acceleration_calc */
+osThreadId_t t_encoder_acceleration_calcHandle;
+const osThreadAttr_t t_encoder_acceleration_calc_attributes = {
+  .name = "t_encoder_acceleration_calc",
+  .stack_size = 1024 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* Definitions for q_encoder_int_message */
 osMessageQueueId_t q_encoder_int_messageHandle;
 const osMessageQueueAttr_t q_encoder_int_message_attributes = {
@@ -348,6 +355,7 @@ extern void buttons_handler(void *argument);
 extern void speed_datalog(void *argument);
 extern void odometer_save(void *argument);
 extern void dynamic_controls_choice(void *argument);
+extern void encoder_acceleration_calc(void *argument);
 extern void errors_with_timer_callback(void *argument);
 extern void inverter_BUS_OFF_error_callback(void *argument);
 extern void inverter_ready_callback(void *argument);
@@ -543,6 +551,9 @@ int main(void)
 
   /* creation of t_dynamic_controls_choice */
   t_dynamic_controls_choiceHandle = osThreadNew(dynamic_controls_choice, NULL, &t_dynamic_controls_choice_attributes);
+
+  /* creation of t_encoder_acceleration_calc */
+  t_encoder_acceleration_calcHandle = osThreadNew(encoder_acceleration_calc, NULL, &t_encoder_acceleration_calc_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

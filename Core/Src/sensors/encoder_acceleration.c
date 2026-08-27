@@ -29,7 +29,7 @@ void encoder_acceleration_calc(void* argument){
         osMessageQueueGet(q_encoder_speeds_messageHandle, &vel, NULL, osWaitForever);
         //ver qual roda ele me mandou
         speed_pin_e wheel_caught = wheelCaught(vel);
-        speed_pin_e erro = ERROR;
+        speed_pin_e erro = WHEEL_ERROR;
         if(wheel_caught != erro && last_vel.wheels[wheel_caught] != 0){
             float acceleration_calc = calc_acceleration(last_vel, vel, wheel_caught);
             if(acceleration_calc == -1) continue;
@@ -47,5 +47,5 @@ speed_pin_e wheelCaught(encoder_speeds_message_t vel){
             return i;
         }
     }
-    return ERROR;
+    return WHEEL_ERROR;
 }

@@ -192,6 +192,7 @@ void encoder_speed_calc(void) {
                 }
                 // saves the speed only of the wheel which speed was just calculated
                 speeds_message.wheels[interrupt_message.pin] = speed;
+                speeds_message.interrupt_message[interrupt_message.pin] = interrupt_message.tim_count;
                 // store message to use in the next iteration
                 last_interrupt_messages[interrupt_message.pin] = interrupt_message;
                 break;

@@ -1,5 +1,5 @@
 /*
- * encoder_speed.c
+ * encoder_acceleration.c
  *
  *  Created on: August 26, 2026
  *      Author: Enzo Ribeiro

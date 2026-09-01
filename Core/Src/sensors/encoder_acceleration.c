@@ -6,6 +6,9 @@
  */
 #include "sensors/encoder_acceleration.h"
 
+#include "CAN/CAN_IDs.h"
+#include "CAN/general_can.h"
+#include "datalogging/datalog_handler.h"
 #include "datalogging/speed.h"
 #include "stm32h7xx.h"
 #include "util/CMSIS_extra/cmsis_extra.h"
@@ -34,6 +37,7 @@ void encoder_acceleration_calc(void* argument){
             float acceleration_calc = calc_acceleration(last_vel, vel, wheel_caught);
             if(acceleration_calc == -1) continue;
             acceleration.wheels[wheel_caught] = acceleration_calc;
+            log_data(ID_REGEN_BRAKE_STATE, acceleration_calc+20);
         }
         last_vel.wheels[wheel_caught] = vel.wheels[wheel_caught];
         last_vel.interrupt_message[wheel_caught] = vel.interrupt_message[wheel_caught];

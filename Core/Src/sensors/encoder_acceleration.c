@@ -16,6 +16,7 @@
 #include "util/util.h"
 #include "sensors/encoder_speed.h"
 
+static encoder_acceleration_message_t acc;
 static inline float calc_acceleration(encoder_speeds_message_t last_vel, encoder_speeds_message_t vel, speed_pin_e wheel_caught){
     if(vel.interrupt_message[wheel_caught]-last_vel.interrupt_message[wheel_caught] != 0){
         return (vel.wheels[wheel_caught]-last_vel.wheels[wheel_caught])/(vel.interrupt_message[wheel_caught]-last_vel.interrupt_message[wheel_caught]);
@@ -30,18 +31,17 @@ void encoder_acceleration_calc(void* argument){
     for(;;){
         ECU_ENABLE_BREAKPOINT_DEBUG();
         osMessageQueueGet(q_encoder_speeds_messageHandle, &vel, NULL, osWaitForever);
-        //ver qual roda ele me mandou
-        speed_pin_e wheel_caught = wheelCaught(vel);
-        speed_pin_e erro = WHEEL_ERROR;
-        if(wheel_caught != erro && last_vel.wheels[wheel_caught] != 0){
-            float acceleration_calc = calc_acceleration(last_vel, vel, wheel_caught);
-            if(acceleration_calc == -1) continue;
-            acceleration.wheels[wheel_caught] = acceleration_calc;
-            log_data(ID_REGEN_BRAKE_STATE, acceleration_calc+20);
+        for(int i = FRONT_RIGHT; i<WHEEL_ENCODERS_AVAILABLE -1;i++){
+            acceleration.wheels[i] = calc_acceleration(last_vel, vel, i);
         }
-        last_vel.wheels[wheel_caught] = vel.wheels[wheel_caught];
-        last_vel.interrupt_message[wheel_caught] = vel.interrupt_message[wheel_caught];
-        
+        last_vel.wheels[FRONT_RIGHT] =  vel.wheels[FRONT_RIGHT];
+        last_vel.interrupt_message[FRONT_RIGHT] = vel.interrupt_message[FRONT_RIGHT];
+        last_vel.wheels[FRONT_LEFT] = vel.wheels[FRONT_LEFT];
+        last_vel.interrupt_message[FRONT_LEFT] = vel.interrupt_message[FRONT_LEFT];
+        last_vel.wheels[REAR_RIGHT]  = vel.wheels[REAR_RIGHT];
+        last_vel.interrupt_message[REAR_RIGHT]  = vel.interrupt_message[REAR_RIGHT];
+        last_vel.wheels[REAR_LEFT]   = vel.wheels[REAR_LEFT];
+        last_vel.interrupt_message[REAR_LEFT]   = vel.interrupt_message[REAR_LEFT];
     }
 }
 

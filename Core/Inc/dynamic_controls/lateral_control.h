@@ -23,7 +23,7 @@ static const double P_REF[LUT_SIZE]  = {159.54, 177.67, 189.37, 197.74, 220.20, 
 static const double I_REF[LUT_SIZE]  = {69.34, 44.03, 31.78, 24.63, 20.04, 15.63, 14.57, 12.62, 21.69, 20.18};
 
 typedef struct {
-    double torque_decrease[2];
+    int torque_decrease[2];
 } lateral_result_t;
 
 lateral_result_t lateral_control();

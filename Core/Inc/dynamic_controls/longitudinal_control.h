@@ -28,12 +28,12 @@
 
 //Creates a struct that will be used to store the longitudinal PID's outputs
 typedef struct {
-    double torque_decrease[2];
-} longitudinal_control_result_t;
+    int torque_decrease[2];
+} longitudinal_result_t;
 
 //Initializes some functions that will be developed in the file "longitudinal_control.c"
 void init_longitudinal_control();
-longitudinal_control_result_t longitudinal_control();
+longitudinal_result_t longitudinal_control();
 
 
 

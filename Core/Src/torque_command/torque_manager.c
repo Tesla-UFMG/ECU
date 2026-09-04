@@ -19,8 +19,9 @@
 #include "util/util.h"
 #include "leds/rgb_led_handler.h"
 
+//static longitudinal_result_t torque_decrease_teste;
 
-void rampa_torque(uint32_t * ref_torque, const double* ref_torque_decrease);
+void rampa_torque(uint32_t * ref_torque, const int* ref_torque_decrease);
 void send_ref_torque_message(const uint32_t* ref_torque);
 void select_dynamic_control(bool is_DYNAMIC_CONTROL_active);
 
@@ -28,7 +29,7 @@ extern osMessageQueueId_t q_ref_torque_messageHandle;
 
 
 // normal ramp
-void rampa_torque(uint32_t* ref_torque, const double* ref_torque_decrease) {
+void rampa_torque(uint32_t* ref_torque, const int* ref_torque_decrease) {
     static uint32_t ref_torque_ant[2] = {0, 0};
     double desired_torque[2];
     bool should_decrease = (ref_torque_decrease != NULL);
@@ -59,7 +60,6 @@ void rampa_torque(uint32_t* ref_torque, const double* ref_torque_decrease) {
         ref_torque_ant[i] = ref_torque[i];
     }
 }
-
 
 // sends the torque message
 void send_ref_torque_message(const uint32_t* ref_torque) {
@@ -102,7 +102,7 @@ void torque_manager(void* argument) {
 
     uint32_t ref_torque[2] = {0, 0};
     lateral_result_t result_lateral = {.torque_decrease = {0, 0}};;
-    longitudinal_control_result_t result_longitudinal = {.torque_decrease = {0, 0}};
+    longitudinal_result_t result_longitudinal = {.torque_decrease = {0, 0}};
 
     for (;;) {
         // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
@@ -136,6 +136,7 @@ void torque_manager(void* argument) {
             case LONGITUDINAL:
                 tick += LONGITUDINAL_DELAY;
                 result_longitudinal = longitudinal_control();
+                //torque_decrease_teste = result_longitudinal;
                 // TODO(giovanni): remove ramp with bench tests
                 rampa_torque(ref_torque, result_longitudinal.torque_decrease);
                 // sends the torque command to the inverter

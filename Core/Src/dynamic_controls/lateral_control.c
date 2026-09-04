@@ -84,7 +84,7 @@ lateral_result_t lateral_control() {
     PID_set_setpoint(&pid_lateral, setpoint);
     pi_lookup_table(cg_speed, &kp, &ti);
     PID_set_parameters(&pid_lateral, kp, ti, 0);
-    pid_result = PID_compute(&pid_lateral, yaw_rads); //Return variable
+    pid_result = (double)PID_compute(&pid_lateral, yaw_rads); //Return variable
 
     double kp_data = kp*100;
     double ti_data = ti*100;
@@ -94,7 +94,7 @@ lateral_result_t lateral_control() {
     //pid_result: delta torque 0 - 13 [N.m]
     //ref_torque: 0 to torq.max [%]
     modos mode = get_global_var_value(SELECTED_MODE);
-    ref_torque = (fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max;
+    ref_torque = (int)round((fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max);
 
     if(cg_speed > 5 && is_throttle_active && internal_wheel != CENTRO){
     	if(pid_result > 0){

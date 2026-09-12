@@ -31,7 +31,7 @@ void encoder_acceleration_calc(void* argument){
     for(;;){
         ECU_ENABLE_BREAKPOINT_DEBUG();
         osMessageQueueGet(q_encoder_speeds_messageHandle, &vel, NULL, osWaitForever);
-        for(int i = FRONT_RIGHT; i<WHEEL_ENCODERS_AVAILABLE -1;i++){
+        for(int i = FRONT_RIGHT; i<WHEEL_ENCODERS_AVAILABLE-1;i++){
             acceleration.wheels[i] = calc_acceleration(last_vel, vel, i);
         }
         last_vel.wheels[FRONT_RIGHT] =  vel.wheels[FRONT_RIGHT];
@@ -43,13 +43,4 @@ void encoder_acceleration_calc(void* argument){
         last_vel.wheels[REAR_LEFT]   = vel.wheels[REAR_LEFT];
         last_vel.interrupt_message[REAR_LEFT]   = vel.interrupt_message[REAR_LEFT];
     }
-}
-
-speed_pin_e wheelCaught(encoder_speeds_message_t vel){
-    for(int i = FRONT_RIGHT; i<WHEEL_ENCODERS_AVAILABLE;i++){
-        if(vel.wheels[i] != 0){
-            return i;
-        }
-    }
-    return WHEEL_ERROR;
 }

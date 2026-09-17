@@ -40,6 +40,9 @@ void PID_set_parameters(PID_t* pid, double Kp, double Ti, double Td);
 //Function that updates the PID's output minimum and maximum limits
 void PID_set_limits(PID_t* pid, double max_output, double min_output);
 
+//Function that resets the PID's output
+void PID_reset(PID_t* pid);
+
 //Function that updates the PID's sample period
 //TODO (Guilherme): Not see this function be called in any archive
 //beyond the "PID.c". I don't know if that is because the "sample period" is constant, if it is, what is the
@@ -75,6 +78,5 @@ __attribute__((always_inline)) inline double PID_compute(PID_t* pid, double inpu
     //returns output
     return (pid->output);
 }
-void PID_reset(PID_t* pid);
 
 #endif /* PID_H_ */

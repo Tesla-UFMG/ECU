@@ -42,6 +42,19 @@ lateral_result_t lateral_control() {
     int ref_torque;
     lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
 
+    if (is_RTD_active() == false){
+
+        ref_torque_result.torque_decrease[0] = 0;
+        ref_torque_result.torque_decrease[1] = 0;
+        
+        return ref_torque_result;
+
+    }
+
+    /*if (internal_wheel == CENTRO){
+        PID_reset(&pid_lateral);
+    }*/
+
     yaw_RX_CAN = ((int16_t)fabs(general_get_value(GYRO_Z)));
     yaw_rads = yaw_RX_CAN * LSM6DSR_TO_RADS;
 
@@ -71,7 +84,7 @@ lateral_result_t lateral_control() {
     PID_set_setpoint(&pid_lateral, setpoint);
     pi_lookup_table(cg_speed, &kp, &ti);
     PID_set_parameters(&pid_lateral, kp, ti, 0);
-    pid_result = PID_compute(&pid_lateral, yaw_rads); //Return variable
+    pid_result = (double)PID_compute(&pid_lateral, yaw_rads); //Return variable
 
     double kp_data = kp*100;
     double ti_data = ti*100;
@@ -81,7 +94,7 @@ lateral_result_t lateral_control() {
     //pid_result: delta torque 0 - 13 [N.m]
     //ref_torque: 0 to torq.max [%]
     modes mode = get_global_var_value(SELECTED_MODE);
-    ref_torque = (fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max;
+    ref_torque = (int)round((fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max);
 
     if(cg_speed > 5 && is_throttle_active && internal_wheel != CENTER){
     	if(pid_result > 0){

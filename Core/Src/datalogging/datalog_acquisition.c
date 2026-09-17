@@ -34,7 +34,6 @@ void datalog_acquisition() {
 
         log_data(ID_MODE, mode_dl.mode);
         log_data(ID_TORQUE_GAIN, mode_dl.torq_gain);
-        log_data(ID_REGEN_BRAKE_STATE, mode_dl.regen_brake);
         log_data(ID_CONTROL_EVENT_FLAG_1, flag_ecu_1);
         log_data(ID_CONTROL_EVENT_FLAG_2, flag_ecu_2);
 

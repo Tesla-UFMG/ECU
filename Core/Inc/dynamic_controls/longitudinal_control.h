@@ -16,10 +16,8 @@
 //TODO (Guilherme): check the sampling time. REALLY IMPORTANT!
 #define LONGITUDINAL_DELAY 30
 
-/*TODO (Guilherme): It might be interesting change the setpoint value.
-During the validation process, we saw that the optimum value of slip goes from 0,1 to 0,2.
-So, it might be intersting define what is the optimum slip ratio value for our tire*/
-#define IDEAL_SLIP_DRY     13
+//TODO (Guilherme): Pode ser interessante pensar em alterar o valor do setpoint. Durante o processo de validação viu-se que o valor ótimo de slip varia entre 0,1 e 0,2. Nesse sentido, pode ser interessante tentar definir qual seria o valor do slip ratio ideal do nosso pneu.
+#define IDEAL_SLIP_DRY     6.6
 #define IDEAL_SLIP_WET     30
 
 //Defines the longitudinal PID's parameters
@@ -30,12 +28,12 @@ So, it might be intersting define what is the optimum slip ratio value for our t
 
 //Creates a struct that will be used to store the longitudinal PID's outputs
 typedef struct {
-    double torque_decrease[2];
-} longitudinal_control_result_t;
+    int torque_decrease[2];
+} longitudinal_result_t;
 
 //Initializes some functions that will be developed in the file "longitudinal_control.c"
 void init_longitudinal_control();
-longitudinal_control_result_t longitudinal_control();
+longitudinal_result_t longitudinal_control();
 
 
 

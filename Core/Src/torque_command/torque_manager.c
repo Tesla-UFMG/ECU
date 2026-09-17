@@ -19,17 +19,24 @@
 #include "util/util.h"
 #include "leds/rgb_led_handler.h"
 
+//static longitudinal_result_t torque_decrease_teste;
 
-void rampa_torque(uint32_t * ref_torque, const double* ref_torque_decrease);
+void rampa_torque(uint32_t * ref_torque, const int* ref_torque_decrease);
 void send_ref_torque_message(const uint32_t* ref_torque);
 void select_dynamic_control(bool is_DYNAMIC_CONTROL_active);
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 
+
+
+
+
 void torque_manager(void* argument) {
     UNUSED(argument);
 
     uint32_t ref_torque[2] = {0, 0};
+    lateral_result_t result_lateral = {.torque_decrease = {0, 0}};;
+    longitudinal_result_t result_longitudinal = {.torque_decrease = {0, 0}};
 
     for (;;) {
         // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores)
@@ -48,7 +55,7 @@ void torque_manager(void* argument) {
         switch (g_control_type) {
             case LATERAL: // TODO(giovanni): do the integration of the two controllers
                 tick += LATERAL_DELAY;
-                lateral_result_t result_lateral = lateral_control();
+                result_lateral = lateral_control();
                 // TODO(giovanni): use torque_ramp while longitudinal control is not defined
                 torque_ramp(ref_torque, result_lateral.torque_decrease);
                 log_data(ID_TORQUE_GAIN_L, ref_torque[1]);
@@ -62,7 +69,8 @@ void torque_manager(void* argument) {
 
             case LONGITUDINAL:
                 tick += LONGITUDINAL_DELAY;
-                longitudinal_control_result_t result_longitudinal = longitudinal_control();
+                result_longitudinal = longitudinal_control();
+                //torque_decrease_teste = result_longitudinal;
                 // TODO(giovanni): remove ramp with bench tests
                 torque_ramp(ref_torque, result_longitudinal.torque_decrease);
                 log_data(ID_TORQUE_GAIN_L, ref_torque[1]);
@@ -79,13 +87,13 @@ void torque_manager(void* argument) {
 
             case BOTH_CONTROLS:
                 tick += LATERAL_DELAY;//Could be longitudinal as well (since they are equal)
-                lateral_result_t lateral_result = lateral_control();
-                longitudinal_control_result_t longitudinal_result = longitudinal_control();
+                result_lateral = lateral_control();
+                result_longitudinal = longitudinal_control();
                 //TODO (Guilherme):It might be interesting to create a type to store the results of the two controls;  
                 //this is purely aesthetic but would make the code more intuitive.
                 lateral_result_t result;
-                result.torque_decrease[R_MOTOR] = lateral_result.torque_decrease[R_MOTOR] + longitudinal_result.torque_decrease[R_MOTOR];
-                result.torque_decrease[L_MOTOR] = lateral_result.torque_decrease[L_MOTOR] + longitudinal_result.torque_decrease[L_MOTOR];
+                result.torque_decrease[R_MOTOR] = result_lateral.torque_decrease[R_MOTOR] + result_longitudinal.torque_decrease[R_MOTOR];
+                result.torque_decrease[L_MOTOR] = result_lateral.torque_decrease[L_MOTOR] + result_longitudinal.torque_decrease[L_MOTOR];
 
                 torque_ramp(ref_torque, result.torque_decrease);
 
@@ -110,7 +118,7 @@ void torque_manager(void* argument) {
 }
 
 // normal ramp
-static void torque_ramp(uint32_t* ref_torque, const double* ref_torque_decrease) {
+void torque_ramp(uint32_t* ref_torque, const int* ref_torque_decrease) {
     static uint32_t ref_torque_ant[2] = {0, 0};
     double desired_torque[2];
     bool should_decrease = (ref_torque_decrease != NULL);
@@ -144,7 +152,7 @@ static void torque_ramp(uint32_t* ref_torque, const double* ref_torque_decrease)
 
 
 // sends the torque message
-static void send_ref_torque_message(const uint32_t* ref_torque) {
+void send_ref_torque_message(const uint32_t* ref_torque) {
     ref_torque_t ref_torque_message;
     ref_torque_message.ref_torque[R_MOTOR] = ref_torque[R_MOTOR];
     ref_torque_message.ref_torque[L_MOTOR] = ref_torque[L_MOTOR];
@@ -153,7 +161,7 @@ static void send_ref_torque_message(const uint32_t* ref_torque) {
 }
 
 
-static void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
+void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
 
     if (is_DYNAMIC_CONTROL_active) {
         if (get_global_var_value(SELECTED_MODE).dif_elt == 1

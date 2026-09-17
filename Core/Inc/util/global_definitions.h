@@ -15,7 +15,7 @@
 
 #define WHEEL_ENCODERS_AVAILABLE 4
 //sensor velocity pins
-typedef enum { FRONT_RIGHT = 0, FRONT_LEFT, REAR_RIGHT, REAR_LEFT } speed_pin_e;
+typedef enum { FRONT_RIGHT = 0, FRONT_LEFT, REAR_RIGHT, REAR_LEFT, WHEEL_ERROR} speed_pin_e;
 //colors of ECU LED
 typedef enum { BLACK = 0, RED, GREEN, BLUE, YELLOW, PURPLE, CYAN, WHITE } colors_t;
 

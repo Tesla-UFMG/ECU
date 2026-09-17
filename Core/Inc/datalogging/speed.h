@@ -12,6 +12,8 @@
 
 typedef struct {
     uint16_t wheels[WHEEL_ENCODERS_AVAILABLE];
+    //used for collecting the acceleration
+    uint32_t interrupt_message[WHEEL_ENCODERS_AVAILABLE]; 
 } encoder_speeds_message_t;
 
 #endif /* INC_DATALOGGING_SPEED_H_ */

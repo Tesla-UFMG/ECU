@@ -188,5 +188,3 @@ static inline uint32_t get_tim2_freq() {
     // PCLK1 prescaler equal to 1 => TIMCLK = PCLK1
     return HAL_RCC_GetPCLK1Freq();
 }
-
-

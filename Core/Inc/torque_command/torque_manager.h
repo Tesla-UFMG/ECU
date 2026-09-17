@@ -14,9 +14,9 @@
 
 // Initialization os functions
 
-static void torque_ramp(uint32_t * ref_torque, const double* ref_torque_decrease);
-static void send_ref_torque_message(const uint32_t* ref_torque);
-static void select_dynamic_control(bool is_DYNAMIC_CONTROL_active);
+void torque_ramp(uint32_t * ref_torque, const int* ref_torque_decrease);
+void send_ref_torque_message(const uint32_t* ref_torque);
+void select_dynamic_control(bool is_DYNAMIC_CONTROL_active);
 
 
 //TODO (Guilherme): It is necessary a type, where both controls is active,

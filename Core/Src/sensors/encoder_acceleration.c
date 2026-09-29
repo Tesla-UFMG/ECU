@@ -42,5 +42,6 @@ void encoder_acceleration_calc(void* argument){
         last_vel.interrupt_message[REAR_RIGHT]  = vel.interrupt_message[REAR_RIGHT];
         last_vel.wheels[REAR_LEFT]   = vel.wheels[REAR_LEFT];
         last_vel.interrupt_message[REAR_LEFT]   = vel.interrupt_message[REAR_LEFT];
+        log_data(ID_REGEN_BRAKE_STATE, acceleration.wheels[FRONT_RIGHT]);
     }
 }

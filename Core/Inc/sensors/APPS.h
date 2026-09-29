@@ -29,7 +29,7 @@
 #define APPS1_UPPER_DEADZONE   1000
 #define APPS1_ADJUST_SLOPE     1.25
 #define APPS1_ADJUST_INTERCEPT (-300.0)
-#define APPS1_MIN              230
+#define APPS1_MIN              220
 #define APPS1_MAX              1050
 
 // APPS 2
@@ -37,7 +37,7 @@
 #define APPS2_UPPER_DEADZONE   2090
 #define APPS2_ADJUST_SLOPE     0.61
 #define APPS2_ADJUST_INTERCEPT (-300.31)
-#define APPS2_MIN              540
+#define APPS2_MIN              500
 #define APPS2_MAX              2160
 
 #endif /* INC_THROTTLE_H_ */

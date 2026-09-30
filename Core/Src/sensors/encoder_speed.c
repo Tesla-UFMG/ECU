@@ -104,7 +104,7 @@ void encoder_speed_calc(void) {
                 }else{
                     speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
                 }
-                rpm = (speed/WHEEL_RADIUS)*(30/M_PI);
+                rpm = (speed/WHEEL_RADIUS)*(30/M_PI)/10;
                 // saves the speed only of the wheel which speed was just calculated
                 speeds_message.wheels[interrupt_message.pin] = speed;
                 rpm_message[interrupt_message.pin] = rpm;

@@ -33,6 +33,7 @@ void encoder_acceleration_calc(void* argument){
         osMessageQueueGet(q_encoder_speeds_messageHandle, &vel, NULL, osWaitForever);
         for(int i = FRONT_RIGHT; i<WHEEL_ENCODERS_AVAILABLE-1;i++){
             acceleration.wheels[i] = calc_acceleration(last_vel, vel, i);
+            acc.wheels[i] = acceleration.wheels[i];
         }
         last_vel.wheels[FRONT_RIGHT] =  vel.wheels[FRONT_RIGHT];
         last_vel.interrupt_message[FRONT_RIGHT] = vel.interrupt_message[FRONT_RIGHT];

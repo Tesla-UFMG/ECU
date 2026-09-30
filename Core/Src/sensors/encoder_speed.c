@@ -25,8 +25,9 @@ static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint3
 static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc);
 static inline uint32_t calculate_timeout_RTOS(uint32_t speed); 
+//rpm variable for test
+int rpm_message[4];
 void encoder_speed_calc(void) {
-
     //Variable that stores the message received from the encoder interrupt, which contains the timer count and the wheel pin that caused the interruption
     encoder_int_message_t interrupt_message;
 
@@ -60,6 +61,7 @@ void encoder_speed_calc(void) {
     uint32_t d_tim_count;
     //Variable that will store the speed calculated for a wheel, which will be sent to the datalogging task
     uint32_t speed;
+    int rpm;
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
@@ -98,11 +100,14 @@ void encoder_speed_calc(void) {
 
                 if(interrupt_message.pin == REAR_RIGHT || interrupt_message.pin == REAR_LEFT){
                     speed = calculate_speed_rear(d_tim_count, tim_freq, tim_presc);
+
                 }else{
                     speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
                 }
+                rpm = (speed/WHEEL_RADIUS)*(M_PI/30);
                 // saves the speed only of the wheel which speed was just calculated
                 speeds_message.wheels[interrupt_message.pin] = speed;
+                rpm_message[interrupt_message.pin] = rpm;
                 // store message to use in the next iteration
                 last_interrupt_messages[interrupt_message.pin] = interrupt_message;
                 break;
@@ -128,6 +133,7 @@ static inline uint32_t calculate_speed(uint32_t time_between_messages, uint32_t 
 static inline uint32_t calculate_speed_rear(uint32_t time_between_messages, uint32_t freq, uint32_t presc) {
     return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR)* ((float)freq / ((float)presc)) / time_between_messages);
 }
+
 
 /*
  * //Functions that calculate the timeout for rear and front wheels, seperatly.

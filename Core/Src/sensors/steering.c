@@ -6,11 +6,6 @@
  */
 
 #include "sensors/steering.h"
-#include "datalogging/datalog_handler.h"
-#include "util/CMSIS_extra/global_variables_handler.h"
-#include "util/constants.h"
-#include "util/global_definitions.h"
-#include "util/util.h"
 
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
@@ -18,20 +13,26 @@ uint16_t steering_adc_raw;
 uint16_t previous_adc_raw = 0;
 int32_t delta = 0;
 int32_t steering_position_adc = 0;
+float steering_angle;
 float steering_rad=0;
 float steering_wheel_rad=0;
 uint16_t first_value = 0;
 INTERNAL_WHEEL_t internal_wheel;
 bool is_initialized = false;
+
+uint16_t buf[WINDOW];     // circular buffer of last WINDOW raw samples
+uint8_t  idx = 0;
+uint32_t sum = 0;
+bool     primed = false;
 void steering_read(void* argument) {
 
 	UNUSED(argument);
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
-        //wait_for_rtd();
         //Read the ADC value from the steering sensor.
-        steering_adc_raw = ADC_DMA_buffer[STEERING_WHEEL_E];
+        wait_for_rtd();
+        steering_adc_raw = moving_average(ADC_DMA_buffer[STEERING_WHEEL_E]);
 
         //Store the initial ADC steering sensor.
         if(!is_initialized){
@@ -59,7 +60,7 @@ void steering_read(void* argument) {
         //Convert the accumulated ADC counts to an angle in radians.
         steering_rad = (steering_position_adc * ((2.0f * PI)/ADC_MAX_VALUE));
         steering_wheel_rad = steering_rad/STEERING_RATIO;
-
+        steering_angle = steering_rad*180/PI;
         set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
         //STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
         float steering_wheel = steering_wheel_rad*1000 + 645;
@@ -85,4 +86,15 @@ void steering_read(void* argument) {
 
         //return(volante);
     }
+}
+
+//algoritmo á ser testado para tirar ruído do ADC apps ?? --> embora eu não vá usar ele, eu posso usar
+//algo do genêro para ver qual tá sendo a flutuação nos picos
+uint16_t moving_average(uint16_t new_sample) {
+		sum -= buf[idx];               // drop the oldest contribution
+		buf[idx] = new_sample;         // overwrite oldest slot
+		sum += new_sample;             // add the newest
+		idx = (idx + 1) % WINDOW;
+		if (!primed && idx == 0) primed = true;
+		return primed ? (sum / WINDOW) : (sum / (idx ? idx : 1));
 }

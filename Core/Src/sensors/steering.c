@@ -29,7 +29,7 @@ void steering_read(void* argument) {
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
-        wait_for_rtd();
+        //wait_for_rtd();
         //Read the ADC value from the steering sensor.
         steering_adc_raw = ADC_DMA_buffer[STEERING_WHEEL_E];
 

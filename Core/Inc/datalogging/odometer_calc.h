@@ -8,8 +8,6 @@
 #ifndef INC_ODOMETER_CALC_H_
 #define INC_ODOMETER_CALC_H_
 
-#define CALC_DELAY 100
-
-#define WORDS_READ_ONE 1
+#define ODOM_DELAY_MS 25
 
 #endif /* INC_ODOMETER_CALC_H_ */

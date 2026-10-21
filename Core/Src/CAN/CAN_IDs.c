@@ -18,9 +18,10 @@ static void sort_struct(void);
 
 static void initialize_CAN_var_inf() {
     // does the mapping of the ids in a structure that will be sorted
-#define CAN_GENERAL_LIST_DATA(var_name, msg_id, msg_wrd)                                 \
-    CAN_ID_map[var_name].id              = msg_id;                                       \
-    CAN_ID_map[var_name].message_to_send = msg_wrd;
+#define CAN_GENERAL_LIST_DATA(var_name, msg_id, msg_wrd)           \
+    CAN_ID_map[var_name].id              = msg_id;                 \
+    CAN_ID_map[var_name].message_to_send = msg_wrd;                \
+    CAN_ID_map[var_name].original_enum   = var_name; // SALVA O ENUM AQUI
     VARIABLES_GENERAL_CAN_TX
 #undef CAN_GENERAL_LIST_DATA
 }
@@ -67,7 +68,7 @@ void initialize_CAN_IDs_struct() {
     }
     populate_datalog_send_struct();
 }
-
+int id_teste1;
 static void populate_datalog_send_struct() {
     uint16_t j = 0;
     uint16_t i = 0;
@@ -77,7 +78,8 @@ static void populate_datalog_send_struct() {
         }
         do {
             aux_datalog_struct.external_ID = CAN_ID_map[i].id;
-            aux_datalog_struct.message_to_send[CAN_ID_map[i].message_to_send] = i;
+            id_teste1 = CAN_ID_map[i].id;
+            aux_datalog_struct.message_to_send[CAN_ID_map[i].message_to_send] = CAN_ID_map[i].original_enum;
             i++;
         } while (aux_datalog_struct.external_ID == CAN_ID_map[i].id);
         datalog_send_struct[j] = aux_datalog_struct;

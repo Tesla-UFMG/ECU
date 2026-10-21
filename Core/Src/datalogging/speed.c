@@ -21,6 +21,7 @@ static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0}};
 static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0, 0, 0}};
 #endif
 
+float slip[2] = {0, 0};
 /**
  * @brief Acquire speed values from wheel encoder and inverter speeds to creates global
  * variables with average front, average rear and all four wheels speeds
@@ -41,32 +42,39 @@ void speed_datalog(void* argument) {
         osMessageQueueGet(q_encoder_speeds_messageHandle, &encoder_speeds_message, NULL,
                           SPEED_LOG_DELAY);
 
-
         speed.wheels[FRONT_RIGHT] = encoder_speeds_message.wheels[FRONT_RIGHT];
         speed.wheels[FRONT_LEFT]  = encoder_speeds_message.wheels[FRONT_LEFT];
         speed.wheels[REAR_RIGHT]  = encoder_speeds_message.wheels[REAR_RIGHT];
         speed.wheels[REAR_LEFT]   = encoder_speeds_message.wheels[REAR_LEFT];
-        FRONT_AVG_SPEED_t avg_front_speed =
-            avg(speed.wheels[FRONT_RIGHT], speed.wheels[FRONT_LEFT]);
-        REAR_AVG_SPEED_t avg_rear_speed =
-            avg(speed.wheels[REAR_RIGHT], speed.wheels[REAR_LEFT]);
-        double slip = ((avg_rear_speed - avg_front_speed)
-                / avg_front_speed)
-               * 100;
-        double slip_data = (slip+1)*100;
+
+        FRONT_AVG_SPEED_t avg_front_speed = 180;//avg(speed.wheels[FRONT_RIGHT], speed.wheels[FRONT_LEFT]);
+        REAR_AVG_SPEED_t avg_rear_speed = avg(speed.wheels[REAR_RIGHT], speed.wheels[REAR_LEFT]);
+
         set_global_var(SPEEDS, &speed);
         set_global_var(FRONT_AVG_SPEED, &avg_front_speed);
         set_global_var(REAR_AVG_SPEED, &avg_rear_speed);
-        // uint16_t avg_speeds = avg(&avg_front_speed, &avg_rear_speed);
 
-        log_data(ID_SLIP, slip_data);
-        log_data(ID_SPEED_FR, speed.wheels[FRONT_RIGHT]);
-        log_data(ID_SPEED_FL, speed.wheels[FRONT_LEFT]);
-        log_data(ID_SPEED_RR, speed.wheels[REAR_RIGHT]);
-        log_data(ID_SPEED_RL, speed.wheels[REAR_LEFT]);
-        log_data(ID_SPEED_AVG, avg_rear_speed);
+        log_data(ID_SPEED_FR, (uint16_t)(speed.wheels[FRONT_RIGHT]));
+        log_data(ID_SPEED_FL, (uint16_t)(speed.wheels[FRONT_LEFT]));
+        log_data(ID_SPEED_RR, (uint16_t)(speed.wheels[REAR_RIGHT]));
+        log_data(ID_SPEED_RL, (uint16_t)(speed.wheels[REAR_LEFT]));
         // todo: (Felipe) log avg speed after updated datalogging task
+        
+        if (speed.wheels[FRONT_RIGHT] > speed.wheels[REAR_RIGHT]){
+            slip[R_MOTOR] = 0;
+        } else {
+            slip[R_MOTOR] = (float)(((float)(speed.wheels[REAR_RIGHT]) - (float)(speed.wheels[FRONT_RIGHT]))/(float)(speed.wheels[FRONT_RIGHT]));
+        }
+        if (speed.wheels[FRONT_LEFT] > speed.wheels[REAR_LEFT]){
+            slip[L_MOTOR] = 0;
+        } else {
+            slip[L_MOTOR] = (float)(((float)(speed.wheels[REAR_LEFT]) - (float)(speed.wheels[FRONT_LEFT]))/(float)(speed.wheels[FRONT_LEFT]));
+        }
 
+        log_data(ID_SLIP_R, (uint16_t)(slip[R_MOTOR]*10000));
+        log_data(ID_SLIP_L, (uint16_t)(slip[L_MOTOR]*10000));
+        
+        
         osDelay(SPEED_LOG_DELAY);
     }
 }

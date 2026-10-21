@@ -34,6 +34,6 @@ void throttle_control(void* argument) {
             set_global_var_value(THROTTLE_PERCENT, (THROTTLE_PERCENT_t)0);
         }
 
-        log_data(ID_THROTTLE, get_global_var_value(THROTTLE_PERCENT));
+        log_data(ID_THROTTLE, (uint16_t)(get_global_var_value(THROTTLE_PERCENT)));
     }
 }

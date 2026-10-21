@@ -23,15 +23,24 @@ volatile int16_t yaw_RX_CAN;
 
 void init_lateral_control() {
     PID_init(&pid_lateral, 1, P_REF[0], P_REF[0]/I_REF[0], 0, NOMINAL_TORQUE,
-    		-NOMINAL_TORQUE, LATERAL_DELAY);
+    		-NOMINAL_TORQUE, LATERAL_DELAY_S);
 }
 
 lateral_result_t lateral_control() {
-    STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
-    INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
-    THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
 
-    double cg_speed;
+    STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
+    THROTTLE_STATUS_t is_throttle_active = get_global_var_value(THROTTLE_STATUS);
+    INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
+    INTERNAL_WHEEL_t external_wheel;
+
+    if (internal_wheel == CENTRO) {
+        external_wheel = CENTRO;
+    } else if (internal_wheel == ESQUERDA) {
+        external_wheel = DIREITA;
+    } else {
+        external_wheel = ESQUERDA;
+    }
+
     double desired_yaw;
     double max_yaw;
     double setpoint;
@@ -40,93 +49,83 @@ lateral_result_t lateral_control() {
     double pid_result;
     double yaw_rads;
     int ref_torque;
-    lateral_result_t ref_torque_result = {.torque_decrease = {0, 0}};
+    
+    //[m/s]
+    double cg_speed = ((double)get_global_var_value(FRONT_AVG_SPEED)) / (10.0 * 3.6);
 
-    if (is_RTD_active() == false){
-
-        ref_torque_result.torque_decrease[0] = 0;
-        ref_torque_result.torque_decrease[1] = 0;
-        
+    lateral_result_t ref_torque_result = {.ref_torque_result = 0,
+                                         .decrease_wheel = CENTRO,
+                                         .distribute = DISTRIBUTE};
+    
+    if (!is_RTD_active() || internal_wheel == CENTRO || !is_throttle_active || cg_speed < 5.0) {
+        PID_reset(&pid_lateral);
+        ref_torque_result.ref_torque_result = 0;
+        ref_torque_result.decrease_wheel = CENTRO;        
         return ref_torque_result;
-
     }
 
-    /*if (internal_wheel == CENTRO){
+    yaw_RX_CAN = ((int16_t)(general_get_value(GYRO_Z)));
+
+    if ((internal_wheel == DIREITA && yaw_RX_CAN < 0) || (internal_wheel == ESQUERDA && yaw_RX_CAN > 0)) {
         PID_reset(&pid_lateral);
-    }*/
+        ref_torque_result.ref_torque_result = 0;
+        ref_torque_result.decrease_wheel = CENTRO;
+        return ref_torque_result;
+    }
 
-    yaw_RX_CAN = ((int16_t)fabs(general_get_value(GYRO_Z)));
-    yaw_rads = yaw_RX_CAN * LSM6DSR_TO_RADS;
-
-    //[m/s]
-    cg_speed = ((double)get_global_var_value(FRONT_AVG_SPEED)) / (10 * 3.6);
+    yaw_rads = abs(yaw_RX_CAN) * LSM6DSR_TO_RADS;
 
     //Using always absolute value
     desired_yaw   = (cg_speed * fabs(steering_wheel)) / (WHEELBASE + (KU * cg_speed * cg_speed));
-    float desired_yaw_datalogado = desired_yaw*1000;
-    log_data(ID_DESIRED_YAW, desired_yaw_datalogado);
+    log_data(ID_DESIRED_YAW, (uint16_t)(desired_yaw*1000));
 
-    //This condition prevents division by zero.
-    if (cg_speed < 1){
-    	max_yaw = 0;
-    } else{
-    	max_yaw = TUNABILITY_FACTOR * ((FRICTION_COEFFICIENT * GRAVITY) / cg_speed);
-    }
+    max_yaw = TUNABILITY_FACTOR * ((FRICTION_COEFFICIENT * GRAVITY) / cg_speed);
+    
 
-    float max_yaw_datalogado = max_yaw*1000;
-    log_data(ID_MAX_YAW, max_yaw_datalogado);
+    log_data(ID_MAX_YAW, (uint16_t)(max_yaw*1000));
 
     //the smaller value in absolute magnitude
     setpoint = fmin(desired_yaw, max_yaw);
-    log_data(ID_SET_POINT_LATERAL, setpoint*1000);
+    log_data(ID_SET_POINT_LATERAL, (uint16_t)(setpoint*1000));
+
+    modos mode = get_global_var_value(SELECTED_MODE);
 
     // PID
     PID_set_setpoint(&pid_lateral, setpoint);
     pi_lookup_table(cg_speed, &kp, &ti);
     PID_set_parameters(&pid_lateral, kp, ti, 0);
+
+    log_data(ID_KP, (uint16_t)(kp*100));
+    log_data(ID_TI, (uint16_t)(ti*100));
+
+    PID_set_limits(&pid_lateral, ((mode.tor_max / 1000.0) * NOMINAL_TORQUE), -((mode.tor_max / 1000.0) * NOMINAL_TORQUE));
+
     pid_result = (double)PID_compute(&pid_lateral, yaw_rads); //Return variable
 
-    double kp_data = kp*100;
-    double ti_data = ti*100;
-    log_data(ID_KP, kp_data);
-    log_data(ID_TI, ti_data);
 
     //pid_result: delta torque 0 - 13 [N.m]
     //ref_torque: 0 to torq.max [%]
-    modos mode = get_global_var_value(SELECTED_MODE);
-    ref_torque = (int)round((fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max);
+    ref_torque = (int)((fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max);
 
-    if(cg_speed > 5 && is_throttle_active && internal_wheel != CENTRO){
-    	if(pid_result > 0){
-    		//increase yaw rate -> decrease torque on internal wheel
-    		ref_torque_result.torque_decrease[R_MOTOR] =
-    				(internal_wheel == DIREITA) ? ref_torque : 0;
-    		ref_torque_result.torque_decrease[L_MOTOR] =
-    		    	(internal_wheel == ESQUERDA) ? ref_torque : 0;
-    	} else if(pid_result < 0){
-    		//decrease yaw rate -> decrease torque on external wheel
-    		ref_torque_result.torque_decrease[R_MOTOR] =
-    		    	(internal_wheel == DIREITA) ? 0 : ref_torque;
-    		ref_torque_result.torque_decrease[L_MOTOR] =
-    		    	(internal_wheel == ESQUERDA) ? 0 : ref_torque;
-    	}else{
-    		ref_torque_result.torque_decrease[R_MOTOR] = 0;
-    		ref_torque_result.torque_decrease[L_MOTOR] = 0;
-    	}
-    }
-    else{
-    	ref_torque_result.torque_decrease[R_MOTOR] = 0;
-    	ref_torque_result.torque_decrease[L_MOTOR] = 0;
-    }
     
-    log_data(ID_TORQUE_DECREASE_L, ref_torque_result.torque_decrease[L_MOTOR]);
-    log_data(ID_TORQUE_DECREASE_R, ref_torque_result.torque_decrease[R_MOTOR]);
 
+    if (pid_result > 0){
+        //increase yaw rate -> decrease torque on internal wheel and increase torque on external wheel
+        ref_torque_result.ref_torque_result = ref_torque;
+        ref_torque_result.decrease_wheel = internal_wheel;
+    } else if (pid_result < 0){
+        //decrease yaw rate -> decrease torque on external wheel and increase torque on internal wheel
+        ref_torque_result.ref_torque_result = ref_torque;
+        ref_torque_result.decrease_wheel = external_wheel;
+    } else{
+        ref_torque_result.ref_torque_result = 0;
+        ref_torque_result.decrease_wheel = CENTRO;
+    }
     return ref_torque_result;
 }
 
-void pi_lookup_table(double Vx, double *Pout, double *TIout)
-{
+void pi_lookup_table(double Vx, double *Pout, double *TIout){
+
     int i;
     int idx = 0;
     double kp;

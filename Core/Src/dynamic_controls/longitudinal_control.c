@@ -5,101 +5,6 @@
  *      Author: GiovanniPasa
  */
 
-/*
-#include "dynamic_controls/longitudinal_control.h"
-
-#include "CAN/general_can_data_manager.h"
-#include "cmsis_os.h"
-#include "dynamic_controls/PID.h"
-#include "datalogging/datalog_handler.h"
-#include "dynamic_controls/constants_control.h"
-#include "util/CMSIS_extra/global_variables_handler.h"
-#include "util/constants.h"
-#include "util/global_variables.h"
-#include "util/util.h"
-
-#include <math.h>
-
-//Creates the longitudinal controller
-static PID_t pid_longitudinal;
-
-//Function that initializes the longitudinal_control
-void init_longitudinal_control() {
-
-    //Initializes the rear left PID
-    PID_init(&pid_longitudinal, 1, KP_LONGITUDINAL,
-             TI_LONGITUDINAL, 0, 0, -NOMINAL_TORQUE, LONGITUDINAL_DELAY);
-    //Defines the longitudinal PID's setpoint
-    PID_set_setpoint(&pid_longitudinal, IDEAL_SLIP_DRY);
-}
-
-
-
-longitudinal_control_result_t longitudinal_control() {
-
-    //Variables that will store the result 
-    double pid_result;
-    int ref_torque;
-    longitudinal_control_result_t ref_torque_result = {.torque_decrease = {0, 0}};
-    
-    if (is_RTD_active() == false){
-
-        ref_torque_result.torque_decrease[0] = 0;
-        ref_torque_result.torque_decrease[1] = 0;
-        
-        return ref_torque_result;
-
-    } 
-
-    //Calculus variables
-    double cg_speed;
-    double rear_avg_speed;
-    double slip;
-
-    INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
-
-    //speed of the car's center of mass
-    cg_speed = (double)get_global_var_value(FRONT_AVG_SPEED);
-    //avarage speed of the rear wheels
-    rear_avg_speed = (double)get_global_var_value(REAR_AVG_SPEED);
-
-    // treatment made to avoid division by zero
-    if (cg_speed < 30 ) {
-        slip = 0;
-    } else {
-        //slip ratio calculation
-        slip = ((rear_avg_speed - cg_speed)
-                / cg_speed)
-               * 100;
-    }
-
-    // double slip_data = (slip+1)*100;
-    // log_data(ID_SLIP, slip_data);
-    //This "if" is here to deactivate the controller when the slip is lower than the ideal or when the car is making a turn 
-
-    if (slip <= IDEAL_SLIP_DRY || internal_wheel != CENTRO) {
-        pid_result = 0;
-        PID_reset(&pid_longitudinal);
-    } else {
-        pid_result = fabs((double)(PID_compute(&(pid_longitudinal), slip)));
-    }
-
-    //pid_result: delta torque 0 - 13 [N.m]
-    //ref_torque: 0 to torq.max [%]
-    modos mode = get_global_var_value(SELECTED_MODE);
-    ref_torque = (fabs(pid_result)/NOMINAL_TORQUE) * mode.tor_max;
-
-    //Store the right and left motor torque reference that must be subtracted
-    ref_torque_result.torque_decrease[R_MOTOR] = ref_torque;
-    ref_torque_result.torque_decrease[L_MOTOR] = ref_torque;
-    log_data(ID_TORQUE_DECREASE_L, ref_torque_result.torque_decrease[L_MOTOR]);
-    log_data(ID_TORQUE_DECREASE_R, ref_torque_result.torque_decrease[R_MOTOR]);
-
-
-    return ref_torque_result;
-}
-
-*/
 #include "dynamic_controls/longitudinal_control.h"
 
 #include "CAN/general_can_data_manager.h"
@@ -127,20 +32,20 @@ longitudinal_control_result_t longitudinal_control() {
 
 //Creates the longitudinal controller
 static PID_t pid_longitudinal[2];
-//double slip_teste[2] = {0, 0};
-
+float slip_teste[2] = {0, 0};
+SPEEDS_t speeds_teste = {.wheels = {0, 0, 0, 0}};
 //Function that initializes the longitudinal_control
 void init_longitudinal_control() {
 
     //Initializes the rear right PID
     PID_init(&pid_longitudinal[R_MOTOR], 1, KP_LONGITUDINAL,
-             TI_LONGITUDINAL, 0, 0, -NOMINAL_TORQUE, LONGITUDINAL_DELAY);
+             TI_LONGITUDINAL, 0, 0, -NOMINAL_TORQUE, LONGITUDINAL_DELAY_S);
     //Defines the rear right longitudinal PID's setpoint
     PID_set_setpoint(&pid_longitudinal[R_MOTOR], IDEAL_SLIP_DRY);
 
     //Initializes the rear left PID
     PID_init(&pid_longitudinal[L_MOTOR], 1, KP_LONGITUDINAL,
-    TI_LONGITUDINAL, 0, 0, -NOMINAL_TORQUE, LONGITUDINAL_DELAY);
+    TI_LONGITUDINAL, 0, 0, -NOMINAL_TORQUE, LONGITUDINAL_DELAY_S);
     //Defines the rear left longitudinal PID's setpoint
     PID_set_setpoint(&pid_longitudinal[L_MOTOR], IDEAL_SLIP_DRY);
 }
@@ -157,6 +62,8 @@ longitudinal_result_t longitudinal_control() {
 
         ref_torque_result.torque_decrease[R_MOTOR] = 0;
         ref_torque_result.torque_decrease[L_MOTOR] = 0;
+        PID_reset(&pid_longitudinal[R_MOTOR]);
+        PID_reset(&pid_longitudinal[L_MOTOR]);
 
         return ref_torque_result;
 
@@ -164,20 +71,16 @@ longitudinal_result_t longitudinal_control() {
 
     modos mode = get_global_var_value(SELECTED_MODE);
 
-    PID_set_limits(&pid_longitudinal[R_MOTOR], 0, -((mode.tor_max/1000)*NOMINAL_TORQUE));
-    PID_set_limits(&pid_longitudinal[L_MOTOR], 0, -((mode.tor_max/1000)*NOMINAL_TORQUE));
+    PID_set_limits(&pid_longitudinal[R_MOTOR], 0, -((mode.tor_max/1000.0)*NOMINAL_TORQUE));
+    PID_set_limits(&pid_longitudinal[L_MOTOR], 0, -((mode.tor_max/1000.0)*NOMINAL_TORQUE));
 
     //Calculus variables
-    double slip[2] = {0, 0};
-    encoder_speeds_message_t speeds;
-    osMessageQueueGet(q_encoder_speeds_messageHandle, &speeds, NULL, osWaitForever);
-
-    //speeds.wheels[FRONT_RIGHT] = 10;
-	//speeds.wheels[FRONT_LEFT] = 10;
-
-    //SPEEDS_t *speed;
-    //get_global_var(SPEEDS, &speed);
-
+    float slip[2] = {0, 0};
+    SPEEDS_t speeds = get_global_var_value(SPEEDS);
+    //speeds.wheels[FRONT_RIGHT] = 200;
+	//speeds.wheels[FRONT_LEFT] = 200;
+    speeds_teste = speeds;
+    
     INTERNAL_WHEEL_t internal_wheel = get_global_var_value(INTERNAL_WHEEL);
 
     // treatment made to avoid division by zero
@@ -185,14 +88,26 @@ longitudinal_result_t longitudinal_control() {
         ref_torque_result.torque_decrease[R_MOTOR] = 0;
         ref_torque_result.torque_decrease[L_MOTOR] = 0;
         for (int i = 0; i < 2; i++){
+            slip[i]=0;
+            slip_teste[i]=0;
             PID_reset(&pid_longitudinal[i]);
         }
         return ref_torque_result;
-    } else {
-        //slip ratio calculation
-        for (int i = 0; i < 2; i++){
-            slip[i] = ((speeds.wheels[i+2] - speeds.wheels[i])/speeds.wheels[i])*100;
-            //slip_teste[i]=slip[i];
+    } else{
+    
+        if (speeds.wheels[FRONT_RIGHT] > speeds.wheels[REAR_RIGHT]){
+            slip[R_MOTOR] = 0;
+            slip_teste[R_MOTOR] = 0;
+        } else {
+            slip[R_MOTOR] = (float)(((float)(speeds.wheels[REAR_RIGHT]) - (float)(speeds.wheels[FRONT_RIGHT]))/(float)(speeds.wheels[FRONT_RIGHT]));
+            slip_teste[R_MOTOR]=slip[R_MOTOR];
+        }
+        if (speeds.wheels[FRONT_LEFT] > speeds.wheels[REAR_LEFT]){
+            slip[L_MOTOR] = 0;
+            slip_teste[L_MOTOR] = 0;
+        } else {
+            slip[L_MOTOR] = (float)(((float)(speeds.wheels[REAR_LEFT]) - (float)(speeds.wheels[FRONT_LEFT]))/(float)(speeds.wheels[FRONT_LEFT]));
+            slip_teste[L_MOTOR]=slip[L_MOTOR];
         }
     }
 
@@ -209,20 +124,13 @@ longitudinal_result_t longitudinal_control() {
 
     //pid_result: delta torque 0 - mode max torque [N.m]
     //ref_torque: 0 to mode.torq_max [%]
-    
-
     for (int i = 0; i < 2; i++){
-        ref_torque[i] = (int)round((fabs(pid_result[i])/NOMINAL_TORQUE)*1000);
+        ref_torque[i] = (int)((fabs(pid_result[i])/NOMINAL_TORQUE)*(1000.0));
     }
-
 
     //Store the right and left motor torque reference that must be subtracted
     ref_torque_result.torque_decrease[R_MOTOR] = ref_torque[R_MOTOR];
     ref_torque_result.torque_decrease[L_MOTOR] = ref_torque[L_MOTOR];
-    log_data(ID_TORQUE_DECREASE_L, ref_torque_result.torque_decrease[L_MOTOR]);
-    log_data(ID_TORQUE_DECREASE_R, ref_torque_result.torque_decrease[R_MOTOR]);
-
 
     return ref_torque_result;
 }
-

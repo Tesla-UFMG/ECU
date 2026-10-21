@@ -16,8 +16,9 @@ int32_t steering_position_adc = 0;
 float steering_angle;
 float steering_rad=0;
 float steering_wheel_rad=0;
+uint16_t buffer;
 uint16_t first_value = 0;
-INTERNAL_WHEEL_t internal_wheel;
+uint16_t internal_wheel;
 bool is_initialized = false;
 
 uint16_t buf[WINDOW];     // circular buffer of last WINDOW raw samples
@@ -31,7 +32,7 @@ void steering_read(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
         //Read the ADC value from the steering sensor.
-        wait_for_rtd();
+        // wait_for_rtd();
         steering_adc_raw = moving_average(ADC_DMA_buffer[STEERING_WHEEL_E]);
 
         //Store the initial ADC steering sensor.
@@ -60,10 +61,12 @@ void steering_read(void* argument) {
         //Convert the accumulated ADC counts to an angle in radians.
         steering_rad = (steering_position_adc * ((2.0f * PI)/ADC_MAX_VALUE));
         steering_wheel_rad = steering_rad/STEERING_RATIO;
-        steering_angle = steering_rad*180/PI;
+        steering_angle = steering_rad*180.0/PI;
         set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
         //STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
-        float steering_wheel = steering_wheel_rad*1000 + 645;
+        uint16_t  steering_wheel = (uint16_t)((steering_wheel_rad+(2*PI))*1000);
+        buffer = steering_wheel;
+        //steering_angle = steering_wheel/1000 - 2*PI;
         log_data(ID_STEERING_WHEEL, steering_wheel);
 
 
@@ -75,9 +78,12 @@ void steering_read(void* argument) {
               set_global_var_value(INTERNAL_WHEEL, (INTERNAL_WHEEL_t)CENTRO);
         }
 
-        internal_wheel =  get_global_var_value(INTERNAL_WHEEL);
-        log_data(ID_INTERNAL_WHEEL, get_global_var_value(INTERNAL_WHEEL));
-
+        internal_wheel =  (uint16_t)(get_global_var_value(INTERNAL_WHEEL));
+        log_data(ID_THROTTLE, (uint16_t)(get_global_var_value(INTERNAL_WHEEL)));
+        log_data(ID_PANEL_DEBUG_1, 1U);
+        log_data(ID_PANEL_DEBUG_2, 10U);
+        log_data(ID_PANEL_DEBUG_3, 3U);
+        log_data(ID_PANEL_DEBUG_4, 4U);
         previous_adc_raw = steering_adc_raw;
 
         is_initialized = true;
@@ -88,8 +94,6 @@ void steering_read(void* argument) {
     }
 }
 
-//algoritmo á ser testado para tirar ruído do ADC apps ?? --> embora eu não vá usar ele, eu posso usar
-//algo do genêro para ver qual tá sendo a flutuação nos picos
 uint16_t moving_average(uint16_t new_sample) {
 		sum -= buf[idx];               // drop the oldest contribution
 		buf[idx] = new_sample;         // overwrite oldest slot

@@ -67,7 +67,7 @@ void APPS_read(void* argument) {
         set_global_var_value(BRAKE_STATUS, (BRAKE_STATUS_t)(bse > BRAKE_ACTIVE));
         set_global_var_value(THROTTLE_STATUS, (THROTTLE_STATUS_t)(throttle_percent > 0));
 
-        log_data(ID_BRAKE, get_global_var_value(BRAKE_STATUS));
+        log_data(ID_BRAKE, (uint16_t)(get_global_var_value(BRAKE_STATUS)));
 
         //verifies the plausability of APPS and BSE and the plausability of APPS1 and APPS2
         check_for_errors(is_there_BSE_error, BSE_ERROR_FLAG);

@@ -6,7 +6,6 @@
  */
 
 #include "datalogging/odometer_calc.h"
-
 #include "cmsis_os.h"
 #include "datalogging/datalog_handler.h"
 #include "datalogging/odometer_save.h"
@@ -18,69 +17,45 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
-static inline uint32_t calculate_distance(uint32_t speed_avg);
-static void log_distance(uint32_t partial_dist);
+uint16_t meters = 0;
+uint16_t vel;
+
 
 void odometer_calc() {
 
-    uint32_t partial_dist_traveled = 0;
-    uint16_t odometer_speed_data   = 0;
+    //Stores the distance traveled in micrometers (mm * 1000)
+    uint64_t dist_traveled_um = 0; 
+    
+    uint32_t instant_dist_um = 0;
 
-    //        // Read distance from flash just once
-    //        Flash_Read_Data(ODOMETER_DATA_FLASH_ADDR, &(total_dist_traveled),
-    //        WORDS_READ_ONE);
-    //
-    //        // In case the memory position has never been used/saved
-    //        if ((total_dist_traveled == 0x00000000) || (total_dist_traveled ==
-    //        0xFFFFFFFF))
-    //        {
-    //            total_dist_traveled = 0;
-    //        }
-    //        total_dist_traveled = m_to_cm(total_dist_traveled);
-    //        osMessageQueuePutOverwrite(q_odometer_calc_save_messageHandle,
-    //        &total_dist_traveled,
-    //                                   0);
+    FRONT_AVG_SPEED_t avg_speed = 0;
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
+        if (!is_RTD_active()) {
+            dist_traveled_um = 0;
+            log_data(ID_DISTANCE_P_ODOM, (uint16_t)0); 
+        }
+
         wait_for_rtd();
-        // Calculate and log distance traveled
-        //                const SPEEDS_t speed_var = get_global_var_value(SPEEDS);
 
-        //                if (speed_var.wheels[FRONT_RIGHT] != 0 &&
-        //                speed_var.wheels[FRONT_LEFT]
-        //                != 0) {
-        //                    get_global_var(FRONT_AVG_SPEED, &odometer_speed_data);
-        //                } else {
-        //                    if (speed_var.wheels[FRONT_LEFT] == 0) {
-        //                        odometer_speed_data = speed_var.wheels[FRONT_RIGHT];
-        //                    } else {
-        //                        odometer_speed_data = speed_var.wheels[FRONT_LEFT];
-        //                    }
-        //                }
+        get_global_var(FRONT_AVG_SPEED, &avg_speed);
 
-        get_global_var(FRONT_AVG_SPEED, &odometer_speed_data);
-        const uint16_t instant_distant_traveled = calculate_distance(odometer_speed_data);
-        partial_dist_traveled += instant_distant_traveled;
-        //                total_dist_traveled += instant_distant_traveled;
-        //                osMessageQueuePutOverwrite(q_odometer_calc_save_messageHandle,
-        //                                           &total_dist_traveled, 0);
-        log_distance(partial_dist_traveled);
-        osDelay(CALC_DELAY);
+        vel = avg_speed;
+
+        /* Calculates the distance traveled in micrometers (mm * 1000).
+         * avg_speed is in (km/h * 10) and ODOM_DELAY_MS is in milliseconds.
+         * Formula: (avg_speed * ODOM_DELAY_MS * 1000) / 36
+         */
+        instant_dist_um = ((uint32_t)avg_speed * ODOM_DELAY_MS * 1000) / 36;        
+        dist_traveled_um += instant_dist_um;
+
+        //Data logger only accepts 16 bits, so we need to convert the distance traveled to meters
+        uint16_t dist_traveled_m = (uint16_t)(dist_traveled_um / 1000000);
+        meters = dist_traveled_m;
+        log_data(ID_DISTANCE_P_ODOM, dist_traveled_m);
+        
+        osDelay(ODOM_DELAY_MS);
     }
-}
-
-static void log_distance(uint32_t partial_dist) {
-    log_data(ID_DISTANCE_P_ODOM, (uint16_t)cm_to_m(partial_dist));
-}
-
-static inline uint32_t calculate_distance(uint32_t speed_avg) {
-    /*
-     * AVG_TIME (ms)
-     * speed_avg (rpm)
-     * 0.3025 is a correction factor :
-     * distance (cm) = ((2*pi*26)/(60*9)) * rpm
-     */
-    return (uint32_t)(cm_to_m((0.3025 * speed_avg) * (CALC_DELAY)));
 }

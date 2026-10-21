@@ -9,16 +9,17 @@
 
 #include "PID.h"
 #include "util/CMSIS_extra/global_variables_handler.h"
+#include "FreeRTOSConfig.h"
 
 #include <stdint.h>
 
-//Defines the longitudinal control's sample time and setpoint
-//TODO (Guilherme): Verificar o tempo de amostragem. MUITO IMPORTANTE!
-#define LONGITUDINAL_DELAY 30
+#define LONGITUDINAL_DELAY_S 0.030
+
+#define LONGITUDINAL_DELAY (LONGITUDINAL_DELAY_S*configTICK_RATE_HZ)
 
 //TODO (Guilherme): Pode ser interessante pensar em alterar o valor do setpoint. Durante o processo de validação viu-se que o valor ótimo de slip varia entre 0,1 e 0,2. Nesse sentido, pode ser interessante tentar definir qual seria o valor do slip ratio ideal do nosso pneu.
-#define IDEAL_SLIP_DRY     6.6
-#define IDEAL_SLIP_WET     30
+#define IDEAL_SLIP_DRY     0.066
+#define IDEAL_SLIP_WET     0.30
 
 //Defines the longitudinal PID's parameters
 //TODO (Guilherme): Ainda precisamos definir os parâmetros do controlador.
@@ -38,4 +39,3 @@ longitudinal_result_t longitudinal_control();
 
 
 #endif /* INC_DYNAMICCONTROLS_LONGITUDINAL_CONTROL_H_ */
-

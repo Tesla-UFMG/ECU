@@ -33,7 +33,7 @@ void datalog_acquisition() {
         flag_ecu_2 = (osEventFlagsGet(e_ECU_control_flagsHandle) & 0xffff);
 
         log_data(ID_MODE, modo_dl.mode);
-        log_data(ID_TORQUE_GAIN, modo_dl.torq_gain);
+        // log_data(ID_TORQUE_GAIN, modo_dl.torq_gain);
         log_data(ID_CONTROL_EVENT_FLAG_1, flag_ecu_1);
         log_data(ID_CONTROL_EVENT_FLAG_2, flag_ecu_2);
 

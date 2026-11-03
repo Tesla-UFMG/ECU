@@ -80,10 +80,6 @@ void steering_read(void* argument) {
 
         internal_wheel =  (uint16_t)(get_global_var_value(INTERNAL_WHEEL));
         log_data(ID_THROTTLE, (uint16_t)(get_global_var_value(INTERNAL_WHEEL)));
-        log_data(ID_PANEL_DEBUG_1, 1U);
-        log_data(ID_PANEL_DEBUG_2, 10U);
-        log_data(ID_PANEL_DEBUG_3, 3U);
-        log_data(ID_PANEL_DEBUG_4, 4U);
         previous_adc_raw = steering_adc_raw;
 
         is_initialized = true;

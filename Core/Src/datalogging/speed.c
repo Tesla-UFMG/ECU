@@ -17,8 +17,10 @@
 
 #if WHEEL_ENCODERS_AVAILABLE == 2
 static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0}};
+static encoder_accelerations_message_t encoder_accelerations_message = {.wheels = {0, 0}};
 #else
 static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0, 0, 0}};
+static encoder_accelerations_message_t encoder_accelerations_message = {.wheels = {0, 0, 0, 0}};
 #endif
 
 float slip[2] = {0, 0};
@@ -35,17 +37,24 @@ void speed_datalog(void* argument) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
         SPEEDS_t speed;
+        ACCELERATIONS_t acceleration;
 
         // Timeout to keep getting inverter speeds even if wheels encoder are stopped.
         // Note that if the task is released by a timeout the queue message pointer is not
         // overwritten
-        osMessageQueueGet(q_encoder_speeds_messageHandle, &encoder_speeds_message, NULL,
-                          SPEED_LOG_DELAY);
+        osMessageQueueGet(q_encoder_speeds_messageHandle, &encoder_speeds_message, NULL, SPEED_LOG_DELAY);
+        osMessageQueueGet(q_encoder_accelerations_messageHandle, &encoder_accelerations_message, NULL, SPEED_LOG_DELAY);
+
 
         speed.wheels[FRONT_RIGHT] = encoder_speeds_message.wheels[FRONT_RIGHT];
         speed.wheels[FRONT_LEFT]  = encoder_speeds_message.wheels[FRONT_LEFT];
         speed.wheels[REAR_RIGHT]  = encoder_speeds_message.wheels[REAR_RIGHT];
         speed.wheels[REAR_LEFT]   = encoder_speeds_message.wheels[REAR_LEFT];
+
+        acceleration.wheels[FRONT_RIGHT] = encoder_accelerations_message.wheels[FRONT_RIGHT];
+        acceleration.wheels[FRONT_LEFT]  = encoder_accelerations_message.wheels[FRONT_LEFT];
+        acceleration.wheels[REAR_RIGHT]  = encoder_accelerations_message.wheels[REAR_RIGHT];
+        acceleration.wheels[REAR_LEFT]   = encoder_accelerations_message.wheels[REAR_LEFT];
 
         FRONT_AVG_SPEED_t avg_front_speed = 180;//avg(speed.wheels[FRONT_RIGHT], speed.wheels[FRONT_LEFT]);
         REAR_AVG_SPEED_t avg_rear_speed = avg(speed.wheels[REAR_RIGHT], speed.wheels[REAR_LEFT]);
@@ -58,8 +67,12 @@ void speed_datalog(void* argument) {
         log_data(ID_SPEED_FL, (uint16_t)(speed.wheels[FRONT_LEFT]));
         log_data(ID_SPEED_RR, (uint16_t)(speed.wheels[REAR_RIGHT]));
         log_data(ID_SPEED_RL, (uint16_t)(speed.wheels[REAR_LEFT]));
-        // todo: (Felipe) log avg speed after updated datalogging task
-        
+
+        log_data(ID_ACCEL_FR, (uint16_t)((acceleration.wheels[FRONT_RIGHT]+5.0)*500));
+        log_data(ID_ACCEL_FL, (uint16_t)((acceleration.wheels[FRONT_LEFT]+5.0)*500));
+        log_data(ID_ACCEL_RR, (uint16_t)((acceleration.wheels[REAR_RIGHT]+5.0)*500));
+        log_data(ID_ACCEL_RL, (uint16_t)((acceleration.wheels[REAR_LEFT]+5.0)*500));
+
         if (speed.wheels[FRONT_RIGHT] > speed.wheels[REAR_RIGHT]){
             slip[R_MOTOR] = 0;
         } else {

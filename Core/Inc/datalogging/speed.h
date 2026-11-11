@@ -14,4 +14,8 @@ typedef struct {
     uint16_t wheels[WHEEL_ENCODERS_AVAILABLE];
 } encoder_speeds_message_t;
 
+typedef struct {
+    float wheels[WHEEL_ENCODERS_AVAILABLE];
+} encoder_accelerations_message_t;
+
 #endif /* INC_DATALOGGING_SPEED_H_ */

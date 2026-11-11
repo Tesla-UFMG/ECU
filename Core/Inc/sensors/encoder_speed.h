@@ -13,12 +13,14 @@
 
 #define SPEED_SENSOR_TEETH_NUMBER 16   // number of teeth on the phonic wheel front wheel
 #define SPEED_SENSOR_TEETH_NUMBER_REAR 24 //number of teeth on the phonic wheel rear wheel
-#define WHEEL_RADIUS              0.26 // in m
+#define WHEEL_RADIUS              0.26f // in m
 
-#define MIN_SPEED_FOR_COMPENSATION 200 // in km/h*10
-#define MAX_SPEED_VARIATION        200 // in km/h*10 
-#define MAX_SPEED                  800 // in km/h*10
-#define MIN_SPEED                  10  // in km/h*10
+#define MIN_SPEED_FOR_COMPENSATION_M_S 5.55f // in m/s
+
+#define MAX_SPEED_VARIATION_M_S        5.55f // in m/s
+
+#define MAX_SPEED_KM_H                  800 // in km/h*10
+#define MIN_SPEED_KM_H                  100  // in km/h*10
 
 // Some compilers do not implement by default math defines, so it's better by implement by
 // ourselves here

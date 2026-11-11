@@ -104,6 +104,7 @@ void Error_Handler(void);
 #define C_RTDS_GPIO_Port GPIOB
 #define BOOT1_Pin GPIO_PIN_8
 #define BOOT1_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

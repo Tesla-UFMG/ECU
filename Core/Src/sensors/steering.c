@@ -7,6 +7,8 @@
 
 #include "sensors/steering.h"
 
+#include "CAN/general_can_data_manager.h"
+
 extern volatile uint16_t ADC_DMA_buffer[ADC_LINES];
 
 uint16_t steering_adc_raw;
@@ -21,6 +23,8 @@ uint16_t first_value = 0;
 uint16_t internal_wheel;
 bool is_initialized = false;
 
+uint16_t yaw_rate_teste = 0;
+
 uint16_t buf[WINDOW];     // circular buffer of last WINDOW raw samples
 uint8_t  idx = 0;
 uint32_t sum = 0;
@@ -32,9 +36,17 @@ void steering_read(void* argument) {
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
         //Read the ADC value from the steering sensor.
+
         // wait_for_rtd();
+
         steering_adc_raw = moving_average(ADC_DMA_buffer[STEERING_WHEEL_E]);
 
+        yaw_rate_teste = ((int16_t)(general_get_value(GYRO_Z)));
+
+        log_data(ID_REGEN_BRAKE_STATE, 9U);
+        log_data(ID_DEBUG_1, yaw_rate_teste);
+        log_data(ID_DEBUG_2, 20U);
+        log_data(ID_DEBUG_3, 100U);
         //Store the initial ADC steering sensor.
         if(!is_initialized){
         	first_value = steering_adc_raw;
@@ -79,7 +91,7 @@ void steering_read(void* argument) {
         }
 
         internal_wheel =  (uint16_t)(get_global_var_value(INTERNAL_WHEEL));
-        log_data(ID_THROTTLE, (uint16_t)(get_global_var_value(INTERNAL_WHEEL)));
+        log_data(ID_INTERNAL_WHEEL, (uint16_t)(get_global_var_value(INTERNAL_WHEEL)));
         previous_adc_raw = steering_adc_raw;
 
         is_initialized = true;

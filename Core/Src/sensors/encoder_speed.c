@@ -14,32 +14,32 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
+#include <math.h>
+
 
 //Initialization of functions
-static void reset_speed_all();
+static void reset_data_all();
 
-static void reset_speed_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t min_count_rear, uint32_t min_count_front);
+static void reset_data_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t min_count_rear, uint32_t min_count_front);
 
 static inline uint32_t get_tim2_freq();
 
-static inline uint32_t calculate_speed(uint32_t speed, uint32_t freq, uint32_t presc);
-
-static inline uint32_t calculate_speed_rear(uint32_t speed, uint32_t freq, uint32_t presc);
+static inline float calculate_speed_m_s(uint32_t ticks_between_messages, uint32_t freq, uint32_t presc);
+static inline float calculate_speed_m_s_rear(uint32_t ticks_between_messages, uint32_t freq, uint32_t presc);
 
 static inline uint32_t calculate_timeout(uint32_t speed, uint32_t freq, uint32_t presc);
-
 static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uint32_t presc);
-
 static inline uint32_t calculate_timeout_RTOS(uint32_t speed);
 
-static inline float calc_acceleration(uint16_t speed, uint16_t last_speed, float interrupt_time, float last_interrupt_time);
+// Mudança: Aceleração recebe as velocidades não-truncadas e o delta de tempo exato
+static inline float calc_acceleration(float speed_m_s, float last_speed_m_s, float delta_time_s);
 
 //Variable that stores the speed of each wheel
 static encoder_speeds_message_t speeds_message;
-    
+static encoder_accelerations_message_t accelerations_message;
+
 // Variable that stores the last speed of each wheel, used to calculate the acceleration
-uint16_t last_speed[WHEEL_ENCODERS_AVAILABLE] = {0, 0, 0, 0};
-float last_time[WHEEL_ENCODERS_AVAILABLE] = {0, 0, 0, 0};
+static float last_speed_m_s[WHEEL_ENCODERS_AVAILABLE] = {0.0f, 0.0f, 0.0f, 0.0f};
 
 /* Functions that calculate wheel's speeds (rear and front axle)
  *
@@ -47,35 +47,23 @@ float last_time[WHEEL_ENCODERS_AVAILABLE] = {0, 0, 0, 0};
  *          = 2*pi*radius/teeth_number (m)
  * time     = timer value multiplied by the prescaler divided by frequency
  *          = timer*prescaler/frequency (s)
- * speed    = distance/time
- *          = (2*pi*radius/teeth_number)*freq/(presc*timer) (m/s)
- *          = (10*3.6*2*pi*radius/teeth_number)*freq/(presc*timer) (10*km/h)
+ * speed    = distance/time (m/s)
  */
- static inline uint32_t calculate_speed(uint32_t ticks_between_messages, uint32_t freq, uint32_t presc) {
-    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER)* ((float)freq / ((float)presc)) / ticks_between_messages);
+static float dif;
+static inline float calculate_speed_m_s(uint32_t ticks_between_messages, uint32_t freq, uint32_t presc) {
+    return (float)((2.0 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * ((float)freq / (float)presc) / (float)ticks_between_messages);
 }
 
-static inline uint32_t calculate_speed_rear(uint32_t ticks_between_messages, uint32_t freq, uint32_t presc) {
-    return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR)* ((float)freq / ((float)presc)) / ticks_between_messages);
+static inline float calculate_speed_m_s_rear(uint32_t ticks_between_messages, uint32_t freq, uint32_t presc) {
+    return (float)((2.0 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER_REAR) * ((float)freq / (float)presc) / (float)ticks_between_messages);
 }
 
-//Function that calculates the acceleration of a wheel, given the last and current speed measurements and the wheel that is being calculated.
-static inline float calc_acceleration(uint16_t speed, uint16_t last_speed, float interrupt_time, float last_interrupt_time) {
-    
-    //transforms the speeds from km/h*10 to m/s
-    float speed_m_s = (float)(speed)/(float)(3.6*10);
-    float last_speed_m_s = (float)(last_speed)/(float)(3.6*10);
-    
-    //calculates the time between the two speed measurements in seconds
-    float delta_time = interrupt_time - last_interrupt_time;
-
-    //calculates the acceleration in m/s^2
-    if(delta_time > 0){
-        return (speed_m_s - last_speed_m_s) / delta_time;
+//Function that calculates the acceleration of a wheel using pure floats and delta time
+static inline float calc_acceleration(float speed_m_s, float last_speed_m_s, float delta_time_s) {
+    if (delta_time_s > 0.0f) {
+        return (speed_m_s - last_speed_m_s) / delta_time_s;
     }
-    else{
-    	return 0;
-    }
+    return 0.0f;
 }
 
 //calculates time in ticks
@@ -93,29 +81,31 @@ static inline uint32_t calculate_timeout_RTOS(uint32_t speed) {
 }
 
 //Function that reset all wheel's speed.
-static void reset_speed_all() {
+static void reset_data_all() {
     for (uint8_t i = 0; i < WHEEL_ENCODERS_AVAILABLE; i++) {
         speeds_message.wheels[i] = 0;
+        accelerations_message.wheels[i] = 0;
+        last_speed_m_s[i] = 0.0f;
     }
 }
 
 //Function that reset the speed of a single wheel, if it is without an interruption for a long time.
-static void reset_speed_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t max_count_rear, uint32_t max_count_front) {
+static void reset_data_single(const encoder_int_message_t* message, const encoder_int_message_t* last_messages, uint32_t max_count_rear, uint32_t max_count_front) {
     for (speed_pin_e i = 0; i <= WHEEL_ENCODERS_AVAILABLE-1; i++) {
-    	uint32_t max_count;
-    	if(i == REAR_RIGHT || i == REAR_LEFT){
-    		max_count = max_count_rear;
-    	}else{
-    		max_count = max_count_front;
-    	}
+        uint32_t max_count;
+        if(i == REAR_RIGHT || i == REAR_LEFT){
+            max_count = max_count_rear;
+        }else{
+            max_count = max_count_front;
+        }
         if ((message->tim_count - last_messages[i].tim_count) > max_count) {
             speeds_message.wheels[i] = 0;
+            accelerations_message.wheels[i] = 0;
         }
     }
 }
 
-// gets tim2 frequency from the APB1 clock domain, considering that it might have an
-// prescaler which doubles the frequency
+// gets tim2 frequency from the APB1 clock domain, considering that it might have an prescaler (used to divide the frequency)
 static inline uint32_t get_tim2_freq() {
     // Get PCLK1 prescaler
     if (RCC->D2CFGR & RCC_D2CFGR_D2PPRE1) {
@@ -129,66 +119,44 @@ static inline uint32_t get_tim2_freq() {
 
 void encoder_speed_calc(void) {
     
-    // Variable that stores the message received from the encoder interrupt, which contains the timer count and the wheel pin that caused the interruption
     encoder_int_message_t interrupt_message;
-
-    // Variable that stores the last message received from each wheel
     encoder_int_message_t last_interrupt_messages[WHEEL_ENCODERS_AVAILABLE];
 
-    // initialize with zeros the last messages buffer
     memset(&last_interrupt_messages, 0, sizeof(encoder_int_message_t) * 4);
 
-    // gets tim2 frequency
     const uint32_t tim_freq = get_tim2_freq();
-
-    //  tim2 prescaler
     const uint32_t tim_presc = htim2.Init.Prescaler + 1;
 
-    // value in tim2 time of the minimum period between messages. This will be used to avoid mistakes caused by signal noise.
-    const uint32_t min_count_rear = calculate_timeout_rear(MAX_SPEED, tim_freq, tim_presc);
-    const uint32_t min_count = calculate_timeout(MAX_SPEED, tim_freq, tim_presc);
+    const uint32_t min_count_rear = calculate_timeout_rear(MAX_SPEED_KM_H, tim_freq, tim_presc);
+    const uint32_t min_count = calculate_timeout(MAX_SPEED_KM_H, tim_freq, tim_presc);
     
-    // value in timersys time of the maximum period between messages. This will be used as a value to comparison in "reset_speed_single"
-    const uint32_t max_timeout_rear = calculate_timeout_rear(MIN_SPEED, tim_freq, tim_presc);
-    const uint32_t max_timeout = calculate_timeout(MIN_SPEED, tim_freq, tim_presc);
+    const uint32_t max_timeout_rear = calculate_timeout_rear(MIN_SPEED_KM_H, tim_freq, tim_presc);
+    const uint32_t max_timeout = calculate_timeout(MIN_SPEED_KM_H, tim_freq, tim_presc);
     
-    // value in milliseconds of the maximum period between messages to consider in the RTOS task. This will be the max time the function osMessageQueueGet will wait for a message before returning with timeout error.
-    const uint32_t max_timeout_RTOS = calculate_timeout_RTOS(MIN_SPEED);
+    const uint32_t max_timeout_RTOS = calculate_timeout_RTOS(MIN_SPEED_KM_H);
 
-    // Variable that will store the difference between the current message timer count and the last message timer count
     uint32_t d_tim_count;
-    
-    // Variable that will store the speed calculated for a wheel, which will be sent to the datalogging task
-    uint32_t speed; 
+    float speed_m_s;
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        // waits until a message arrives or until timeout
         switch (osMessageQueueGet(q_encoder_int_messageHandle, &interrupt_message, NULL,
                                   max_timeout_RTOS)) {
 
-            // case the task was called by timeout
             case osErrorTimeout:
-                reset_speed_all(); // zeros all wheels speed
-                // if the car stops completely, clear the speed history
-                for(int i = 0; i <= WHEEL_ENCODERS_AVAILABLE-1; i++) {
-                    last_speed[i] = 0;
-                }
+
+                reset_data_all();
+
                 break;
 
-            // case the task was called by a new message arriving
             default:
-                // verifies if any wheel is without an interruption for a long time,
-                // if yes that wheel speed is defined as 0
-                reset_speed_single(&interrupt_message, last_interrupt_messages,
+                reset_data_single(&interrupt_message, last_interrupt_messages,
                                    max_timeout_rear, max_timeout);
 
-                // difference between current message and last message timestamp
                 d_tim_count = interrupt_message.tim_count
                               - last_interrupt_messages[interrupt_message.pin].tim_count;
 
-                // discards value if d_tim_count results in a speed greater than the one configured as maximum. Does not update the state.
                 if (interrupt_message.pin == REAR_RIGHT || interrupt_message.pin == REAR_LEFT) {
                     if (d_tim_count < min_count_rear) {
                         continue;
@@ -199,51 +167,49 @@ void encoder_speed_calc(void) {
                     }
                 }
 
-                // Raw speed calculation (assuming 1 tooth distance)
+                // 1. Cálculo da velocidade exata (float m/s)
                 if(interrupt_message.pin == REAR_RIGHT || interrupt_message.pin == REAR_LEFT){
-                    speed = calculate_speed_rear(d_tim_count, tim_freq, tim_presc);
+                    speed_m_s = calculate_speed_m_s_rear(d_tim_count, tim_freq, tim_presc);
                 }else{
-                    speed = calculate_speed(d_tim_count, tim_freq, tim_presc);
+                    speed_m_s = calculate_speed_m_s(d_tim_count, tim_freq, tim_presc);
                 }
 
-                // Only applies compensation if the car is already moving at a reasonable speed
-                if (last_speed[interrupt_message.pin] > MIN_SPEED_FOR_COMPENSATION) {
+                // Compensation logic aplicada em ambas as variáveis para manter coerência
+                if (last_speed_m_s[interrupt_message.pin] > MIN_SPEED_FOR_COMPENSATION_M_S) {
                     
-                    uint32_t percentage_ratio = (speed * 100) / last_speed[interrupt_message.pin];
+                    uint32_t percentage_ratio = (uint32_t)((speed_m_s * 100.0f) / last_speed_m_s[interrupt_message.pin]);
 
                     if (percentage_ratio >= 40 && percentage_ratio <= 60) {
-                        speed = speed * 2; // Dropped to ~50%: Missed 1 tooth
+                        speed_m_s = speed_m_s * 2.0f;
                     }
                     else if (percentage_ratio >= 25 && percentage_ratio < 40) {
-                        speed = speed * 3; // Dropped to ~33%: Missed 2 teeth
+                        speed_m_s = speed_m_s * 3.0f;
                     }
                 }
 
-                int speed_variation = (int)speed - (int)last_speed[interrupt_message.pin];
+                
 
-                // Rejects speed if the variation is absurd AND the car is not launching
-                if (abs(speed_variation) > MAX_SPEED_VARIATION && last_speed[interrupt_message.pin] != 0) {
+                float speed_variation = speed_m_s - last_speed_m_s[interrupt_message.pin];
+                dif = speed_variation;
+                if (fabsf(speed_variation) > MAX_SPEED_VARIATION_M_S && last_speed_m_s[interrupt_message.pin] != 0.0f) {
                     
                     last_interrupt_messages[interrupt_message.pin] = interrupt_message;
                     continue;
                 }
-                
-                // saves the speed only of the wheel which speed was just calculated
-                speeds_message.wheels[interrupt_message.pin] = speed;
 
-                // interrupt_message.tim_count*tim_presc/tim_freq --> seconds 
-                float current_time = (float)(interrupt_message.tim_count) * (float)(tim_presc) / (float)(tim_freq);
+                float delta_time_s = (float)d_tim_count * (float)tim_presc / (float)tim_freq;
 
-                //TODO: criar mensagem de aceleração
+                accelerations_message.wheels[interrupt_message.pin] = calc_acceleration(speed_m_s, last_speed_m_s[interrupt_message.pin], delta_time_s);
 
-                //updates the last speed and the time it was calculated of the wheel which speed was just calculated
-                last_speed[interrupt_message.pin] = speed;
-                last_time[interrupt_message.pin] = current_time;
-
-                // store message to use in the next iteration
+                last_speed_m_s[interrupt_message.pin] = speed_m_s;
                 last_interrupt_messages[interrupt_message.pin] = interrupt_message;
+
+                speeds_message.wheels[interrupt_message.pin] = (uint32_t)(speed_m_s * 3.6f * 10.0f);
+
                 break;
         }
         osMessageQueuePutOverwrite(q_encoder_speeds_messageHandle, &speeds_message, 0);
+        osMessageQueuePutOverwrite(q_encoder_accelerations_messageHandle, &accelerations_message, 0);
+
     }
 }

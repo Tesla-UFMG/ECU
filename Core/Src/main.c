@@ -267,6 +267,11 @@ osMessageQueueId_t q_ids_can_inverterHandle;
 const osMessageQueueAttr_t q_ids_can_inverter_attributes = {
   .name = "q_ids_can_inverter"
 };
+/* Definitions for q_encoder_accelerations_message */
+osMessageQueueId_t q_encoder_accelerations_messageHandle;
+const osMessageQueueAttr_t q_encoder_accelerations_message_attributes = {
+  .name = "q_encoder_accelerations_message"
+};
 /* Definitions for tim_SU_F_error */
 osTimerId_t tim_SU_F_errorHandle;
 const osTimerAttr_t tim_SU_F_error_attributes = {
@@ -473,6 +478,9 @@ int main(void)
   /* creation of q_ids_can_inverter */
   q_ids_can_inverterHandle = osMessageQueueNew (32, sizeof(uint32_t), &q_ids_can_inverter_attributes);
 
+  /* creation of q_encoder_accelerations_message */
+  q_encoder_accelerations_messageHandle = osMessageQueueNew (1, sizeof(encoder_accelerations_message_t), &q_encoder_accelerations_message_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -557,7 +565,6 @@ int main(void)
 
   /* Start scheduler */
   osKernelStart();
-
   /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -588,10 +595,6 @@ void SystemClock_Config(void)
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-
-  /** Macro to configure the PLL clock source
-  */
-  __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -996,6 +999,8 @@ static void MX_DMA_Init(void)
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
@@ -1060,6 +1065,8 @@ static void MX_GPIO_Init(void)
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

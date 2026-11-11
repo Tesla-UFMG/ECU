@@ -15,6 +15,9 @@
 typedef struct {
     uint16_t wheels[4];
 } SPEEDS_t;
+typedef struct {
+    float wheels[4];
+}  ACCELERATIONS_t;
 typedef uint16_t FRONT_AVG_SPEED_t;
 typedef uint16_t REAR_AVG_SPEED_t;
 typedef uint16_t STEERING_WHEEL_t;

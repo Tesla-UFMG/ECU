@@ -28,6 +28,7 @@ void select_dynamic_control(bool is_DYNAMIC_CONTROL_active);
 
 extern osMessageQueueId_t q_ref_torque_messageHandle;
 
+
 void rampa_torque(uint32_t* ref_torque, lateral_result_t* lateral_result, longitudinal_result_t* longitudinal_result) {
     static uint32_t ref_torque_ant[2] = {0, 0};
     int desired_ref_torque[2];
@@ -36,7 +37,7 @@ void rampa_torque(uint32_t* ref_torque, lateral_result_t* lateral_result, longit
 
     // Maps throttle_percent [0,1] to torque range [0, tor_max].
     int pilot_ref_torque = ((int)get_global_var_value(SELECTED_MODE).tor_max * get_global_var_value(THROTTLE_PERCENT)) / 1000;
-    log_data(ID_PILOT_REF_TORQUE, (uint16_t)pilot_ref_torque);
+    //log_data(ID_PILOT_REF_TORQUE, (uint16_t)pilot_ref_torque);
 
     //Torque after the decrease of the dynamics controls
     if (should_decrease) {
@@ -47,8 +48,8 @@ void rampa_torque(uint32_t* ref_torque, lateral_result_t* lateral_result, longit
                         desired_ref_torque[R_MOTOR] = pilot_ref_torque;
                         desired_ref_torque[L_MOTOR] = pilot_ref_torque;
 
-                        log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
-                        log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
+                        //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
+                        //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
 
                     } else if (lateral_result->decrease_wheel == ESQUERDA) {
                         //be carefull for not pass the max ref torque
@@ -63,8 +64,8 @@ void rampa_torque(uint32_t* ref_torque, lateral_result_t* lateral_result, longit
                             desired_ref_torque[L_MOTOR] = 0;
                         }
 
-                        log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[R_MOTOR])));
-                        log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[L_MOTOR])));
+                        //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[R_MOTOR])));
+                        //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[L_MOTOR])));
                         
                     } else if (lateral_result->decrease_wheel == DIREITA) {
                         desired_ref_torque[R_MOTOR] = pilot_ref_torque - (int)(lateral_result->ref_torque_result/2); 
@@ -79,8 +80,8 @@ void rampa_torque(uint32_t* ref_torque, lateral_result_t* lateral_result, longit
                             desired_ref_torque[R_MOTOR] = 0;
                         }
 
-                        log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[R_MOTOR])));
-                        log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[L_MOTOR])));
+                        //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[R_MOTOR])));
+                        //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[L_MOTOR])));
 
                     }
                 } else {//lateral_result->distribute == false
@@ -88,8 +89,8 @@ void rampa_torque(uint32_t* ref_torque, lateral_result_t* lateral_result, longit
                         desired_ref_torque[R_MOTOR] = pilot_ref_torque;
                         desired_ref_torque[L_MOTOR] = pilot_ref_torque;
 
-                        log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
-                        log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
+                        //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
+                        //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
 
                     } else if (lateral_result->decrease_wheel == ESQUERDA) {
                         desired_ref_torque[L_MOTOR] = pilot_ref_torque - (int)(lateral_result->ref_torque_result); 
@@ -99,8 +100,8 @@ void rampa_torque(uint32_t* ref_torque, lateral_result_t* lateral_result, longit
                             desired_ref_torque[L_MOTOR] = 0;
                         }
 
-                        log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[R_MOTOR])));
-                        log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[L_MOTOR])));
+                        //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[R_MOTOR])));
+                        //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[L_MOTOR])));
 
                     } else if (lateral_result->decrease_wheel == DIREITA) {
                         desired_ref_torque[R_MOTOR] = pilot_ref_torque - (int)(lateral_result->ref_torque_result); 
@@ -110,16 +111,16 @@ void rampa_torque(uint32_t* ref_torque, lateral_result_t* lateral_result, longit
                             desired_ref_torque[R_MOTOR] = 0;
                         }
 
-                        log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[R_MOTOR])));
-                        log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[L_MOTOR])));
+                        //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[R_MOTOR])));
+                        //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[L_MOTOR])));
                     }
                 }
             } else {
                 desired_ref_torque[R_MOTOR] = pilot_ref_torque;
                 desired_ref_torque[L_MOTOR] = pilot_ref_torque; 
 
-                log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
-                log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
+                //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
+                //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
 
             }
         } else if (g_control_type == LONGITUDINAL) {
@@ -135,30 +136,30 @@ void rampa_torque(uint32_t* ref_torque, lateral_result_t* lateral_result, longit
                     desired_ref_torque[L_MOTOR] = 0;
                 }
 
-                log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[R_MOTOR])));
-                log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[L_MOTOR])));
+                //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[R_MOTOR])));
+                //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500 + (pilot_ref_torque - desired_ref_torque[L_MOTOR])));
 
             } else {
                 desired_ref_torque[R_MOTOR] = pilot_ref_torque;
                 desired_ref_torque[L_MOTOR] = pilot_ref_torque;
 
-                log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
-                log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
+                //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
+                //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
 
             }
         } else {    
             desired_ref_torque[R_MOTOR] = pilot_ref_torque;
             desired_ref_torque[L_MOTOR] = pilot_ref_torque;
 
-            log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
-            log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
+            //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
+            //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
         }
     } else {
         desired_ref_torque[R_MOTOR] = pilot_ref_torque;
         desired_ref_torque[L_MOTOR] = pilot_ref_torque;
 
-        log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
-        log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
+        //log_data(ID_DC_REF_TORQUE_R, (uint16_t)(2500));
+        //log_data(ID_DC_REF_TORQUE_L, (uint16_t)(2500));
     }
 
     for (int i = 0; i < 2; i++) {
@@ -177,6 +178,7 @@ void send_ref_torque_message(const uint32_t* ref_torque) {
     osMessageQueuePut(q_ref_torque_messageHandle, &ref_torque_message, 0, 0U);
 }
 
+
 void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
 
     if (is_DYNAMIC_CONTROL_active) {
@@ -190,14 +192,16 @@ void select_dynamic_control(bool is_DYNAMIC_CONTROL_active) {
             g_control_type = LONGITUDINAL;
             set_rgb_led(BRANCO, FIXED);
         }
+        //TODO (Guilherme): Abaixo está uma das possíveis alterações a serem feitas para a integração dos controles.
         if (get_global_var_value(SELECTED_MODE).dif_elt == 1
             && get_global_var_value(SELECTED_MODE).traction_control == 1) {
             g_control_type = NO_CONTROL;
+            set_rgb_led(BRANCO, FIXED);
         }
     } else {
         g_control_type = NO_CONTROL;
     }
-    log_data(ID_G_CONTROL_TYPE, (uint16_t)(g_control_type));
+    log_data(ID_G_CONTROL_TYPE, g_control_type);
 }
 
 
@@ -205,10 +209,10 @@ void torque_manager(void* argument) {
     UNUSED(argument);
 
     uint32_t ref_torque[2] = {0, 0};
-
     lateral_result_t result_lateral = {.ref_torque_result = 0,
                                          .decrease_wheel = CENTRO,
                                          .distribute = DISTRIBUTE};
+
     longitudinal_result_t result_longitudinal = {.torque_decrease = {0, 0}};
 
     for (;;) {
@@ -217,43 +221,71 @@ void torque_manager(void* argument) {
 
         ECU_ENABLE_BREAKPOINT_DEBUG();
 
-        const bool is_DYNAMIC_CONTROL_active = get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
+        const bool is_DYNAMIC_CONTROL_active =
+            get_individual_flag(e_ECU_control_flagsHandle, DYNAMIC_CONTROL_FLAG);
 
         select_dynamic_control(is_DYNAMIC_CONTROL_active);
 
-        // TODO(giovanni): do the integration of the two controllers
-        switch (g_control_type){
-        
-        case LATERAL:
-            tick =+ LATERAL_DELAY;
-            result_lateral = lateral_control();
-            break;
+        // todo (João Pedro): add new "case's" when the integration of controls is
+        // implemented
 
-        case LONGITUDINAL:
-            tick =+ LONGITUDINAL_DELAY;
-            result_longitudinal = longitudinal_control();
-            break;
+        switch (g_control_type) {
+            case LATERAL: // TODO(giovanni): do the integration of the two controllers
+                tick += LATERAL_DELAY;
+                result_lateral = lateral_control();
 
-        default:
-            tick =+ DEFAULT_DELAY;
+                result_longitudinal.torque_decrease[R_MOTOR] = 0;
+                result_longitudinal.torque_decrease[L_MOTOR] = 0;
 
-            result_lateral.ref_torque_result = 0;
-            result_lateral.decrease_wheel = CENTRO;
+                rampa_torque(ref_torque, &result_lateral, &result_longitudinal);
 
-            result_longitudinal.torque_decrease[R_MOTOR] = 0;
-            result_longitudinal.torque_decrease[L_MOTOR] = 0;
-            break;
+                //desbypass
+                //log_data(ID_REF_TORQUE_L, (uint16_t)(ref_torque[L_MOTOR]));
+                //log_data(ID_REF_TORQUE_R, (uint16_t)(ref_torque[R_MOTOR]));
 
+                send_ref_torque_message(ref_torque);
+
+                osDelay(LATERAL_DELAY);
+                break;
+
+            case LONGITUDINAL:
+                tick += LONGITUDINAL_DELAY;
+                result_longitudinal = longitudinal_control();
+
+                result_lateral.ref_torque_result = 0;
+                result_lateral.decrease_wheel = CENTRO;
+
+                rampa_torque(ref_torque, &result_lateral, &result_longitudinal);
+
+                //desbypass
+                //log_data(ID_REF_TORQUE_L, (uint16_t)(ref_torque[L_MOTOR]));
+                //log_data(ID_REF_TORQUE_R, (uint16_t)(ref_torque[R_MOTOR]));
+
+                send_ref_torque_message(ref_torque);
+
+                osDelay(LONGITUDINAL_DELAY);
+                break;
+
+            default:
+
+                tick =+ DEFAULT_DELAY;
+
+                result_lateral.ref_torque_result = 0;
+                result_lateral.decrease_wheel = CENTRO;
+
+                result_longitudinal.torque_decrease[R_MOTOR] = 0;
+                result_longitudinal.torque_decrease[L_MOTOR] = 0;
+
+                rampa_torque(ref_torque, &result_lateral, &result_longitudinal);
+
+                //desbypass
+                //log_data(ID_REF_TORQUE_L, (uint16_t)(ref_torque[L_MOTOR]));
+                //log_data(ID_REF_TORQUE_R, (uint16_t)(ref_torque[R_MOTOR]));
+
+                send_ref_torque_message(ref_torque);
+
+                osDelay(DEFAULT_DELAY);
+                break;
         }
-
-        rampa_torque(ref_torque, &result_lateral, &result_longitudinal);
-
-        log_data(ID_REF_TORQUE_L, (uint16_t)(ref_torque[L_MOTOR]));
-        log_data(ID_REF_TORQUE_R, (uint16_t)(ref_torque[R_MOTOR]));
-
-        // sends the reference torque
-        send_ref_torque_message(ref_torque);
-
-        osDelayUntil(tick);
     }
 }

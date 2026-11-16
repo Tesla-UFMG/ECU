@@ -18,7 +18,6 @@ int32_t steering_position_adc = 0;
 float steering_angle;
 float steering_rad=0;
 float steering_wheel_rad=0;
-uint16_t buffer;
 uint16_t first_value = 0;
 uint16_t internal_wheel;
 bool is_initialized = false;
@@ -77,7 +76,6 @@ void steering_read(void* argument) {
         set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
         //STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
         uint16_t  steering_wheel = (uint16_t)((steering_wheel_rad+(2*PI))*1000);
-        buffer = steering_wheel;
         //steering_angle = steering_wheel/1000 - 2*PI;
         log_data(ID_STEERING_WHEEL, steering_wheel);
 
@@ -91,12 +89,12 @@ void steering_read(void* argument) {
         }
 
         internal_wheel =  (uint16_t)(get_global_var_value(INTERNAL_WHEEL));
-        log_data(ID_INTERNAL_WHEEL, (uint16_t)(get_global_var_value(INTERNAL_WHEEL)));
+        log_data(ID_INTERNAL_WHEEL, internal_wheel);
         previous_adc_raw = steering_adc_raw;
 
         is_initialized = true;
 
-    	osDelay(10);
+    	osDelay(STEERING_DELAY);
 
         //return(volante);
     }

@@ -12,7 +12,7 @@
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "FreeRTOSConfig.h"
 
-#define DISTRIBUTE true
+#define DISTRIBUTE false
 
 #define LATERAL_DELAY_S 0.014
 

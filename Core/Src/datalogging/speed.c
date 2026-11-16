@@ -13,8 +13,6 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
-#define SPEED_LOG_DELAY 10
-
 #if WHEEL_ENCODERS_AVAILABLE == 2
 static encoder_speeds_message_t encoder_speeds_message = {.wheels = {0, 0}};
 static encoder_accelerations_message_t encoder_accelerations_message = {.wheels = {0, 0}};
@@ -68,10 +66,10 @@ void speed_datalog(void* argument) {
         log_data(ID_SPEED_RR, (uint16_t)(speed.wheels[REAR_RIGHT]));
         log_data(ID_SPEED_RL, (uint16_t)(speed.wheels[REAR_LEFT]));
 
-        log_data(ID_ACCEL_FR, (uint16_t)((acceleration.wheels[FRONT_RIGHT]+5.0)*500));
-        log_data(ID_ACCEL_FL, (uint16_t)((acceleration.wheels[FRONT_LEFT]+5.0)*500));
-        log_data(ID_ACCEL_RR, (uint16_t)((acceleration.wheels[REAR_RIGHT]+5.0)*500));
-        log_data(ID_ACCEL_RL, (uint16_t)((acceleration.wheels[REAR_LEFT]+5.0)*500));
+        log_data(ID_ACCEL_FR, (uint16_t)((acceleration.wheels[FRONT_RIGHT]+10.0)*1000));
+        log_data(ID_ACCEL_FL, (uint16_t)((acceleration.wheels[FRONT_LEFT]+10.0)*1000));
+        log_data(ID_ACCEL_RR, (uint16_t)((acceleration.wheels[REAR_RIGHT]+10.0)*1000));
+        log_data(ID_ACCEL_RL, (uint16_t)((acceleration.wheels[REAR_LEFT]+10.0)*1000));
 
         if (speed.wheels[FRONT_RIGHT] > speed.wheels[REAR_RIGHT]){
             slip[R_MOTOR] = 0;

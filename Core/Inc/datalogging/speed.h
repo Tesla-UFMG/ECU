@@ -9,6 +9,11 @@
 #define INC_DATALOGGING_SPEED_H_
 
 #include "util/global_definitions.h"
+#include "FreeRTOSConfig.h"
+
+#define SPEED_LOG_DELAY_S 0.010
+
+#define SPEED_LOG_DELAY (SPEED_LOG_DELAY_S*configTICK_RATE_HZ)
 
 typedef struct {
     uint16_t wheels[WHEEL_ENCODERS_AVAILABLE];

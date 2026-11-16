@@ -17,9 +17,8 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
-uint16_t meters = 0;
-uint16_t vel;
-
+uint16_t dist_traveled_m = 0;
+FRONT_AVG_SPEED_t avg_speed = 0;
 
 void odometer_calc() {
 
@@ -27,8 +26,6 @@ void odometer_calc() {
     uint64_t dist_traveled_um = 0; 
     
     uint32_t instant_dist_um = 0;
-
-    FRONT_AVG_SPEED_t avg_speed = 0;
 
     for (;;) {
         ECU_ENABLE_BREAKPOINT_DEBUG();
@@ -42,8 +39,6 @@ void odometer_calc() {
 
         get_global_var(FRONT_AVG_SPEED, &avg_speed);
 
-        vel = avg_speed;
-
         /* Calculates the distance traveled in micrometers (mm * 1000).
          * avg_speed is in (km/h * 10) and ODOM_DELAY_MS is in milliseconds.
          * Formula: (avg_speed * ODOM_DELAY_MS * 1000) / 36
@@ -53,7 +48,7 @@ void odometer_calc() {
 
         //Data logger only accepts 16 bits, so we need to convert the distance traveled to meters
         uint16_t dist_traveled_m = (uint16_t)(dist_traveled_um / 1000000);
-        meters = dist_traveled_m;
+
         log_data(ID_DISTANCE_P_ODOM, dist_traveled_m);
         
         osDelay(ODOM_DELAY_MS);

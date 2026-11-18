@@ -15,6 +15,8 @@
 #define SPEED_SENSOR_TEETH_NUMBER_REAR 24 //number of teeth on the phonic wheel rear wheel
 #define WHEEL_RADIUS              0.26f // in m
 
+#define HIST_SPEED_SIZE 3
+
 #define MIN_SPEED_FOR_COMPENSATION_M_S 5.55f // in m/s
 
 #define MAX_SPEED_VARIATION_M_S        5.55f // in m/s

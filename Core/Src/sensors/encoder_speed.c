@@ -41,6 +41,8 @@ static encoder_accelerations_message_t accelerations_message;
 // Variable that stores the last speed of each wheel, used to calculate the acceleration
 static float last_speed_m_s[WHEEL_ENCODERS_AVAILABLE] = {0.0f, 0.0f, 0.0f, 0.0f};
 
+static float median_history[WHEEL_ENCODERS_AVAILABLE][HIST_SPEED_SIZE] = {0};
+
 /* Functions that calculate wheel's speeds (rear and front axle)
  *
  * distance = circumference divided by the number of teeth
@@ -49,7 +51,7 @@ static float last_speed_m_s[WHEEL_ENCODERS_AVAILABLE] = {0.0f, 0.0f, 0.0f, 0.0f}
  *          = timer*prescaler/frequency (s)
  * speed    = distance/time (m/s)
  */
-static float dif;
+
 static inline float calculate_speed_m_s(uint32_t ticks_between_messages, uint32_t freq, uint32_t presc) {
     return (float)((2.0 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * ((float)freq / (float)presc) / (float)ticks_between_messages);
 }
@@ -78,6 +80,39 @@ static inline uint32_t calculate_timeout_rear(uint32_t speed, uint32_t freq, uin
 //calculates time in milisseconds
 static inline uint32_t calculate_timeout_RTOS(uint32_t speed) {
     return (uint32_t)((10 * 3.6 * 2 * M_PI * WHEEL_RADIUS / SPEED_SENSOR_TEETH_NUMBER) * 1000 / speed);
+}
+
+//function that calculates the median of an array of floats, used to filter the speed of each wheel
+float get_median(const float* array, uint16_t size) {
+    // Returns zero if the array is empty
+    if (size == 0) {
+        return 0.0f;
+    }
+
+    // Creates a local copy on the stack to preserve the original array
+    float copy[size];
+    for (uint16_t i = 0; i < size; i++) {
+        copy[i] = array[i];
+    }
+
+    // Sorts the copied array using Insertion Sort
+    for (uint16_t i = 1; i < size; i++) {
+        float key = copy[i];
+        int16_t j = i - 1;
+        
+        while (j >= 0 && copy[j] > key) {
+            copy[j + 1] = copy[j];
+            j--;
+        }
+        copy[j + 1] = key;
+    }
+
+    // Calculates and returns the median for even or odd sizes
+    if (size % 2 == 0) {
+        return (copy[(size / 2) - 1] + copy[size / 2]) / 2.0f;
+    } else {
+        return copy[size / 2];
+    }
 }
 
 //Function that reset all wheel's speed.
@@ -167,14 +202,13 @@ void encoder_speed_calc(void) {
                     }
                 }
 
-                // 1. Cálculo da velocidade exata (float m/s)
                 if(interrupt_message.pin == REAR_RIGHT || interrupt_message.pin == REAR_LEFT){
                     speed_m_s = calculate_speed_m_s_rear(d_tim_count, tim_freq, tim_presc);
                 }else{
                     speed_m_s = calculate_speed_m_s(d_tim_count, tim_freq, tim_presc);
                 }
 
-                // Compensation logic aplicada em ambas as variáveis para manter coerência
+                // Compensation logic
                 if (last_speed_m_s[interrupt_message.pin] > MIN_SPEED_FOR_COMPENSATION_M_S) {
                     
                     uint32_t percentage_ratio = (uint32_t)((speed_m_s * 100.0f) / last_speed_m_s[interrupt_message.pin]);
@@ -187,24 +221,22 @@ void encoder_speed_calc(void) {
                     }
                 }
 
+                // Update median history
+                for (uint8_t i = HIST_SPEED_SIZE - 1; i > 0; i--) {
+                    median_history[interrupt_message.pin][i] = median_history[interrupt_message.pin][i - 1];
+                } 
+                median_history[interrupt_message.pin][0] = speed_m_s;
+
+                float speed_queue = get_median(median_history[interrupt_message.pin], HIST_SPEED_SIZE);
                 
+                speeds_message.wheels[interrupt_message.pin] = (uint32_t)(speed_queue * 3.6f * 10.0f);
 
-                float speed_variation = speed_m_s - last_speed_m_s[interrupt_message.pin];
-                dif = speed_variation;
-                if (fabsf(speed_variation) > MAX_SPEED_VARIATION_M_S && last_speed_m_s[interrupt_message.pin] != 0.0f) {
-                    
-                    last_interrupt_messages[interrupt_message.pin] = interrupt_message;
-                    continue;
-                }
+                float delta_time_s = 0;//(float)d_tim_count * (float)tim_presc / (float)tim_freq;
 
-                float delta_time_s = (float)d_tim_count * (float)tim_presc / (float)tim_freq;
+                accelerations_message.wheels[interrupt_message.pin] = 0;//calc_acceleration(speed_queue, last_speed_m_s[interrupt_message.pin], delta_time_s);
 
-                accelerations_message.wheels[interrupt_message.pin] = calc_acceleration(speed_m_s, last_speed_m_s[interrupt_message.pin], delta_time_s);
-
-                last_speed_m_s[interrupt_message.pin] = speed_m_s;
+                last_speed_m_s[interrupt_message.pin] = speed_queue;
                 last_interrupt_messages[interrupt_message.pin] = interrupt_message;
-
-                speeds_message.wheels[interrupt_message.pin] = (uint32_t)(speed_m_s * 3.6f * 10.0f);
 
                 break;
         }

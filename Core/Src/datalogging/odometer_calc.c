@@ -17,8 +17,7 @@
 #include "util/global_instances.h"
 #include "util/util.h"
 
-uint16_t dist_traveled_m = 0;
-FRONT_AVG_SPEED_t avg_speed = 0;
+FRONT_AVG_SPEED_t avg_speed;
 
 void odometer_calc() {
 
@@ -48,7 +47,7 @@ void odometer_calc() {
 
         //Data logger only accepts 16 bits, so we need to convert the distance traveled to meters
         uint16_t dist_traveled_m = (uint16_t)(dist_traveled_um / 1000000);
-
+        
         log_data(ID_DISTANCE_P_ODOM, dist_traveled_m);
         
         osDelay(ODOM_DELAY_MS);

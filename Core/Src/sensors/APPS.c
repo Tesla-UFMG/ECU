@@ -117,7 +117,7 @@ static bool is_there_BSE_error() {
         return (throttle_percent >= APPS_05_PERCENT);
     }
     // FSAE Rules: EV.4.7.1 (2026)
-    return (throttle_percent > APPS_25_PERCENT && bse > BRAKE_ACTIVE);
+    return ((throttle_percent > APPS_25_PERCENT) && (bse > BRAKE_ACTIVE));
 }
 
 static bool is_there_SU_F_error() {

@@ -54,7 +54,7 @@ void speed_datalog(void* argument) {
         acceleration.wheels[REAR_RIGHT]  = encoder_accelerations_message.wheels[REAR_RIGHT];
         acceleration.wheels[REAR_LEFT]   = encoder_accelerations_message.wheels[REAR_LEFT];
 
-        FRONT_AVG_SPEED_t avg_front_speed = 180;//avg(speed.wheels[FRONT_RIGHT], speed.wheels[FRONT_LEFT]);
+        FRONT_AVG_SPEED_t avg_front_speed = avg(speed.wheels[FRONT_RIGHT], speed.wheels[FRONT_LEFT]);
         REAR_AVG_SPEED_t avg_rear_speed = avg(speed.wheels[REAR_RIGHT], speed.wheels[REAR_LEFT]);
 
         set_global_var(SPEEDS, &speed);

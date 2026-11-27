@@ -35,6 +35,8 @@
 #include "util/CMSIS_extra/global_variables_handler.h"
 #include "datalogging/speed.h"
 #include "datalogging/odometer_save.h"
+#include "string.h"
+#include "torque_command/torque_manager.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,6 +66,8 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart1;
+DMA_HandleTypeDef hdma_usart1_rx;
+DMA_HandleTypeDef hdma_usart1_tx;
 
 /* Definitions for t_main_task */
 osThreadId_t t_main_taskHandle;
@@ -322,7 +326,8 @@ const osEventFlagsAttr_t e_ECU_control_flags_attributes = {
   .name = "e_ECU_control_flags"
 };
 /* USER CODE BEGIN PV */
-
+uint8_t rx_buffer[18];
+PacoteHIL_t dados_planta;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -368,7 +373,6 @@ extern void right_inv_error_callback(void *argument);
 /* USER CODE BEGIN PFP */
 
 uint8_t txt[] = "HELLO\r\n";
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -413,6 +417,7 @@ int main(void)
   MX_IWDG1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
   init_ECU();
   /* USER CODE END 2 */
 
@@ -1052,6 +1057,12 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+  /* DMA1_Stream1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+  /* DMA1_Stream2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
 
 }
 
@@ -1130,7 +1141,18 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+//Sobreescrevendo a função para utilizar o DMA com 18 posições 
+//e agr a grande vantagem é que eu estou recebendo dados por meio de uma interrupção
+//não parando meu código
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
+      if (huart->Instance == USART1) {
+          if (Size == sizeof(PacoteHIL_t)+2 && rx_buffer[0] == 'S' && rx_buffer[sizeof(PacoteHIL_t)+1] == '\n') {
+              memcpy(&dados_planta, &rx_buffer[1], sizeof(PacoteHIL_t));
+          }
+          // Rearma o DMA para o próximo pacote do Simulink
+          HAL_UARTEx_ReceiveToIdle_DMA(&huart1, rx_buffer, sizeof(rx_buffer));
+      }
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_main_task */
@@ -1174,10 +1196,10 @@ void StartTask23(void *argument)
 	  //osDelay(1);
 	  //HAL_Delay(1000);
 
-	  if(HAL_UART_Receive(&huart1, &rx, 1, HAL_MAX_DELAY) == HAL_OK){
-		  sprintf((char*)msg, "Byte recebido: %c\r\n", rx);
-		  HAL_UART_Transmit(&huart1, msg, strlen(msg), HAL_MAX_DELAY);
-	  }
+	  // if(HAL_UART_Receive(&huart1, &rx, 1, HAL_MAX_DELAY) == HAL_OK){
+		//   sprintf((char*)msg, "Byte recebido: %c\r\n", rx);
+		//   HAL_UART_Transmit(&huart1, msg, strlen(msg), HAL_MAX_DELAY);
+	  // }
   }
   /* USER CODE END StartTask23 */
 }

@@ -64,7 +64,7 @@ void steering_read(void* argument) {
         steering_wheel_rad =  (STEERING_RAD_LEFT_WHEEL + ( (STEERING_RAD_RIGHT_WHEEL - STEERING_RAD_LEFT_WHEEL) / (STEERING_RAD_RIGHT - STEERING_RAD_LEFT) ) * (steering_rad - STEERING_RAD_LEFT));
 
 
-        set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(steering_wheel_rad));
+        set_global_var_value(STEERING_WHEEL, (STEERING_WHEEL_t)(10*(steering_rad+10)));
         STEERING_WHEEL_t steering_wheel = get_global_var_value(STEERING_WHEEL);
         log_data(ID_STEERING_WHEEL, steering_wheel);
 

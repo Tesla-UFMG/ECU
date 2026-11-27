@@ -13,10 +13,10 @@
 
 //TODO (Guilherme): É necessário ter um "estado" em que ambos os controles estão ativos, senso a alteração abaixo uma das necessárias para a integração dos controles.
 typedef enum {NO_CONTROL = 0, LATERAL = 1, LONGITUDINAL = 2, BOTH_CONTROLS = 3} E_CONTROL_TYPE;
-
-
-
-E_CONTROL_TYPE g_control_type = NO_CONTROL;
+typedef struct __attribute__((packed)) {
+    float steering_angle;
+    float torque;
+} PacoteHILSend_t;
 
 // defines the torque ramp
 #define INC_TORQUE         300 // inclination of the second part of the ramp

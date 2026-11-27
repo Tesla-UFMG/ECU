@@ -37,7 +37,15 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+//PRECISAAAA desse __atribute__((packed)) para eu não ter nenhum bit que se enfia aí no meio
+typedef struct __attribute__((packed)) {
+    float xdot; 
+    float ydot;
+    float psi;
+    float y;
+} PacoteHIL_t;
 
+extern PacoteHIL_t dados_planta;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

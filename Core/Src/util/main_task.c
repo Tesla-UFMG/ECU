@@ -45,7 +45,7 @@ void main_task(void* argument) {
                 // If the event flag contains the error flag the car leaves RTD mode.
                 isErrorPresent = event_flags & INVERTER_BUS_OFF_ERROR_FLAG;
                 if (isErrorPresent) {
-                    exit_RTD();
+                    //exit_RTD();
                 } else {
                     // Starts a timer. If the error happens again before the timer expires
                     // the car leaves RTD mode.
@@ -63,7 +63,7 @@ void main_task(void* argument) {
                 // If the event flag contains the error flag the car leaves RTD mode.
                 isErrorPresent = event_flags & most_significant_error_flag;
                 if (isErrorPresent) {
-                    exit_RTD();
+                    //exit_RTD();
                 } else {
                     // Clear the thread flag
                     osThreadFlagsClear(most_significant_error_flag);

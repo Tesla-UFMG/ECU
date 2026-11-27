@@ -1186,15 +1186,13 @@ void StartTask23(void *argument)
   /* USER CODE BEGIN StartTask23 */
   /* Infinite loop */
 
-  uint8_t rx;
-  uint8_t msg[50];
+  //uint8_t rx;
 
   for(;;)
   {
-	  //uint8_t txt[] = "Hello World\r\n";
-	  //HAL_UART_Transmit(&huart1, txt, strlen(txt), 100);
-	  //osDelay(1);
-	  //HAL_Delay(1000);
+	 /* uint8_t txt[] = "Hello World\r\n";
+	  HAL_UART_Transmit(&huart1, txt, strlen(txt), 100);
+	  HAL_Delay(1000);
 
 	  // if(HAL_UART_Receive(&huart1, &rx, 1, HAL_MAX_DELAY) == HAL_OK){
 		//   sprintf((char*)msg, "Byte recebido: %c\r\n", rx);
